@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Quotation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid p-3"style="background-color:#ECF0F5;">
+    <div class="row">
+        <button type="button" class="btn btn-primary">
+            <i class="fas fa-plus" style="font-size:20px"> Quotation</i>
+        </button>    
+    </div>
+    <div class="row">
+        <div class="container-fluid">
+            <table id="table" class="table table-sm table-dark" width="100%">
+            
+            </table>
+        </div>
+    </div>
+
+</div>
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var dataSet = [["Tiger Nixon", "System Architect", "Edinburgh", "5421", "2011/04/25", "$320,800"],["Tiger Nixon", "System Architect", "Edinburgh", "5421", "2011/04/25", "$320,800"]];
+            $('#table').DataTable({
+                data: dataSet,
+                columns: [
+                    { title: "Name" },
+                    { title: "Position" },
+                    { title: "Office" },
+                    { title: "Extn." },
+                    { title: "Start date" },
+                    { title: "Salary" }
+                ],
+                "oTableTools": {
+            "aButtons": [
+                {
+                    "sExtends": "print",
+                    "bShowAll": false
+                }
+            ]
+        }
+            });
+         });
+</script>
+}

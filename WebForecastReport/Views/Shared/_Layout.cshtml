@@ -1,0 +1,86 @@
+﻿@using Microsoft.AspNetCore.Http
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <title>@ViewData["Title"] - Contrologic</title>
+        <partial name="Style"/>
+    </head>
+    <body class="hold-transition layout-footer-fixed layout-navbar-fixed">
+        <div class="wrapper">
+            <nav class="main-header navbar navbar-dark navbar-expand" style="background-color:#034694">
+                <ul class="navbar-nav d-flex justify-content-between w-100">
+                    <li class="nav-item">
+                        <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                            <span class="sr-only">Toggle navigation</span>
+                        </a>
+                        @{
+                            var userId = Context.Session.GetString("userId");
+                            byte[] image = new byte[128];
+                            if (userId == null)
+                            {
+                                //Context.Response.Redirect("/Account");
+                            }
+                        }
+                        <div class="navbar-custom-menu">
+                            <ul class="nav navbar-nav">
+                                <!-- User Account Menu -->
+                                <li class="dropdown user user-menu">
+                                    <!-- Menu Toggle Button -->
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <!-- The user image in the navbar-->
+                                        @{
+                                            var base64 = Convert.ToBase64String(image);
+                                            var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                                            if (@imgSrc != null)
+                                            {
+                                            // <img src="~/images/user.png" class="user-image" alt="User Image">
+                                                <img src="@imgSrc" class="user-image" alt="User Image">
+                                            }
+                                            <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                                            @if (@userId != null)
+                                            {
+                                                <span class="hidden-xs">@userId</span>
+                                            }
+                                        }
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li class="user-header" style="background-color:#034694">
+                                            @{
+                                                if (imgSrc != null)
+                                                {
+                                                    <img src="@imgSrc" class="img-circle" alt="User Image">
+                                                }
+                                            }
+
+                                            <p>
+                                                @userId
+                                            </p>
+                                        </li>
+                                        <li class="user-footer">
+                                            <div class="pull-left">
+                                                <a class="btn btn-default btn-flat" asp-area="" asp-controller="Account" asp-action="Logout">Sign out</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <partial name="SideMenu.cshtml"/>
+            <div class="content-wrapper" style="background-color:#ECF0F5">
+                @RenderBody()
+            </div>
+            <partial name="Footer"/>
+        </div>
+        <partial name="Scripts"/>
+        @RenderSection("Scripts", required: false)
+    </body>
+</html>

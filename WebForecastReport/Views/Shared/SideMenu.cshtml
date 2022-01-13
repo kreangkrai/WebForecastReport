@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Http
+<aside class="main-sidebar sidebar-dark-primary elevation-2">
+    <!-- Brand Logo -->
+    <a class="brand-link" asp-controller="Home" asp-action="Index">
+        @*<img src="~/images/icon.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+             style="opacity: .8">*@
+        <span class="brand-text font-weight-light">Forecast</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar" style="padding-left:5px">
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Quotation" asp-action="Index">
+                        <i class="nav-icon fas fa-file-invoice"></i>
+                        <p>Quotation</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="nav-icon fas fa-power-off"></i>
+                        <p>Log Out</p>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>
