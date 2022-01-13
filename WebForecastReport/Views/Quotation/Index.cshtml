@@ -2,44 +2,199 @@
     ViewData["Title"] = "Quotation";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="container-fluid p-3"style="background-color:#ECF0F5;">
+<div class="container-fluid p-3" id="app" style="background-color:#ECF0F5;">
     <div class="row">
-        <button type="button" class="btn btn-primary">
-            <i class="fas fa-plus" style="font-size:20px"> Quotation</i>
-        </button>    
+        <div>
+            <button type="button" id="AddQuotation" class="btn btn-primary">
+                <i class="fas fa-plus" style="font-size:20px"> Quotation</i>
+            </button>
+        </div>
+
     </div>
     <div class="row">
         <div class="container-fluid">
-            <table id="table" class="table table-sm table-dark" width="100%">
-            
+            <table id="table" class="table table-sm" width="100%">
             </table>
         </div>
     </div>
 
 </div>
 @section Scripts{
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var dataSet = [["Tiger Nixon", "System Architect", "Edinburgh", "5421", "2011/04/25", "$320,800"],["Tiger Nixon", "System Architect", "Edinburgh", "5421", "2011/04/25", "$320,800"]];
-            $('#table').DataTable({
+    @*<script type="text/javascript">
+    var app = new Vue({
+    el :'#app',
+    data:{
+    dt:null,
+    },
+    methods:{
+    OnAddClick:function(){
+    let url= '@Url.Action("GetData","Quotation")';
+    axios.post(url)
+    .then(data=> {
+    this.dt = data.data;
+    console.log(this.dt);
+
+    })
+    .catch(()=> {
+    err => alert(err)
+    });
+    },
+    },
+    });
+    @*  $(document).ready(function () {
+
+
+    })*@;
+@*</script>*@
+
+<script type="text/javascript">
+    $(document).ready(function () {
+         init();
+     });
+     function init(){
+        $.ajax({
+        url: '@Url.Action("GetData", "Quotation")',
+                        type: "post",
+                        contentType: 'application/x-www-form-urlencoded',
+                        data: {
+                        },
+                        success: function (response) {
+                            var dataSet = [];
+                            for(var i=0;i<response.length;i++){
+                                var data = [  "",
+                                              "",
+                                              response[i].quotation_no,
+                                              response[i].date,
+                                              response[i].customer,
+                                              response[i].enduser,
+                                              response[i].project_name,
+                                              response[i].site_location,
+                                              response[i].product_type,
+                                              response[i].part_no,
+                                              response[i].spec,
+                                              response[i].quantity,
+                                              response[i].supplier_quotation_no,
+                                              response[i].total_value,
+                                              response[i].unit,
+                                              response[i].expected_order_date,
+                                              response[i].required_onsite_date,
+                                              response[i].proposer,
+                                              response[i].expected_date,
+                                              response[i].status,
+                                              response[i].stages,
+                                              response[i].how_to_support,
+                                              response[i].competitor,
+                                              response[i].competitor_description,
+                                              response[i].competitor_price,
+                                              response[i].sale_name,
+                                              response[i].detail];
+
+                                          dataSet.push(data);
+                            }
+                            table(dataSet);
+                   }
+          });
+     }
+
+    $(function () {
+        $('#AddQuotation').click(function () {
+
+            $.ajax({
+              url: '@Url.Action("GetQuotation", "Quotation")',
+                        type: "post",
+                        contentType: 'application/x-www-form-urlencoded',
+                        data: {
+                        },
+
+                        success: function (response) {
+                            var dataSet = [];
+                            for(var i=0;i<response.length;i++){
+                                var data = [  "",
+                                              "",
+                                              response[i].quotation_no,
+                                              response[i].date,
+                                              response[i].customer,
+                                              response[i].enduser,
+                                              response[i].project_name,
+                                              response[i].site_location,
+                                              response[i].product_type,
+                                              response[i].part_no,
+                                              response[i].spec,
+                                              response[i].quantity,
+                                              response[i].supplier_quotation_no,
+                                              response[i].total_value,
+                                              response[i].unit,
+                                              response[i].expected_order_date,
+                                              response[i].required_onsite_date,
+                                              response[i].proposer,
+                                              response[i].expected_date,
+                                              response[i].status,
+                                              response[i].stages,
+                                              response[i].how_to_support,
+                                              response[i].competitor,
+                                              response[i].competitor_description,
+                                              response[i].competitor_price,
+                                              response[i].sale_name,
+                                              response[i].detail];
+
+                                            dataSet.push(data);
+                            }
+                            table(dataSet);
+                  }
+         });
+    });
+    var tables;
+    function table(dataSet){
+        if(tables !== undefined)
+            tables.destroy();
+            tables = $('#table').DataTable({
                 data: dataSet,
                 columns: [
-                    { title: "Name" },
-                    { title: "Position" },
-                    { title: "Office" },
-                    { title: "Extn." },
-                    { title: "Start date" },
-                    { title: "Salary" }
+                    { title: "Edit " },
+                    { title: "Delete" },
+                    { title: "quotation_no" },
+                    { title: "date" },
+                    { title: "customer" },
+                    { title: "enduser" },
+                    { title: "project_name" },
+                    { title: "site_location" },
+                    { title: "product_type" },
+                    { title: "part_no" },
+                    { title: "spec" },
+                    { title: "quantity" },
+                    { title: "supplier_quotation_no" },
+                    { title: "total_value" },
+                    { title: "unit" },
+                    { title: "expected_order_date" },
+                    { title: "required_onsite_date" },
+                    { title: "proposer" },
+                    { title: "expected_date" },
+                    { title: "status" },
+                    { title: "stages" },
+                    { title: "how_to_support" },
+                    { title: "competitor" },
+                    { title: "competitor_description" },
+                    { title: "competitor_price" },
+                    { title: "sale_name" },
+                    { title: "detail" },
+                    ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "data": null,
+                        "defaultContent": "<i class=\"fas fa-edit\"></i>"
+                    },
+                    {
+                        "targets": 1,
+                        "data": null,
+                        "defaultContent": "<i class=\"fas fa-trash-alt\"></i>"
+                    },
                 ],
-                "oTableTools": {
-            "aButtons": [
-                {
-                    "sExtends": "print",
-                    "bShowAll": false
-                }
-            ]
-        }
+                "scrollX": true,
+
             });
-         });
+             $(tables.table().body()).addClass('text-dark');
+
+    }
 </script>
 }
