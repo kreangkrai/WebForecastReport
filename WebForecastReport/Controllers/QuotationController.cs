@@ -30,9 +30,9 @@ namespace WebForecastReport.Controllers
             string quo = year + number.ToString().PadLeft(4, '0');
             if (quotation != "")
             {
-                 year = quotation.Substring(0, 3);
-                 number = Convert.ToInt32(quotation.Substring(3, 4)) + 1;
-                 quo = year + number.ToString().PadLeft(4, '0');
+                year = quotation.Substring(0, 3);
+                number = Convert.ToInt32(quotation.Substring(3, 4)) + 1;
+                quo = year + number.ToString().PadLeft(4, '0');
             }
             quotations.quotation_no = quo;
             quotations.proposer = "Kriangkrai.R";
@@ -51,7 +51,7 @@ namespace WebForecastReport.Controllers
         public JsonResult GetData()
         {
             List<QuotationModel> quotations = new List<QuotationModel>();
-            quotations = Quotation.GetAll("");
+            quotations = Quotation.GetAll("Kriangkrai.R");
             return Json(quotations);
         }
     }
