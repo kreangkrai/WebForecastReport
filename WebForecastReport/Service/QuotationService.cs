@@ -47,7 +47,7 @@ namespace WebForecastReport.Service
                         QuotationModel q = new QuotationModel()
                         {
                             quotation_no = dr["quotation_no"].ToString(),
-                            date = Convert.ToDateTime(dr["date"].ToString()),
+                            date = Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd"),
                             customer = dr["customer"].ToString(),
                             enduser = dr["enduser"].ToString(),
                             project_name = dr["project_name"].ToString(),
@@ -59,10 +59,10 @@ namespace WebForecastReport.Service
                             supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
                             total_value = dr["total_value"].ToString(),
                             unit = dr["unit"].ToString(),
-                            expected_order_date = Convert.ToDateTime(dr["expected_order_date"].ToString()),
-                            required_onsite_date = Convert.ToDateTime(dr["required_onsite_date"].ToString()),
+                            expected_order_date = Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd"),
+                            required_onsite_date = Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd"),
                             proposer = dr["proposer"].ToString(),
-                            expected_date = Convert.ToDateTime(dr["expected_date"].ToString()),
+                            expected_date = Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd"),
                             status = dr["status"].ToString(),
                             stages = dr["stages"].ToString(),
                             how_to_support = dr["how_to_support"].ToString(),
@@ -93,7 +93,7 @@ namespace WebForecastReport.Service
             {
                 string year = DateTime.Now.ToString("yy");
                 string str = "";
-                SqlCommand cmd = new SqlCommand("select top 1 case when quotation_no like 'Q"+year+"%' then quotation_no else 'Q"+year+"0000' end as  quotation_no from Quotation order by quotation_no desc", ConnectSQL.OpenConnect());
+                SqlCommand cmd = new SqlCommand("select top 1 case when quotation_no like 'Q" + year + "%' then quotation_no else 'Q" + year + "0000' end as  quotation_no from Quotation order by quotation_no desc", ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {

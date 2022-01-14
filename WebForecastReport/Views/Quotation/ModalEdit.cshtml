@@ -1,0 +1,141 @@
+﻿<div class="modal fade" id="EditModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><b>Edit Quotation</b></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row m-0">
+                        <div class="col-md-3 col-xl-3">
+                            <label>Quotation No</label>
+                            <input id="edit_quotation_no" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Date</label>
+                            <input id="edit_date" type="date" value="" class="form-control" style="width:100%">
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Customer</label>
+                            <input id="edit_customer" type="text" class="form-control" style="width:100%">
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>End User</label>
+                            <input id="edit_enduser" type="text" class="form-control" style="width:100%">
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-3 col-xl-3">
+                            <label>Project Name</label>
+                            <input id="edit_project_name" type="text" class="form-control" style="width:100%">
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Site Location</label>
+                            <input id="edit_site_location" type="text" class="form-control" style="width:100%">
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Proposer</label>
+                            <input id="edit_proposer" type="text" class="form-control" style="width:100%">
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Status</label>
+                            <input id="edit_status" type="text" class="form-control" style="width:100%">
+                        </div>
+                    </div>
+
+                    <div class="form-group row m-0">
+                        <div class="col-md-3 col-xl-3">
+                            <label>Expected Order Date</label>
+                            <input id="edit_expected_order_date" type="date" class="form-control" style="width:100%">
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Required Onsite Date</label>
+                            <input id="edit_required_onsite_date" type="date" class="form-control" style="width:100%">
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Expected Date</label>
+                            <input id="edit_expected_date" type="date" class="form-control" style="width:100%">
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Stages</label>
+                            <input id="edit_stages" type="text" class="form-control" style="width:100%">
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-11 col-xl-11">
+                            <label>Product Type</label>
+                            <input id="edit_product_type" type="text" class="form-control" style="width:100%">
+                        </div>
+                        <div class="col-md-1 col-xl-1">
+                            <label>More</label>
+                            <button type="button" id="edit_MoreProductType" class="btn btn-primary" style="width:100%;height:38px">More</button>
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-6 col-xl-6">
+                            <label>Compettitor A Price (EUR)</label>
+                            <input id="edit_competitor_price" type="text" class="form-control" style="width:100%">
+                        </div>
+                        <div class="col-md-6 col-xl-6">
+                            <label>Sale Name</label>
+                            <input id="edit_sale_name" type="text" class="form-control" style="width:100%">
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-12 col-xl-12">
+                            <label>How supplier support to win this project</label>
+                            <input id="edit_how_to_support" type="text" class="form-control" style="width:100%">
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-12 col-xl-12">
+                            <label>Competitor</label>
+                            <input id="edit_competitor" type="text" class="form-control" style="width:100%">
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-12 col-xl-12">
+                            <label>Competitor Description</label>
+                            <input id="edit_competitor_description" type="text" class="form-control" style="width:100%">
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-12 col-xl-12">
+                            <label>Detail Project</label>
+                            <input id="edit_detail" type="text" class="form-control" style="width:100%">
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="edit_quotationConfirm">Save changes</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="EditMoreModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><b>Product Type</b></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div id="moreProduct">
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="edit_moreConfirm">Save changes</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
