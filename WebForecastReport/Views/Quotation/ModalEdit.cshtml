@@ -63,13 +63,44 @@
                         </div>
                     </div>
                     <div class="form-group row m-0">
-                        <div class="col-md-11 col-xl-11">
+                        <div class="row">
+                            <div class="col-md-4 col-xl-4">
+                                <input type="checkbox" id="chkMRU" />
+                                <label>MRU</label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-4 col-xl-4">
+                                <input type="checkbox" id="chkB" />
+                                <label>B</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 col-xl-4">
+                                <input type="checkbox" id="chkOther" />
+                                <label>Other</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 col-xl-4">
+                                <input type="text" id="txtOther" />
+                                <input type="button" value="Add" id="btnAddProduct" disabled />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-10 col-xl-10">
                             <label>Product Type</label>
                             <input id="edit_product_type" type="text" class="form-control" style="width:100%">
                         </div>
                         <div class="col-md-1 col-xl-1">
-                            <label>More</label>
-                            <button type="button" id="edit_MoreProductType" class="btn btn-primary" style="width:100%;height:38px">More</button>
+                            <label>Clear</label>
+                            <button type="button" id="clear_btnProductType" class="btn btn-warning" style="width:100%;height:38px">Clear</button>
+                        </div>
+                        <div class="col-md-1 col-xl-1">
+                            <label>Edit</label>
+                            <button type="button" id="edit_btnProductType" class="btn btn-primary" style="width:100%;height:38px">More</button>
                         </div>
                     </div>
                     <div class="form-group row m-0">
@@ -83,29 +114,24 @@
                         </div>
                     </div>
                     <div class="form-group row m-0">
-                        <div class="col-md-12 col-xl-12">
+                        <div class="col-md-6 col-xl-6">
                             <label>How supplier support to win this project</label>
                             <input id="edit_how_to_support" type="text" class="form-control" style="width:100%">
                         </div>
-                    </div>
-                    <div class="form-group row m-0">
-                        <div class="col-md-12 col-xl-12">
+                        <div class="col-md-6 col-xl-6">
                             <label>Competitor</label>
                             <input id="edit_competitor" type="text" class="form-control" style="width:100%">
                         </div>
                     </div>
                     <div class="form-group row m-0">
-                        <div class="col-md-12 col-xl-12">
+                        <div class="col-md-6 col-xl-6">
                             <label>Competitor Description</label>
                             <input id="edit_competitor_description" type="text" class="form-control" style="width:100%">
                         </div>
-                    </div>
-                    <div class="form-group row m-0">
-                        <div class="col-md-12 col-xl-12">
+                        <div class="col-md-6 col-xl-6">
                             <label>Detail Project</label>
                             <input id="edit_detail" type="text" class="form-control" style="width:100%">
                         </div>
-
                     </div>
                 </form>
 
@@ -127,7 +153,7 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <div id="moreProduct">
+                    <div id="editProductTypes">
                     </div>
                 </form>
 

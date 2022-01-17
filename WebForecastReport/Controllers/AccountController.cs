@@ -44,7 +44,6 @@ namespace WebForecastReport.Controllers
                         //}
                         //dr.Close();
                         //ConnectSQL.CloseConnect();
-
                         if (b)
                         {
                             HttpContext.Session.SetString("userId", user);
