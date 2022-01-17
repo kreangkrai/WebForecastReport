@@ -138,6 +138,16 @@
             table_view(dataSet);
             console.log(dataSet);
         };
+
+        function init_edit() {
+            var dataSet = [];
+            for (var i = 0; i < arrProductType.length; i++) {
+                var data = ["","",arrProductType[i], arrPart_No[i], arrSpec[i], arrQuantity[i], arrSupplier_Quotation_No[i], arrTotal_Value[i], arrUnit[i]];
+
+                dataSet.push(data);
+            }
+            table_edit(dataSet);
+        };
     $('#AddQuotation').on('click', function () {
         var name ='@Model.name';
         $.ajax({
@@ -264,7 +274,46 @@
 
         });
         $(tables_view.table().body()).addClass('text-dark');
-    }
+        }
+
+        var tables_edit;
+        function table_edit(dataSet) {
+            if (tables_edit !== undefined)
+                tables_edit.destroy();
+            tables_edit = $('#tableedit').DataTable({
+                data: dataSet,
+                columns: [
+                    { title: "Edit" },
+                    { title: "Delete" },
+                    { title: "Product Type" },
+                    { title: "Part No" },
+                    { title: "Spec" },
+                    { title: "Quantity" },
+                    { title: "Supplier Quotation No" },
+                    { title: "Total Value" },
+                    { title: "Unit" },
+                   
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "data": null,
+                        "defaultContent": "<i class=\"fas fa-edit\"></i>",
+                        "className": 'dt-body-center',
+                    },
+                    {
+                        "targets": 1,
+                        "data": null,
+                        "defaultContent": "<i class=\"fas fa-eye\"></i>",
+                        "className": 'dt-body-center'
+                    },
+
+                ],
+                "scrollX": true,
+
+            });
+            $(tables_edit.table().body()).addClass('text-dark');
+        }
      $('#table').on('click', 'tbody td', function () {
           var cell = tables.cell(this);
           var column = cell[0][0].column;
@@ -614,7 +663,7 @@
     //});
         $('#edit_btnProductType').on('click', function () {
 
-            //init_view();
+            init_edit();
             
             $('#EditMoreModal').modal();
 
