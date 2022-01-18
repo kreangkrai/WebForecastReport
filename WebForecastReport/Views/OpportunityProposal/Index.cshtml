@@ -1,0 +1,30 @@
+﻿<div class="row p-3">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-body">
+                <form>
+                    <table id="table_oppr" class="table table-bordered">
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        var table;
+        $(document).ready(function () {
+            table = $('#table_oppr').DataTable({
+                //data: dataSet,
+                columns: [
+                    { title: "OPP NO. " },
+                    { title: "Date" },
+                    { title: "OP Type" },
+                ],
+                "scrollX": true,
+            });
+            $(table.table().body()).addClass('text-dark');
+        });
+    </script>
+}

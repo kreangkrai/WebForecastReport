@@ -62,35 +62,69 @@
                         </div>
                         <div class="col-md-3 col-xl-3">
                             <label>Stages</label>
-                            <input id="edit_stages" type="text" class="form-control" style="width:100%">
+                            <select id="edit_stages" class="form-control" style="width:100%">
+                                <option value="Quote for Buddget">Quote for Buddget</option>
+                                <option value="Negotiation/Review">Negotiation/Review</option>
+                                <option value="Proposal/Quote for Order">Proposal/Quote for Order</option>
+                                <option value="Prospecting">Prospecting</option>
+                                <option value="Closed(Won)">Closed(Won)</option>
+                                <option value="Closed(Lost)">Closed(Lost)</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="form-group row m-0">
-                        <div class="row">
-                            <div class="col-md-4 col-xl-4">
-                                <input type="checkbox" id="chkMRU" />
-                                <label>MRU</label>
+                    <div class="form-group row">
+                        <div class="col-3 pl-4 py-2">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="chkKnick">
+                                <label class="form-check-label" for="chkKnick">Knick</label>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <div class="col-md-4 col-xl-4">
-                                <input type="checkbox" id="chkB" />
-                                <label>B</label>
+                        <div class="col-3 pl-4 py-2">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="chkMRU">
+                                <label class="form-check-label" for="chkMRU">MRU</label>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4 col-xl-4">
-                                <input type="checkbox" id="chkOther" />
-                                <label>Other</label>
+                        <div class="col-3 pl-4 py-2">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="chkSCan">
+                                <label class="form-check-label" for="chkSCan">S::Can</label>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4 col-xl-4">
+                        <div class="col-3 pl-4 py-2">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="chkStahl">
+                                <label class="form-check-label" for="chkStahl">Stahl</label>
+                            </div>
+                        </div>
+                        <div class="col-3 pl-4 py-2">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="chkServomex">
+                                <label class="form-check-label" for="chkServomex">Servomex</label>
+                            </div>
+                        </div>
+                        <div class="col-3 pl-4 py-2">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="chkSwan">
+                                <label class="form-check-label" for="chkSwan">Swan</label>
+                            </div>
+                        </div>
+                        <div class="col-3 pl-4 py-2">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="chkVaisala">
+                                <label class="form-check-label" for="chkVaisala">Vaisala</label>
+                            </div>
+                        </div>
+                        <div class="col-3 pl-4 py-2">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="chkOther">
+                                <label class="form-check-label" for="chkOther">Other</label>
+                            </div>
+                            <div>
                                 <input type="text" id="txtOther" />
                                 <input type="button" value="Add" id="btnAddProduct" disabled />
                             </div>
                         </div>
-
                     </div>
                     <div class="form-group row m-0">
                         <div class="col-md-10 col-xl-10">
@@ -107,31 +141,30 @@
                         </div>
                     </div>
                     <div class="form-group row m-0">
-                        <div class="col-md-6 col-xl-6">
+                        <div class="col-md-4 col-xl-4">
                             <label>Compettitor A Price (EUR)</label>
                             <input id="edit_competitor_price" type="text" class="form-control" style="width:100%">
                         </div>
-                        <div class="col-md-6 col-xl-6">
+                        <div class="col-md-4 col-xl-4">
                             <label>Sale Name</label>
-                            <input id="edit_sale_name" type="text" class="form-control" style="width:100%">
+                            <select id="edit_sale_name" class="form-control" style="width:100%">
+                            </select>
                         </div>
-                    </div>
-                    <div class="form-group row m-0">
-                        <div class="col-md-6 col-xl-6">
+                        <div class="col-md-4 col-xl-4">
                             <label>How supplier support to win this project</label>
                             <input id="edit_how_to_support" type="text" class="form-control" style="width:100%">
                         </div>
-                        <div class="col-md-6 col-xl-6">
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-4 col-xl-4">
                             <label>Competitor</label>
                             <input id="edit_competitor" type="text" class="form-control" style="width:100%">
                         </div>
-                    </div>
-                    <div class="form-group row m-0">
-                        <div class="col-md-6 col-xl-6">
+                        <div class="col-md-4 col-xl-4">
                             <label>Competitor Description</label>
                             <input id="edit_competitor_description" type="text" class="form-control" style="width:100%">
                         </div>
-                        <div class="col-md-6 col-xl-6">
+                        <div class="col-md-4 col-xl-4">
                             <label>Detail Project</label>
                             <input id="edit_detail" type="text" class="form-control" style="width:100%">
                         </div>
@@ -165,7 +198,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="edit_moreConfirm">Save changes</button>
+                @*<button type="button" class="btn btn-primary" id="edit_moreConfirm">Save changes</button>*@
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -219,8 +252,7 @@
                     <div class="form-group row m-0">
                         <div class="col-md-12 col-xl-12">
                             <label>Unit</label>
-                            <select id="edit_sub_unit" class="form-control" style="width:100%">
-                                
+                            <select id="edit_sub_unit" class="form-control" style="width:100%">                               
                                 <option value="THB">THB</option>
                                 <option value="THB">URD</option>
                                 <option value="THB">USD</option>

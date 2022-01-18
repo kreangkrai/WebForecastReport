@@ -26,6 +26,7 @@ namespace WebForecastReport.Controllers
             users = Accessory.getAllUser();
             UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name }).FirstOrDefault();
 
+            
             return View(u);
         }
         [HttpPost]
@@ -61,10 +62,18 @@ namespace WebForecastReport.Controllers
             List<QuotationModel> quotations = new List<QuotationModel>();
             quotations = Quotation.GetAll(name);
             quotations = quotations.OrderByDescending(o => o.quotation_no).ToList();
-            return Json(quotations);
+
+
+            //get all sale
+            List<string> sales = new List<string>();
+            sales = Accessory.getSale().Select(s => s.name).ToList();
+            
+            var list = new { quatations = quotations, sales = sales };
+            return Json(list);
         }
         [HttpPost]
-        public JsonResult Update(string quotation, string date, string customer, string enduser, string project_name, string site_location, string product_type, string expected_order_date,
+        public JsonResult Update(string quotation, string date, string customer, string enduser, string project_name, string site_location, string product_type, string part_no,
+                    string spec, string quantity, string supplier_quotation_no, string total_value,string unit,string expected_order_date,
                    string required_onsite_date, string proposer, string expected_date, string status, string stages, string how_to_support, string competitor, string competitor_description,
                    string competitor_price, string sale_name, string detail)
         {
@@ -77,12 +86,12 @@ namespace WebForecastReport.Controllers
                 project_name = project_name,
                 site_location = site_location,
                 product_type = product_type,
-                part_no = "",
-                spec = "",
-                quantity = "",
-                supplier_quotation_no = "",
-                total_value = "",
-                unit = "",
+                part_no = part_no,
+                spec = spec,
+                quantity = quantity,
+                supplier_quotation_no = supplier_quotation_no,
+                total_value = total_value,
+                unit = unit,
                 expected_order_date = expected_order_date,
                 required_onsite_date = required_onsite_date,
                 proposer = proposer,
