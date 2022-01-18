@@ -94,7 +94,9 @@
         var Stages = ["Quote for Buddget", "Negotiation/Review", "Proposal/Quote for Order", "Prospecting", "Closed(Won)", "Closed(Lost)"];
         var Brands = ["Knick", "MRU", "S::Can", "Servomex", "Stahl", "Swan", "Vaisala"];
         var Sales = [];
-              
+        var Customers = [];
+        var EndUsers = [];
+
         $(document).ready(function () {
             init();
         });
@@ -111,7 +113,13 @@
             success: function (response) {
                 //add sale to select
                 Sales = add_sale(response.sales);
-                
+
+                //add customer to datalist
+                Customers = add_customer(response.customers);
+
+                //add end user to datalist
+                EndUsers = add_enduser(response.endusers);
+
                 var datas = response.quatations;
                 var dataSet = [];
                 for (var i = 0; i < datas.length; i++) {
@@ -411,7 +419,9 @@
                 document.getElementById('edit_quotation_no').value = quotation;
                 document.getElementById('edit_date').value = date;
                 document.getElementById('edit_customer').value = customer;
+
                 document.getElementById('edit_enduser').value = enduser;
+
                 document.getElementById('edit_project_name').value = project_name;
                 document.getElementById('edit_site_location').value = site_location;
                 document.getElementById('edit_product_type').value = product_type;
@@ -442,7 +452,7 @@
 
                 document.getElementById('edit_detail').value = detail;
 
-
+                //clear all check
                 init_check();
                 // check match
                 for (var i = 0; i < arrProductType.length; i++) {
@@ -569,13 +579,13 @@
         });
         $('#chkOther').on('click', function () {
 
-            var state = state_chkother % 2;
+            var state = state_chkOther % 2;
             if (state == 1) {
                 document.getElementById("btnAddProduct").disabled = true;
             } else {
                 document.getElementById("btnAddProduct").disabled = false;
             }
-            state_chkother += 1;
+            state_chkOther += 1;
         });
         $('#chkMRU').on('click', function () {
             var state = state_chkMRU % 2;
@@ -767,7 +777,7 @@
             state_chkStahl = 0;
             state_chkSwan = 0;
             state_chkVaisala = 0;
-            state_chkother = 0;
+            state_chkOther = 0;
         });
         $('#edit_btnProductType').on('click', function () {
 
@@ -898,6 +908,23 @@
            
             return data_sales;
         };
-        
+        function add_customer(customers) {
+            var list = document.getElementById('list_customer');
+
+            customers.forEach(function (item) {
+                var option = document.createElement('option');
+                option.value = item;
+                list.appendChild(option);
+            });
+        };
+        function add_enduser(endusers) {
+            var list = document.getElementById('list_enduser');
+
+            endusers.forEach(function (item) {
+                var option = document.createElement('option');
+                option.value = item;
+                list.appendChild(option);
+            });
+        };
     </script>
 }

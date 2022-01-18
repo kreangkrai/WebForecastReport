@@ -67,8 +67,16 @@ namespace WebForecastReport.Controllers
             //get all sale
             List<string> sales = new List<string>();
             sales = Accessory.getSale().Select(s => s.name).ToList();
-            
-            var list = new { quatations = quotations, sales = sales };
+
+            //get all customer
+            List<string> customers = new List<string>();
+            customers = Accessory.getCustomers().Select(s=>s.name).ToList();
+
+            //get all end user
+            List<string> endusers = new List<string>();
+            endusers = Accessory.getEndUsers().Select(s => s.name).ToList();
+
+            var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers };
             return Json(list);
         }
         [HttpPost]
@@ -105,6 +113,10 @@ namespace WebForecastReport.Controllers
                 sale_name = sale_name,
                 detail = detail
             };
+
+            Accessory.InsertCustomer(customer);
+            Accessory.InsertEndUser(enduser);
+
             string message = Quotation.Update(q);
 
             return Json(message);
