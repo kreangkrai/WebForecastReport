@@ -37,29 +37,30 @@
 @section Scripts
 {
     <script type="text/javascript">
+        var quotation_datas = [];
         var quotation = '';
-         var date = '';
-         var customer = '';
-         var enduser = '';
-         var project_name = '';
-         var site_location = '';
+        var date = '';
+        var customer = '';
+        var enduser = '';
+        var project_name = '';
+        var site_location = '';
         var product_type = '';
-         var part_no = '';
-         var spec = '';
-         var quantity = '';
-         var supplier_quotation_no = '';
-         var total_value = '';
-         var unit = '';
-         var expected_order_date = '';
-         var required_onsite_date = '';
-         var proposer = '';
-         var expected_date = '';
-         var status = '';
-         var stages = '';
-         var how_to_support = '';
-         var competitor = '';
-         var competitor_description = '';
-         var competitor_price = '';
+        var part_no = '';
+        var spec = '';
+        var quantity = '';
+        var supplier_quotation_no = '';
+        var total_value = '';
+        var unit = '';
+        var expected_order_date = '';
+        var required_onsite_date = '';
+        var proposer = '';
+        var expected_date = '';
+        var status = '';
+        var stages = '';
+        var how_to_support = '';
+        var competitor = '';
+        var competitor_description = '';
+        var competitor_price = '';
         var sale_name = '';
 
         var detail = '';
@@ -153,6 +154,8 @@
 
                     dataSet.push(data);
                 }
+                quotation_datas = dataSet;
+
                 table(dataSet);
             }
         });
@@ -229,7 +232,7 @@
         function table(dataSet) {
             if (tables !== undefined)
                 tables.destroy();
-                tables = $('#table').DataTable({
+            tables = $('#table').DataTable({
                 data: dataSet,
                 columns: [
                     { title: "Edit " },
@@ -276,6 +279,7 @@
 
                 ],
                 "scrollX": true,
+                stateSave: true,
 
             });
             $(tables.table().body()).addClass('text-dark');
@@ -332,7 +336,8 @@
 
                 ],
                 "scrollX": true,
-
+                stateSave: true,
+                
             });
             $(tables_edit.table().body()).addClass('text-dark');
         };
@@ -567,8 +572,8 @@
                     competitor_description, competitor_price, sale_name, detail
                 },
                 success: function (response) {
-                    if (response == "Update Success") {
-                        init();
+                    if (response == "Update Success") {                     
+                        location.reload();
                         toastr.success("Update Success");
                     } else {
                         toastr.error("Update Failed");
@@ -817,7 +822,7 @@
 
             //update data in table edit
             init_edit();
-
+           
             $('#EditProductTypeModal').modal('hide');
         });
         function remove_data(index) {
