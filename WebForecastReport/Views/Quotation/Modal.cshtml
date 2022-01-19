@@ -9,8 +9,15 @@
                     <div class="col-md-5 col-xl-5">
                         <input id="sale_name" class="form-control" style="width:100%" disabled/>                       
                     </div>
-                    <div class="col-md-5 col-xl-5">
-                        <input id="department" class="form-control" style="width:100%" disabled />
+                    <div class="col-md-3 col-xl-3">
+                        <div class="row">
+                            <div class="col-md-6 col-xl-6">
+                                <h4 style="width:100%"><b>Department: </b></h4>
+                            </div>
+                            <div class="col-md-6 col-xl-6 text-left">
+                                <select id="department" class="form-control" style="width:100%;" disabled></select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -135,7 +142,7 @@
             <div class="modal-body">
                 <form>
                     <div class="container">
-                        <table id="tableview" class="table table-md cell-border table-dark display responsive nowrap" width="100%">
+                        <table id="tableview" class="table table-md cell-border table-dark display responsive nowrap" style="overflow-x:auto" width="100%">
                         </table>
                     </div>
                 </form>

@@ -44,11 +44,11 @@ namespace WebForecastReport.Controllers
             }
             quotations.quotation_no = quo;
             quotations.revision = "0";
-            quotations.proposer = name;
+            //quotations.proposer = name;
             quotations.sale_name = name;
             quotations.department = department;
             quotations.date = DateTime.Now.ToString("yyyy-MM-dd");
-            quotations.expected_date = DateTime.Now.ToString("yyyy-MM-dd");
+            ///quotations.expected_date = DateTime.Now.ToString("yyyy-MM-dd");
             quotations.expected_order_date = DateTime.Now.ToString("yyyy-MM-dd");
             quotations.required_onsite_date = DateTime.Now.ToString("yyyy-MM-dd");
             string message = Quotation.InsertQuotation(quotations);

@@ -10,8 +10,15 @@
                         <select id="edit_sale_name" class="form-control" style="width:100%" disabled>
                         </select>
                     </div>
-                    <div class="col-md-5 col-xl-5">
-                        <input id="edit_department" class="form-control" style="width:100%" disabled/>
+                    <div class="col-md-3 col-xl-3">
+                        <div class="row">
+                            <div class="col-md-6 col-xl-6">
+                                <h4 style="width:100%"><b>Department: </b></h4>
+                            </div>
+                            <div class="col-md-6 col-xl-6 text-left">
+                                <select id="edit_department" class="form-control" style="width:100%;" disabled></select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -62,7 +69,7 @@
                         </div>
                         <div class="col-md-3 col-xl-3">
                             <label>Proposal Created By</label>
-                            <input id="edit_proposer" type="text" class="form-control" style="width:100%" disabled>
+                            <select id="edit_proposer" class="form-control" style="width:100%"></select>
                         </div>
                     </div>
 
@@ -88,7 +95,7 @@
                         </div>
                         <div class="col-md-3 col-xl-3">
                             <label>Proposal Expected Date</label>
-                            <input id="edit_expected_date" type="date" class="form-control" style="width:100%">
+                            <input id="edit_expected_date" type="date" class="form-control" style="width:100%" disabled>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -96,15 +103,26 @@
                             <label>Product</label>
                             <div class="input-group">
                                 <select id="products" class="form-control" style="width:100%">
-                                    <option value="Knic">Knic</option>
+                                    <option value="ABB">ABB</option>
+                                    <option value="Canty">Canty</option>
+                                    <option value="DEHN">DEHN</option>
+                                    <option value="Extrel">Extrel</option>
+                                    <option value="HK">HK</option>
+                                    <option value="Kemtrak">Kemtrak</option>
+                                    <option value="Knick">Knick</option>
+                                    <option value="Kobold">Kobold</option>
+                                    <option value="LAR">LAR</option>
+                                    <option value="Matsushima">Matsushima</option>
                                     <option value="MRU">MRU</option>
-                                    <option value="S::Can">S::Can</option>
+                                    <option value="M-System">M-System</option>
+                                    <option value="Scan">Scan</option>
                                     <option value="Servomex">Servomex</option>
-                                    <option value="Sthal">Sthal</option>
+                                    <option value="Stahl">Stahl</option>
                                     <option value="Swan">Swan</option>
                                     <option value="Vaisala">Vaisala</option>
+                                    <option value="Yamari">Yamari</option>
                                 </select>
-                                <div class="input-group-append">
+                                <div class="input-group-append pl-1">
                                     <input type="button"  id="btnAddProduct" value="ADD"/>
                                 </div>
                             </div>
@@ -113,7 +131,7 @@
                             <label>Other</label>
                             <div class="input-group">
                                 <input type="text" id="txtOther" class="form-control" />
-                                <div class="input-group-append">
+                                <div class="input-group-append pl-1">
                                     <input type="button" id="btnAddOtherProduct" value="ADD" />
                                 </div>
                             </div>
@@ -185,7 +203,7 @@
             <div class="modal-body">
                 <form>
                     <div class="container">
-                        <table id="tableedit" class="table table-md cell-border table-dark display responsive nowrap" width="100%">
+                        <table id="tableedit" class="table table-md cell-border table-dark display responsive nowrap" style="overflow-x:auto" width="100%">
                         </table>
                     </div>
                 </form>

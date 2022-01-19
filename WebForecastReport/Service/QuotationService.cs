@@ -38,7 +38,7 @@ namespace WebForecastReport.Service
             try
             {
                 List<QuotationModel> quotations = new List<QuotationModel>();
-                SqlCommand cmd = new SqlCommand("select * from Quotation where proposer='" + name + "' order by date desc", ConnectSQL.OpenConnect());
+                SqlCommand cmd = new SqlCommand("select * from Quotation where sale_name='" + name + "' order by date desc", ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -64,7 +64,7 @@ namespace WebForecastReport.Service
                             expected_order_date = Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd"),
                             required_onsite_date = Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd"),
                             proposer = dr["proposer"].ToString(),
-                            expected_date = Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd"),
+                            expected_date = dr["expected_date"].ToString() != "" ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd"): "1900-01-01",
                             status = dr["status"].ToString(),
                             stages = dr["stages"].ToString(),
                             how_to_support = dr["how_to_support"].ToString(),
@@ -233,18 +233,18 @@ namespace WebForecastReport.Service
             {
                 using (SqlCommand cmd = new SqlCommand(@"INSERT INTO Quotation(
                                                                             quotation_no,revision,
-                                                                            date,proposer,expected_order_date,required_onsite_date,expected_date,sale_name,department) VALUES (
-                                                                            @quotation_no,@revision,@date,@proposer,@expected_order_date,@required_onsite_date,@expected_date,@sale_name,@department)", ConnectSQL.OpenConnect()))
+                                                                            date,expected_order_date,required_onsite_date,sale_name,department) VALUES (
+                                                                            @quotation_no,@revision,@date,@expected_order_date,@required_onsite_date,@sale_name,@department)", ConnectSQL.OpenConnect()))
                 {
                     cmd.CommandType = CommandType.Text;
                     cmd.Connection = ConnectSQL.OpenConnect();
                     cmd.Parameters.AddWithValue("@quotation_no", model.quotation_no);
                     cmd.Parameters.AddWithValue("@revision", model.revision);
                     cmd.Parameters.AddWithValue("@date", model.date);
-                    cmd.Parameters.AddWithValue("@proposer", model.proposer);
+                    //cmd.Parameters.AddWithValue("@proposer", model.proposer);
                     cmd.Parameters.AddWithValue("@expected_order_date", model.expected_order_date);
                     cmd.Parameters.AddWithValue("@required_onsite_date", model.required_onsite_date);
-                    cmd.Parameters.AddWithValue("@expected_date", model.expected_date);
+                    //cmd.Parameters.AddWithValue("@expected_date", null);
                     cmd.Parameters.AddWithValue("@sale_name", model.sale_name);
                     cmd.Parameters.AddWithValue("@department", model.department);
                     cmd.ExecuteNonQuery();
