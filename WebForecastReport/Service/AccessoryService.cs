@@ -16,7 +16,7 @@ namespace WebForecastReport.Service
             try
             {
                 List<UserModel> users = new List<UserModel>();
-                SqlCommand cmd = new SqlCommand("select DISTINCT Login,Name from Sale_User order by Login", ConnectSQL.Open_db_gps_Connect());
+                SqlCommand cmd = new SqlCommand("select DISTINCT Login,Name,Department2 from Sale_User order by Login", ConnectSQL.Open_db_gps_Connect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -25,7 +25,8 @@ namespace WebForecastReport.Service
                         UserModel u = new UserModel()
                         {
                             name = dr["Login"].ToString(),
-                            fullname = dr["Name"].ToString()
+                            fullname = dr["Name"].ToString(),
+                            department = dr["Department2"].ToString()
                         };
                         users.Add(u);
                     }
@@ -107,7 +108,7 @@ namespace WebForecastReport.Service
             try
             {
                 List<SaleModel> sales = new List<SaleModel>();
-                SqlCommand cmd = new SqlCommand("select DISTINCT Login from Sale_User where [Group] ='Sale' order by Login", ConnectSQL.Open_db_gps_Connect());
+                SqlCommand cmd = new SqlCommand("select DISTINCT Login,Department2 from Sale_User where [Group] ='Sale' order by Login", ConnectSQL.Open_db_gps_Connect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -116,6 +117,7 @@ namespace WebForecastReport.Service
                         SaleModel s = new SaleModel()
                         {
                             name = dr["Login"].ToString(),
+                            department = dr["Department2"].ToString()
                         };
                         sales.Add(s);
                     }

@@ -8,6 +8,7 @@ namespace WebForecastReport.Models
     public class QuotationModel
     {
         public string quotation_no { get; set; }
+        public string revision { get; set; }
         public string date { get; set; }
         public string customer { get; set; }
         public string enduser { get; set; }
@@ -20,6 +21,7 @@ namespace WebForecastReport.Models
         public string supplier_quotation_no { get; set; }
         public string total_value { get; set; }
         public string unit { get; set; }
+        public string quoted_price { get; set; }
         public string expected_order_date { get; set; }
         public string required_onsite_date { get; set; }
         public string proposer { get; set; }
@@ -31,6 +33,7 @@ namespace WebForecastReport.Models
         public string competitor_description { get; set; }
         public string competitor_price { get; set; }
         public string sale_name { get; set; }
+        public string department { get; set; }
         public string detail { get; set; }
     }
 }

@@ -2,15 +2,29 @@
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"><b>Quotation</b></h4>
+                <div class="row w-100">
+                    <div class="col-md-2 col-xl-2">
+                        <h4 class="modal-title"><b>Quotation</b></h4>
+                    </div>
+                    <div class="col-md-5 col-xl-5">
+                        <input id="sale_name" class="form-control" style="width:100%" disabled/>                       
+                    </div>
+                    <div class="col-md-5 col-xl-5">
+                        <input id="department" class="form-control" style="width:100%" disabled />
+                    </div>
+                </div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
                 <form>
                     <div class="form-group row m-0">
-                        <div class="col-md-3 col-xl-3">
+                        <div class="col-md-2 col-xl-2">
                             <label>Quotation No</label>
                             <input id="quotation_no" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-1 col-xl-1">
+                            <label>Revision</label>
+                            <input id="revision" type="number" class="form-control" disabled />
                         </div>
                         <div class="col-md-3 col-xl-3">
                             <label>Date</label>
@@ -35,13 +49,14 @@
                             <input id="site_location" type="text" class="form-control" style="width:100%" disabled>
                         </div>
                         <div class="col-md-3 col-xl-3">
-                            <label>Proposer</label>
-                            <input id="proposer" type="text" class="form-control" style="width:100%" disabled>
-                        </div>
-                        <div class="col-md-3 col-xl-3">
                             <label>Status</label>
                             <input id="status" type="text" class="form-control" style="width:100%" disabled>
                         </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Proposel Create By</label>
+                            <input id="proposer" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+
                     </div>
 
                     <div class="form-group row m-0">
@@ -54,12 +69,12 @@
                             <input id="required_onsite_date" type="text" class="form-control" style="width:100%" disabled>
                         </div>
                         <div class="col-md-3 col-xl-3">
-                            <label>Expected Date</label>
-                            <input id="expected_date" type="text" class="form-control" style="width:100%" disabled>
-                        </div>
-                        <div class="col-md-3 col-xl-3">
                             <label>Stages</label>
                             <input id="stages" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Proposal Expected Date</label>
+                            <input id="expected_date" type="text" class="form-control" style="width:100%" disabled>
                         </div>
                     </div>
                     <div class="form-group row m-0">
@@ -73,39 +88,32 @@
                         </div>
                     </div>
                     <div class="form-group row m-0">
-                        <div class="col-md-6 col-xl-6">
-                            <label>Compettitor A Price (EUR)</label>
-                            <input id="competitor_price" type="text" class="form-control" style="width:100%" disabled>
+                        <div class="col-md-4 col-xl-4">
+                            <label>Quoted Price</label>
+                            <input id="quoted_price" type="text" class="form-control" style="width:100%" disabled>
                         </div>
-                        <div class="col-md-6 col-xl-6">
-                            <label>Sale Name</label>
-                            <input id="sale_name" type="text" class="form-control" style="width:100%" disabled>
-                        </div>
-                    </div>
-                    <div class="form-group row m-0">
-                        <div class="col-md-12 col-xl-12">
+                        <div class="col-md-4 col-xl-4">
                             <label>How supplier support to win this project</label>
                             <input id="how_to_support" type="text" class="form-control" style="width:100%" disabled>
                         </div>
-                    </div>
-                    <div class="form-group row m-0">
-                        <div class="col-md-12 col-xl-12">
+                        <div class="col-md-4 col-xl-4">
                             <label>Competitor</label>
                             <input id="competitor" type="text" class="form-control" style="width:100%" disabled>
                         </div>
                     </div>
                     <div class="form-group row m-0">
-                        <div class="col-md-12 col-xl-12">
+                        <div class="col-md-4 col-xl-4">
                             <label>Competitor Description</label>
                             <input id="competitor_description" type="text" class="form-control" style="width:100%" disabled>
                         </div>
-                    </div>
-                    <div class="form-group row m-0">
-                        <div class="col-md-12 col-xl-12">
+                        <div class="col-md-4 col-xl-4">
+                            <label>Competitor A Price (EUR)</label>
+                            <input id="competitor_price" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
                             <label>Detail Project</label>
                             <input id="detail" type="text" class="form-control" style="width:100%" disabled>
                         </div>
-
                     </div>
                 </form>
 

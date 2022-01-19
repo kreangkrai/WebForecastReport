@@ -8,10 +8,10 @@
     #table tr td:nth-of-type(2) {
         cursor: pointer;
     }
-   
-    #tableedit tr td:nth-of-type(1)
-    {
-        cursor: pointer;  
+
+    #tableedit tr td:nth-of-type(1),
+    #tableedit tr td:nth-of-type(2) {
+        cursor: pointer;
     }
     
 </style>
@@ -39,6 +39,7 @@
     <script type="text/javascript">
         var quotation_datas = [];
         var quotation = '';
+        var revision = '';
         var date = '';
         var customer = '';
         var enduser = '';
@@ -51,6 +52,7 @@
         var supplier_quotation_no = '';
         var total_value = '';
         var unit = '';
+        var quoted_price = '';
         var expected_order_date = '';
         var required_onsite_date = '';
         var proposer = '';
@@ -62,17 +64,10 @@
         var competitor_description = '';
         var competitor_price = '';
         var sale_name = '';
-
+        var department = '';
         var detail = '';
 
-        var state_chkKnick = 0;
-        var state_chkSCan = 0;
-        var state_chkServomex = 0;
-        var state_chkStahl = 0;
-        var state_chkSwan = 0;
-        var state_chkVaisala = 0;
-        var state_chkOther = 0;
-        var state_chkMRU = 0;
+    
 
         var arrProductType = [];
         var arrPart_No = [];
@@ -82,19 +77,12 @@
         var arrTotal_Value = [];
         var arrUnit = [];
 
-        var arrProductTypeTemp = [];
-        var arrPart_NoTemp = [];
-        var arrSpecTemp = [];
-        var arrQuantityTemp = [];
-        var arrSupplier_Quotation_NoTemp = [];
-        var arrTotal_ValueTemp = [];
-        var arrUnitTemp = [];
-
-        var Units = ["THB", "URD", "USD"];
+        var Units = ["THB", "EUR", "USD", "JPY"];
         var Status = ["IN", "OUT"];
         var Stages = ["Quote for Buddget", "Negotiation/Review", "Proposal/Quote for Order", "Prospecting", "Closed(Won)", "Closed(Lost)"];
-        var Brands = ["Knick", "MRU", "S::Can", "Servomex", "Stahl", "Swan", "Vaisala"];
+        var Products = ["Knick", "MRU", "S::Can", "Servomex", "Stahl", "Swan", "Vaisala"];
         var Sales = [];
+        var Proposers = [];
         var Customers = [];
         var EndUsers = [];
 
@@ -114,7 +102,7 @@
             success: function (response) {
                 //add sale to select
                 Sales = add_sale(response.sales);
-
+                Proposers = add_proposer(response.sales);
                 //add customer to datalist
                 Customers = add_customer(response.customers);
 
@@ -127,6 +115,7 @@
                     var data = ["",
                         "",
                         datas[i].quotation_no,
+                        datas[i].revision,
                         datas[i].date,
                         datas[i].customer,
                         datas[i].enduser,
@@ -139,6 +128,7 @@
                         datas[i].supplier_quotation_no,
                         datas[i].total_value,
                         datas[i].unit,
+                        datas[i].quoted_price,
                         datas[i].expected_order_date,
                         datas[i].required_onsite_date,
                         datas[i].proposer,
@@ -150,6 +140,7 @@
                         datas[i].competitor_description,
                         datas[i].competitor_price,
                         datas[i].sale_name,
+                        datas[i].department,
                         datas[i].detail];
 
                     dataSet.push(data);
@@ -161,7 +152,7 @@
         });
         };
         function init_view() {
-          
+
             var dataSet = [];
             for (var i = 0; i < arrProductType.length; i++) {
                 var data = [arrProductType[i], arrPart_No[i], arrSpec[i], arrQuantity[i], arrSupplier_Quotation_No[i], arrTotal_Value[i], arrUnit[i]];
@@ -169,64 +160,17 @@
                 dataSet.push(data);
             }
             table_view(dataSet);
-            
-        };
 
+        };
         function init_edit() {
             var dataSet = [];
             for (var i = 0; i < arrProductType.length; i++) {
-                var data = ["",arrProductType[i], arrPart_No[i], arrSpec[i], arrQuantity[i], arrSupplier_Quotation_No[i], arrTotal_Value[i], arrUnit[i]];
+                var data = ["","",arrProductType[i], arrPart_No[i], arrSpec[i], arrQuantity[i], arrSupplier_Quotation_No[i], arrTotal_Value[i], arrUnit[i]];
 
                 dataSet.push(data);
             }
             table_edit(dataSet);
         };
-        $('#AddQuotation').on('click', function () {
-            var name = '@Model.name';
-            $.ajax({
-                url: '@Url.Action("GetQuotation", "Quotation")',
-                type: "post",
-                contentType: 'application/x-www-form-urlencoded',
-                data: {
-                    name,
-                },
-                success: function (response) {
-                    var dataSet = [];
-                    for (var i = 0; i < response.length; i++) {
-                        var data = ["",
-                            "",
-                            response[i].quotation_no,
-                            response[i].date,
-                            response[i].customer,
-                            response[i].enduser,
-                            response[i].project_name,
-                            response[i].site_location,
-                            response[i].product_type,
-                            response[i].part_no,
-                            response[i].spec,
-                            response[i].quantity,
-                            response[i].supplier_quotation_no,
-                            response[i].total_value,
-                            response[i].unit,
-                            response[i].expected_order_date,
-                            response[i].required_onsite_date,
-                            response[i].proposer,
-                            response[i].expected_date,
-                            response[i].status,
-                            response[i].stages,
-                            response[i].how_to_support,
-                            response[i].competitor,
-                            response[i].competitor_description,
-                            response[i].competitor_price,
-                            response[i].sale_name,
-                            response[i].detail];
-
-                        dataSet.push(data);
-                    }
-                    table(dataSet);
-                }
-            });
-        });
 
         var tables;
         function table(dataSet) {
@@ -238,6 +182,7 @@
                     { title: "Edit " },
                     { title: "View" },
                     { title: "Quotation No" },
+                    { title: "Revision" },
                     { title: "Date" },
                     { title: "Customer" },
                     { title: "End User" },
@@ -250,6 +195,7 @@
                     { title: "Supplier Quotation No" },
                     { title: "Total Value" },
                     { title: "Unit" },
+                    { title: "Quoted Price" },
                     { title: "Expected Order Date" },
                     { title: "Required Onsite Date" },
                     { title: "Proposer" },
@@ -261,13 +207,14 @@
                     { title: "Competitor Description" },
                     { title: "Competitor Price" },
                     { title: "Sale Name" },
+                    { title: "Department" },
                     { title: "Detail" },
                 ],
                 "columnDefs": [
                     {
                         "targets": 0,
                         "data": null,
-                        "defaultContent": "<i class=\"fas fa-edit\"></i>",
+                        "defaultContent": "<i class=\"fas fa-pen\"></i>",
                         "className": 'dt-body-center',
                     },
                     {
@@ -300,9 +247,6 @@
                     { title: "Total Value" },
                     { title: "Unit" },
                 ],
-                "columnDefs": [
-
-                ],
                 "scrollX": true,
 
             });
@@ -313,10 +257,11 @@
         function table_edit(dataSet) {
             if (tables_edit !== undefined)
                 tables_edit.destroy();
-            tables_edit = $('#tableedit').DataTable({
+                tables_edit = $('#tableedit').DataTable({
                 data: dataSet,
                 columns: [
                     { title: "Edit" },
+                    { title: "Delete" },
                     { title: "Product Type" },
                     { title: "Part No" },
                     { title: "Spec" },
@@ -330,45 +275,105 @@
                     {
                         "targets": 0,
                         "data": null,
-                        "defaultContent": "<i class=\"fas fa-edit\"></i>",
+                        "defaultContent": "<i class=\"fas fa-pen\"></i>",
+                        "className": 'dt-body-center',
+                    },
+                    {
+                        "targets": 1,
+                        "data": null,
+                        "defaultContent": "<i class=\"fas fa-trash\"></i>",
                         "className": 'dt-body-center',
                     },
 
                 ],
                 "scrollX": true,
                 stateSave: true,
-                
+
             });
             $(tables_edit.table().body()).addClass('text-dark');
         };
+        $('#AddQuotation').on('click', function () {
+            var name = '@Model.name';
+            var department = '@Model.department';
+            $.ajax({
+                url: '@Url.Action("GetQuotation", "Quotation")',
+                type: "post",
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    name,
+                    department
+                },
+                success: function (response) {
+                    var dataSet = [];
+                    for (var i = 0; i < response.length; i++) {
+                        var data = ["",
+                            "",
+                            response[i].quotation_no,
+                            response[i].revision,
+                            response[i].date,
+                            response[i].customer,
+                            response[i].enduser,
+                            response[i].project_name,
+                            response[i].site_location,
+                            response[i].product_type,
+                            response[i].part_no,
+                            response[i].spec,
+                            response[i].quantity,
+                            response[i].supplier_quotation_no,
+                            response[i].total_value,
+                            response[i].unit,
+                            response[i].quoted_price,
+                            response[i].expected_order_date,
+                            response[i].required_onsite_date,
+                            response[i].proposer,
+                            response[i].expected_date,
+                            response[i].status,
+                            response[i].stages,
+                            response[i].how_to_support,
+                            response[i].competitor,
+                            response[i].competitor_description,
+                            response[i].competitor_price,
+                            response[i].sale_name,
+                            response[i].department,
+                            response[i].detail];
+
+                        dataSet.push(data);
+                    }
+                    table(dataSet);
+                }
+            });
+        });
         $('#table').on('click', 'tbody td', function () {
             var cell = tables.cell(this);
             var column = cell[0][0].column;
             quotation = cell.data()[2];
-            date = cell.data()[3];
-            customer = cell.data()[4];
-            enduser = cell.data()[5];
-            project_name = cell.data()[6];
-            site_location = cell.data()[7];
-            product_type = cell.data()[8];
-            part_no = cell.data()[9];
-            spec = cell.data()[10];
-            quantity = cell.data()[11];
-            supplier_quotation_no = cell.data()[12];
-            total_value = cell.data()[13];
-            unit = cell.data()[14];
-            expected_order_date = cell.data()[15];
-            required_onsite_date = cell.data()[16];
-            proposer = cell.data()[17];
-            expected_date = cell.data()[18];
-            status = cell.data()[19];
-            stages = cell.data()[20];
-            how_to_support = cell.data()[21];
-            competitor = cell.data()[22];
-            competitor_description = cell.data()[23];
-            competitor_price = cell.data()[24];
-            sale_name = cell.data()[25];
-            detail = cell.data()[26];
+            revision = cell.data()[3];
+            date = cell.data()[4];
+            customer = cell.data()[5];
+            enduser = cell.data()[6];
+            project_name = cell.data()[7];
+            site_location = cell.data()[8];
+            product_type = cell.data()[9];
+            part_no = cell.data()[10];
+            spec = cell.data()[11];
+            quantity = cell.data()[12];
+            supplier_quotation_no = cell.data()[13];
+            total_value = cell.data()[14];
+            unit = cell.data()[15];
+            quoted_price = cell.data()[16];
+            expected_order_date = cell.data()[17];
+            required_onsite_date = cell.data()[18];
+            proposer = cell.data()[19];
+            expected_date = cell.data()[20];
+            status = cell.data()[21];
+            stages = cell.data()[22];
+            how_to_support = cell.data()[23];
+            competitor = cell.data()[24];
+            competitor_description = cell.data()[25];
+            competitor_price = cell.data()[26];
+            sale_name = cell.data()[27];
+            department = cell.data()[28];
+            detail = cell.data()[29];
 
             arrProductType = [];
             arrPart_No = [];
@@ -377,24 +382,6 @@
             arrSupplier_Quotation_No = [];
             arrTotal_Value = [];
             arrUnit = [];
-
-            arrProductTypeTemp = [];
-            arrPart_NoTemp = [];
-            arrSpecTemp = [];
-            arrQuantityTemp = [];
-            arrSupplier_Quotation_NoTemp = [];
-            arrTotal_ValueTemp = [];
-            arrUnitTemp = [];
-
-            state_chkKnick = 0;
-            state_chkSCan = 0;
-            state_chkServomex = 0;
-            state_chkStahl = 0;
-            state_chkSwan = 0;
-            state_chkVaisala = 0;
-            state_chkOther = 0;
-            state_chkMRU = 0;
-            
             var count = (product_type.match(/,/g) || []).length;
             for (var i = 0; i <= count; i++) {
                 if (product_type != "") {
@@ -405,23 +392,13 @@
                     arrSupplier_Quotation_No.push(supplier_quotation_no.split(',')[i]);
                     arrTotal_Value.push(total_value.split(',')[i]);
                     arrUnit.push(unit.split(',')[i]);
-
-                    arrProductTypeTemp.push(product_type.split(',')[i]);
-                    arrPart_NoTemp.push(part_no.split(',')[i]);
-                    arrSpecTemp.push(spec.split(',')[i]);
-                    arrQuantityTemp.push(quantity.split(',')[i]);
-                    arrSupplier_Quotation_NoTemp.push(supplier_quotation_no.split(',')[i]);
-                    arrTotal_ValueTemp.push(total_value.split(',')[i]);
-                    arrUnitTemp.push(unit.split(',')[i]);
                 }
             }
 
             if (column == "0") {
 
-                document.getElementById("btnAddProduct").disabled = true;
-                document.getElementById("chkOther").checked = false;
-
                 document.getElementById('edit_quotation_no').value = quotation;
+                document.getElementById('edit_revision').value = revision;
                 document.getElementById('edit_date').value = date;
                 document.getElementById('edit_customer').value = customer;
 
@@ -430,10 +407,12 @@
                 document.getElementById('edit_project_name').value = project_name;
                 document.getElementById('edit_site_location').value = site_location;
                 document.getElementById('edit_product_type').value = product_type;
+                document.getElementById('edit_quoted_price').value = quoted_price;
                 document.getElementById('edit_expected_order_date').value = expected_order_date;
                 document.getElementById('edit_required_onsite_date').value = required_onsite_date;
                 document.getElementById('edit_proposer').value = proposer;
                 document.getElementById('edit_expected_date').value = expected_date;
+
                 document.getElementById('edit_status').value = status;
                 var index_status = Status.indexOf(status);
                 document.getElementById('edit_status').selectedIndex = index_status;
@@ -447,6 +426,8 @@
                 document.getElementById('edit_competitor_description').value = competitor_description;
                 document.getElementById('edit_competitor_price').value = competitor_price;
 
+                console.log(sale_name);
+                console.log(Sales);
                 var selectBox = document.getElementById('edit_sale_name');
                 for (var i = 0, l = Sales.length; i < l; i++) {
                     var option = Sales[i];
@@ -455,45 +436,21 @@
                 var index_sale = Sales.map(function (e) { return e.value; }).indexOf(sale_name);
                 document.getElementById('edit_sale_name').selectedIndex = index_sale;
 
+                document.getElementById('edit_department').value = department;
                 document.getElementById('edit_detail').value = detail;
 
-                //clear all check
-                init_check();
-                // check match
-                for (var i = 0; i < arrProductType.length; i++) {
-                    if (arrProductType[i] == "MRU") {
-                        document.getElementById('chkMRU').checked = true;
-                        state_chkMRU = 1;
-                    } else if (arrProductType[i] == "Knick") {
-                        document.getElementById('chkKnick').checked = true;
-                        state_chkKnick = 1;
-                    } else if (arrProductType[i] == "S::Can") {
-                        document.getElementById('chkSCan').checked = true;
-                        state_chkSCan = 1;
-                    } else if (arrProductType[i] == "Servomex") {
-                        document.getElementById('chkServomex').checked = true;
-                        state_chkServomex = 1;
-                    } else if (arrProductType[i] == "Stahl") {
-                        document.getElementById('chkStahl').checked = true;
-                        state_chkStahl = 1;
-                    } else if (arrProductType[i] == "Swan") {
-                        document.getElementById('chkSwan').checked = true;
-                        state_chkSwan = 1;
-                    } else if (arrProductType[i] == "Vaisala") {
-                        document.getElementById('chkVaisala').checked = true;
-                        state_chkVaisala = 1;
-                    }
-                }
                 $('#EditModal').modal();
             } else if (column == "1") {
 
                 document.getElementById('quotation_no').value = quotation;
+                document.getElementById('revision').value = revision;
                 document.getElementById('date').value = date;
                 document.getElementById('customer').value = customer;
                 document.getElementById('enduser').value = enduser;
                 document.getElementById('project_name').value = project_name;
                 document.getElementById('site_location').value = site_location;
                 document.getElementById('product_type').value = product_type;
+                document.getElementById('quoted_price').value = quoted_price;
                 document.getElementById('expected_order_date').value = expected_order_date;
                 document.getElementById('required_onsite_date').value = required_onsite_date;
                 document.getElementById('proposer').value = proposer;
@@ -505,6 +462,7 @@
                 document.getElementById('competitor_description').value = competitor_description;
                 document.getElementById('competitor_price').value = competitor_price;
                 document.getElementById('sale_name').value = sale_name;
+                document.getElementById('department').value = department;
                 document.getElementById('detail').value = detail;
                 $('#ShowModal').modal();
             }
@@ -514,29 +472,37 @@
             var cell = tables_edit.cell(this);
             var column = cell[0][0].column;
             if (column == 0) {
-                document.getElementById('edit_sub_product_type').value = cell.data()[1];
-                document.getElementById('edit_sub_part_no').value = cell.data()[2];
-                document.getElementById('edit_sub_spec').value = cell.data()[3];
-                document.getElementById('edit_sub_quantity').value = cell.data()[4];
-                document.getElementById('edit_sub_supplier_quotation_no').value = cell.data()[5];
-                document.getElementById('edit_sub_total_value').value = cell.data()[6];
-                document.getElementById('edit_sub_unit').value = cell.data()[7];
+                document.getElementById('edit_sub_product_type').value = cell.data()[2];
+                document.getElementById('edit_sub_part_no').value = cell.data()[3];
+                document.getElementById('edit_sub_spec').value = cell.data()[4];
+                document.getElementById('edit_sub_quantity').value = cell.data()[5];
+                document.getElementById('edit_sub_supplier_quotation_no').value = cell.data()[6];
+                document.getElementById('edit_sub_total_value').value = cell.data()[7];
+                document.getElementById('edit_sub_unit').value = cell.data()[8];
 
-                var unit = cell.data()[7];
+                var unit = cell.data()[8];
                 var index = Units.indexOf(unit)
                 document.getElementById('edit_sub_unit').selectedIndex = index;
                 $('#EditProductTypeModal').modal('show');
+            } else if (column == 1) {
+                var product = cell.data()[2];
+                var index = arrProductType.indexOf(product);
+                remove_data(index);
+
+                //reload data
+                init_edit();
             }
-           
+
         });
         $('#MoreProductType').on('click', function () {
             init_view();
             $('#ShowMoreModal').modal();
 
         });
-       
+
         $('#edit_quotationConfirm').on('click', function () {
             var quotation = document.getElementById('edit_quotation_no').value;
+            var revision = document.getElementById('edit_revision').value;
             var date = document.getElementById('edit_date').value;
             var customer = document.getElementById('edit_customer').value;
             var enduser = document.getElementById('edit_enduser').value;
@@ -549,6 +515,7 @@
             var supplier_quotation_no = arrSupplier_Quotation_No.join();
             var total_value = arrTotal_Value.join();
             var unit = arrUnit.join();
+            var quoted_price = document.getElementById('edit_quoted_price').value;
             var expected_order_date = document.getElementById('edit_expected_order_date').value;
             var required_onsite_date = document.getElementById('edit_required_onsite_date').value;
             var proposer = document.getElementById('edit_proposer').value;
@@ -560,6 +527,7 @@
             var competitor_description = document.getElementById('edit_competitor_description').value;
             var competitor_price = document.getElementById('edit_competitor_price').value;
             var sale_name = document.getElementById('edit_sale_name').value;
+            var department = document.getElementById('edit_department').value;
             var detail = document.getElementById('edit_detail').value;
 
             $.ajax({
@@ -567,13 +535,13 @@
                 type: "post",
                 contentType: 'application/x-www-form-urlencoded',
                 data: {
-                    quotation, date, customer, enduser, project_name, site_location, product_type, part_no, spec, quantity, supplier_quotation_no,
-                    total_value, unit, expected_order_date, required_onsite_date, proposer, expected_date, status, stages, how_to_support, competitor,
-                    competitor_description, competitor_price, sale_name, detail
+                    quotation,revision, date, customer, enduser, project_name, site_location, product_type, part_no, spec, quantity, supplier_quotation_no,
+                    total_value, unit,quoted_price, expected_order_date, required_onsite_date, proposer, expected_date, status, stages, how_to_support, competitor,
+                    competitor_description, competitor_price, sale_name,department, detail
                 },
                 success: function (response) {
-                    if (response == "Update Success") {                     
-                        location.reload();
+                    if (response == "Update Success") {
+                        location.reload(); //reload page
                         toastr.success("Update Success");
                     } else {
                         toastr.error("Update Failed");
@@ -582,165 +550,18 @@
             });
             $('#EditModal').modal('hide');
         });
-        $('#chkOther').on('click', function () {
-
-            var state = state_chkOther % 2;
-            if (state == 1) {
-                document.getElementById("btnAddProduct").disabled = true;
-            } else {
-                document.getElementById("btnAddProduct").disabled = false;
-            }
-            state_chkOther += 1;
-        });
-        $('#chkMRU').on('click', function () {
-            var state = state_chkMRU % 2;
-            if (state == 0) {
-                //add data temp
-                add_data("MRU");
-
-                let text = arrProductType.join();
-                document.getElementById("edit_product_type").value = text;
-            } else {
-                var index = arrProductType.indexOf("MRU");
-                if (index !== -1) {
-
-                    //remove data
-                    remove_data(index);
-
-                    let text = arrProductType.join();
-                    document.getElementById("edit_product_type").value = text;
-                }
-            }
-            state_chkMRU += 1;
-        });
-        $('#chkKnick').on('click', function () {
-            var state = state_chkKnick % 2;
-            if (state == 0) {
-                //add data temp
-                add_data("Knick");
-
-                let text = arrProductType.join();
-                document.getElementById("edit_product_type").value = text;
-            } else {
-                var index = arrProductType.indexOf("Knick");
-                if (index !== -1) {
-
-                    //remove data
-                    remove_data(index);
-
-                    let text = arrProductType.join();
-                    document.getElementById("edit_product_type").value = text;
-                }
-            }
-            state_chkKnick += 1;
-        });
-        $('#chkSCan').on('click', function () {
-            var state = state_chkSCan % 2;
-            if (state == 0) {
-                //add data temp
-                add_data("S::Can");
-
-                let text = arrProductType.join();
-                document.getElementById("edit_product_type").value = text;
-            } else {
-                var index = arrProductType.indexOf("S::Can");
-                if (index !== -1) {
-
-                    //remove data
-                    remove_data(index);
-
-                    let text = arrProductType.join();
-                    document.getElementById("edit_product_type").value = text;
-                }
-            }
-            state_chkSCan += 1;
-        });
-        $('#chkServomex').on('click', function () {
-            var state = state_chkServomex % 2;
-            if (state == 0) {
-                //add data temp
-                add_data("Servomex");
-
-                let text = arrProductType.join();
-                document.getElementById("edit_product_type").value = text;
-            } else {
-                var index = arrProductType.indexOf("Servomex");
-                if (index !== -1) {
-
-                    //remove data
-                    remove_data(index);
-
-                    let text = arrProductType.join();
-                    document.getElementById("edit_product_type").value = text;
-                }
-            }
-            state_chkServomex += 1;
-        });
-        $('#chkStahl').on('click', function () {
-            var state = state_chkStahl % 2;
-            if (state == 0) {
-                //add data temp
-                add_data("Stahl");
-
-                let text = arrProductType.join();
-                document.getElementById("edit_product_type").value = text;
-            } else {
-                var index = arrProductType.indexOf("Stahl");
-                if (index !== -1) {
-
-                    //remove data
-                    remove_data(index);
-
-                    let text = arrProductType.join();
-                    document.getElementById("edit_product_type").value = text;
-                }
-            }
-            state_chkStahl += 1;
-        });
-        $('#chkSwan').on('click', function () {
-            var state = state_chkSwan % 2;
-            if (state == 0) {
-                //add data temp
-                add_data("Swan");
-
-                let text = arrProductType.join();
-                document.getElementById("edit_product_type").value = text;
-            } else {
-                var index = arrProductType.indexOf("Swan");
-                if (index !== -1) {
-
-                    //remove data
-                    remove_data(index);
-
-                    let text = arrProductType.join();
-                    document.getElementById("edit_product_type").value = text;
-                }
-            }
-            state_chkSwan += 1;
-        });
-        $('#chkVaisala').on('click', function () {
-            var state = state_chkVaisala % 2;
-            if (state == 0) {
-                //add data temp
-                add_data("Vaisala");
-
-                let text = arrProductType.join();
-                document.getElementById("edit_product_type").value = text;
-            } else {
-                var index = arrProductType.indexOf("Vaisala");
-                if (index !== -1) {
-
-                    //remove data
-                    remove_data(index);
-
-                    let text = arrProductType.join();
-                    document.getElementById("edit_product_type").value = text;
-                }
-            }
-            state_chkVaisala += 1;
-        });
         
         $('#btnAddProduct').on('click', function () {
+            let value = Products[document.getElementById("products").selectedIndex];
+            if (value !== "") {
+                // add data
+                add_data(value);
+
+                let text = arrProductType.join();
+                document.getElementById("edit_product_type").value = text;
+            }
+        });
+        $('#btnAddOtherProduct').on('click', function () {
             let value = document.getElementById("txtOther").value;
             if (value !== "") {
                 // add data
@@ -753,12 +574,6 @@
         });
         $('#clear_btnProductType').on('click', function () {
             document.getElementById("edit_product_type").value = "";
-
-            //clear check all
-            init_check();
-
-            document.getElementById("btnAddProduct").disabled = true;
-
             arrProductType = [];
             arrPart_No = [];
             arrSpec = [];
@@ -766,28 +581,11 @@
             arrSupplier_Quotation_No = [];
             arrTotal_Value = [];
             arrUnit = [];
-
-            arrProductTypeTemp = [];
-            arrPart_NoTemp = [];
-            arrSpecTemp = [];
-            arrQuantityTemp = [];
-            arrSupplier_Quotation_NoTemp = [];
-            arrTotal_ValueTemp = [];
-            arrUnitTemp = [];
-
-            state_chkMRU = 0;
-            state_chkKnick = 0;
-            state_chkSCan = 0;
-            state_chkServomex = 0;
-            state_chkStahl = 0;
-            state_chkSwan = 0;
-            state_chkVaisala = 0;
-            state_chkOther = 0;
         });
         $('#edit_btnProductType').on('click', function () {
 
             init_edit();
-            
+
             $('#EditMoreModal').modal();
 
         });
@@ -803,7 +601,7 @@
             var index = arrProductType.indexOf(product_type);
 
             // update data array
-            
+
             arrProductType[index] = product_type;
             arrPart_No[index] = part_no;
             arrSpec[index] = spec;
@@ -811,18 +609,9 @@
             arrSupplier_Quotation_No[index] = supplier;
             arrTotal_Value[index] = total_value;
             arrUnit[index] = unit;
-
-            arrProductTypeTemp[index] = product_type;
-            arrPart_NoTemp[index] = part_no;
-            arrSpecTemp[index] = spec;
-            arrQuantityTemp[index] = quantity;
-            arrSupplier_Quotation_NoTemp[index] = supplier;
-            arrTotal_ValueTemp[index] = total_value;
-            arrUnitTemp[index] = unit;
-
             //update data in table edit
             init_edit();
-           
+
             $('#EditProductTypeModal').modal('hide');
         });
         function remove_data(index) {
@@ -833,73 +622,24 @@
             arrSupplier_Quotation_No.splice(index, 1);
             arrTotal_Value.splice(index, 1);
             arrUnit.splice(index, 1);
+
+            // update product type
+            var product = arrProductType.join();
+            document.getElementById('edit_product_type').value = product;
         }
         function add_data(product) {
             // fine index data product type temp
-            var index = arrProductTypeTemp.indexOf(product);
-            var part_no_temp = arrPart_NoTemp[index];
-            var spec_temp = arrSpecTemp[index];
-            var quantity_temp = arrQuantityTemp[index];
-            var supplier_quotation_no_temp = arrSupplier_Quotation_NoTemp[index];
-            var total_value_temp = arrTotal_ValueTemp[index];
-            var unit_temp = arrUnitTemp[index];
-
-            // Add Temp Data
-            arrProductType.push(product);
-            arrProductTypeTemp.push(product);
-            if (typeof (part_no_temp) !== "undefined") {
-                arrPart_No.push(part_no_temp);
-                arrPart_NoTemp.push(part_no_temp);
-            } else {
+            var index = arrProductType.indexOf(product);
+            if (index == -1) {
+                arrProductType.push(product);
                 arrPart_No.push("");
-                arrPart_NoTemp.push("");
-            }
-            if (typeof (spec_temp) !== "undefined") {
-                arrSpec.push(spec_temp);
-                arrSpecTemp.push(spec_temp);
-            } else {
                 arrSpec.push("");
-                arrSpecTemp.push("");
-            }
-            if (typeof (quantity_temp) !== "undefined") {
-                arrQuantity.push(quantity_temp);
-                arrQuantityTemp.push(quantity_temp);
-            } else {
                 arrQuantity.push("");
-                arrQuantityTemp.push("");
-            }
-            if (typeof (quantity_temp) !== "undefined") {
-                arrSupplier_Quotation_No.push(supplier_quotation_no_temp);
-                arrSupplier_Quotation_NoTemp.push(supplier_quotation_no_temp);
-            } else {
                 arrSupplier_Quotation_No.push("");
-                arrSupplier_Quotation_NoTemp.push("");
-            }
-            if (typeof (quantity_temp) !== "undefined") {
-                arrTotal_Value.push(total_value_temp);
-                arrTotal_ValueTemp.push(total_value_temp);
-            } else {
                 arrTotal_Value.push("");
-                arrTotal_ValueTemp.push("");
-            }
-            if (typeof (quantity_temp) !== "undefined") {
-                arrUnit.push(unit_temp);
-                arrUnitTemp.push(unit_temp);
-            } else {
                 arrUnit.push("");
-                arrUnitTemp.push("");
-            }
-        }
-        function init_check() {
-            document.getElementById("chkKnick").checked = false;
-            document.getElementById("chkMRU").checked = false;
-            document.getElementById("chkSCan").checked = false;
-            document.getElementById("chkServomex").checked = false;
-            document.getElementById("chkStahl").checked = false;
-            document.getElementById("chkSwan").checked = false;
-            document.getElementById("chkVaisala").checked = false;
-            document.getElementById("chkOther").checked = false;
-        }
+            }         
+        }       
         function add_sale(sales) {
             var data_sales = [];
             for (var i = 0; i < sales.length; i++) {
@@ -910,8 +650,21 @@
                 }
                 data_sales.push(data);
             }
-           
+
             return data_sales;
+        };
+        function add_proposer(proposer) {
+            var data_proposer = [];
+            for (var i = 0; i < proposer.length; i++) {
+                var data =
+                {
+                    "text": proposer[i],
+                    "value": proposer[i]
+                }
+                data_proposer.push(data);
+            }
+
+            return data_proposer;
         };
         function add_customer(customers) {
             var list = document.getElementById('list_customer');

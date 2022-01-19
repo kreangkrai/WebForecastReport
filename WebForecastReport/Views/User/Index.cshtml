@@ -1,0 +1,106 @@
+﻿@{
+    ViewData["Title"] = "User Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #table tr td:nth-of-type(1) {
+        cursor: pointer;
+    }
+</style>
+<div class="container-fluid p-3" style="background-color:#ECF0F5;">
+    <div class="row">
+        <div>
+            <button type="button" id="AddUser" class="btn btn-primary">
+                <i class="fas fa-plus" style="font-size:20px"> User</i>
+            </button>
+        </div>
+
+    </div>
+    <div class="row pt-3">
+        <div class="container-fluid">
+            <table id="table" class="table table-xl cell-border table-dark display responsive nowrap" width="100%">               
+            </table>
+        </div>
+    </div>
+</div>
+<partial name="ModalEdit" />
+@section Scripts
+{
+    <script type="text/javascript">
+        var name = '';
+        var department = '';
+        var role = '';
+        var Roles = ["Admin", "Manager"];
+        var Departments = [];
+        $(document).ready(function () {
+            init();
+        });
+
+        function init() {
+        $.ajax({
+            url: '@Url.Action("GetData", "User")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+            },
+            success: function (response) {
+                var datas = response;
+                var dataSet = [];
+                for (var i = 0; i < datas.length; i++) {
+                    var data = ["",
+                        datas[i].name,
+                        datas[i].department,
+                        datas[i].role];
+
+                    dataSet.push(data);
+                }
+                quotation_datas = dataSet;
+
+                table(dataSet);
+            }
+        });
+        };
+
+        var tables;
+        function table(dataSet) {
+            if (tables !== undefined)
+                tables.destroy();
+            tables = $('#table').DataTable({
+                data: dataSet,
+                columns: [
+                    { title: "Edit ", width:10 },
+                    { title: "Name" },
+                    { title: "Department" },
+                    { title: "Role" },
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "data": null,
+                        "defaultContent": "<i class=\"fas fa-pen\"></i>",
+                        "className": 'dt-body-center',
+                    },
+                ],
+                "scrollX": true,
+            });
+            $(tables.table().body()).addClass('text-dark');
+        }
+        $('#table').on('click', 'tbody td', function () {
+            var cell = tables.cell(this);
+            var column = cell[0][0].column;
+            name = cell.data()[1];
+            department = cell.data()[2];
+            role = cell.data()[3];
+
+            if (column == "0") {
+                document.getElementById('edit_name').value = name;
+                document.getElementById('edit_department').value = department;
+
+                var index_role = Roles.indexOf(role);
+                document.getElementById('edit_role').selectedIndex = index_role;
+
+                $('#EditModal').modal();
+            }
+        });
+    </script>
+}

@@ -24,13 +24,12 @@ namespace WebForecastReport.Controllers
             string user = HttpContext.Session.GetString("userId");
             List<UserModel> users = new List<UserModel>();
             users = Accessory.getAllUser();
-            UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name }).FirstOrDefault();
-
-            
+            UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name,department = s.department }).FirstOrDefault();
+          
             return View(u);
         }
         [HttpPost]
-        public JsonResult GetQuotation(string name)
+        public JsonResult GetQuotation(string name,string department)
         {
             string quotation = Quotation.GetlastQuotation();
             QuotationModel quotations = new QuotationModel();
@@ -44,7 +43,10 @@ namespace WebForecastReport.Controllers
                 quo = year + number.ToString().PadLeft(4, '0');
             }
             quotations.quotation_no = quo;
+            quotations.revision = "0";
             quotations.proposer = name;
+            quotations.sale_name = name;
+            quotations.department = department;
             quotations.date = DateTime.Now.ToString("yyyy-MM-dd");
             quotations.expected_date = DateTime.Now.ToString("yyyy-MM-dd");
             quotations.expected_order_date = DateTime.Now.ToString("yyyy-MM-dd");
@@ -66,7 +68,7 @@ namespace WebForecastReport.Controllers
 
             //get all sale
             List<string> sales = new List<string>();
-            sales = Accessory.getSale().Select(s => s.name).ToList();
+            sales = Accessory.getAllUser().Select(s => s.name).ToList();
 
             //get all customer
             List<string> customers = new List<string>();
@@ -80,14 +82,15 @@ namespace WebForecastReport.Controllers
             return Json(list);
         }
         [HttpPost]
-        public JsonResult Update(string quotation, string date, string customer, string enduser, string project_name, string site_location, string product_type, string part_no,
-                    string spec, string quantity, string supplier_quotation_no, string total_value,string unit,string expected_order_date,
+        public JsonResult Update(string quotation, string revision,string date, string customer, string enduser, string project_name, string site_location, string product_type, string part_no,
+                    string spec, string quantity, string supplier_quotation_no, string total_value,string unit,string quoted_price,string expected_order_date,
                    string required_onsite_date, string proposer, string expected_date, string status, string stages, string how_to_support, string competitor, string competitor_description,
-                   string competitor_price, string sale_name, string detail)
+                   string competitor_price, string sale_name,string department, string detail)
         {
             QuotationModel q = new QuotationModel()
             {
                 quotation_no = quotation,
+                revision = revision,
                 date = date,
                 customer = customer,
                 enduser = enduser,
@@ -100,6 +103,7 @@ namespace WebForecastReport.Controllers
                 supplier_quotation_no = supplier_quotation_no,
                 total_value = total_value,
                 unit = unit,
+                quoted_price = quoted_price,
                 expected_order_date = expected_order_date,
                 required_onsite_date = required_onsite_date,
                 proposer = proposer,
@@ -111,6 +115,7 @@ namespace WebForecastReport.Controllers
                 competitor_description = competitor_description,
                 competitor_price = competitor_price,
                 sale_name = sale_name,
+                department = department,
                 detail = detail
             };
 

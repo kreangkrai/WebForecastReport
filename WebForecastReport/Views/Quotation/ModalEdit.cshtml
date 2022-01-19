@@ -1,24 +1,39 @@
 ﻿<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" style="overflow-y:auto">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title"><b>Edit Quotation</b></h4>
+            <div class="modal-header">            
+                <div class="row w-100">
+                    <div class="col-md-2 col-xl-2">
+                        <h4 class="modal-title"><b>Edit Quotation</b></h4>                       
+                    </div>
+                    <div class="col-md-5 col-xl-5">
+                        <select id="edit_sale_name" class="form-control" style="width:100%" disabled>
+                        </select>
+                    </div>
+                    <div class="col-md-5 col-xl-5">
+                        <input id="edit_department" class="form-control" style="width:100%" disabled/>
+                    </div>
+                </div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
                 <form>
                     <div class="form-group row m-0">
-                        <div class="col-md-3 col-xl-3">
+                        <div class="col-md-2 col-xl-2">
                             <label>Quotation No</label>
                             <input id="edit_quotation_no" type="text" class="form-control" style="width:100%" disabled>
                         </div>
+                        <div class="col-md-1 col-xl-1">
+                            <label>Revision</label>
+                            <input id="edit_revision" type="number" class="form-control" />
+                        </div>
                         <div class="col-md-3 col-xl-3">
-                            <label>Date</label>
-                            <input id="edit_date" type="date" value="" class="form-control" style="width:100%">
+                            <label>Quotation Created Date</label>
+                            <input id="edit_date" type="date" value="" class="form-control" style="width:100%" disabled>
                         </div>
                         <div class="col-md-3 col-xl-3">
                             <label>Customer</label>
-                            <input id="edit_customer" type="text" class="form-control" style="width:100%" list="list_customer"/>
+                            <input id="edit_customer" type="text" class="form-control" style="width:100%" list="list_customer" />
                             <datalist id="list_customer">
                             </datalist>
                         </div>
@@ -39,15 +54,15 @@
                             <input id="edit_site_location" type="text" class="form-control" style="width:100%">
                         </div>
                         <div class="col-md-3 col-xl-3">
-                            <label>Proposer</label>
-                            <input id="edit_proposer" type="text" class="form-control" style="width:100%">
-                        </div>
-                        <div class="col-md-3 col-xl-3">
                             <label>Status</label>
                             <select id="edit_status" class="form-control" style="width:100%">
                                 <option value="IN">IN</option>
                                 <option value="OUT">OUT</option>
                             </select>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Proposal Created By</label>
+                            <input id="edit_proposer" type="text" class="form-control" style="width:100%" disabled>
                         </div>
                     </div>
 
@@ -61,10 +76,6 @@
                             <input id="edit_required_onsite_date" type="date" class="form-control" style="width:100%">
                         </div>
                         <div class="col-md-3 col-xl-3">
-                            <label>Expected Date</label>
-                            <input id="edit_expected_date" type="date" class="form-control" style="width:100%">
-                        </div>
-                        <div class="col-md-3 col-xl-3">
                             <label>Stages</label>
                             <select id="edit_stages" class="form-control" style="width:100%">
                                 <option value="Quote for Buddget">Quote for Buddget</option>
@@ -75,66 +86,44 @@
                                 <option value="Closed(Lost)">Closed(Lost)</option>
                             </select>
                         </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Proposal Expected Date</label>
+                            <input id="edit_expected_date" type="date" class="form-control" style="width:100%">
+                        </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-3 pl-4 py-2">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="chkKnick">
-                                <label class="form-check-label" for="chkKnick">Knick</label>
+                        <div class="col-6">
+                            <label>Product</label>
+                            <div class="input-group">
+                                <select id="products" class="form-control" style="width:100%">
+                                    <option value="Knic">Knic</option>
+                                    <option value="MRU">MRU</option>
+                                    <option value="S::Can">S::Can</option>
+                                    <option value="Servomex">Servomex</option>
+                                    <option value="Sthal">Sthal</option>
+                                    <option value="Swan">Swan</option>
+                                    <option value="Vaisala">Vaisala</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <input type="button"  id="btnAddProduct" value="ADD"/>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-3 pl-4 py-2">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="chkMRU">
-                                <label class="form-check-label" for="chkMRU">MRU</label>
+                        <div class="col-6">
+                            <label>Other</label>
+                            <div class="input-group">
+                                <input type="text" id="txtOther" class="form-control" />
+                                <div class="input-group-append">
+                                    <input type="button" id="btnAddOtherProduct" value="ADD" />
+                                </div>
                             </div>
                         </div>
-                        <div class="col-3 pl-4 py-2">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="chkSCan">
-                                <label class="form-check-label" for="chkSCan">S::Can</label>
-                            </div>
-                        </div>
-                        <div class="col-3 pl-4 py-2">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="chkStahl">
-                                <label class="form-check-label" for="chkStahl">Stahl</label>
-                            </div>
-                        </div>
-                        <div class="col-3 pl-4 py-2">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="chkOther">
-                                <label class="form-check-label" for="chkOther">Other</label>
-                            </div>
-                            <div>
-                                <input type="text" id="txtOther" />
-                                <input type="button" value="Add" id="btnAddProduct" disabled />
-                            </div>
-                        </div>
-                        <div class="col-3 pl-4 py-2">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="chkServomex">
-                                <label class="form-check-label" for="chkServomex">Servomex</label>
-                            </div>
-                        </div>
-                        <div class="col-3 pl-4 py-2">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="chkSwan">
-                                <label class="form-check-label" for="chkSwan">Swan</label>
-                            </div>
-                        </div>
-                        <div class="col-3 pl-4 py-2">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="chkVaisala">
-                                <label class="form-check-label" for="chkVaisala">Vaisala</label>
-                            </div>
-                        </div>
-
                     </div>
+
                     <div class="form-group row m-0">
                         <div class="col-md-10 col-xl-10">
                             <label>Product Type</label>
-                            <input id="edit_product_type" type="text" class="form-control" style="width:100%">
+                            <input id="edit_product_type" type="text" class="form-control" style="width:100%" disabled>
                         </div>
                         <div class="col-md-1 col-xl-1">
                             <label>Clear</label>
@@ -147,28 +136,29 @@
                     </div>
                     <div class="form-group row m-0">
                         <div class="col-md-4 col-xl-4">
-                            <label>Compettitor A Price (EUR)</label>
-                            <input id="edit_competitor_price" type="text" class="form-control" style="width:100%">
-                        </div>
-                        <div class="col-md-4 col-xl-4">
-                            <label>Sale Name</label>
-                            <select id="edit_sale_name" class="form-control" style="width:100%">
-                            </select>
+                            <label>Quoted Price</label>
+                            <input id="edit_quoted_price" type="text" class="form-control" style="width:100%">
                         </div>
                         <div class="col-md-4 col-xl-4">
                             <label>How supplier support to win this project</label>
                             <input id="edit_how_to_support" type="text" class="form-control" style="width:100%">
                         </div>
-                    </div>
-                    <div class="form-group row m-0">
                         <div class="col-md-4 col-xl-4">
                             <label>Competitor</label>
                             <input id="edit_competitor" type="text" class="form-control" style="width:100%">
                         </div>
+
+                    </div>
+                    <div class="form-group row m-0">
                         <div class="col-md-4 col-xl-4">
                             <label>Competitor Description</label>
                             <input id="edit_competitor_description" type="text" class="form-control" style="width:100%">
                         </div>
+                        <div class="col-md-4 col-xl-4">
+                            <label>Compettitor A Price (EUR)</label>
+                            <input id="edit_competitor_price" type="text" class="form-control" style="width:100%">
+                        </div>
+
                         <div class="col-md-4 col-xl-4">
                             <label>Detail Project</label>
                             <input id="edit_detail" type="text" class="form-control" style="width:100%">
@@ -257,10 +247,11 @@
                     <div class="form-group row m-0">
                         <div class="col-md-12 col-xl-12">
                             <label>Unit</label>
-                            <select id="edit_sub_unit" class="form-control" style="width:100%">                               
+                            <select id="edit_sub_unit" class="form-control" style="width:100%">
                                 <option value="THB">THB</option>
-                                <option value="THB">URD</option>
-                                <option value="THB">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="USD">USD</option>
+                                <option value="JPY">JPY</option>
                             </select>
                         </div>
                     </div>
