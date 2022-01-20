@@ -23,13 +23,19 @@ namespace WebForecastReport.Controllers
         }
         public IActionResult Index()
         {
+            if (HttpContext.Session.GetString("Login") != null)
+            {
+                string user = HttpContext.Session.GetString("userId");
+                List<UserModel> users = new List<UserModel>();
+                users = Accessory.getAllUser();
+                UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name, department = s.department, role = s.role }).FirstOrDefault();
 
-            string user = HttpContext.Session.GetString("userId");
-            List<UserModel> users = new List<UserModel>();
-            users = Accessory.getAllUser();
-            UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name,department = s.department,role = s.role }).FirstOrDefault();
-          
-            return View(u);
+                return View(u);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Account");
+            }
         }
         [HttpPost]
         public JsonResult GetQuotation(string name,string department,string role)

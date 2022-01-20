@@ -3,14 +3,14 @@
         <div class="modal-content">
             <div class="modal-header">            
                 <div class="row w-100">
-                    <div class="col-md-2 col-xl-2">
+                    <div class="col-md-2 col-xl-2 ml-2">
                         <h4 class="modal-title"><b>Edit Quotation</b></h4>                       
                     </div>
-                    <div class="col-md-5 col-xl-5">
+                    <div class="col-md-5 col-xl-5 ml-2">
                         <select id="edit_sale_name" class="form-control" style="width:100%" disabled>
                         </select>
                     </div>
-                    <div class="col-md-3 col-xl-3">
+                    <div class="col-md-3 col-xl-3 ml-2">
                         <div class="row">
                             <div class="col-md-6 col-xl-6">
                                 <h4 style="width:100%"><b>Department: </b></h4>
@@ -100,13 +100,13 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-6">
-                            <label>Product</label>
-                            <div class="input-group">
-                                <select id="products" class="form-control" style="width:100%">
+                        <div class="col-md-6 col-xl-6">
+                            <label class="ml-2">Product</label>
+                            <div class="input-group" style="width:98%">
+                                <select id="products" class="form-control ml-2 mr-1" style="width:100%">
                                 </select>
-                                <div class="input-group-append pl-1">
-                                    <input type="button"  id="btnAddProduct" value="ADD"/>
+                                <div class="input-group-append">
+                                    <input type="button" class="btn btn-success" id="btnAddProduct" value="ADD"/>
                                 </div>
                             </div>
                         </div>                       
@@ -128,9 +128,17 @@
                     </div>
                     <div class="form-group row m-0">
                         <div class="col-md-4 col-xl-4">
-                            <label>Quoted Price</label>
-                            <input id="edit_quoted_price" type="text" class="form-control" style="width:100%">
+                            <div class="row">
+                                <div class="col-md-12 col-xl-12">
+                                    <label>Quoted Price</label>
+                                    <div class="row">
+                                        <input id="edit_quoted_price" type="text" class="form-control ml-2" style="width:85%">
+                                        <h5 class="pt-2 pl-1"><b> THB</b></h5>
+                                    </div>
+                                </div>
+                            </div>                            
                         </div>
+                        
                         <div class="col-md-4 col-xl-4">
                             <label>How supplier support to win this project</label>
                             <input id="edit_how_to_support" type="text" class="form-control" style="width:100%">

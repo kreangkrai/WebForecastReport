@@ -661,6 +661,11 @@
         $('#edit_proposer').on('change', function () {
             document.getElementById('edit_expected_date').disabled = false;
         });
+        $('#edit_quoted_price').on('change', function () {
+            var val = document.getElementById('edit_quoted_price').value;
+            var newVal = numberWithCommas(val);
+            document.getElementById('edit_quoted_price').value = newVal;
+        });
         function remove_data(index) {
             arrProductType.splice(index, 1);
             arrPart_No.splice(index, 1);
@@ -757,5 +762,8 @@
                 list.appendChild(option);
             });
         };
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
     </script>
 }
