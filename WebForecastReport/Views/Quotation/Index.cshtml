@@ -78,8 +78,7 @@
         var Units = ["THB", "EUR", "USD", "JPY"];
         var Status = ["IN", "OUT"];
         var Stages = ["Quote for Buddget", "Negotiation/Review", "Proposal/Quote for Order", "Prospecting", "Closed(Won)", "Closed(Lost)"];
-        var Products = ["ABB", "Canty", "DEHN", "Extrel", "HK", "Kemtrak", "Knick", "Kobold", "LAR", "Matsushima",
-                        "MRU", "M-System", "Scan", "Servomex", "Stahl", "Swan", "Vaisala", "Yamari"];
+        var Products = [];
         var Departments = [];
         var Sales = [];
         var Proposers = [];
@@ -114,6 +113,9 @@
 
                     // add Department
                     Departments = add_department(response.departments);
+
+                    // add Product
+                    Products = add_product(response.products);
 
                     var datas = response.quatations;
                     var dataSet = [];
@@ -244,15 +246,16 @@
             tables_view = $('#tableview').DataTable({
                 data: dataSet,
                 columns: [
-                    { title: "Product Type" },
-                    { title: "Part No" },
-                    { title: "Spec" },
-                    { title: "Quantity" },
-                    { title: "Supplier Quotation No" },
-                    { title: "Total Value" },
-                    { title: "Unit" },
+                    { title: "Product Type", width: 80},
+                    { title: "Part No", width: 80},
+                    { title: "Spec", width: 80},
+                    { title: "Quantity", width: 80},
+                    { title: "Supplier Quotation No", width: 80 },
+                    { title: "Total Value", width: 80 },
+                    { title: "Unit", width: 30},
                 ],
-                "scrollX": true,
+                scrollX: true,
+                stateSave: true,
 
             });
             $(tables_view.table().body()).addClass('text-dark');
@@ -265,15 +268,15 @@
                 tables_edit = $('#tableedit').DataTable({
                 data: dataSet,
                 columns: [
-                    { title: "Edit" },
-                    { title: "Delete" },
-                    { title: "Product Type" },
-                    { title: "Part No" },
-                    { title: "Spec" },
-                    { title: "Quantity" },
-                    { title: "Supplier Quotation No" },
-                    { title: "Total Value" },
-                    { title: "Unit" },
+                    { title: "Edit" , width : 20},
+                    { title: "Delete", width: 20 },
+                    { title: "Product Type", width: 80},
+                    { title: "Part No", width: 80 },
+                    { title: "Spec", width: 80},
+                    { title: "Quantity", width: 80 },
+                    { title: "Supplier Quotation No", width: 80 },
+                    { title: "Total Value", width: 80},
+                    { title: "Unit", width : 30 },
 
                 ],
                 "columnDefs": [
@@ -291,7 +294,7 @@
                     },
 
                 ],
-                "scrollX": true,
+                scrollX: true,
                 stateSave: true,
 
             });
@@ -411,8 +414,9 @@
                 document.getElementById('edit_enduser').value = enduser;
 
                 document.getElementById('edit_project_name').value = project_name;
-                document.getElementById('edit_site_location').value = site_location;
+                document.getElementById('edit_site_location').value = site_location; 
                 document.getElementById('edit_product_type').value = product_type;
+
                 document.getElementById('edit_quoted_price').value = quoted_price;
                 document.getElementById('edit_expected_order_date').value = expected_order_date;
                 document.getElementById('edit_required_onsite_date').value = required_onsite_date;
@@ -468,6 +472,14 @@
 
 
                 document.getElementById('edit_detail').value = detail;
+
+                // add select product
+                var selectProduct = document.getElementById('products');
+                for (var i = 0, l = Products.length; i < l; i++) {
+                    var option = Products[i];
+                    selectProduct.options.add(new Option(option.text, option.value, option.selected));
+                }
+                document.getElementById('products').selectedIndex = 0;
 
                 //check state admin
                 var role = '@Model.role';
@@ -594,7 +606,8 @@
         });
 
         $('#btnAddProduct').on('click', function () {
-            let value = Products[document.getElementById("products").selectedIndex];
+            var index = document.getElementById("products").selectedIndex;
+            let value = Products[index].value;
             if (value !== "") {
                 // add data
                 add_data(value);
@@ -602,18 +615,7 @@
                 let text = arrProductType.join();
                 document.getElementById("edit_product_type").value = text;
             }
-        });
-        $('#btnAddOtherProduct').on('click', function () {
-            let value = document.getElementById("txtOther").value;
-            if (value !== "") {
-                // add data
-                add_data(value);
-
-                let text = arrProductType.join();
-                document.getElementById("edit_product_type").value = text;
-            }
-            document.getElementById("txtOther").value = "";
-        });
+        });        
         $('#clear_btnProductType').on('click', function () {
             document.getElementById("edit_product_type").value = "";
             arrProductType = [];
@@ -697,6 +699,19 @@
             }
 
             return data_sales;
+        };
+        function add_product(products) {
+            var data_products = [];
+            for (var i = 0; i < products.length; i++) {
+                var data =
+                {
+                    "text": products[i].name,
+                    "value": products[i].name
+                }
+                data_products.push(data);
+            }
+
+            return data_products;
         };
         function add_department(department) {
             var data_department = [];

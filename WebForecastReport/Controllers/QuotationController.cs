@@ -14,13 +14,16 @@ namespace WebForecastReport.Controllers
     {
         readonly IQuotation Quotation;
         readonly IAccessory Accessory;
+        readonly IProduct Product;
         public QuotationController()
         {
             Quotation = new QuotationService();
             Accessory = new AccessoryService();
+            Product = new ProductService();
         }
         public IActionResult Index()
         {
+
             string user = HttpContext.Session.GetString("userId");
             List<UserModel> users = new List<UserModel>();
             users = Accessory.getAllUser();
@@ -81,7 +84,11 @@ namespace WebForecastReport.Controllers
             List<DepartmentModel> departments = new List<DepartmentModel>();
             departments = Accessory.getDepartment();
 
-            var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers,departments = departments };
+            //get Products
+            List<ProductModel> products = new List<ProductModel>();
+            products = Product.GetProducts();
+
+            var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers, departments = departments, products = products };
             return Json(list);
         }
         [HttpPost]
