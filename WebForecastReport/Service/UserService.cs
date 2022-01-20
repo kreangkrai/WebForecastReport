@@ -82,13 +82,12 @@ namespace WebForecastReport.Service
             }
         }
 
-        public string update(string name, string department, string role)
+        public string update(string name,string role)
         {
             try
             {
                 SqlDataReader reader;
-                SqlCommand cmd = new SqlCommand(@"UPDATE [User] SET Department='" + department + "'," +
-                                                                      "Role='" + role + "'," +
+                SqlCommand cmd = new SqlCommand(@"UPDATE [User] SET Role='" + role + "'" +
                                                                       "WHERE Name='" + name + "'");
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = ConnectSQL.OpenConnect();

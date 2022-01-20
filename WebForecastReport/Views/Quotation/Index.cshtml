@@ -85,76 +85,79 @@
         var Proposers = [];
         var Customers = [];
         var EndUsers = [];
+
+        var state_admin = false;
+
         $(document).ready(function () {
             init();
         });
 
         function init() {
-        var name = '@Model.name';
-        $.ajax({
-            url: '@Url.Action("GetData", "Quotation")',
-            type: "post",
-            contentType: 'application/x-www-form-urlencoded',
-            data: {
-                name,
-            },
-            success: function (response) {
-                //add sale to select
-                Sales = add_sale(response.sales);
-                Proposers = add_proposer(response.sales);
-                //add customer to datalist
-                Customers = add_customer(response.customers);
+            var name = '@Model.name';
+            var role = '@Model.role';
+            $.ajax({
+                url: '@Url.Action("GetData", "Quotation")',
+                type: "post",
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    name, role
+                },
+                success: function (response) {
+                    //add sale to select
+                    Sales = add_sale(response.sales);
+                    Proposers = add_proposer(response.sales);
+                    //add customer to datalist
+                    Customers = add_customer(response.customers);
 
-                //add end user to datalist
-                EndUsers = add_enduser(response.endusers);
+                    //add end user to datalist
+                    EndUsers = add_enduser(response.endusers);
 
-                // add Department
-                Departments = add_department(["QIR"]);
+                    // add Department
+                    Departments = add_department(response.departments);
 
-                var datas = response.quatations;
-                var dataSet = [];
-                for (var i = 0; i < datas.length; i++) {
-                    var data = ["",
-                        "",
-                        datas[i].quotation_no,
-                        datas[i].revision,
-                        datas[i].date,
-                        datas[i].customer,
-                        datas[i].enduser,
-                        datas[i].project_name,
-                        datas[i].site_location,
-                        datas[i].product_type,
-                        datas[i].part_no,
-                        datas[i].spec,
-                        datas[i].quantity,
-                        datas[i].supplier_quotation_no,
-                        datas[i].total_value,
-                        datas[i].unit,
-                        datas[i].quoted_price,
-                        datas[i].expected_order_date,
-                        datas[i].required_onsite_date,
-                        datas[i].proposer,
-                        datas[i].expected_date,
-                        datas[i].status,
-                        datas[i].stages,
-                        datas[i].how_to_support,
-                        datas[i].competitor,
-                        datas[i].competitor_description,
-                        datas[i].competitor_price,
-                        datas[i].sale_name,
-                        datas[i].department,
-                        datas[i].detail];
+                    var datas = response.quatations;
+                    var dataSet = [];
+                    for (var i = 0; i < datas.length; i++) {
+                        var data = ["",
+                            "",
+                            datas[i].quotation_no,
+                            datas[i].revision,
+                            datas[i].date,
+                            datas[i].customer,
+                            datas[i].enduser,
+                            datas[i].project_name,
+                            datas[i].site_location,
+                            datas[i].product_type,
+                            datas[i].part_no,
+                            datas[i].spec,
+                            datas[i].quantity,
+                            datas[i].supplier_quotation_no,
+                            datas[i].total_value,
+                            datas[i].unit,
+                            datas[i].quoted_price,
+                            datas[i].expected_order_date,
+                            datas[i].required_onsite_date,
+                            datas[i].proposer,
+                            datas[i].expected_date,
+                            datas[i].status,
+                            datas[i].stages,
+                            datas[i].how_to_support,
+                            datas[i].competitor,
+                            datas[i].competitor_description,
+                            datas[i].competitor_price,
+                            datas[i].sale_name,
+                            datas[i].department,
+                            datas[i].detail];
 
-                    dataSet.push(data);
+                        dataSet.push(data);
+                    }
+                    quotation_datas = dataSet;
+
+                    table(dataSet);
                 }
-                quotation_datas = dataSet;
-
-                table(dataSet);
-            }
-        });
+            });
         };
         function init_view() {
-
             var dataSet = [];
             for (var i = 0; i < arrProductType.length; i++) {
                 var data = [arrProductType[i], arrPart_No[i], arrSpec[i], arrQuantity[i], arrSupplier_Quotation_No[i], arrTotal_Value[i], arrUnit[i]];
@@ -178,7 +181,7 @@
         function table(dataSet) {
             if (tables !== undefined)
                 tables.destroy();
-            tables = $('#table').DataTable({
+                tables = $('#table').DataTable({
                 data: dataSet,
                 columns: [
                     { title: "Edit " },
@@ -297,13 +300,15 @@
         $('#AddQuotation').on('click', function () {
             var name = '@Model.name';
             var department = '@Model.department';
+            var role = '@Model.role';
             $.ajax({
                 url: '@Url.Action("GetQuotation", "Quotation")',
                 type: "post",
                 contentType: 'application/x-www-form-urlencoded',
                 data: {
                     name,
-                    department
+                    department,
+                    role
                 },
                 success: function (response) {
                     var dataSet = [];
@@ -398,7 +403,6 @@
             }
 
             if (column == "0") {
-
                 document.getElementById('edit_quotation_no').value = quotation;
                 document.getElementById('edit_revision').value = revision;
                 document.getElementById('edit_date').value = date;
@@ -450,20 +454,30 @@
                 var index_sale = Sales.map(function (e) { return e.value; }).indexOf(sale_name);
                 document.getElementById('edit_sale_name').selectedIndex = index_sale;
 
-                
+
                 var index_proposer = Proposers.map(function (e) { return e.value; }).indexOf(proposer);
                 document.getElementById('edit_proposer').selectedIndex = index_proposer;
 
                 var selectDepartment = document.getElementById('edit_department');
                 for (var i = 0, l = Departments.length; i < l; i++) {
                     var option = Departments[i];
-                    selectDepartment.options.add(new Option(option.text, option.value, option.selected));
+                    selectDepartment.options.add(new Option(option.text.department, option.value.department, option.selected));
                 }
-                var index_department = Departments.map(function (e) { return e.value; }).indexOf(department);
+                var index_department = Departments.map(function (e) { return e.value.department; }).indexOf(department);
                 document.getElementById('edit_department').selectedIndex = index_department;
-                
+
 
                 document.getElementById('edit_detail').value = detail;
+
+                //check state admin
+                var role = '@Model.role';
+                if (role == "Admin") {
+                    document.getElementById('edit_sale_name').disabled = false;
+                    document.getElementById('edit_department').disabled = false;
+                } else {
+                    document.getElementById('edit_sale_name').disabled = true;
+                    document.getElementById('edit_department').disabled = true;
+                }
 
                 $('#EditModal').modal();
             } else if (column == "1") {
@@ -488,7 +502,7 @@
                 document.getElementById('competitor_description').value = competitor_description;
                 document.getElementById('competitor_price').value = competitor_price;
                 document.getElementById('sale_name').value = sale_name;
-            
+
                 document.getElementById('department').innerHTML = department;
 
                 document.getElementById('detail').value = detail;
@@ -578,7 +592,7 @@
             });
             $('#EditModal').modal('hide');
         });
-        
+
         $('#btnAddProduct').on('click', function () {
             let value = Products[document.getElementById("products").selectedIndex];
             if (value !== "") {
@@ -669,8 +683,8 @@
                 arrSupplier_Quotation_No.push("");
                 arrTotal_Value.push("");
                 arrUnit.push("");
-            }         
-        }       
+            }
+        }
         function add_sale(sales) {
             var data_sales = [];
             for (var i = 0; i < sales.length; i++) {

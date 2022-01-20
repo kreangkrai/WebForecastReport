@@ -13,6 +13,6 @@ namespace WebForecastReport.Interface
         string InsertQuotation(QuotationModel model);
         string Update(QuotationModel model);
         string Delete(QuotationModel model);
-        List<QuotationModel> GetAll(string name);
+        List<QuotationModel> GetQuotation(string name,string role);
     }
 }

@@ -75,6 +75,36 @@ namespace WebForecastReport.Service
             }
         }
 
+        public List<DepartmentModel> getDepartment()
+        {
+            try
+            {
+                List<DepartmentModel> departments = new List<DepartmentModel>();
+                SqlCommand cmd = new SqlCommand(@"select distinct Department2 from Sale_User where Department2 is not null", ConnectSQL.Open_db_gps_Connect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        DepartmentModel d = new DepartmentModel()
+                        {                          
+                            department = dr["Department2"].ToString(),                          
+                        };
+                        departments.Add(d);
+                    }
+                    dr.Close();
+                }
+                return departments;
+            }
+            finally
+            {
+                if (ConnectSQL.con_db_gps.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.Close_db_gps_Connect();
+                }
+            }
+        }
+
         public List<EndUserModel> getEndUsers()
         {
             try

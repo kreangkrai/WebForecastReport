@@ -9,12 +9,21 @@
 </style>
 <div class="container-fluid p-3" style="background-color:#ECF0F5;">
     <div class="row">
-        <div>
-            <button type="button" id="AddUser" class="btn btn-primary">
-                <i class="fas fa-plus" style="font-size:20px"> User</i>
-            </button>
+        <div class="col-md-4 col-xl-4">
+            <div class="row">
+                <div class="col-md-8 col-xl-8">
+                    <select id="users" class="form-control" style="width:100%">
+                        <option disabled>Please Select</option>
+                    </select>
+                    
+                </div>
+                <div class="col-md-4 col-xl-4">
+                    <button type="button" id="AddUser" class="btn btn-primary" style="width: 100%">
+                        <i class="fas fa-plus" style="font-size:20px;"> User</i>
+                    </button>
+                </div>
+            </div>          
         </div>
-
     </div>
     <div class="row pt-3">
         <div class="container-fluid">
@@ -28,10 +37,9 @@
 {
     <script type="text/javascript">
         var name = '';
-        var department = '';
         var role = '';
-        var Roles = ["Admin", "Manager"];
-        var Departments = [];
+        var Roles = [];
+        var Users = [];
         $(document).ready(function () {
             init();
         });
@@ -44,12 +52,23 @@
             data: {
             },
             success: function (response) {
-                var datas = response;
+                //add roles
+                Roles = add_role(response.roles);
+
+                // add users
+                Users = add_user(response.us);
+                var selectUser = document.getElementById('users');
+                for (var i = 0, l = Users.length; i < l; i++) {
+                    var option = Users[i];
+                    selectUser.options.add(new Option(option.text.name, option.value.name, option.selected));
+                }
+                document.getElementById('users').selectedIndex = 0;
+
+                var datas = response.users;
                 var dataSet = [];
                 for (var i = 0; i < datas.length; i++) {
                     var data = ["",
                         datas[i].name,
-                        datas[i].department,
                         datas[i].role];
 
                     dataSet.push(data);
@@ -70,7 +89,6 @@
                 columns: [
                     { title: "Edit ", width:10 },
                     { title: "Name" },
-                    { title: "Department" },
                     { title: "Role" },
                 ],
                 "columnDefs": [
@@ -84,23 +102,92 @@
                 "scrollX": true,
             });
             $(tables.table().body()).addClass('text-dark');
-        }
+        };
+        function add_role(roles) {
+            var data_roles = [];
+            for (var i = 0; i < roles.length; i++) {
+                var data =
+                {
+                    "text": roles[i],
+                    "value": roles[i]
+                }
+                data_roles.push(data);
+            }
+
+            return data_roles;
+        };
+        function add_user(users) {
+            var data_users = [];
+            for (var i = 0; i < users.length; i++) {
+                var data =
+                {
+                    "text": users[i],
+                    "value": users[i]
+                }
+                data_users.push(data);
+            }
+
+            return data_users;
+        };
         $('#table').on('click', 'tbody td', function () {
             var cell = tables.cell(this);
             var column = cell[0][0].column;
             name = cell.data()[1];
-            department = cell.data()[2];
-            role = cell.data()[3];
+            role = cell.data()[2];
 
             if (column == "0") {
                 document.getElementById('edit_name').value = name;
-                document.getElementById('edit_department').value = department;
 
-                var index_role = Roles.indexOf(role);
+                var selectRole = document.getElementById('edit_role');
+                for (var i = 0, l = Roles.length; i < l; i++) {
+                    var option = Roles[i];
+                    selectRole.options.add(new Option(option.text.department, option.value.department, option.selected));
+                }
+                var index_role = Roles.map(function (e) { return e.value.department; }).indexOf(role);
                 document.getElementById('edit_role').selectedIndex = index_role;
 
                 $('#EditModal').modal();
             }
+        });
+        $('#edit_RoleConfirm').on('click', function () {
+            var name = document.getElementById('edit_name').value;
+            var role = document.getElementById('edit_role').value;
+            $.ajax({
+                url: '@Url.Action("Update", "User")',
+                type: "post",
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    name,role
+                },
+                success: function (response) {
+                    if (response == "Update Success") {
+                        init();
+                        toastr.success("Update Success");
+                    } else {
+                        toastr.error("Update Failed");
+                    }
+                    $('#EditModal').modal('hide');
+                }
+            });
+        });
+        $('#AddUser').on('click', function () {
+            var name = document.getElementById('users').value;
+            $.ajax({
+                url: '@Url.Action("Insert", "User")',
+                type: "post",
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    name
+                },
+                success: function (response) {
+                    if (response == "Insert Success") {
+                        init();
+                        toastr.success("Insert Success");
+                    } else {
+                        toastr.error("Insert Failed");
+                    }
+                }
+            });
         });
     </script>
 }

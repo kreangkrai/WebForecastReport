@@ -32,20 +32,36 @@ namespace WebForecastReport.Controllers
         {
             List<UserManagementModel> users = new List<UserManagementModel>();
             users = Users.GetUsers();
-            return Json(users);
+
+            List<DepartmentModel> departments = new List<DepartmentModel>();
+            departments.Add(new DepartmentModel { department = "" });
+            departments.Add(new DepartmentModel { department = "Admin" });
+            departments.AddRange(Accessory.getDepartment());
+
+            List<UserModel> us = new List<UserModel>();
+            us = Accessory.getAllUser();
+            var list = new { us = us,users = users, roles = departments };
+            return Json(list);
         }
 
         [HttpPost]
-        public JsonResult Update(string name,string department,string role)
+        public JsonResult Update(string name,string role)
         {
-            string message = Users.update(name, department, role);
+            string message = Users.update(name, role);
             return Json(message);
         }
         [HttpPost]
         public JsonResult Insert(string name)
         {
-            string message = Users.insert(name);
-            return Json(message);
+            if (name != "Please Select")
+            {
+                string message = Users.insert(name);
+                return Json(message);
+            }
+            else
+            {
+                return Json("Insert Failed");
+            }
         }
     }
 }

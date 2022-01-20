@@ -29,7 +29,7 @@ namespace WebForecastReport.Controllers
             return View(u);
         }
         [HttpPost]
-        public JsonResult GetQuotation(string name,string department)
+        public JsonResult GetQuotation(string name,string department,string role)
         {
             string quotation = Quotation.GetlastQuotation();
             QuotationModel quotations = new QuotationModel();
@@ -54,17 +54,16 @@ namespace WebForecastReport.Controllers
             string message = Quotation.InsertQuotation(quotations);
 
             List<QuotationModel> getQuotation = new List<QuotationModel>();
-            getQuotation = Quotation.GetAll(name);
+            getQuotation = Quotation.GetQuotation(name,role);
             getQuotation = getQuotation.OrderByDescending(o => o.quotation_no).ToList();
             return Json(getQuotation);
         }
         [HttpPost]
-        public JsonResult GetData(string name)
+        public JsonResult GetData(string name,string role)
         {
             List<QuotationModel> quotations = new List<QuotationModel>();
-            quotations = Quotation.GetAll(name);
+            quotations = Quotation.GetQuotation(name,role);
             quotations = quotations.OrderByDescending(o => o.quotation_no).ToList();
-
 
             //get all sale
             List<string> sales = new List<string>();
@@ -78,7 +77,11 @@ namespace WebForecastReport.Controllers
             List<string> endusers = new List<string>();
             endusers = Accessory.getEndUsers().Select(s => s.name).ToList();
 
-            var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers };
+            // get department
+            List<DepartmentModel> departments = new List<DepartmentModel>();
+            departments = Accessory.getDepartment();
+
+            var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers,departments = departments };
             return Json(list);
         }
         [HttpPost]

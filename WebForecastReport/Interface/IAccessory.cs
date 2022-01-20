@@ -14,6 +14,7 @@ namespace WebForecastReport.Interface
         List<CustomerModel> getCustomers();
         string InsertEndUser(string enduser);
         List<EndUserModel> getEndUsers();
+        List<DepartmentModel> getDepartment();
 
     }
 }

@@ -33,52 +33,144 @@ namespace WebForecastReport.Service
             }
         }
 
-        public List<QuotationModel> GetAll(string name)
+        public List<QuotationModel> GetQuotation(string name,string role)
         {
             try
             {
                 List<QuotationModel> quotations = new List<QuotationModel>();
-                SqlCommand cmd = new SqlCommand("select * from Quotation where sale_name='" + name + "' order by date desc", ConnectSQL.OpenConnect());
-                SqlDataReader dr = cmd.ExecuteReader();
-                if (dr.HasRows)
+                if (role == "Admin")
                 {
-                    while (dr.Read())
+                    SqlCommand cmd = new SqlCommand("select * from Quotation order by date desc", ConnectSQL.OpenConnect());
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
                     {
-                        QuotationModel q = new QuotationModel()
+                        while (dr.Read())
                         {
-                            quotation_no = dr["quotation_no"].ToString(),
-                            revision = dr["revision"].ToString(),
-                            date = Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd"),
-                            customer = dr["customer"].ToString(),
-                            enduser = dr["enduser"].ToString(),
-                            project_name = dr["project_name"].ToString(),
-                            site_location = dr["site_location"].ToString(),
-                            product_type = dr["product_type"].ToString(),
-                            part_no = dr["part_no"].ToString(),
-                            spec = dr["spec"].ToString(),
-                            quantity = dr["quantity"].ToString(),
-                            supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
-                            total_value = dr["total_value"].ToString(),
-                            unit = dr["unit"].ToString(),
-                            quoted_price = dr["quoted_price"].ToString(),
-                            expected_order_date = Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd"),
-                            required_onsite_date = Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd"),
-                            proposer = dr["proposer"].ToString(),
-                            expected_date = dr["expected_date"].ToString() != "" ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd"): "1900-01-01",
-                            status = dr["status"].ToString(),
-                            stages = dr["stages"].ToString(),
-                            how_to_support = dr["how_to_support"].ToString(),
-                            competitor = dr["competitor"].ToString(),
-                            competitor_description = dr["competitor_description"].ToString(),
-                            competitor_price = dr["competitor_price"].ToString(),
-                            sale_name = dr["sale_name"].ToString(),
-                            department = dr["department"].ToString(),
-                            detail = dr["detail"].ToString()
-                        };
-                        quotations.Add(q);
+                            QuotationModel q = new QuotationModel()
+                            {
+                                quotation_no = dr["quotation_no"].ToString(),
+                                revision = dr["revision"].ToString(),
+                                date = Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd"),
+                                customer = dr["customer"].ToString(),
+                                enduser = dr["enduser"].ToString(),
+                                project_name = dr["project_name"].ToString(),
+                                site_location = dr["site_location"].ToString(),
+                                product_type = dr["product_type"].ToString(),
+                                part_no = dr["part_no"].ToString(),
+                                spec = dr["spec"].ToString(),
+                                quantity = dr["quantity"].ToString(),
+                                supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
+                                total_value = dr["total_value"].ToString(),
+                                unit = dr["unit"].ToString(),
+                                quoted_price = dr["quoted_price"].ToString(),
+                                expected_order_date = Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd"),
+                                required_onsite_date = Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd"),
+                                proposer = dr["proposer"].ToString(),
+                                expected_date = dr["expected_date"].ToString() != "" ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : "1900-01-01",
+                                status = dr["status"].ToString(),
+                                stages = dr["stages"].ToString(),
+                                how_to_support = dr["how_to_support"].ToString(),
+                                competitor = dr["competitor"].ToString(),
+                                competitor_description = dr["competitor_description"].ToString(),
+                                competitor_price = dr["competitor_price"].ToString(),
+                                sale_name = dr["sale_name"].ToString(),
+                                department = dr["department"].ToString(),
+                                detail = dr["detail"].ToString()
+                            };
+                            quotations.Add(q);
+                        }
+                        dr.Close();
                     }
-                    dr.Close();
                 }
+                else if(role != "Admin" && role != "" && role != null)
+                {
+                    SqlCommand cmd = new SqlCommand("select * from Quotation where department='" + role + "' order by date desc", ConnectSQL.OpenConnect());
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            QuotationModel q = new QuotationModel()
+                            {
+                                quotation_no = dr["quotation_no"].ToString(),
+                                revision = dr["revision"].ToString(),
+                                date = Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd"),
+                                customer = dr["customer"].ToString(),
+                                enduser = dr["enduser"].ToString(),
+                                project_name = dr["project_name"].ToString(),
+                                site_location = dr["site_location"].ToString(),
+                                product_type = dr["product_type"].ToString(),
+                                part_no = dr["part_no"].ToString(),
+                                spec = dr["spec"].ToString(),
+                                quantity = dr["quantity"].ToString(),
+                                supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
+                                total_value = dr["total_value"].ToString(),
+                                unit = dr["unit"].ToString(),
+                                quoted_price = dr["quoted_price"].ToString(),
+                                expected_order_date = Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd"),
+                                required_onsite_date = Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd"),
+                                proposer = dr["proposer"].ToString(),
+                                expected_date = dr["expected_date"].ToString() != "" ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : "1900-01-01",
+                                status = dr["status"].ToString(),
+                                stages = dr["stages"].ToString(),
+                                how_to_support = dr["how_to_support"].ToString(),
+                                competitor = dr["competitor"].ToString(),
+                                competitor_description = dr["competitor_description"].ToString(),
+                                competitor_price = dr["competitor_price"].ToString(),
+                                sale_name = dr["sale_name"].ToString(),
+                                department = dr["department"].ToString(),
+                                detail = dr["detail"].ToString()
+                            };
+                            quotations.Add(q);
+                        }
+                        dr.Close();
+                    }
+                }
+                else
+                {
+                    SqlCommand cmd = new SqlCommand("select * from Quotation where sale_name='" + name + "' order by date desc", ConnectSQL.OpenConnect());
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            QuotationModel q = new QuotationModel()
+                            {
+                                quotation_no = dr["quotation_no"].ToString(),
+                                revision = dr["revision"].ToString(),
+                                date = Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd"),
+                                customer = dr["customer"].ToString(),
+                                enduser = dr["enduser"].ToString(),
+                                project_name = dr["project_name"].ToString(),
+                                site_location = dr["site_location"].ToString(),
+                                product_type = dr["product_type"].ToString(),
+                                part_no = dr["part_no"].ToString(),
+                                spec = dr["spec"].ToString(),
+                                quantity = dr["quantity"].ToString(),
+                                supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
+                                total_value = dr["total_value"].ToString(),
+                                unit = dr["unit"].ToString(),
+                                quoted_price = dr["quoted_price"].ToString(),
+                                expected_order_date = Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd"),
+                                required_onsite_date = Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd"),
+                                proposer = dr["proposer"].ToString(),
+                                expected_date = dr["expected_date"].ToString() != "" ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : "1900-01-01",
+                                status = dr["status"].ToString(),
+                                stages = dr["stages"].ToString(),
+                                how_to_support = dr["how_to_support"].ToString(),
+                                competitor = dr["competitor"].ToString(),
+                                competitor_description = dr["competitor_description"].ToString(),
+                                competitor_price = dr["competitor_price"].ToString(),
+                                sale_name = dr["sale_name"].ToString(),
+                                department = dr["department"].ToString(),
+                                detail = dr["detail"].ToString()
+                            };
+                            quotations.Add(q);
+                        }
+                        dr.Close();
+                    }
+                }
+                
                 return quotations;
             }
             finally
