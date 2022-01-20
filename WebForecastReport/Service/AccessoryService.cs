@@ -16,7 +16,8 @@ namespace WebForecastReport.Service
             try
             {
                 List<UserModel> users = new List<UserModel>();
-                SqlCommand cmd = new SqlCommand("select DISTINCT Login,Name,Department2 from Sale_User order by Login", ConnectSQL.Open_db_gps_Connect());
+                SqlCommand cmd = new SqlCommand(@"select DISTINCT t1.Login,t1.Department2,t1.Name,case when t2.Role ='Admin' then 'Admin' else t2.Role end as Role from [gps_sale_tracking].[dbo].[Sale_User] as t1
+                                                  left join[MES].[dbo].[User] as t2 ON t1.Login = t2.Name order by t1.Login", ConnectSQL.Open_db_gps_Connect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -26,7 +27,8 @@ namespace WebForecastReport.Service
                         {
                             name = dr["Login"].ToString(),
                             fullname = dr["Name"].ToString(),
-                            department = dr["Department2"].ToString()
+                            department = dr["Department2"].ToString(),
+                            role = dr["Role"].ToString()
                         };
                         users.Add(u);
                     }

@@ -24,7 +24,7 @@ namespace WebForecastReport.Controllers
             string user = HttpContext.Session.GetString("userId");
             List<UserModel> users = new List<UserModel>();
             users = Accessory.getAllUser();
-            UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name,department = s.department }).FirstOrDefault();
+            UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name,department = s.department,role = s.role }).FirstOrDefault();
           
             return View(u);
         }

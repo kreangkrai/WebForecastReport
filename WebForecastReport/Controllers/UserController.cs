@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebForecastReport.Interface;
 using WebForecastReport.Models;
@@ -11,14 +12,20 @@ namespace WebForecastReport.Controllers
 {
     public class UserController : Controller
     {
+        readonly IAccessory Accessory;
         readonly IUser Users;
         public UserController()
         {
             Users = new UserService();
+            Accessory = new AccessoryService();
         }
         public IActionResult Index()
         {
-            return View();
+            string user = HttpContext.Session.GetString("userId");
+            List<UserModel> users = new List<UserModel>();
+            users = Accessory.getAllUser();
+            UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name, department = s.department, role = s.role }).FirstOrDefault();
+            return View(u);
         }
         [HttpPost]
         public JsonResult GetData()

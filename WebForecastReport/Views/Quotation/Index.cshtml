@@ -1,7 +1,7 @@
 ﻿@model WebForecastReport.Models.UserModel;
-@{
-    ViewData["Title"] = "Quotation";
+@{ 
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Quotation";
 }
 <style>
     #table tr td:nth-of-type(1),
@@ -488,14 +488,8 @@
                 document.getElementById('competitor_description').value = competitor_description;
                 document.getElementById('competitor_price').value = competitor_price;
                 document.getElementById('sale_name').value = sale_name;
-
-                var selectDepartment = document.getElementById('department');
-                for (var i = 0, l = Departments.length; i < l; i++) {
-                    var option = Departments[i];
-                    selectDepartment.options.add(new Option(option.text, option.value, option.selected));
-                }
-                var index_department = Departments.map(function (e) { return e.value; }).indexOf(department);
-                document.getElementById('department').selectedIndex = index_department;
+            
+                document.getElementById('department').innerHTML = department;
 
                 document.getElementById('detail').value = detail;
                 $('#ShowModal').modal();

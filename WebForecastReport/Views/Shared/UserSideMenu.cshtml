@@ -1,0 +1,51 @@
+﻿@using Microsoft.AspNetCore.Http
+<aside class="main-sidebar sidebar-dark-primary elevation-2">
+    <!-- Brand Logo -->
+    <a class="brand-link text-center" asp-controller="Quotation" asp-action="Index">
+        @*<img src="~/images/icon.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+            style="opacity: .8">*@
+        <span class="brand-text font-weight-light"><b>MES</b></span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar" style="padding-left:5px">
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Opportunity" asp-action="Index">
+                        <i class="nav-icon fas fa-file-invoice"></i>
+                        <p>Opportunity</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Quotation" asp-action="Index">
+                        <i class="nav-icon fas fa-file-invoice"></i>
+                        <p>Quotation</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Proposal" asp-action="Index">
+                        <i class="nav-icon fas fa-file-invoice"></i>
+                        <p>Proposal</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="OpportunityProposal" asp-action="Index">
+                        <i class="nav-icon fas fa-file-invoice"></i>
+                        <p>OpportunityProposal</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Account" asp-action="Logout">
+                        <i class="nav-icon fas fa-power-off"></i>
+                        <p>Log Out</p>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>
