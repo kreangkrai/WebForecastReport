@@ -13,7 +13,14 @@
     #tableedit tr td:nth-of-type(2) {
         cursor: pointer;
     }
-    
+    td.highlight_yellow {
+        background-color:yellow;
+    }
+    td.highlight_red {
+        font-weight:bold;
+        color: red;
+        background-color:burlywood;
+    }
 </style>
 <div class="container-fluid p-3" style="background-color:#ECF0F5;">
     <div class="row">
@@ -183,7 +190,7 @@
         function table(dataSet) {
             if (tables !== undefined)
                 tables.destroy();
-                tables = $('#table').DataTable({
+            tables = $('#table').DataTable({
                 data: dataSet,
                 columns: [
                     { title: "Edit " },
@@ -232,8 +239,17 @@
                     },
 
                 ],
-                "scrollX": true,
+                scrollX: true,
                 stateSave: true,
+                createdRow: function (row, data, index) {
+                    var diffDay = diffDate(data[18], new Date()); //column Required Onsite Date
+                    if (diffDay > -3 && diffDay < 0) {
+                        $('td', row).eq(18).addClass('highlight_yellow');
+                    } else if (diffDay >=0) {
+                        $('td', row).eq(18).addClass('highlight_red');
+                    }                    
+                },
+
 
             });
             $(tables.table().body()).addClass('text-dark');
@@ -765,5 +781,12 @@
         function numberWithCommas(x) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
+        function diffDate(date_start, date_stop) {
+            const date1 = new Date(date_start);
+            const date2 = new Date(date_stop);
+            const diffTime = date2 - date1;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        };
     </script>
 }
