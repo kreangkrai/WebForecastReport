@@ -123,7 +123,7 @@
 
                     // add Product
                     Products = add_product(response.products);
-                    console.log(response.products);
+
                     var datas = response.quatations;
                     var dataSet = [];
                     for (var i = 0; i < datas.length; i++) {
@@ -437,6 +437,7 @@
                 document.getElementById('edit_expected_order_date').value = expected_order_date;
                 document.getElementById('edit_required_onsite_date').value = required_onsite_date;
 
+                $('#edit_proposer').empty();
                 var selectProposer = document.getElementById('edit_proposer');
                 for (var i = 0, l = Proposers.length; i < l; i++) {
                     var option = Proposers[i];
@@ -466,6 +467,7 @@
                 document.getElementById('edit_competitor_description').value = competitor_description;
                 document.getElementById('edit_competitor_price').value = competitor_price;
 
+                $('#edit_sale_name').empty();
                 var selectBox = document.getElementById('edit_sale_name');
                 for (var i = 0, l = Sales.length; i < l; i++) {
                     var option = Sales[i];
@@ -474,10 +476,7 @@
                 var index_sale = Sales.map(function (e) { return e.value; }).indexOf(sale_name);
                 document.getElementById('edit_sale_name').selectedIndex = index_sale;
 
-
-                var index_proposer = Proposers.map(function (e) { return e.value; }).indexOf(proposer);
-                document.getElementById('edit_proposer').selectedIndex = index_proposer;
-
+                $('#edit_department').empty();
                 var selectDepartment = document.getElementById('edit_department');
                 for (var i = 0, l = Departments.length; i < l; i++) {
                     var option = Departments[i];
@@ -490,6 +489,7 @@
                 document.getElementById('edit_detail').value = detail;
 
                 // add select product
+                $('#products').empty();
                 var selectProduct = document.getElementById('products');
                 for (var i = 0, l = Products.length; i < l; i++) {
                     var option = Products[i];
