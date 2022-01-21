@@ -56,6 +56,7 @@
                 Roles = add_role(response.roles);
 
                 // add users
+                $('#users').empty();
                 Users = add_user(response.us);
                 var selectUser = document.getElementById('users');
                 for (var i = 0, l = Users.length; i < l; i++) {
@@ -138,6 +139,7 @@
             if (column == "0") {
                 document.getElementById('edit_name').value = name;
 
+                $('#edit_role').empty();
                 var selectRole = document.getElementById('edit_role');
                 for (var i = 0, l = Roles.length; i < l; i++) {
                     var option = Roles[i];
