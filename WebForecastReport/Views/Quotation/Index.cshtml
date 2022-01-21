@@ -108,7 +108,7 @@
                 data: {
                     name, role
                 },
-                success: function (response) {
+                success: function (response) {                   
                     //add sale to select
                     Sales = add_sale(response.sales);
                     Proposers = add_proposer(response.sales);
@@ -622,12 +622,10 @@
         });
 
         $('#btnAddProduct').on('click', function () {
-            var index = document.getElementById("products").selectedIndex;
-            let value = Products[index].value;
+            var value = document.getElementById("products").value;          
             if (value !== "") {
                 // add data
                 add_data(value);
-
                 let text = arrProductType.join();
                 document.getElementById("edit_product_type").value = text;
             }

@@ -92,7 +92,7 @@ namespace WebForecastReport.Controllers
 
             //get Products
             List<ProductModel> products = new List<ProductModel>();
-            products = Product.GetProducts();
+            products =  Product.GetProducts();
 
             var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers, departments = departments, products = products };
             return Json(list);

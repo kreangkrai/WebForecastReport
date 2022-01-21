@@ -33,7 +33,7 @@ namespace WebForecastReport.Service
             }
         }
 
-        public List<ProductModel> GetProducts()
+        public  List<ProductModel> GetProducts()
         {
             try
             {
