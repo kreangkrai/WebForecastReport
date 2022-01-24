@@ -13,28 +13,30 @@
     <partial name="Style" />
 </head>
 <body style="background-size:100%;background-repeat:no-repeat;background-image:url('@Url.Content("~/images/background.png")');" class="margin:1px 1px 1px 1px">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="jumbotron offset-md-3" style="background-color: white ;width:380px;height:450px; border-radius:5px;border-style:solid;border-color:#034694;border-width:1px;box-shadow:3px 3px 3px 3px #888888">
-                <form role="form" asp-action="Login" asp-controller="Account" method="post">
-                    <div class="text-center form-group" style="margin-top:-10px">
-                        <img src="~/images/MES_Logo.png" style="width:300px;height:55px;padding-right:5px; justify-items:center" />
-                    </div>
-                    <div class="form-group" style="margin-top:80px">
-                        @*<label for="Login" style="color:white;font-size:medium">User Name</label>*@
-                        <input type="text" name="User" asp-for="user" autocomplete="on" class="form-control input-sm" placeholder="User name">
-                        <span asp-validation-for="user" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        @*<label for="Password" style="color:white;font-size:medium">Password</label>*@
-                        <input type="password" name="Password" asp-for="password" autocomplete="off" class="form-control input-sm" placeholder="Password">
-                        <span asp-validation-for="password" class="text-danger"></span>
-                    </div>
-                    <div style="margin-top:40px">
-                        <input type="submit" value="Login" class="btn btn-info btn-block" style="background-color: #034694;border-radius:20px">
-                    </div>
+    <div class="container-fluid">
+        <div class="d-flex row align-content-center justify-content-center h-75">
+            <div class="col-md-6">
+                <div class="jumbotron offset-md-3" style="background-color: white ;width:380px;height:450px; border-radius:5px;border-style:solid;border-color:#034694;border-width:1px;box-shadow:3px 3px 3px 3px #888888">
+                    <form role="form" asp-action="Login" asp-controller="Account" method="post">
+                        <div class="text-center form-group" style="margin-top:-10px">
+                            <img src="~/images/MES_Logo.png" style="width:300px;height:55px;padding-right:5px; justify-items:center" />
+                        </div>
+                        <div class="form-group" style="margin-top:80px">
+                            @*<label for="Login" style="color:white;font-size:medium">User Name</label>*@
+                            <input type="text" name="User" asp-for="user" autocomplete="on" class="form-control input-sm" placeholder="User name">
+                            <span asp-validation-for="user" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            @*<label for="Password" style="color:white;font-size:medium">Password</label>*@
+                            <input type="password" name="Password" asp-for="password" autocomplete="off" class="form-control input-sm" placeholder="Password">
+                            <span asp-validation-for="password" class="text-danger"></span>
+                        </div>
+                        <div style="margin-top:40px">
+                            <input type="submit" value="Login" class="btn btn-info btn-block" style="background-color: #034694;border-radius:20px">
+                        </div>
 
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
