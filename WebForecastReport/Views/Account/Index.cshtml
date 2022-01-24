@@ -11,21 +11,21 @@
 </head>
 <body style="background-size:100%;background-repeat:no-repeat;background-image:url('@Url.Content("~/images/background.png")');">
     <div class="container-fluid d-flex justify-content-center align-items-center" style="height:100vh;vertical-align:middle">
-        <div class="jumbotron" style="background-color: white ;width:380px;height:450px; border-radius:5px;border-style:solid;border-color:#034694;border-width:1px;box-shadow:3px 3px 3px 3px #888888">
+        <div class="jumbotron elevation-2" style="background-color:white;width:380px;height:450px;border-radius:5px;border-style:solid;border-color:#034694;border-width:1px">
             <form role="form" asp-action="Login" asp-controller="Account" method="post">
                 <div class="text-center form-group" style="margin-top:-10px">
                     <img src="~/images/MES_Logo.png" style="width:300px;height:55px;padding-right:5px; justify-items:center" />
                 </div>
                 <div class="form-group" style="margin-top:80px">
-                    <input type="text" name="User" asp-for="user" autocomplete="on" class="form-control input-sm" placeholder="User name">
+                    <input type="text" name="User" asp-for="user" autocomplete="on" class="form-control form-control-lg" placeholder="User name">
                     <span asp-validation-for="user" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <input type="password" name="Password" asp-for="password" autocomplete="off" class="form-control input-sm" placeholder="Password">
+                <div class="form-group pt-3">
+                    <input type="password" name="Password" asp-for="password" autocomplete="off" class="form-control form-control-lg" placeholder="Password">
                     <span asp-validation-for="password" class="text-danger"></span>
                 </div>
-                <div style="margin-top:40px">
-                    <input type="submit" value="Login" class="btn btn-info btn-block" style="background-color: #034694;border-radius:20px">
+                <div class="form-group pt-3">
+                    <input type="submit" value="Login" class="btn btn-info btn-lg form-control form-control-lg" style="background-color: #034694;border-radius:20px">
                 </div>
             </form>
         </div>
