@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace WebForecastReport.Models
 {
-    public class SaleModel
+    public class UserManagementModel
     {
         public string name { get; set; }
         public string department { get; set; }
+        public string role { get; set; }
     }
 }

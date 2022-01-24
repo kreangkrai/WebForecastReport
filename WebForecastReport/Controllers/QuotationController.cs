@@ -14,22 +14,31 @@ namespace WebForecastReport.Controllers
     {
         readonly IQuotation Quotation;
         readonly IAccessory Accessory;
+        readonly IProduct Product;
         public QuotationController()
         {
             Quotation = new QuotationService();
             Accessory = new AccessoryService();
+            Product = new ProductService();
         }
         public IActionResult Index()
         {
-            string user = HttpContext.Session.GetString("userId");
-            List<UserModel> users = new List<UserModel>();
-            users = Accessory.getAllUser();
-            UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name }).FirstOrDefault();
+            if (HttpContext.Session.GetString("Login") != null)
+            {
+                string user = HttpContext.Session.GetString("userId");
+                List<UserModel> users = new List<UserModel>();
+                users = Accessory.getAllUser();
+                UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name, department = s.department, role = s.role }).FirstOrDefault();
 
-            return View(u);
+                return View(u);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Account");
+            }
         }
         [HttpPost]
-        public JsonResult GetQuotation(string name)
+        public JsonResult GetQuotation(string name,string department,string role)
         {
             string quotation = Quotation.GetlastQuotation();
             QuotationModel quotations = new QuotationModel();
@@ -43,46 +52,74 @@ namespace WebForecastReport.Controllers
                 quo = year + number.ToString().PadLeft(4, '0');
             }
             quotations.quotation_no = quo;
-            quotations.proposer = name;
+            quotations.revision = "0";
+            //quotations.proposer = name;
+            quotations.sale_name = name;
+            quotations.department = department;
             quotations.date = DateTime.Now.ToString("yyyy-MM-dd");
-            quotations.expected_date = DateTime.Now.ToString("yyyy-MM-dd");
+            ///quotations.expected_date = DateTime.Now.ToString("yyyy-MM-dd");
             quotations.expected_order_date = DateTime.Now.ToString("yyyy-MM-dd");
             quotations.required_onsite_date = DateTime.Now.ToString("yyyy-MM-dd");
             string message = Quotation.InsertQuotation(quotations);
 
             List<QuotationModel> getQuotation = new List<QuotationModel>();
-            getQuotation = Quotation.GetAll(name);
+            getQuotation = Quotation.GetQuotation(name,role);
             getQuotation = getQuotation.OrderByDescending(o => o.quotation_no).ToList();
             return Json(getQuotation);
         }
         [HttpPost]
-        public JsonResult GetData(string name)
+        public JsonResult GetData(string name,string role)
         {
             List<QuotationModel> quotations = new List<QuotationModel>();
-            quotations = Quotation.GetAll(name);
+            quotations = Quotation.GetQuotation(name,role);
             quotations = quotations.OrderByDescending(o => o.quotation_no).ToList();
-            return Json(quotations);
+
+            //get all sale
+            List<string> sales = new List<string>();
+            sales = Accessory.getAllUser().Select(s => s.name).ToList();
+
+            //get all customer
+            List<string> customers = new List<string>();
+            customers = Accessory.getCustomers().Select(s=>s.name).ToList();
+
+            //get all end user
+            List<string> endusers = new List<string>();
+            endusers = Accessory.getEndUsers().Select(s => s.name).ToList();
+
+            // get department
+            List<DepartmentModel> departments = new List<DepartmentModel>();
+            departments = Accessory.getDepartment();
+
+            //get Products
+            List<ProductModel> products = new List<ProductModel>();
+            products =  Product.GetProducts();
+
+            var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers, departments = departments, products = products };
+            return Json(list);
         }
         [HttpPost]
-        public JsonResult Update(string quotation, string date, string customer, string enduser, string project_name, string site_location, string product_type, string expected_order_date,
+        public JsonResult Update(string quotation, string revision,string date, string customer, string enduser, string project_name, string site_location, string product_type, string part_no,
+                    string spec, string quantity, string supplier_quotation_no, string total_value,string unit,string quoted_price,string expected_order_date,
                    string required_onsite_date, string proposer, string expected_date, string status, string stages, string how_to_support, string competitor, string competitor_description,
-                   string competitor_price, string sale_name, string detail)
+                   string competitor_price, string sale_name,string department, string detail)
         {
             QuotationModel q = new QuotationModel()
             {
                 quotation_no = quotation,
+                revision = revision,
                 date = date,
                 customer = customer,
                 enduser = enduser,
                 project_name = project_name,
                 site_location = site_location,
                 product_type = product_type,
-                part_no = "",
-                spec = "",
-                quantity = "",
-                supplier_quotation_no = "",
-                total_value = "",
-                unit = "",
+                part_no = part_no,
+                spec = spec,
+                quantity = quantity,
+                supplier_quotation_no = supplier_quotation_no,
+                total_value = total_value,
+                unit = unit,
+                quoted_price = quoted_price,
                 expected_order_date = expected_order_date,
                 required_onsite_date = required_onsite_date,
                 proposer = proposer,
@@ -94,8 +131,13 @@ namespace WebForecastReport.Controllers
                 competitor_description = competitor_description,
                 competitor_price = competitor_price,
                 sale_name = sale_name,
+                department = department,
                 detail = detail
             };
+
+            Accessory.InsertCustomer(customer);
+            Accessory.InsertEndUser(enduser);
+
             string message = Quotation.Update(q);
 
             return Json(message);

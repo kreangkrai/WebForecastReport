@@ -10,10 +10,10 @@ using WebForecastReport.Service;
 
 namespace WebForecastReport.Controllers
 {
-    public class OpportunityController : Controller
+    public class OpportunityProposalController : Controller
     {
         readonly IAccessory Accessory;
-        public OpportunityController()
+        public OpportunityProposalController()
         {
             Accessory = new AccessoryService();
         }

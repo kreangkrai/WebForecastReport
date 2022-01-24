@@ -33,49 +33,144 @@ namespace WebForecastReport.Service
             }
         }
 
-        public List<QuotationModel> GetAll(string name)
+        public List<QuotationModel> GetQuotation(string name,string role)
         {
             try
             {
                 List<QuotationModel> quotations = new List<QuotationModel>();
-                SqlCommand cmd = new SqlCommand("select * from Quotation where proposer='" + name + "' order by date desc", ConnectSQL.OpenConnect());
-                SqlDataReader dr = cmd.ExecuteReader();
-                if (dr.HasRows)
+                if (role == "Admin")
                 {
-                    while (dr.Read())
+                    SqlCommand cmd = new SqlCommand("select * from Quotation order by date desc", ConnectSQL.OpenConnect());
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
                     {
-                        QuotationModel q = new QuotationModel()
+                        while (dr.Read())
                         {
-                            quotation_no = dr["quotation_no"].ToString(),
-                            date = Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd"),
-                            customer = dr["customer"].ToString(),
-                            enduser = dr["enduser"].ToString(),
-                            project_name = dr["project_name"].ToString(),
-                            site_location = dr["site_location"].ToString(),
-                            product_type = dr["product_type"].ToString(),
-                            part_no = dr["part_no"].ToString(),
-                            spec = dr["spec"].ToString(),
-                            quantity = dr["quantity"].ToString(),
-                            supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
-                            total_value = dr["total_value"].ToString(),
-                            unit = dr["unit"].ToString(),
-                            expected_order_date = Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd"),
-                            required_onsite_date = Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd"),
-                            proposer = dr["proposer"].ToString(),
-                            expected_date = Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd"),
-                            status = dr["status"].ToString(),
-                            stages = dr["stages"].ToString(),
-                            how_to_support = dr["how_to_support"].ToString(),
-                            competitor = dr["competitor"].ToString(),
-                            competitor_description = dr["competitor_description"].ToString(),
-                            competitor_price = dr["competitor_price"].ToString(),
-                            sale_name = dr["sale_name"].ToString(),
-                            detail = dr["detail"].ToString()
-                        };
-                        quotations.Add(q);
+                            QuotationModel q = new QuotationModel()
+                            {
+                                quotation_no = dr["quotation_no"].ToString(),
+                                revision = dr["revision"].ToString(),
+                                date = Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd"),
+                                customer = dr["customer"].ToString(),
+                                enduser = dr["enduser"].ToString(),
+                                project_name = dr["project_name"].ToString(),
+                                site_location = dr["site_location"].ToString(),
+                                product_type = dr["product_type"].ToString(),
+                                part_no = dr["part_no"].ToString(),
+                                spec = dr["spec"].ToString(),
+                                quantity = dr["quantity"].ToString(),
+                                supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
+                                total_value = dr["total_value"].ToString(),
+                                unit = dr["unit"].ToString(),
+                                quoted_price = dr["quoted_price"].ToString(),
+                                expected_order_date = Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd"),
+                                required_onsite_date = Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd"),
+                                proposer = dr["proposer"].ToString(),
+                                expected_date = dr["expected_date"].ToString() != "" ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                                status = dr["status"].ToString(),
+                                stages = dr["stages"].ToString(),
+                                how_to_support = dr["how_to_support"].ToString(),
+                                competitor = dr["competitor"].ToString(),
+                                competitor_description = dr["competitor_description"].ToString(),
+                                competitor_price = dr["competitor_price"].ToString(),
+                                sale_name = dr["sale_name"].ToString(),
+                                department = dr["department"].ToString(),
+                                detail = dr["detail"].ToString()
+                            };
+                            quotations.Add(q);
+                        }
+                        dr.Close();
                     }
-                    dr.Close();
                 }
+                else if(role != "Admin" && role != "" && role != null)
+                {
+                    SqlCommand cmd = new SqlCommand("select * from Quotation where department='" + role + "' order by date desc", ConnectSQL.OpenConnect());
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            QuotationModel q = new QuotationModel()
+                            {
+                                quotation_no = dr["quotation_no"].ToString(),
+                                revision = dr["revision"].ToString(),
+                                date = Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd"),
+                                customer = dr["customer"].ToString(),
+                                enduser = dr["enduser"].ToString(),
+                                project_name = dr["project_name"].ToString(),
+                                site_location = dr["site_location"].ToString(),
+                                product_type = dr["product_type"].ToString(),
+                                part_no = dr["part_no"].ToString(),
+                                spec = dr["spec"].ToString(),
+                                quantity = dr["quantity"].ToString(),
+                                supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
+                                total_value = dr["total_value"].ToString(),
+                                unit = dr["unit"].ToString(),
+                                quoted_price = dr["quoted_price"].ToString(),
+                                expected_order_date = Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd"),
+                                required_onsite_date = Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd"),
+                                proposer = dr["proposer"].ToString(),
+                                expected_date = dr["expected_date"].ToString() != "" ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                                status = dr["status"].ToString(),
+                                stages = dr["stages"].ToString(),
+                                how_to_support = dr["how_to_support"].ToString(),
+                                competitor = dr["competitor"].ToString(),
+                                competitor_description = dr["competitor_description"].ToString(),
+                                competitor_price = dr["competitor_price"].ToString(),
+                                sale_name = dr["sale_name"].ToString(),
+                                department = dr["department"].ToString(),
+                                detail = dr["detail"].ToString()
+                            };
+                            quotations.Add(q);
+                        }
+                        dr.Close();
+                    }
+                }
+                else
+                {
+                    SqlCommand cmd = new SqlCommand("select * from Quotation where sale_name='" + name + "' order by date desc", ConnectSQL.OpenConnect());
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            QuotationModel q = new QuotationModel()
+                            {
+                                quotation_no = dr["quotation_no"].ToString(),
+                                revision = dr["revision"].ToString(),
+                                date = Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd"),
+                                customer = dr["customer"].ToString(),
+                                enduser = dr["enduser"].ToString(),
+                                project_name = dr["project_name"].ToString(),
+                                site_location = dr["site_location"].ToString(),
+                                product_type = dr["product_type"].ToString(),
+                                part_no = dr["part_no"].ToString(),
+                                spec = dr["spec"].ToString(),
+                                quantity = dr["quantity"].ToString(),
+                                supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
+                                total_value = dr["total_value"].ToString(),
+                                unit = dr["unit"].ToString(),
+                                quoted_price = dr["quoted_price"].ToString(),
+                                expected_order_date = Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd"),
+                                required_onsite_date = Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd"),
+                                proposer = dr["proposer"].ToString(),
+                                expected_date = dr["expected_date"].ToString() != "" ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                                status = dr["status"].ToString(),
+                                stages = dr["stages"].ToString(),
+                                how_to_support = dr["how_to_support"].ToString(),
+                                competitor = dr["competitor"].ToString(),
+                                competitor_description = dr["competitor_description"].ToString(),
+                                competitor_price = dr["competitor_price"].ToString(),
+                                sale_name = dr["sale_name"].ToString(),
+                                department = dr["department"].ToString(),
+                                detail = dr["detail"].ToString()
+                            };
+                            quotations.Add(q);
+                        }
+                        dr.Close();
+                    }
+                }
+                
                 return quotations;
             }
             finally
@@ -120,6 +215,7 @@ namespace WebForecastReport.Service
             {
                 using (SqlCommand cmd = new SqlCommand(@"INSERT INTO Quotation(
                                                                             quotation_no,
+                                                                            revision,
                                                                             date,
                                                                             customer,
                                                                             enduser,
@@ -132,6 +228,7 @@ namespace WebForecastReport.Service
                                                                             supplier_quotation_no,
                                                                             total_value,
                                                                             unit,
+                                                                            quoted_price,
                                                                             expected_order_date,
                                                                             required_onsite_date,
                                                                             proposer,
@@ -143,8 +240,10 @@ namespace WebForecastReport.Service
                                                                             competitor_description,
                                                                             competitor_price,
                                                                             sale_name,
+                                                                            department,
                                                                             detail) VALUES (
                                                                             @quotation_no,
+                                                                            @revision,
                                                                             @date,
                                                                             @customer,
                                                                             @enduser,
@@ -157,6 +256,7 @@ namespace WebForecastReport.Service
                                                                             @supplier_quotation_no,
                                                                             @total_value,
                                                                             @unit,
+                                                                            @quoted_price,
                                                                             @expected_order_date,
                                                                             @required_onsite_date,
                                                                             @proposer,
@@ -167,12 +267,14 @@ namespace WebForecastReport.Service
                                                                             @competitor, 
                                                                             @competitor_description, 
                                                                             @competitor_price, 
-                                                                            @sale_name, 
+                                                                            @sale_name,
+                                                                            @department,
                                                                             @detail)", ConnectSQL.OpenConnect()))
                 {
                     cmd.CommandType = CommandType.Text;
                     cmd.Connection = ConnectSQL.OpenConnect();
                     cmd.Parameters.AddWithValue("@quotation_no", model.quotation_no);
+                    cmd.Parameters.AddWithValue("@revision", model.revision);
                     cmd.Parameters.AddWithValue("@date", model.date);
                     cmd.Parameters.AddWithValue("@customer", model.customer);
                     cmd.Parameters.AddWithValue("@enduser", model.enduser);
@@ -185,6 +287,7 @@ namespace WebForecastReport.Service
                     cmd.Parameters.AddWithValue("@supplier_quotation_no", model.supplier_quotation_no);
                     cmd.Parameters.AddWithValue("@total_value", model.total_value);
                     cmd.Parameters.AddWithValue("@unit", model.unit);
+                    cmd.Parameters.AddWithValue("@quoted_price", model.quoted_price);
                     cmd.Parameters.AddWithValue("@expected_order_date", model.expected_order_date);
                     cmd.Parameters.AddWithValue("@required_onsite_date", model.required_onsite_date);
                     cmd.Parameters.AddWithValue("@proposer", model.proposer);
@@ -196,6 +299,7 @@ namespace WebForecastReport.Service
                     cmd.Parameters.AddWithValue("@competitor_description", model.competitor_description);
                     cmd.Parameters.AddWithValue("@competitor_price", model.competitor_price);
                     cmd.Parameters.AddWithValue("@sale_name", model.sale_name);
+                    cmd.Parameters.AddWithValue("@department", model.department);
                     cmd.Parameters.AddWithValue("@detail", model.detail);
                     cmd.ExecuteNonQuery();
 
@@ -220,19 +324,21 @@ namespace WebForecastReport.Service
             try
             {
                 using (SqlCommand cmd = new SqlCommand(@"INSERT INTO Quotation(
-                                                                            quotation_no,
-                                                                            date,proposer,expected_order_date,required_onsite_date,expected_date) VALUES (
-                                                                            @quotation_no,
-                                                                            @date,@proposer,@expected_order_date,@required_onsite_date,@expected_date)", ConnectSQL.OpenConnect()))
+                                                                            quotation_no,revision,
+                                                                            date,expected_order_date,required_onsite_date,sale_name,department) VALUES (
+                                                                            @quotation_no,@revision,@date,@expected_order_date,@required_onsite_date,@sale_name,@department)", ConnectSQL.OpenConnect()))
                 {
                     cmd.CommandType = CommandType.Text;
                     cmd.Connection = ConnectSQL.OpenConnect();
                     cmd.Parameters.AddWithValue("@quotation_no", model.quotation_no);
+                    cmd.Parameters.AddWithValue("@revision", model.revision);
                     cmd.Parameters.AddWithValue("@date", model.date);
-                    cmd.Parameters.AddWithValue("@proposer", model.proposer);
+                    //cmd.Parameters.AddWithValue("@proposer", model.proposer);
                     cmd.Parameters.AddWithValue("@expected_order_date", model.expected_order_date);
                     cmd.Parameters.AddWithValue("@required_onsite_date", model.required_onsite_date);
-                    cmd.Parameters.AddWithValue("@expected_date", model.expected_date);
+                    //cmd.Parameters.AddWithValue("@expected_date", null);
+                    cmd.Parameters.AddWithValue("@sale_name", model.sale_name);
+                    cmd.Parameters.AddWithValue("@department", model.department);
                     cmd.ExecuteNonQuery();
 
                     return "Insert Success";
@@ -256,7 +362,8 @@ namespace WebForecastReport.Service
             try
             {
                 SqlDataReader reader;
-                SqlCommand cmd = new SqlCommand(@"UPDATE Quotation SET date='" + model.date + "'," +
+                SqlCommand cmd = new SqlCommand(@"UPDATE Quotation SET revision='"+model.revision+"'," +
+                                                                      "date='" + model.date + "'," +
                                                                       "customer='" + model.customer + "'," +
                                                                       "enduser='" + model.enduser + "'," +
                                                                       "project_name='" + model.project_name + "'," +
@@ -268,6 +375,7 @@ namespace WebForecastReport.Service
                                                                       "supplier_quotation_no='" + model.supplier_quotation_no + "'," +
                                                                       "total_value='" + model.total_value + "'," +
                                                                       "unit='" + model.unit + "'," +
+                                                                      "quoted_price='" + model.quoted_price + "'," +
                                                                       "expected_order_date='" + model.expected_order_date + "'," +
                                                                       "required_onsite_date='" + model.required_onsite_date + "'," +
                                                                       "proposer='" + model.proposer + "'," +
@@ -279,6 +387,7 @@ namespace WebForecastReport.Service
                                                                       "competitor_description='" + model.competitor_description + "'," +
                                                                       "competitor_price='" + model.competitor_price + "'," +
                                                                       "sale_name='" + model.sale_name + "'," +
+                                                                      "department='" + model.department + "'," +
                                                                       "detail='" + model.detail + "'" +
                                                                       "WHERE quotation_no='" + model.quotation_no + "'");
                 cmd.CommandType = CommandType.Text;

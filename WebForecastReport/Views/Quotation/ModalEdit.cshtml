@@ -1,28 +1,54 @@
-﻿<div class="modal fade" id="EditModal" tabindex="-1" role="dialog">
+﻿<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" style="overflow-y:auto">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title"><b>Edit Quotation</b></h4>
+            <div class="modal-header">            
+                <div class="row w-100">
+                    <div class="col-md-2 col-xl-2 ml-2">
+                        <h4 class="modal-title"><b>Edit Quotation</b></h4>                       
+                    </div>
+                    <div class="col-md-5 col-xl-5 ml-2">
+                        <select id="edit_sale_name" class="form-control" style="width:100%" disabled>
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-xl-3 ml-2">
+                        <div class="row">
+                            <div class="col-md-6 col-xl-6">
+                                <h4 style="width:100%"><b>Department: </b></h4>
+                            </div>
+                            <div class="col-md-6 col-xl-6 text-left">
+                                <select id="edit_department" class="form-control" style="width:100%;" disabled></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
                 <form>
                     <div class="form-group row m-0">
-                        <div class="col-md-3 col-xl-3">
+                        <div class="col-md-2 col-xl-2">
                             <label>Quotation No</label>
                             <input id="edit_quotation_no" type="text" class="form-control" style="width:100%" disabled>
                         </div>
+                        <div class="col-md-1 col-xl-1">
+                            <label>Revision</label>
+                            <input id="edit_revision" type="number" class="form-control" />
+                        </div>
                         <div class="col-md-3 col-xl-3">
-                            <label>Date</label>
-                            <input id="edit_date" type="date" value="" class="form-control" style="width:100%">
+                            <label>Quotation Created Date</label>
+                            <input id="edit_date" type="date" value="" class="form-control" style="width:100%" disabled>
                         </div>
                         <div class="col-md-3 col-xl-3">
                             <label>Customer</label>
-                            <input id="edit_customer" type="text" class="form-control" style="width:100%">
+                            <input id="edit_customer" type="text" class="form-control" style="width:100%" list="list_customer" />
+                            <datalist id="list_customer">
+                            </datalist>
                         </div>
                         <div class="col-md-3 col-xl-3">
                             <label>End User</label>
-                            <input id="edit_enduser" type="text" class="form-control" style="width:100%">
+                            <input id="edit_enduser" type="text" class="form-control" style="width:100%" list="list_enduser" />
+                            <datalist id="list_enduser">
+                            </datalist>
                         </div>
                     </div>
                     <div class="form-group row m-0">
@@ -35,12 +61,22 @@
                             <input id="edit_site_location" type="text" class="form-control" style="width:100%">
                         </div>
                         <div class="col-md-3 col-xl-3">
-                            <label>Proposer</label>
-                            <input id="edit_proposer" type="text" class="form-control" style="width:100%">
+                            <label>Status</label>
+                            <select id="edit_status" class="form-control" style="width:100%">
+                                <option value="IN">IN</option>
+                                <option value="OUT">OUT</option>
+                            </select>
                         </div>
                         <div class="col-md-3 col-xl-3">
-                            <label>Status</label>
-                            <input id="edit_status" type="text" class="form-control" style="width:100%">
+                            <label>Stages</label>
+                            <select id="edit_stages" class="form-control" style="width:100%">
+                                <option value="Quote for Buddget">Quote for Buddget</option>
+                                <option value="Negotiation/Review">Negotiation/Review</option>
+                                <option value="Proposal/Quote for Order">Proposal/Quote for Order</option>
+                                <option value="Prospecting">Prospecting</option>
+                                <option value="Closed(Won)">Closed(Won)</option>
+                                <option value="Closed(Lost)">Closed(Lost)</option>
+                            </select>
                         </div>
                     </div>
 
@@ -53,59 +89,80 @@
                             <label>Required Onsite Date</label>
                             <input id="edit_required_onsite_date" type="date" class="form-control" style="width:100%">
                         </div>
+                        
                         <div class="col-md-3 col-xl-3">
-                            <label>Expected Date</label>
-                            <input id="edit_expected_date" type="date" class="form-control" style="width:100%">
+                            <label>Proposal Created By</label>
+                            <select id="edit_proposer" class="form-control" style="width:100%"></select>
                         </div>
                         <div class="col-md-3 col-xl-3">
-                            <label>Stages</label>
-                            <input id="edit_stages" type="text" class="form-control" style="width:100%">
+                            <label>Proposal Expected Date</label>
+                            <input id="edit_expected_date" type="date" class="form-control" style="width:100%" disabled>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <div class="col-md-6 col-xl-6">
+                            <label class="ml-2">Product</label>
+                            <div class="input-group" style="width:98%">
+                                <select id="products" class="form-control ml-2 mr-1" style="width:100%">
+                                </select>
+                                <div class="input-group-append">
+                                    <input type="button" class="btn btn-success" id="btnAddProduct" value="ADD"/>
+                                </div>
+                            </div>
+                        </div>                       
+                    </div>
+
                     <div class="form-group row m-0">
-                        <div class="col-md-11 col-xl-11">
+                        <div class="col-md-10 col-xl-10">
                             <label>Product Type</label>
-                            <input id="edit_product_type" type="text" class="form-control" style="width:100%">
+                            <input id="edit_product_type" type="text" class="form-control" style="width:100%" disabled>
                         </div>
                         <div class="col-md-1 col-xl-1">
-                            <label>More</label>
-                            <button type="button" id="edit_MoreProductType" class="btn btn-primary" style="width:100%;height:38px">More</button>
+                            <label>Clear</label>
+                            <button type="button" id="clear_btnProductType" class="btn btn-warning" style="width:100%;height:38px">Clear</button>
+                        </div>
+                        <div class="col-md-1 col-xl-1">
+                            <label>Edit</label>
+                            <button type="button" id="edit_btnProductType" class="btn btn-primary" style="width:100%;height:38px">Edit</button>
                         </div>
                     </div>
                     <div class="form-group row m-0">
-                        <div class="col-md-6 col-xl-6">
-                            <label>Compettitor A Price (EUR)</label>
-                            <input id="edit_competitor_price" type="text" class="form-control" style="width:100%">
+                        <div class="col-md-4 col-xl-4">
+                            <div class="row">
+                                <div class="col-md-12 col-xl-12">
+                                    <label>Quoted Price</label>
+                                    <div class="row">
+                                        <input id="edit_quoted_price" type="text" class="form-control ml-2" style="width:85%">
+                                        <h5 class="pt-2 pl-1"><b> THB</b></h5>
+                                    </div>
+                                </div>
+                            </div>                            
                         </div>
-                        <div class="col-md-6 col-xl-6">
-                            <label>Sale Name</label>
-                            <input id="edit_sale_name" type="text" class="form-control" style="width:100%">
-                        </div>
-                    </div>
-                    <div class="form-group row m-0">
-                        <div class="col-md-12 col-xl-12">
+                        
+                        <div class="col-md-4 col-xl-4">
                             <label>How supplier support to win this project</label>
                             <input id="edit_how_to_support" type="text" class="form-control" style="width:100%">
                         </div>
-                    </div>
-                    <div class="form-group row m-0">
-                        <div class="col-md-12 col-xl-12">
+                        <div class="col-md-4 col-xl-4">
                             <label>Competitor</label>
                             <input id="edit_competitor" type="text" class="form-control" style="width:100%">
                         </div>
+
                     </div>
                     <div class="form-group row m-0">
-                        <div class="col-md-12 col-xl-12">
+                        <div class="col-md-4 col-xl-4">
                             <label>Competitor Description</label>
                             <input id="edit_competitor_description" type="text" class="form-control" style="width:100%">
                         </div>
-                    </div>
-                    <div class="form-group row m-0">
-                        <div class="col-md-12 col-xl-12">
+                        <div class="col-md-4 col-xl-4">
+                            <label>Compettitor A Price (EUR)</label>
+                            <input id="edit_competitor_price" type="text" class="form-control" style="width:100%">
+                        </div>
+
+                        <div class="col-md-4 col-xl-4">
                             <label>Detail Project</label>
                             <input id="edit_detail" type="text" class="form-control" style="width:100%">
                         </div>
-
                     </div>
                 </form>
 
@@ -118,8 +175,8 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<div class="modal fade" id="EditMoreModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-xl" role="document">
+<div class="modal fade" id="EditMoreModal" tabindex="-1" role="dialog" style="overflow-y:auto;overflow-x:auto;">
+    <div class="modal-lg modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title"><b>Product Type</b></h4>
@@ -127,14 +184,83 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <div id="moreProduct">
+                    <div class="container">
+                        <table id="tableedit" class="table table-md cell-border table-dark display responsive nowrap" style="overflow-x:auto" width="100%">
+                        </table>
                     </div>
                 </form>
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="edit_moreConfirm">Save changes</button>
+                @*<button type="button" class="btn btn-primary" id="edit_moreConfirm">Save changes</button>*@
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="EditProductTypeModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><b>Product Type</b></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row m-0">
+                        <div class="col-md-12 col-xl-12">
+                            <label>Product Type</label>
+                            <input id="edit_sub_product_type" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-12 col-xl-12">
+                            <label>Part No</label>
+                            <input id="edit_sub_part_no" type="text" class="form-control" style="width:100%" >
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-12 col-xl-12">
+                            <label>Spec</label>
+                            <input id="edit_sub_spec" type="text" class="form-control" style="width:100%" >
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-12 col-xl-12">
+                            <label>Quantity</label>
+                            <input id="edit_sub_quantity" type="text" class="form-control" style="width:100%">
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-12 col-xl-12">
+                            <label>Supplier Quotation No</label>
+                            <input id="edit_sub_supplier_quotation_no" type="text" class="form-control" style="width:100%" >
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-12 col-xl-12">
+                            <label>Total Value</label>
+                            <input id="edit_sub_total_value" type="text" class="form-control" style="width:100%" >
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-12 col-xl-12">
+                            <label>Unit</label>
+                            <select id="edit_sub_unit" class="form-control" style="width:100%">
+                                <option value="THB">THB</option>
+                                <option value="EUR">EUR</option>
+                                <option value="USD">USD</option>
+                                <option value="JPY">JPY</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="edit_ProductTypeConfirm">Save changes</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

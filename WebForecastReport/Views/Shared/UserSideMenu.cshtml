@@ -1,10 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Http
 <aside class="main-sidebar sidebar-dark-primary elevation-2">
     <!-- Brand Logo -->
-    <a class="brand-link" asp-controller="Home" asp-action="Index">
+    <a class="brand-link text-center" asp-controller="Quotation" asp-action="Index">
         @*<img src="~/images/icon.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8">*@
-        <span class="brand-text font-weight-light">Forecast</span>
+        <span class="brand-text font-weight-light"><b>MES</b></span>
     </a>
 
     <!-- Sidebar -->
@@ -28,6 +28,12 @@
                     <a class="nav-link" asp-controller="Proposal" asp-action="Index">
                         <i class="nav-icon fas fa-file-invoice"></i>
                         <p>Proposal</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="OpportunityProposal" asp-action="Index">
+                        <i class="nav-icon fas fa-file-invoice"></i>
+                        <p>OpportunityProposal</p>
                     </a>
                 </li>
                 <li class="nav-item">
