@@ -1,4 +1,7 @@
-﻿<div class="row">
+﻿@{ 
+    ViewData["Title"] = "Opportunity";
+}
+<div class="row pt-3">
     <div class="col-xl-2 pb-3">
         <button id="btn_create_opp" type="button" class="btn btn-primary">
             <i class="fas fa-plus"></i> CREATE OPP
@@ -22,7 +25,6 @@
     </div>
 </div>
 <partial name="Modal" />
-
 @section Scripts
 {
     <script type="text/javascript">
