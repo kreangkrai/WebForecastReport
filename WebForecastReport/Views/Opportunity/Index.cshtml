@@ -14,11 +14,22 @@
             </div>
             <div class="card-body">
                 <table id="table_opp" class="table table-bordered table-sm">
-                    <tr>
-                        <th>OPP NO</th>
-                        <th>Date</th>
-                        <th>OP Type</th>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>OPP NO</th>
+                            <th>Date</th>
+                            <th>OP Type</th>
+                            <th>Customer</th>
+                            <th>End User</th>
+                            <th>Project Name</th>
+                            <th>Product Type</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -31,5 +42,7 @@
         $('#btn_create_opp').on('click', function () {
             $('#ShowModal').modal();
         });
+
+        $('#table_opp').DataTable();
     </script>
 }

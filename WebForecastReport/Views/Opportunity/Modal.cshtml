@@ -1,30 +1,36 @@
-﻿<div class="modal fade" id="ShowModal" tabindex="-1" role="dialog" style="overflow-y:auto">
+﻿@{ 
+    ViewData["Title"] = "Opportunity";
+}
+<div class="modal fade" id="ShowModal" tabindex="-1" role="dialog" style="overflow-y:auto" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Opportunity</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <form>
                     <div class="row">
                         <div class="col-xl-12">
                             <div class="form-group">
                                 <label for="OpportunityNo">Opportunity NO.</label>
-                                <input id="OpportunityNo" type="text" class="form-control" />
+                                <input id="OpportunityNo" type="text" class="form-control" placeholder="OPPYYXXXX" />
                             </div>
                         </div>
                         <div class="col-xl-6">
                             <div class="form-group">
-                                <label for="Date">Date</label>
-                                <input id="Date" type="date" class="form-control" />
+                                <label for="OppDate">Date</label>
+                                <input id="OppDate" type="date" class="form-control" />
                             </div>
                         </div>
                         <div class="col-xl-6">
                             <div class="form-group">
                                 <label for="OPType">OP Type</label>
                                 <select id="OPType" class="form-control">
-                                    <option>Please Select</option>
+                                    <option selected disabled>Please Select Opportunity Type</option>
+                                    <option>Line</option>
+                                    <option>Facebook</option>
+                                    <option>Sugarex</option>
                                 </select>
                             </div>
                         </div>
@@ -46,13 +52,31 @@
                                 <input id="ProjectName" type="text" class="form-control" />
                             </div>
                         </div>
+                        <div class="col-xl-12">
+                            <hr />
+                        </div>
                         <div class="col-xl-6">
                             <div class="form-group">
                                 <label for="ProductType">Product Type</label>
-                                <input id="ProductType" type="text" class="form-control" />
+                                <select id="ProductType" class="form-control">
+                                    <option selected disabled>Please Select Product Type</option>
+                                    <option>Product</option>
+                                    <option>Project</option>
+                                    <option>Service</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-xl-6">
+                            <div class="form-group">
+                                <label for="Product">Product</label>
+                                <select id="Product" class="form-control">
+                                    <option selected disabled>Please Select Product</option>
+                                    <option>ABB</option>
+                                    <option>CANTY</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-12">
                             <div class="form-group">
                                 <label for="Amount">Amount</label>
                                 <input id="Amount" type="number" class="form-control" />
@@ -62,7 +86,9 @@
                             <div class="form-group">
                                 <label for="Status">Status</label>
                                 <select id="Status" class="form-control">
-                                    <option>Please Select</option>
+                                    <option selected disabled>Please Select</option>
+                                    <option>Open</option>
+                                    <option>Close</option>
                                 </select>
                             </div>
                         </div>

@@ -7,6 +7,15 @@
             <div class="card-body">
                 <form>
                     <table id="table_oppr" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>OPP</th>
+                                <th>PR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
                     </table>
                 </form>
             </div>
@@ -18,16 +27,7 @@
     <script type="text/javascript">
         var table;
         $(document).ready(function () {
-            table = $('#table_oppr').DataTable({
-                //data: dataSet,
-                columns: [
-                    { title: "OPP NO. " },
-                    { title: "Date" },
-                    { title: "OP Type" },
-                ],
-                "scrollX": true,
-            });
-            $(table.table().body()).addClass('text-dark');
+            table = $('#table_oppr').DataTable();
         });
     </script>
 }

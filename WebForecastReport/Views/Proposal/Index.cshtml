@@ -29,11 +29,11 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="modal_proposal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal_proposal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Proposal</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -101,7 +101,7 @@
                         <div class="col-xl-3">
                             <div class="form-group">
                                 <label for="RequestOnSite">Request On Site</label>
-                                <input id="RequestOnSite" type="text" class="form-control" />
+                                <input id="RequestOnSite" type="date" class="form-control" />
                             </div>
                         </div>
                         <div class="col-xl-3">
@@ -145,50 +145,52 @@
                             </div>
                         </div>
                         <div class="col-xl-3">
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <label for="ProposeCost">Propose Cost</label>
-                                </div>
-                                <div class="col-4">
-                                    <input id="ProposeCost" type="number" class="form-control" />
-                                </div>
-                                <div class="col-4">
-                                    <label>THB</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3">
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <label for="ProposePrice">Propose Price</label>
-                                </div>
-                                <div class="col-4">
-                                    <input id="ProposePrice" type="number" class="form-control" />
-                                </div>
-                                <div class="col-4">
-                                    <label>THB</label>
+                            <div class="form-group">
+                                <label for="ProposeCost">Propose Cost</label>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <input id="ProposeCost" type="number" class="form-control" />
+                                    </div>
+                                    <div class="col-4 d-flex justify-content-start align-items-end">
+                                        <label>THB</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-3">
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <label for="GP">GP</label>
-                                </div>
-                                <div class="col-4">
-                                    <input id="GP" type="number" class="form-control" />
-                                </div>
-                                <div class="col-4">
-                                    <label>%</label>
+                        <div class="col-xl-4">
+                            <div class="form-group">
+                                <label for="ProposePrice">Propose Price</label>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <input id="ProposePrice" type="number" class="form-control" />
+                                    </div>
+                                    <div class="col-4 d-flex justify-content-start align-items-end">
+                                        <label>THB</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-3">
+                        <div class="col-xl-4">
+                            <div class="form-group">
+                                <label for="GP">GP</label>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <input id="GP" type="number" class="form-control" />
+                                    </div>
+                                    <div class="col-4 d-flex justify-content-start align-items-end">
+                                        <label>%</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
                             <div class="form-group">
                                 <label for="FinishDate">Finish Date</label>
                                 <input id="FinishDate" type="date" class="form-control" />
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-xl-3">
                             <div class="form-group">
                                 <div class="form-check">
@@ -209,7 +211,7 @@
                         </div>
                         <div class="col-12">
                             <div class="form-group">
-                                <label for="table_pic">Person In Charge</label>
+                                <label for="table_pic">Person(s) In Charge</label>
                                 <table class="table table-sm table-bordered">
                                     <thead>
                                         <tr>
@@ -241,6 +243,7 @@
             $('#btn_add').on('click', function () {
                 $('#modal_proposal').modal();
             });
+            $('#table_proposal').DataTable();
         });
     </script>
 }
