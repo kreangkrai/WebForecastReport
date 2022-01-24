@@ -13,7 +13,7 @@
         <div class="col-md-4 col-xl-4">
             <div class="row">
                 <div class="col-md-8 col-xl-8">
-                    <input id="product" class="form-control" style="width:100%"/>                     
+                    <input id="product" class="form-control" style="width:100%" />
                 </div>
                 <div class="col-md-4 col-xl-4">
                     <button type="button" id="AddProduct" class="btn btn-primary" style="width: 100%">
@@ -27,7 +27,7 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">Products</span>
+                    <span class="card-title"><b>Products</b></span>
                 </div>
                 <div class="card-body">
                     <table id="table" class="table table-xl cell-border table-dark display responsive nowrap" width="100%">
@@ -40,142 +40,142 @@
 <partial name="ModalEdit" />
 @section Scripts
 {
-    <script type="text/javascript">
-        var product_data = [];
-        var name = '';
-        var id = null;
-        $(document).ready(function () {
-            init();
+<script type="text/javascript">
+    var product_data = [];
+    var name = '';
+    var id = null;
+    $(document).ready(function () {
+        init();
+    });
+    function init() {
+    $.ajax({
+        url: '@Url.Action("GetData", "Product")',
+        type: "post",
+        contentType: 'application/x-www-form-urlencoded',
+        data: {
+        },
+        success: function (response) {
+            var datas = response;
+            var dataSet = [];
+            for (var i = 0; i < datas.length; i++) {
+                var data = ["","",
+                    datas[i].id,
+                    datas[i].name];
+
+                dataSet.push(data);
+            }
+            product_data = dataSet;
+
+            table(dataSet);
+        }
+    });
+    };
+    var tables;
+    function table(dataSet) {
+        if (tables !== undefined)
+            tables.destroy();
+        tables = $('#table').DataTable({
+            data: dataSet,
+            columns: [
+                { title: "Edit", width: 10 },
+                { title: "Delete", width: 10 },
+                { title: "Id" , width: 10 },
+                { title: "Product" },
+            ],
+            "columnDefs": [
+                {
+                    "targets": 0,
+                    "data": null,
+                    "defaultContent": "<i class=\"fas fa-pen\"></i>",
+                    "className": 'dt-body-center',
+                },
+                {
+                    "targets": 1,
+                    "data": null,
+                    "defaultContent": "<i class=\"fas fa-trash\"></i>",
+                    "className": 'dt-body-center',
+                },
+                {
+                    "targets": 2,
+                    "visible": false,
+                    "searchable": false,
+                    "className": 'dt-body-center',
+                },
+            ],
+            "scrollX": true,
         });
-        function init() {
-        $.ajax({
-            url: '@Url.Action("GetData", "Product")',
+        $(tables.table().body()).addClass('text-dark');
+    };
+    $('#table').on('click', 'tbody td', function () {
+        var cell = tables.cell(this);
+        var column = cell[0][0].column;
+        name = cell.data()[3];
+        id = cell.data()[2];
+
+        if (column == "0") {
+
+            document.getElementById('edit_product').value = name;
+            $('#EditModal').modal();
+        } else if ( column == "1") {
+            $.ajax({
+            url: '@Url.Action("Delete", "Product")',
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
+                name
             },
             success: function (response) {
-                var datas = response;
-                var dataSet = [];
-                for (var i = 0; i < datas.length; i++) {
-                    var data = ["","",
-                        datas[i].id,
-                        datas[i].name];
-
-                    dataSet.push(data);
+                if (response == "Delete Success") {
+                    init();
+                    toastr.success("Delete Success");
+                } else {
+                    toastr.error("Delete Failed");
                 }
-                product_data = dataSet;
-
-                table(dataSet);
             }
         });
-        };
-        var tables;
-        function table(dataSet) {
-            if (tables !== undefined)
-                tables.destroy();
-            tables = $('#table').DataTable({
-                data: dataSet,
-                columns: [
-                    { title: "Edit", width: 10 },
-                    { title: "Delete", width: 10 },
-                    { title: "Id" , width: 10 },
-                    { title: "Product" },
-                ],
-                "columnDefs": [
-                    {
-                        "targets": 0,
-                        "data": null,
-                        "defaultContent": "<i class=\"fas fa-pen\"></i>",
-                        "className": 'dt-body-center',
-                    },
-                    {
-                        "targets": 1,
-                        "data": null,
-                        "defaultContent": "<i class=\"fas fa-trash\"></i>",
-                        "className": 'dt-body-center',
-                    },
-                    {
-                        "targets": 2,
-                        "visible": false,
-                        "searchable": false,
-                        "className": 'dt-body-center',
-                    },
-                ],
-                "scrollX": true,
-            });
-            $(tables.table().body()).addClass('text-dark');
-        };
-        $('#table').on('click', 'tbody td', function () {
-            var cell = tables.cell(this);
-            var column = cell[0][0].column;
-            name = cell.data()[3];
-            id = cell.data()[2];
-
-            if (column == "0") {
-
-                document.getElementById('edit_product').value = name;
-                $('#EditModal').modal();
-            } else if ( column == "1") {
-                $.ajax({
-                url: '@Url.Action("Delete", "Product")',
-                type: "post",
-                contentType: 'application/x-www-form-urlencoded',
-                data: {
-                    name
-                },
-                success: function (response) {
-                    if (response == "Delete Success") {
-                        init();
-                        toastr.success("Delete Success");
-                    } else {
-                        toastr.error("Delete Failed");
-                    }
+        }
+    });
+    $('#edit_ProductConfirm').on('click', function () {
+        var name = document.getElementById('edit_product').value;
+        $.ajax({
+            url: '@Url.Action("Update", "Product")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                id,name
+            },
+            success: function (response) {
+                if (response == "Update Success") {
+                    init();
+                    toastr.success("Update Success");
+                } else {
+                    toastr.error("Update Failed");
                 }
-            });
+                $('#EditModal').modal('hide');
+            }
+
+        });
+    });
+    $('#AddProduct').on('click', function () {
+        var name = document.getElementById('product').value;
+        $.ajax({
+            url: '@Url.Action("Insert", "Product")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                name
+            },
+            success: function (response) {
+                if (response == "Insert Success") {
+                    init();
+                    document.getElementById('product').value = "";
+                    toastr.success("Insert Success");
+                } else {
+                    toastr.error("Insert Failed");
+                }
             }
         });
-        $('#edit_ProductConfirm').on('click', function () {
-            var name = document.getElementById('edit_product').value;
-            $.ajax({
-                url: '@Url.Action("Update", "Product")',
-                type: "post",
-                contentType: 'application/x-www-form-urlencoded',
-                data: {
-                    id,name
-                },
-                success: function (response) {
-                    if (response == "Update Success") {
-                        init();
-                        toastr.success("Update Success");
-                    } else {
-                        toastr.error("Update Failed");
-                    }
-                    $('#EditModal').modal('hide');
-                }
-                
-            });
-        });
-        $('#AddProduct').on('click', function () {
-            var name = document.getElementById('product').value;
-            $.ajax({
-                url: '@Url.Action("Insert", "Product")',
-                type: "post",
-                contentType: 'application/x-www-form-urlencoded',
-                data: {
-                    name
-                },
-                success: function (response) {
-                    if (response == "Insert Success") {
-                        init();
-                        document.getElementById('product').value = "";
-                        toastr.success("Insert Success");
-                    } else {
-                        toastr.error("Insert Failed");
-                    }
-                }
-            });
-        });
-    </script>
+    });
+</script>
 }
 
