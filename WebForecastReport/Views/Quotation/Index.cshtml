@@ -1,12 +1,27 @@
 ﻿@model WebForecastReport.Models.UserModel;
 @{
-    ViewData["Title"] = "Quotation";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Quotation";
 }
 <style>
-    table tr td:nth-of-type(1),
-    table tr td:nth-of-type(2) {
+    #table tr td:nth-of-type(1),
+    #table tr td:nth-of-type(2) {
         cursor: pointer;
+    }
+
+    #tableedit tr td:nth-of-type(1),
+    #tableedit tr td:nth-of-type(2) {
+        cursor: pointer;
+    }
+
+    td.highlight_yellow {
+        background-color: yellow;
+    }
+
+    td.highlight_red {
+        font-weight: bold;
+        color: red;
+        background-color: burlywood;
     }
 </style>
 <div class="container-fluid p-3" style="background-color:#ECF0F5;">
@@ -30,374 +45,748 @@
 <partial name="ModalEdit" />
 @section Scripts
 {
-<script type="text/javascript">
-         var quotation = '';
-         var date = '';
-         var customer = '';
-         var enduser = '';
-         var project_name = '';
-         var site_location = '';
-         var product_type = '';
-         var part_no = '';
-         var spec = '';
-         var quantity = '';
-         var supplier_quotation_no = '';
-         var total_value = '';
-         var unit = '';
-         var expected_order_date = '';
-         var required_onsite_date = '';
-         var proposer = '';
-         var expected_date = '';
-         var status = '';
-         var stages = '';
-         var how_to_support = '';
-         var competitor = '';
-         var competitor_description = '';
-         var competitor_price = '';
-         var sale_name = '';
-         var detail = '';
-    $(document).ready(function () {
-        init();
-    });
+    <script type="text/javascript">
+        var quotation_datas = [];
+        var quotation = '';
+        var revision = '';
+        var date = '';
+        var customer = '';
+        var enduser = '';
+        var project_name = '';
+        var site_location = '';
+        var product_type = '';
+        var part_no = '';
+        var spec = '';
+        var quantity = '';
+        var supplier_quotation_no = '';
+        var total_value = '';
+        var unit = '';
+        var quoted_price = '';
+        var expected_order_date = '';
+        var required_onsite_date = '';
+        var proposer = '';
+        var expected_date = '';
+        var status = '';
+        var stages = '';
+        var how_to_support = '';
+        var competitor = '';
+        var competitor_description = '';
+        var competitor_price = '';
+        var sale_name = '';
+        var department = '';
+        var detail = '';
 
-    function init() {
-        var name = '@Model.name';
-        $.ajax({
-            url: '@Url.Action("GetData", "Quotation")',
-            type: "post",
-            contentType: 'application/x-www-form-urlencoded',
-            data: {
-                name,
-            },
-            success: function (response) {
-                var dataSet = [];
-                for (var i = 0; i < response.length; i++) {
-                    var data = ["",
-                        "",
-                        response[i].quotation_no,
-                        response[i].date,
-                        response[i].customer,
-                        response[i].enduser,
-                        response[i].project_name,
-                        response[i].site_location,
-                        response[i].product_type,
-                        response[i].part_no,
-                        response[i].spec,
-                        response[i].quantity,
-                        response[i].supplier_quotation_no,
-                        response[i].total_value,
-                        response[i].unit,
-                        response[i].expected_order_date,
-                        response[i].required_onsite_date,
-                        response[i].proposer,
-                        response[i].expected_date,
-                        response[i].status,
-                        response[i].stages,
-                        response[i].how_to_support,
-                        response[i].competitor,
-                        response[i].competitor_description,
-                        response[i].competitor_price,
-                        response[i].sale_name,
-                        response[i].detail];
+        var arrProductType = [];
+        var arrPart_No = [];
+        var arrSpec = [];
+        var arrQuantity = [];
+        var arrSupplier_Quotation_No = [];
+        var arrTotal_Value = [];
+        var arrUnit = [];
 
-                    dataSet.push(data);
-                }
-                table(dataSet);
-            }
+        var Units = ["THB", "EUR", "USD", "JPY"];
+        var Status = ["IN", "OUT"];
+        var Stages = ["Quote for Buddget", "Negotiation/Review", "Proposal/Quote for Order", "Prospecting", "Closed(Won)", "Closed(Lost)"];
+        var Products = [];
+        var Departments = [];
+        var Sales = [];
+        var Proposers = [];
+        var Customers = [];
+        var EndUsers = [];
+
+        var state_admin = false;
+
+        $(document).ready(function () {
+            init();
         });
-    };
 
-    $('#AddQuotation').on('click', function () {
-        var name ='@Model.name';
-        $.ajax({
-            url: '@Url.Action("GetQuotation", "Quotation")',
-            type: "post",
-            contentType: 'application/x-www-form-urlencoded',
-            data: {
-                name,
-            },
-            success: function (response) {
-                var dataSet = [];
-                for (var i = 0; i < response.length; i++) {
-                    var data = ["",
-                        "",
-                        response[i].quotation_no,
-                        response[i].date,
-                        response[i].customer,
-                        response[i].enduser,
-                        response[i].project_name,
-                        response[i].site_location,
-                        response[i].product_type,
-                        response[i].part_no,
-                        response[i].spec,
-                        response[i].quantity,
-                        response[i].supplier_quotation_no,
-                        response[i].total_value,
-                        response[i].unit,
-                        response[i].expected_order_date,
-                        response[i].required_onsite_date,
-                        response[i].proposer,
-                        response[i].expected_date,
-                        response[i].status,
-                        response[i].stages,
-                        response[i].how_to_support,
-                        response[i].competitor,
-                        response[i].competitor_description,
-                        response[i].competitor_price,
-                        response[i].sale_name,
-                        response[i].detail];
-
-                    dataSet.push(data);
-                }
-                table(dataSet);
-            }
-        });
-    });
-
-    var tables;
-    function table(dataSet) {
-        if (tables !== undefined)
-            tables.destroy();
-        tables = $('#table').DataTable({
-            data: dataSet,
-            columns: [
-                { title: "Edit "  },
-                { title: "View" },
-                { title: "Quotation No"},
-                { title: "Date" },
-                { title: "Customer" },
-                { title: "End User" },
-                { title: "Project Name" },
-                { title: "Site Location" },
-                { title: "Product Type" },
-                { title: "Part No" },
-                { title: "Spec" },
-                { title: "Quantity" },
-                { title: "Supplier Quotation No" },
-                { title: "Total Value" },
-                { title: "Unit" },
-                { title: "Expected Order Date" },
-                { title: "Required Onsite Date" },
-                { title: "Proposer" },
-                { title: "Expected Date" },
-                { title: "Status" },
-                { title: "Stages" },
-                { title: "How to Support" },
-                { title: "Competitor" },
-                { title: "Competitor Description" },
-                { title: "Competitor Price" },
-                { title: "Sale Name" },
-                { title: "Detail" },
-            ],
-            "columnDefs": [
-                {
-                    "targets": 0,
-                    "data": null,
-                    "defaultContent": "<i class=\"fas fa-edit\"></i>",
-                    "className" : 'dt-body-center',
+        function init() {
+            var name = '@Model.name';
+            var role = '@Model.role';
+            $.ajax({
+                url: '@Url.Action("GetData", "Quotation")',
+                type: "post",
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    name, role
                 },
-                {
-                    "targets": 1,
-                    "data": null,
-                    "defaultContent": "<i class=\"fas fa-eye\"></i>",
-                    "className" : 'dt-body-center'
-                },
+                success: function (response) {
+                    //add sale to select
+                    Sales = add_sale(response.sales);
+                    Proposers = add_proposer(response.sales);
+                    //add customer to datalist
+                    Customers = add_customer(response.customers);
 
-            ],
-            "scrollX": true,
+                    //add end user to datalist
+                    EndUsers = add_enduser(response.endusers);
 
-        });
-        $(tables.table().body()).addClass('text-dark');
-    }
+                    // add Department
+                    Departments = add_department(response.departments);
 
-     $('#table').on('click', 'tbody td', function () {
-          var cell = tables.cell(this);
-          var column = cell[0][0].column;
-          quotation = cell.data()[2];
-          date = cell.data()[3];
-          customer = cell.data()[4];
-          enduser = cell.data()[5];
-          project_name = cell.data()[6];
-          site_location = cell.data()[7];
-          product_type = cell.data()[8];
-          part_no = cell.data()[9];
-          spec = cell.data()[10];
-          quantity = cell.data()[11];
-          supplier_quotation_no = cell.data()[12];
-          total_value = cell.data()[13];
-          unit = cell.data()[14];
-          expected_order_date = cell.data()[15];
-          required_onsite_date = cell.data()[16];
-          proposer = cell.data()[17];
-          expected_date = cell.data()[18];
-          status = cell.data()[19];
-          stages = cell.data()[20];
-          how_to_support = cell.data()[21];
-          competitor = cell.data()[22];
-          competitor_description = cell.data()[23];
-          competitor_price = cell.data()[24];
-          sale_name = cell.data()[25];
-          detail = cell.data()[26];
-          if(column == "0"){
-              document.getElementById('edit_quotation_no').value = quotation;
-              document.getElementById('edit_date').value = date;
-              document.getElementById('edit_customer').value = customer;
-              document.getElementById('edit_enduser').value = enduser;
-              document.getElementById('edit_project_name').value = project_name;
-              document.getElementById('edit_site_location').value = site_location;
-              document.getElementById('edit_product_type').value = product_type ;
-              document.getElementById('edit_expected_order_date').value = expected_order_date;
-              document.getElementById('edit_required_onsite_date').value = required_onsite_date;
-              document.getElementById('edit_proposer').value = proposer;
-              document.getElementById('edit_expected_date').value = expected_date;
-              document.getElementById('edit_status').value = status;
-              document.getElementById('edit_stages').value = stages;
-              document.getElementById('edit_how_to_support').value = how_to_support;
-              document.getElementById('edit_competitor').value = competitor;
-              document.getElementById('edit_competitor_description').value = competitor_description;
-              document.getElementById('edit_competitor_price').value = competitor_price;
-              document.getElementById('edit_sale_name').value = sale_name;
-              document.getElementById('edit_detail').value = detail;
-              $('#EditModal').modal();
-          }else if (column == "1"){
-              document.getElementById('quotation_no').value = quotation;
-              document.getElementById('date').value = date;
-              document.getElementById('customer').value = customer;
-              document.getElementById('enduser').value = enduser;
-              document.getElementById('project_name').value = project_name;
-              document.getElementById('site_location').value = site_location;
-              document.getElementById('product_type').value = product_type ;
-              document.getElementById('expected_order_date').value = expected_order_date;
-              document.getElementById('required_onsite_date').value = required_onsite_date;
-              document.getElementById('proposer').value = proposer;
-              document.getElementById('expected_date').value = expected_date;
-              document.getElementById('status').value = status;
-              document.getElementById('stages').value = stages;
-              document.getElementById('how_to_support').value = how_to_support;
-              document.getElementById('competitor').value = competitor;
-              document.getElementById('competitor_description').value = competitor_description;
-              document.getElementById('competitor_price').value = competitor_price;
-              document.getElementById('sale_name').value = sale_name;
-              document.getElementById('detail').value = detail;
-              $('#ShowModal').modal();
-         }
+                    // add Product
+                    Products = add_product(response.products);
 
-     });
-     $('#MoreProductType').on('click',function(){
-         $("#moreProduct").empty();
-         var count = (product_type.match(/,/g) || []).length;
-         for(var i=0;i<=count;i++){
-              if (count > 0){
-                   var data = null;
-                  if(i == 0){
-                   data = "<div class=\"form-group row m-0\"> " +
-                                "<div class=\"col-md-2 col-xl-2\"> " +
-                                    "<label>Product Type</label> " +
-                                    "<input id=\"product_type_1\" type=\"text\" value='"+product_type.split(',')[i]+"'class=\"form-control\" style=\"width:100%\" disabled> " +
-                                "</div> "+
-                                "<div class=\"col-md-2 col-xl-2\"> " +
-                                    "<label>Part No</label> " +
-                                    "<input id=\"part_no\" type=\"text\" value='"+part_no.split(',')[i]+"' class=\"form-control\" style=\"width:100%\" disabled> " +
-                                "</div> " +
-                                "<div class=\"col-md-2 col-xl-2\"> " +
-                                    "<label>Spec</label> " +
-                                    "<input id=\"spec\" type=\"text\" value='"+spec.split(',')[i]+"' class=\"form-control\" style=\"width:100%\" disabled> " +
-                                "</div> " +
-                                "<div class=\"col-md-2 col-xl-2\"> " +
-                                    "<label>Quantity</label> " +
-                                    "<input id=\"quantity\" type=\"text\" value='"+quantity.split(',')[i]+"' class=\"form-control\" style=\"width:100%\" disabled> " +
-                                "</div> " +
-                                "<div class=\"col-md-2 col-xl-2\"> " +
-                                    "<label>Supplier Quotation No</label> " +
-                                    "<input id=\"supplier_quotation_no\" type=\"text\" value='"+supplier_quotation_no.split(',')[i]+"' class=\"form-control\" style=\"width:100%\" disabled> " +
-                                "</div> " +
-                                "<div class=\"col-md-1 col-xl-1\">" +
-                                    "<label>Total Value</label> " +
-                                    "<input id=\"total_value\" type=\"text\" value='"+total_value.split(',')[i]+"' class=\"form-control\" style=\"width:100%\" disabled> " +
-                                "</div> " +
-                                "<div class=\"col-md-1 col-xl-1\">" +
-                                    "<label>Unit</label> " +
-                                    "<input id=\"unit\" type=\"text\" value='"+unit.split(',')[i]+"' class=\"form-control\" style=\"width:100%\" disabled> " +
-                                "</div> " +
-                              "</div> ";
-                    }else{
-                         data = "<div class=\"form-group row m-0 pt-3\"> " +
-                                "<div class=\"col-md-2 col-xl-2\"> " +
-                                    "<input id=\"product_type_1\" type=\"text\" value='"+product_type.split(',')[i]+"'class=\"form-control\" style=\"width:100%\" disabled> " +
-                                "</div> "+
-                                "<div class=\"col-md-2 col-xl-2\"> " +
-                                    "<input id=\"part_no\" type=\"text\" value='"+part_no.split(',')[i]+"' class=\"form-control\" style=\"width:100%\" disabled> " +
-                                "</div> " +
-                                "<div class=\"col-md-2 col-xl-2\"> " +
-                                    "<input id=\"spec\" type=\"text\" value='"+spec.split(',')[i]+"' class=\"form-control\" style=\"width:100%\" disabled> " +
-                                "</div> " +
-                                "<div class=\"col-md-2 col-xl-2\"> " +
-                                    "<input id=\"quantity\" type=\"text\" value='"+quantity.split(',')[i]+"' class=\"form-control\" style=\"width:100%\" disabled> " +
-                                "</div> " +
-                                "<div class=\"col-md-2 col-xl-2\"> " +
-                                    "<input id=\"supplier_quotation_no\" type=\"text\" value='"+supplier_quotation_no.split(',')[i]+"' class=\"form-control\" style=\"width:100%\" disabled> " +
-                                "</div> " +
-                                "<div class=\"col-md-1 col-xl-1\">" +
-                                    "<input id=\"total_value\" type=\"text\" value='"+total_value.split(',')[i]+"' class=\"form-control\" style=\"width:100%\" disabled> " +
-                                "</div> " +
-                                "<div class=\"col-md-1 col-xl-1\">" +
-                                    "<input id=\"unit\" type=\"text\" value='"+unit.split(',')[i]+"' class=\"form-control\" style=\"width:100%\" disabled> " +
-                                "</div> " +
-                              "</div> ";
+                    var datas = response.quatations;
+                    var dataSet = [];
+                    for (var i = 0; i < datas.length; i++) {
+                        var data = ["",
+                            "",
+                            datas[i].quotation_no,
+                            datas[i].revision,
+                            datas[i].date,
+                            datas[i].customer,
+                            datas[i].enduser,
+                            datas[i].project_name,
+                            datas[i].site_location,
+                            datas[i].product_type,
+                            datas[i].part_no,
+                            datas[i].spec,
+                            datas[i].quantity,
+                            datas[i].supplier_quotation_no,
+                            datas[i].total_value,
+                            datas[i].unit,
+                            datas[i].quoted_price,
+                            datas[i].expected_order_date,
+                            datas[i].required_onsite_date,
+                            datas[i].proposer,
+                            datas[i].expected_date,
+                            datas[i].status,
+                            datas[i].stages,
+                            datas[i].how_to_support,
+                            datas[i].competitor,
+                            datas[i].competitor_description,
+                            datas[i].competitor_price,
+                            datas[i].sale_name,
+                            datas[i].department,
+                            datas[i].detail];
+
+                        dataSet.push(data);
                     }
-                  $("#moreProduct").append(data);
+                    quotation_datas = dataSet;
+
+                    table(dataSet);
+                }
+            });
+        };
+        function init_view() {
+            var dataSet = [];
+            for (var i = 0; i < arrProductType.length; i++) {
+                var data = [arrProductType[i], arrPart_No[i], arrSpec[i], arrQuantity[i], arrSupplier_Quotation_No[i], arrTotal_Value[i], arrUnit[i]];
+
+                dataSet.push(data);
             }
-         }
-         $('#ShowMoreModal').modal();
+            table_view(dataSet);
 
-     });
-     $('#edit_quotationConfirm').on('click',function(){
-         var quotation = document.getElementById('edit_quotation_no').value;
-         var date = document.getElementById('edit_date').value;
-         var customer = document.getElementById('edit_customer').value;
-         var enduser = document.getElementById('edit_enduser').value;
-         var project_name = document.getElementById('edit_project_name').value;
-         var site_location = document.getElementById('edit_site_location').value;
-         var product_type = document.getElementById('edit_product_type').value;
-        @* var part_no = document.getElementById('edit_part_no').value;
-                                                                                                                                                                                                                         var spec = document.getElementById('edit_spec').value;
-                                                                                                                                                                                                                         var quantity = document.getElementById('edit_quantity').value;
-                                                                                                                                                                                                                         var supplier_quotation_no = document.getElementById('edit_supplier_quotation_no').value;
-                                                                                                                                                                                                                         var total_value = document.getElementById('edit_total_value').value;
-                                                                                                                                                                                                                         var unit = document.getElementById('edit_unit').value;*@
-         var expected_order_date = document.getElementById('edit_expected_order_date').value;
-         var required_onsite_date = document.getElementById('edit_required_onsite_date').value;
-         var proposer = document.getElementById('edit_proposer').value;
-         var expected_date = document.getElementById('edit_expected_date').value;
-         var status = document.getElementById('edit_status').value;
-         var stages = document.getElementById('edit_stages').value;
-         var how_to_support = document.getElementById('edit_how_to_support').value;
-         var competitor = document.getElementById('edit_competitor').value;
-         var competitor_description = document.getElementById('edit_competitor_description').value;
-         var competitor_price = document.getElementById('edit_competitor_price').value;
-         var sale_name = document.getElementById('edit_sale_name').value;
-         var detail = document.getElementById('edit_detail').value;
+        };
+        function init_edit() {
+            var dataSet = [];
+            for (var i = 0; i < arrProductType.length; i++) {
+                var data = ["","",arrProductType[i], arrPart_No[i], arrSpec[i], arrQuantity[i], arrSupplier_Quotation_No[i], arrTotal_Value[i], arrUnit[i]];
 
-          $.ajax({
+                dataSet.push(data);
+            }
+            table_edit(dataSet);
+        };
+
+        var tables;
+        function table(dataSet) {
+            if (tables !== undefined)
+                tables.destroy();
+            tables = $('#table').DataTable({
+                data: dataSet,
+                columns: [
+                    { title: "Edit " },
+                    { title: "View" },
+                    { title: "Quotation No" },
+                    { title: "Revision" },
+                    { title: "Quotation Created Date" },
+                    { title: "Customer" },
+                    { title: "End User" },
+                    { title: "Project Name" },
+                    { title: "Site Location" },
+                    { title: "Product Type" },
+                    { title: "Part No" },
+                    { title: "Spec" },
+                    { title: "Quantity" },
+                    { title: "Supplier Quotation No" },
+                    { title: "Total Value" },
+                    { title: "Unit" },
+                    { title: "Quoted Price" },
+                    { title: "Expected Order Date" },
+                    { title: "Required Onsite Date" },
+                    { title: "Proposal Created By" },
+                    { title: "Proposal Expected Date" },
+                    { title: "Status" },
+                    { title: "Stages" },
+                    { title: "How supplier support to win project" },
+                    { title: "Competitor" },
+                    { title: "Competitor Description" },
+                    { title: "Competitor Price" },
+                    { title: "Sale Name" },
+                    { title: "Department" },
+                    { title: "Detail Project" },
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "data": null,
+                        "defaultContent": "<i class=\"fas fa-pen\"></i>",
+                        "className": 'dt-body-center',
+                    },
+                    {
+                        "targets": 1,
+                        "data": null,
+                        "defaultContent": "<i class=\"fas fa-eye\"></i>",
+                        "className": 'dt-body-center'
+                    },
+
+                ],
+                scrollX: true,
+                stateSave: true,
+                createdRow: function (row, data, index) {
+                    var diffDay = diffDate(data[18], new Date()); //column Required Onsite Date
+                    if (diffDay > -3 && diffDay < 0) {
+                        $('td', row).eq(18).addClass('highlight_yellow');
+                    } else if (diffDay >=0) {
+                        $('td', row).eq(18).addClass('highlight_red');
+                    }
+                },
+
+
+            });
+            $(tables.table().body()).addClass('text-dark');
+        }
+
+        var tables_view;
+        function table_view(dataSet) {
+            if (tables_view !== undefined)
+                tables_view.destroy();
+            tables_view = $('#tableview').DataTable({
+                data: dataSet,
+                columns: [
+                    { title: "Product Type", width: 80},
+                    { title: "Part No", width: 80},
+                    { title: "Spec", width: 80},
+                    { title: "Quantity", width: 80},
+                    { title: "Supplier Quotation No", width: 80 },
+                    { title: "Total Value", width: 80 },
+                    { title: "Unit", width: 30},
+                ],
+                scrollX: true,
+                stateSave: true,
+
+            });
+            $(tables_view.table().body()).addClass('text-dark');
+        };
+
+        var tables_edit;
+        function table_edit(dataSet) {
+            if (tables_edit !== undefined)
+                tables_edit.destroy();
+                tables_edit = $('#tableedit').DataTable({
+                data: dataSet,
+                columns: [
+                    { title: "Edit" , width : 20},
+                    { title: "Delete", width: 20 },
+                    { title: "Product Type", width: 80},
+                    { title: "Part No", width: 80 },
+                    { title: "Spec", width: 80},
+                    { title: "Quantity", width: 80 },
+                    { title: "Supplier Quotation No", width: 80 },
+                    { title: "Total Value", width: 80},
+                    { title: "Unit", width : 30 },
+
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "data": null,
+                        "defaultContent": "<i class=\"fas fa-pen\"></i>",
+                        "className": 'dt-body-center',
+                    },
+                    {
+                        "targets": 1,
+                        "data": null,
+                        "defaultContent": "<i class=\"fas fa-trash\"></i>",
+                        "className": 'dt-body-center',
+                    },
+
+                ],
+                scrollX: true,
+                stateSave: true,
+
+            });
+            $(tables_edit.table().body()).addClass('text-dark');
+        };
+        $('#AddQuotation').on('click', function () {
+            var name = '@Model.name';
+            var department = '@Model.department';
+            var role = '@Model.role';
+            $.ajax({
+                url: '@Url.Action("GetQuotation", "Quotation")',
+                type: "post",
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    name,
+                    department,
+                    role
+                },
+                success: function (response) {
+                    var dataSet = [];
+                    for (var i = 0; i < response.length; i++) {
+                        var data = ["",
+                            "",
+                            response[i].quotation_no,
+                            response[i].revision,
+                            response[i].date,
+                            response[i].customer,
+                            response[i].enduser,
+                            response[i].project_name,
+                            response[i].site_location,
+                            response[i].product_type,
+                            response[i].part_no,
+                            response[i].spec,
+                            response[i].quantity,
+                            response[i].supplier_quotation_no,
+                            response[i].total_value,
+                            response[i].unit,
+                            response[i].quoted_price,
+                            response[i].expected_order_date,
+                            response[i].required_onsite_date,
+                            response[i].proposer,
+                            response[i].expected_date,
+                            response[i].status,
+                            response[i].stages,
+                            response[i].how_to_support,
+                            response[i].competitor,
+                            response[i].competitor_description,
+                            response[i].competitor_price,
+                            response[i].sale_name,
+                            response[i].department,
+                            response[i].detail];
+
+                        dataSet.push(data);
+                    }
+                    table(dataSet);
+                }
+            });
+        });
+        $('#table').on('click', 'tbody td', function () {
+            var cell = tables.cell(this);
+            var column = cell[0][0].column;
+            quotation = cell.data()[2];
+            revision = cell.data()[3];
+            date = cell.data()[4];
+            customer = cell.data()[5];
+            enduser = cell.data()[6];
+            project_name = cell.data()[7];
+            site_location = cell.data()[8];
+            product_type = cell.data()[9];
+            part_no = cell.data()[10];
+            spec = cell.data()[11];
+            quantity = cell.data()[12];
+            supplier_quotation_no = cell.data()[13];
+            total_value = cell.data()[14];
+            unit = cell.data()[15];
+            quoted_price = cell.data()[16];
+            expected_order_date = cell.data()[17];
+            required_onsite_date = cell.data()[18];
+            proposer = cell.data()[19];
+            expected_date = cell.data()[20];
+            status = cell.data()[21];
+            stages = cell.data()[22];
+            how_to_support = cell.data()[23];
+            competitor = cell.data()[24];
+            competitor_description = cell.data()[25];
+            competitor_price = cell.data()[26];
+            sale_name = cell.data()[27];
+            department = cell.data()[28];
+            detail = cell.data()[29];
+
+            arrProductType = [];
+            arrPart_No = [];
+            arrSpec = [];
+            arrQuantity = [];
+            arrSupplier_Quotation_No = [];
+            arrTotal_Value = [];
+            arrUnit = [];
+            var count = (product_type.match(/,/g) || []).length;
+            for (var i = 0; i <= count; i++) {
+                if (product_type != "") {
+                    arrProductType.push(product_type.split(',')[i]);
+                    arrPart_No.push(part_no.split(',')[i]);
+                    arrSpec.push(spec.split(',')[i]);
+                    arrQuantity.push(quantity.split(',')[i]);
+                    arrSupplier_Quotation_No.push(supplier_quotation_no.split(',')[i]);
+                    arrTotal_Value.push(total_value.split(',')[i]);
+                    arrUnit.push(unit.split(',')[i]);
+                }
+            }
+
+            if (column == "0") {
+                document.getElementById('edit_quotation_no').value = quotation;
+                document.getElementById('edit_revision').value = revision;
+                document.getElementById('edit_date').value = date;
+                document.getElementById('edit_customer').value = customer;
+
+                document.getElementById('edit_enduser').value = enduser;
+
+                document.getElementById('edit_project_name').value = project_name;
+                document.getElementById('edit_site_location').value = site_location;
+                document.getElementById('edit_product_type').value = product_type;
+
+                document.getElementById('edit_quoted_price').value = quoted_price;
+                document.getElementById('edit_expected_order_date').value = expected_order_date;
+                document.getElementById('edit_required_onsite_date').value = required_onsite_date;
+
+                $('#edit_proposer').empty();
+                var selectProposer = document.getElementById('edit_proposer');
+                for (var i = 0, l = Proposers.length; i < l; i++) {
+                    var option = Proposers[i];
+                    selectProposer.options.add(new Option(option.text, option.value, option.selected));
+                }
+                var index_proposer = Proposers.map(function (e) { return e.value; }).indexOf(proposer);
+                document.getElementById('edit_proposer').selectedIndex = index_proposer;
+
+                document.getElementById('edit_expected_date').value = expected_date;
+
+                var proposal = document.getElementById('edit_proposer').value;
+                if (proposal != "") {
+                    document.getElementById('edit_expected_date').disabled = false;
+                } else {
+                    document.getElementById('edit_expected_date').disabled = true;
+                }
+                document.getElementById('edit_status').value = status;
+                var index_status = Status.indexOf(status);
+                document.getElementById('edit_status').selectedIndex = index_status;
+
+                document.getElementById('edit_stages').value = stages;
+                var index_stages = Stages.indexOf(stages);
+                document.getElementById('edit_stages').selectedIndex = index_stages;
+
+                document.getElementById('edit_how_to_support').value = how_to_support;
+                document.getElementById('edit_competitor').value = competitor;
+                document.getElementById('edit_competitor_description').value = competitor_description;
+                document.getElementById('edit_competitor_price').value = competitor_price;
+
+                $('#edit_sale_name').empty();
+                var selectBox = document.getElementById('edit_sale_name');
+                for (var i = 0, l = Sales.length; i < l; i++) {
+                    var option = Sales[i];
+                    selectBox.options.add(new Option(option.text, option.value, option.selected));
+                }
+                var index_sale = Sales.map(function (e) { return e.value; }).indexOf(sale_name);
+                document.getElementById('edit_sale_name').selectedIndex = index_sale;
+
+                $('#edit_department').empty();
+                var selectDepartment = document.getElementById('edit_department');
+                for (var i = 0, l = Departments.length; i < l; i++) {
+                    var option = Departments[i];
+                    selectDepartment.options.add(new Option(option.text.department, option.value.department, option.selected));
+                }
+                var index_department = Departments.map(function (e) { return e.value.department; }).indexOf(department);
+                document.getElementById('edit_department').selectedIndex = index_department;
+
+
+                document.getElementById('edit_detail').value = detail;
+
+                // add select product
+                $('#products').empty();
+                var selectProduct = document.getElementById('products');
+                for (var i = 0, l = Products.length; i < l; i++) {
+                    var option = Products[i];
+                    selectProduct.options.add(new Option(option.text, option.value, option.selected));
+                }
+                document.getElementById('products').selectedIndex = 0;
+
+                //check state admin
+                var role = '@Model.role';
+                if (role == "Admin") {
+                    document.getElementById('edit_sale_name').disabled = false;
+                    document.getElementById('edit_department').disabled = false;
+                } else {
+                    document.getElementById('edit_sale_name').disabled = true;
+                    document.getElementById('edit_department').disabled = true;
+                }
+
+                $('#EditModal').modal();
+            } else if (column == "1") {
+
+                document.getElementById('quotation_no').value = quotation;
+                document.getElementById('revision').value = revision;
+                document.getElementById('date').value = date;
+                document.getElementById('customer').value = customer;
+                document.getElementById('enduser').value = enduser;
+                document.getElementById('project_name').value = project_name;
+                document.getElementById('site_location').value = site_location;
+                document.getElementById('product_type').value = product_type;
+                document.getElementById('quoted_price').value = quoted_price;
+                document.getElementById('expected_order_date').value = expected_order_date;
+                document.getElementById('required_onsite_date').value = required_onsite_date;
+                document.getElementById('proposer').value = proposer;
+                document.getElementById('expected_date').value = expected_date;
+                document.getElementById('status').value = status;
+                document.getElementById('stages').value = stages;
+                document.getElementById('how_to_support').value = how_to_support;
+                document.getElementById('competitor').value = competitor;
+                document.getElementById('competitor_description').value = competitor_description;
+                document.getElementById('competitor_price').value = competitor_price;
+                document.getElementById('sale_name').value = sale_name;
+
+                document.getElementById('department').innerHTML = department;
+
+                document.getElementById('detail').value = detail;
+                $('#ShowModal').modal();
+            }
+
+        });
+        $('#tableedit').on('click', 'tbody td', function () {
+            var cell = tables_edit.cell(this);
+            var column = cell[0][0].column;
+            if (column == 0) {
+                document.getElementById('edit_sub_product_type').value = cell.data()[2];
+                document.getElementById('edit_sub_part_no').value = cell.data()[3];
+                document.getElementById('edit_sub_spec').value = cell.data()[4];
+                document.getElementById('edit_sub_quantity').value = cell.data()[5];
+                document.getElementById('edit_sub_supplier_quotation_no').value = cell.data()[6];
+                document.getElementById('edit_sub_total_value').value = cell.data()[7];
+                document.getElementById('edit_sub_unit').value = cell.data()[8];
+
+                var unit = cell.data()[8];
+                var index = Units.indexOf(unit)
+                document.getElementById('edit_sub_unit').selectedIndex = index;
+                $('#EditProductTypeModal').modal('show');
+            } else if (column == 1) {
+                var product = cell.data()[2];
+                var index = arrProductType.indexOf(product);
+                remove_data(index);
+
+                //reload data
+                init_edit();
+            }
+
+        });
+        $('#MoreProductType').on('click', function () {
+            init_view();
+            $('#ShowMoreModal').modal();
+
+        });
+
+        $('#edit_quotationConfirm').on('click', function () {
+            var quotation = document.getElementById('edit_quotation_no').value;
+            var revision = document.getElementById('edit_revision').value;
+            var date = document.getElementById('edit_date').value;
+            var customer = document.getElementById('edit_customer').value;
+            var enduser = document.getElementById('edit_enduser').value;
+            var project_name = document.getElementById('edit_project_name').value;
+            var site_location = document.getElementById('edit_site_location').value;
+            var product_type = arrProductType.join();
+            var part_no = arrPart_No.join();
+            var spec = arrSpec.join();
+            var quantity = arrQuantity.join();
+            var supplier_quotation_no = arrSupplier_Quotation_No.join();
+            var total_value = arrTotal_Value.join();
+            var unit = arrUnit.join();
+            var quoted_price = document.getElementById('edit_quoted_price').value;
+            var expected_order_date = document.getElementById('edit_expected_order_date').value;
+            var required_onsite_date = document.getElementById('edit_required_onsite_date').value;
+            var proposer = document.getElementById('edit_proposer').value;
+            var expected_date = document.getElementById('edit_expected_date').value;
+            var status = document.getElementById('edit_status').value;
+            var stages = document.getElementById('edit_stages').value;
+            var how_to_support = document.getElementById('edit_how_to_support').value;
+            var competitor = document.getElementById('edit_competitor').value;
+            var competitor_description = document.getElementById('edit_competitor_description').value;
+            var competitor_price = document.getElementById('edit_competitor_price').value;
+            var sale_name = document.getElementById('edit_sale_name').value;
+            var department = document.getElementById('edit_department').value;
+            var detail = document.getElementById('edit_detail').value;
+
+            $.ajax({
                 url: '@Url.Action("Update", "Quotation")',
                 type: "post",
                 contentType: 'application/x-www-form-urlencoded',
                 data: {
-                    quotation,date,customer,enduser,project_name,site_location,product_type,expected_order_date,
-                    required_onsite_date,proposer,expected_date,status,stages,how_to_support,competitor,competitor_description,
-                    competitor_price,sale_name,detail
+                    quotation,revision, date, customer, enduser, project_name, site_location, product_type, part_no, spec, quantity, supplier_quotation_no,
+                    total_value, unit,quoted_price, expected_order_date, required_onsite_date, proposer, expected_date, status, stages, how_to_support, competitor,
+                    competitor_description, competitor_price, sale_name,department, detail
                 },
                 success: function (response) {
-                    if(response =="Update Success"){
-                        init();
+                    if (response == "Update Success") {
+                        location.reload(); //reload page
                         toastr.success("Update Success");
-                    }else{
+                    } else {
                         toastr.error("Update Failed");
                     }
                 }
             });
-             $('#EditModal').modal('hide');
-     });
+            $('#EditModal').modal('hide');
+        });
 
-</script>
+        $('#btnAddProduct').on('click', function () {
+            var value = document.getElementById("products").value;
+            if (value !== "") {
+                // add data
+                add_data(value);
+                let text = arrProductType.join();
+                document.getElementById("edit_product_type").value = text;
+            }
+        });
+        $('#clear_btnProductType').on('click', function () {
+            document.getElementById("edit_product_type").value = "";
+            arrProductType = [];
+            arrPart_No = [];
+            arrSpec = [];
+            arrQuantity = [];
+            arrSupplier_Quotation_No = [];
+            arrTotal_Value = [];
+            arrUnit = [];
+        });
+        $('#edit_btnProductType').on('click', function () {
+
+            init_edit();
+
+            $('#EditMoreModal').modal();
+
+        });
+        $('#edit_ProductTypeConfirm').on('click', function () {
+            var product_type = document.getElementById('edit_sub_product_type').value;
+            var part_no = document.getElementById('edit_sub_part_no').value;
+            var spec = document.getElementById('edit_sub_spec').value;
+            var quantity = document.getElementById('edit_sub_quantity').value;
+            var supplier = document.getElementById('edit_sub_supplier_quotation_no').value;
+            var total_value = document.getElementById('edit_sub_total_value').value;
+            var unit = Units[document.getElementById('edit_sub_unit').selectedIndex];
+
+            var index = arrProductType.indexOf(product_type);
+
+            // update data array
+
+            arrProductType[index] = product_type;
+            arrPart_No[index] = part_no;
+            arrSpec[index] = spec;
+            arrQuantity[index] = quantity;
+            arrSupplier_Quotation_No[index] = supplier;
+            arrTotal_Value[index] = total_value;
+            arrUnit[index] = unit;
+            //update data in table edit
+            init_edit();
+
+            $('#EditProductTypeModal').modal('hide');
+        });
+        $('#edit_proposer').on('change', function () {
+            document.getElementById('edit_expected_date').disabled = false;
+        });
+        $('#edit_quoted_price').on('change', function () {
+            var val = document.getElementById('edit_quoted_price').value;
+            var newVal = numberWithCommas(val);
+            document.getElementById('edit_quoted_price').value = newVal;
+        });
+        function remove_data(index) {
+            arrProductType.splice(index, 1);
+            arrPart_No.splice(index, 1);
+            arrSpec.splice(index, 1);
+            arrQuantity.splice(index, 1);
+            arrSupplier_Quotation_No.splice(index, 1);
+            arrTotal_Value.splice(index, 1);
+            arrUnit.splice(index, 1);
+
+            // update product type
+            var product = arrProductType.join();
+            document.getElementById('edit_product_type').value = product;
+        }
+        function add_data(product) {
+            // fine index data product type temp
+            var index = arrProductType.indexOf(product);
+            if (index == -1) {
+                arrProductType.push(product);
+                arrPart_No.push("");
+                arrSpec.push("");
+                arrQuantity.push("");
+                arrSupplier_Quotation_No.push("");
+                arrTotal_Value.push("");
+                arrUnit.push("");
+            }
+        }
+        function add_sale(sales) {
+            var data_sales = [];
+            for (var i = 0; i < sales.length; i++) {
+                var data =
+                {
+                    "text": sales[i],
+                    "value": sales[i]
+                }
+                data_sales.push(data);
+            }
+
+            return data_sales;
+        };
+        function add_product(products) {
+            var data_products = [];
+            for (var i = 0; i < products.length; i++) {
+                var data =
+                {
+                    "text": products[i].name,
+                    "value": products[i].name
+                }
+                data_products.push(data);
+            }
+
+            return data_products;
+        };
+        function add_department(department) {
+            var data_department = [];
+            for (var i = 0; i < department.length; i++) {
+                var data =
+                {
+                    "text": department[i],
+                    "value": department[i]
+                }
+                data_department.push(data);
+            }
+
+            return data_department;
+        };
+        function add_proposer(proposer) {
+            var data_proposer = [];
+            for (var i = 0; i < proposer.length; i++) {
+                var data =
+                {
+                    "text": proposer[i],
+                    "value": proposer[i]
+                }
+                data_proposer.push(data);
+            }
+
+            return data_proposer;
+        };
+        function add_customer(customers) {
+            var list = document.getElementById('list_customer');
+
+            customers.forEach(function (item) {
+                var option = document.createElement('option');
+                option.value = item;
+                list.appendChild(option);
+            });
+        };
+        function add_enduser(endusers) {
+            var list = document.getElementById('list_enduser');
+
+            endusers.forEach(function (item) {
+                var option = document.createElement('option');
+                option.value = item;
+                list.appendChild(option);
+            });
+        };
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        function diffDate(date_start, date_stop) {
+            const date1 = new Date(date_start);
+            const date2 = new Date(date_stop);
+            const diffTime = date2 - date1;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        };
+    </script>
 }
