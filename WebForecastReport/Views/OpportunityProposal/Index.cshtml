@@ -2,7 +2,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-header">
-                <span class="card-title">Opportunity & Proposal</span>
+                <span class="card-title"><b>Opportunity & Proposal</b></span>
             </div>
             <div class="card-body">
                 <form>
@@ -15,19 +15,19 @@
 </div>
 @section Scripts
 {
-    <script type="text/javascript">
-        var table;
-        $(document).ready(function () {
-            table = $('#table_oppr').DataTable({
-                //data: dataSet,
-                columns: [
-                    { title: "OPP NO. " },
-                    { title: "Date" },
-                    { title: "OP Type" },
-                ],
-                "scrollX": true,
-            });
-            $(table.table().body()).addClass('text-dark');
+<script type="text/javascript">
+    var table;
+    $(document).ready(function () {
+        table = $('#table_oppr').DataTable({
+            //data: dataSet,
+            columns: [
+                { title: "OPP NO. " },
+                { title: "Date" },
+                { title: "OP Type" },
+            ],
+            "scrollX": true,
         });
-    </script>
+        $(table.table().body()).addClass('text-dark');
+    });
+</script>
 }
