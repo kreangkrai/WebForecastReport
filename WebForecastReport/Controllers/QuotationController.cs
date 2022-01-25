@@ -152,7 +152,7 @@ namespace WebForecastReport.Controllers
         public IActionResult DownloadXlsxReport()
         {
             //Download Excel
-            var templateFileInfo = new FileInfo(Path.Combine(_hostingEnvironment.ContentRootPath, "../wwwroot/Template", "mes_quotation.xlsx"));
+            var templateFileInfo = new FileInfo(Path.Combine(_hostingEnvironment.ContentRootPath, "./wwwroot/template", "mes_quotation.xlsx"));
             var stream = Export.ExportQuotation(templateFileInfo);
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "mes_quotation_" + DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss") + ".xlsx");
         }
