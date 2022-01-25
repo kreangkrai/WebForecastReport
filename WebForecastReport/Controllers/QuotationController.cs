@@ -7,6 +7,9 @@ using WebForecastReport.Interface;
 using WebForecastReport.Models;
 using WebForecastReport.Service;
 using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using System.Globalization;
 
 namespace WebForecastReport.Controllers
 {
@@ -15,11 +18,15 @@ namespace WebForecastReport.Controllers
         readonly IQuotation Quotation;
         readonly IAccessory Accessory;
         readonly IProduct Product;
-        public QuotationController()
+        readonly IExport Export;
+        private readonly IHostingEnvironment _hostingEnvironment;
+        public QuotationController(IHostingEnvironment hostingEnvironment)
         {
             Quotation = new QuotationService();
             Accessory = new AccessoryService();
             Product = new ProductService();
+            Export = new ExportService();
+            _hostingEnvironment = hostingEnvironment;
         }
         public IActionResult Index()
         {
@@ -38,7 +45,7 @@ namespace WebForecastReport.Controllers
             }
         }
         [HttpPost]
-        public JsonResult GetQuotation(string name,string department,string role)
+        public JsonResult GetQuotation(string name, string department, string role)
         {
             string quotation = Quotation.GetlastQuotation();
             QuotationModel quotations = new QuotationModel();
@@ -63,15 +70,15 @@ namespace WebForecastReport.Controllers
             string message = Quotation.InsertQuotation(quotations);
 
             List<QuotationModel> getQuotation = new List<QuotationModel>();
-            getQuotation = Quotation.GetQuotation(name,role);
+            getQuotation = Quotation.GetQuotation(name, role);
             getQuotation = getQuotation.OrderByDescending(o => o.quotation_no).ToList();
             return Json(getQuotation);
         }
         [HttpPost]
-        public JsonResult GetData(string name,string role)
+        public JsonResult GetData(string name, string role)
         {
             List<QuotationModel> quotations = new List<QuotationModel>();
-            quotations = Quotation.GetQuotation(name,role);
+            quotations = Quotation.GetQuotation(name, role);
             quotations = quotations.OrderByDescending(o => o.quotation_no).ToList();
 
             //get all sale
@@ -80,7 +87,7 @@ namespace WebForecastReport.Controllers
 
             //get all customer
             List<string> customers = new List<string>();
-            customers = Accessory.getCustomers().Select(s=>s.name).ToList();
+            customers = Accessory.getCustomers().Select(s => s.name).ToList();
 
             //get all end user
             List<string> endusers = new List<string>();
@@ -92,16 +99,16 @@ namespace WebForecastReport.Controllers
 
             //get Products
             List<ProductModel> products = new List<ProductModel>();
-            products =  Product.GetProducts();
+            products = Product.GetProducts();
 
             var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers, departments = departments, products = products };
             return Json(list);
         }
         [HttpPost]
-        public JsonResult Update(string quotation, string revision,string date, string customer, string enduser, string project_name, string site_location, string product_type, string part_no,
-                    string spec, string quantity, string supplier_quotation_no, string total_value,string unit,string quoted_price,string expected_order_date,
+        public JsonResult Update(string quotation, string revision, string date, string customer, string enduser, string project_name, string site_location, string product_type, string part_no,
+                    string spec, string quantity, string supplier_quotation_no, string total_value, string unit, string quoted_price, string expected_order_date,
                    string required_onsite_date, string proposer, string expected_date, string status, string stages, string how_to_support, string competitor, string competitor_description,
-                   string competitor_price, string sale_name,string department, string detail)
+                   string competitor_price, string sale_name, string department, string detail)
         {
             QuotationModel q = new QuotationModel()
             {
@@ -141,6 +148,13 @@ namespace WebForecastReport.Controllers
             string message = Quotation.Update(q);
 
             return Json(message);
+        }
+        public IActionResult DownloadXlsxReport()
+        {
+            //Download Excel
+            var templateFileInfo = new FileInfo(Path.Combine(_hostingEnvironment.ContentRootPath, "Template", "mes_quotation.xlsx"));
+            var stream = Export.ExportQuotation(templateFileInfo);
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "mes_quotation.xlsx");
         }
     }
 }

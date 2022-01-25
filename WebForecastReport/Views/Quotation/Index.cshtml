@@ -25,11 +25,22 @@
     }
 </style>
 <div class="row p-3">
-    <div class="col-xl-2 col-md-2 pb-3">
-        <button type="button" id="AddQuotation" class="btn btn-primary">
-            <i class="fas fa-plus" style="font-size:20px"> Quotation</i>
-        </button>
+
+    <div class="col-md-12 col-xl-12">
+        <div class="row d-flex justify-content-between">
+            <div class="col-md-2 col-xl-2 pb-3">
+                <button type="button" id="AddQuotation" class="btn btn-primary form-control" style="height:55px">
+                    <i class="fas fa-plus" style="font-size:20px"> Quotation</i>
+                </button>
+            </div>
+            <div class="col-md-2 col-xl-2 pb-3">
+                <a type="button" class="btn btn-success form-control" style="height:55px;font-size:20px;text-align:center;padding-top:10px" href="@Url.Action("DownloadXlsxReport", "Quotation")">
+                    <i class="fas fa-download" style="padding-right:10px"></i>Export
+                </a>
+            </div>
+        </div>
     </div>
+
     <div class="col-12">
         <div class="card">
             <div class="card-header">
