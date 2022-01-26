@@ -56,6 +56,7 @@ namespace WebForecastReport.Service
                                 project_name = dr["project_name"].ToString(),
                                 site_location = dr["site_location"].ToString(),
                                 product_type = dr["product_type"].ToString(),
+                                type = dr["type"].ToString(),
                                 part_no = dr["part_no"].ToString(),
                                 spec = dr["spec"].ToString(),
                                 quantity = dr["quantity"].ToString(),
@@ -100,6 +101,7 @@ namespace WebForecastReport.Service
                                 project_name = dr["project_name"].ToString(),
                                 site_location = dr["site_location"].ToString(),
                                 product_type = dr["product_type"].ToString(),
+                                type = dr["type"].ToString(),
                                 part_no = dr["part_no"].ToString(),
                                 spec = dr["spec"].ToString(),
                                 quantity = dr["quantity"].ToString(),
@@ -144,6 +146,7 @@ namespace WebForecastReport.Service
                                 project_name = dr["project_name"].ToString(),
                                 site_location = dr["site_location"].ToString(),
                                 product_type = dr["product_type"].ToString(),
+                                type = dr["type"].ToString(),
                                 part_no = dr["part_no"].ToString(),
                                 spec = dr["spec"].ToString(),
                                 quantity = dr["quantity"].ToString(),
@@ -222,6 +225,7 @@ namespace WebForecastReport.Service
                                                                             project_name,
                                                                             site_location,
                                                                             product_type,
+                                                                            type,
                                                                             part_no,
                                                                             spec,
                                                                             quantity,
@@ -250,6 +254,7 @@ namespace WebForecastReport.Service
                                                                             @project_name,
                                                                             @site_location,
                                                                             @product_type,
+                                                                            @type,
                                                                             @part_no,
                                                                             @spec,
                                                                             @quantity,
@@ -281,6 +286,7 @@ namespace WebForecastReport.Service
                     cmd.Parameters.AddWithValue("@project_name", model.project_name);
                     cmd.Parameters.AddWithValue("@site_location", model.site_location);
                     cmd.Parameters.AddWithValue("@product_type", model.product_type);
+                    cmd.Parameters.AddWithValue("@type", model.type);
                     cmd.Parameters.AddWithValue("@part_no", model.part_no);
                     cmd.Parameters.AddWithValue("@spec", model.spec);
                     cmd.Parameters.AddWithValue("@quantity", model.quantity);
@@ -369,6 +375,7 @@ namespace WebForecastReport.Service
                                                                       "project_name='" + model.project_name + "'," +
                                                                       "site_location='" + model.site_location + "'," +
                                                                       "product_type='" + model.product_type + "'," +
+                                                                      "type='" + model.type + "'," +
                                                                       "part_no='" + model.part_no + "'," +
                                                                       "spec='" + model.spec + "'," +
                                                                       "quantity='" + model.quantity + "'," +
@@ -400,6 +407,70 @@ namespace WebForecastReport.Service
             catch
             {
                 return "Update Failed";
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public List<QuotationModel> GetQuotationForProposal(string name, string role)
+        {
+            try
+            {
+                List<QuotationModel> quotations = new List<QuotationModel>();
+                string command = "";
+                if (role != "Admin")
+                {
+                    command = "select * from Quotation where sale_name='" + name + "' order by date desc";
+                }
+
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        QuotationModel q = new QuotationModel()
+                        {
+                            quotation_no = dr["quotation_no"].ToString(),
+                            revision = dr["revision"].ToString(),
+                            date = Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd"),
+                            customer = dr["customer"].ToString(),
+                            enduser = dr["enduser"].ToString(),
+                            project_name = dr["project_name"].ToString(),
+                            site_location = dr["site_location"].ToString(),
+                            product_type = dr["product_type"].ToString(),
+                            type = dr["type"].ToString(),
+                            part_no = dr["part_no"].ToString(),
+                            spec = dr["spec"].ToString(),
+                            quantity = dr["quantity"].ToString(),
+                            supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
+                            total_value = dr["total_value"].ToString(),
+                            unit = dr["unit"].ToString(),
+                            quoted_price = dr["quoted_price"].ToString(),
+                            expected_order_date = Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd"),
+                            required_onsite_date = Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd"),
+                            proposer = dr["proposer"].ToString(),
+                            expected_date = dr["expected_date"].ToString() != "" ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            status = dr["status"].ToString(),
+                            stages = dr["stages"].ToString(),
+                            how_to_support = dr["how_to_support"].ToString(),
+                            competitor = dr["competitor"].ToString(),
+                            competitor_description = dr["competitor_description"].ToString(),
+                            competitor_price = dr["competitor_price"].ToString(),
+                            sale_name = dr["sale_name"].ToString(),
+                            department = dr["department"].ToString(),
+                            detail = dr["detail"].ToString()
+                        };
+                        quotations.Add(q);
+                    }
+                    dr.Close();
+                }
+                return quotations;
             }
             finally
             {

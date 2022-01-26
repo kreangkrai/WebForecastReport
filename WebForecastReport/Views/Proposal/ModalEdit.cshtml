@@ -1,0 +1,206 @@
+﻿<div class="modal fade" id="modal_proposal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <!-- From Quotation -->
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="QuotationNo">Quotation NO.</label>
+                                <input id="QuotationNo" type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="QuotationDate">Date</label>
+                                <input id="QuotationDate" type="date" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="Customer">Customer</label>
+                                <input id="Customer" type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="EndUser">EndUser</label>
+                                <input id="EndUser" type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="ProjectName">Project Name</label>
+                                <input id="ProjectName" type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="ProjectLocation">Location</label>
+                                <input id="ProjectLocation" type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="ProjectType">Project Type</label>
+                                <select id="ProjectType" class="form-control">
+                                    <option>Please Select Type</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="TotalValue">Total Value</label>
+                                <input id="TotalValue" type="number" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="ExpectedOrderDate">Expected Order Date</label>
+                                <input id="ExpectedOrderDate" type="date" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="RequestOnSite">Request On Site</label>
+                                <input id="RequestOnSite" type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="ProposedBy">Proposed By</label>
+                                <select id="ProposedBy" class="form-control">
+                                    <option>Please Select</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="ExpectedDate">Expected Date</label>
+                                <input id="ExpectedDate" type="date" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- From Proposal -->
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="RequestDate">Request Date</label>
+                                <input id="RequestDate" type="date" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="ProposalState">Proposal State</label>
+                                <select id="ProposalState" class="form-control">
+                                    <option>Please Select</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="Revision">Revision</label>
+                                <select id="Revision" class="form-control">
+                                    <option>Please Select</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="ProposeCost">Propose Cost</label>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <input id="ProposeCost" type="number" class="form-control" />
+                                    </div>
+                                    <div class="col-4 d-flex align-items-end">
+                                        <label>THB</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="ProposePrice">Propose Price</label>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <input id="ProposePrice" type="number" class="form-control" />
+                                    </div>
+                                    <div class="col-4 d-flex align-items-end">
+                                        <label>THB</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="GP">GP</label>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <input id="GP" type="number" class="form-control" />
+                                    </div>
+                                    <div class="col-4 d-flex align-items-end">
+                                        <label>%</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="FinishDate">Finish Date</label>
+                                <input id="FinishDate" type="date" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" value="">Engineering Request
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" value="">PPC Request
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="table_pic">Person In Charge</label>
+                                <table class="table table-sm table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Name</th>
+                                            <th>Dept.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

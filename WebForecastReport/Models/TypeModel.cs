@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebForecastReport.Models
 {
-    public class ProductModel
+    public class TypeModel
     {
         public int id { get; set; }
         public string name { get; set; }

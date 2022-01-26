@@ -13,9 +13,13 @@ namespace WebForecastReport.Controllers
     public class ProposalController : Controller
     {
         readonly IAccessory Accessory;
+        readonly IProposal Proposal;
+        readonly IQuotation Quotation;
         public ProposalController()
         {
             Accessory = new AccessoryService();
+            Proposal = new ProposalService();
+            Quotation = new QuotationService();
         }
         public IActionResult Index()
         {
@@ -25,12 +29,43 @@ namespace WebForecastReport.Controllers
                 List<UserModel> users = new List<UserModel>();
                 users = Accessory.getAllUser();
                 UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name, department = s.department, role = s.role }).FirstOrDefault();
+
+                //u.role = "";
+                if (u.role != "Admin")  //  add propersal
+                {
+                    List<string> quotation = new List<string>();
+                    quotation = Proposal.chkQuotation(u.name, u.role);
+
+                    if (quotation.Count > 0) //
+                    {
+                        List<QuotationModel> quotations = new List<QuotationModel>();
+                        quotations = Quotation.GetQuotationForProposal(u.name, u.role);
+
+                        string message = Proposal.Insert(quotations, quotation);
+                        if (message == "Insert Success")
+                        {
+
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                }
                 return View(u);
             }
             else
             {
                 return RedirectToAction("Index", "Account");
             }
+        }
+
+        [HttpPost]
+        public JsonResult GetData(string name, string role)
+        {
+            List<ProposalModel> proposals = new List<ProposalModel>();
+            proposals = Proposal.getProposals(name, role);
+            return Json(proposals);
         }
     }
 }

@@ -97,15 +97,15 @@ namespace WebForecastReport.Controllers
             List<DepartmentModel> departments = new List<DepartmentModel>();
             departments = Accessory.getDepartment();
 
-            //get Products
-            List<ProductModel> products = new List<ProductModel>();
-            products = Product.GetProducts();
+            //get Type
+            List<TypeModel> types = new List<TypeModel>();
+            types = Product.GetProducts();
 
-            var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers, departments = departments, products = products };
+            var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers, departments = departments, types = types };
             return Json(list);
         }
         [HttpPost]
-        public JsonResult Update(string quotation, string revision, string date, string customer, string enduser, string project_name, string site_location, string product_type, string part_no,
+        public JsonResult Update(string quotation, string revision, string date, string customer, string enduser, string project_name, string site_location, string product_type, string type, string part_no,
                     string spec, string quantity, string supplier_quotation_no, string total_value, string unit, string quoted_price, string expected_order_date,
                    string required_onsite_date, string proposer, string expected_date, string status, string stages, string how_to_support, string competitor, string competitor_description,
                    string competitor_price, string sale_name, string department, string detail)
@@ -120,6 +120,7 @@ namespace WebForecastReport.Controllers
                 project_name = project_name,
                 site_location = site_location,
                 product_type = product_type,
+                type = type,
                 part_no = part_no,
                 spec = spec,
                 quantity = quantity,

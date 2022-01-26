@@ -33,18 +33,18 @@ namespace WebForecastReport.Service
             }
         }
 
-        public  List<ProductModel> GetProducts()
+        public  List<TypeModel> GetProducts()
         {
             try
             {
-                List<ProductModel> products = new List<ProductModel>();
+                List<TypeModel> products = new List<TypeModel>();
                 SqlCommand cmd = new SqlCommand("select * from Product order by name", ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
                     while (dr.Read())
                     {
-                        ProductModel p = new ProductModel()
+                        TypeModel p = new TypeModel()
                         {
                            id = Int32.Parse(dr["Id"].ToString()),
                            name = dr["name"].ToString()

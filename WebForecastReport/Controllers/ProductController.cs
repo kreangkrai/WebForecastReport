@@ -38,7 +38,7 @@ namespace WebForecastReport.Controllers
         [HttpPost]
         public JsonResult GetData()
         {
-            List<ProductModel> products = new List<ProductModel>();
+            List<TypeModel> products = new List<TypeModel>();
             products = Product.GetProducts();
             return Json(products);
         }
