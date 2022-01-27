@@ -89,6 +89,7 @@
     var expected_date = '';
     var status = '';
     var stages = '';
+    var stages_update_date = '';
     var how_to_support = '';
     var competitor = '';
     var competitor_description = '';
@@ -179,6 +180,7 @@
                         datas[i].expected_date,
                         datas[i].status,
                         datas[i].stages,
+                        datas[i].stages_update_date,
                         datas[i].how_to_support,
                         datas[i].competitor,
                         datas[i].competitor_description,
@@ -246,6 +248,7 @@
                 { title: "Proposal Expected Date" },
                 { title: "Status" },
                 { title: "Stages" },
+                { title: "Stages Update Date" },
                 { title: "How supplier support to win project" },
                 { title: "Competitor" },
                 { title: "Competitor Description" },
@@ -272,11 +275,11 @@
             scrollX: true,
             stateSave: statepage,
             createdRow: function (row, data, index) {
-                var diffDay = diffDate(data[19], new Date()); //column Required Onsite Date
+                var diffDay = diffDate(data[20], new Date()); //column Required Onsite Date
                 if (diffDay > -3 && diffDay < 0) {
-                    $('td', row).eq(19).addClass('highlight_yellow');
+                    $('td', row).eq(20).addClass('highlight_yellow');
                 } else if (diffDay >=0) {
-                    $('td', row).eq(19).addClass('highlight_red');
+                    $('td', row).eq(20).addClass('highlight_red');
                 }
             },
 
@@ -391,6 +394,7 @@
                         datas[i].expected_date,
                         datas[i].status,
                         datas[i].stages,
+                        datas[i].stages_update_date,
                         datas[i].how_to_support,
                         datas[i].competitor,
                         datas[i].competitor_description,
@@ -431,13 +435,14 @@
         expected_date = cell.data()[21];
         status = cell.data()[22];
         stages = cell.data()[23];
-        how_to_support = cell.data()[24];
-        competitor = cell.data()[25];
-        competitor_description = cell.data()[26];
-        competitor_price = cell.data()[27];
-        sale_name = cell.data()[28];
-        department = cell.data()[29];
-        detail = cell.data()[30];
+        stages_update_date = cell.data()[24];
+        how_to_support = cell.data()[25];
+        competitor = cell.data()[26];
+        competitor_description = cell.data()[27];
+        competitor_price = cell.data()[28];
+        sale_name = cell.data()[29];
+        department = cell.data()[30];
+        detail = cell.data()[31];
 
         arrType = [];
         arrPart_No = [];
@@ -501,6 +506,7 @@
             var index_stages = Stages.indexOf(stages);
             document.getElementById('edit_stages').selectedIndex = index_stages;
 
+            document.getElementById('edit_stages_update_date').value = stages_update_date;
             document.getElementById('edit_how_to_support').value = how_to_support;
             document.getElementById('edit_competitor').value = competitor;
             document.getElementById('edit_competitor_description').value = competitor_description;
@@ -565,6 +571,7 @@
             document.getElementById('expected_date').value = expected_date;
             document.getElementById('status').value = status;
             document.getElementById('stages').value = stages;
+            document.getElementById('stages_update_date').value = stages_update_date;
             document.getElementById('how_to_support').value = how_to_support;
             document.getElementById('competitor').value = competitor;
             document.getElementById('competitor_description').value = competitor_description;
@@ -633,6 +640,7 @@
         var expected_date = document.getElementById('edit_expected_date').value;
         var status = document.getElementById('edit_status').value;
         var stages = document.getElementById('edit_stages').value;
+        var stages_update_date = document.getElementById('edit_stages_update_date').value;
         var how_to_support = document.getElementById('edit_how_to_support').value;
         var competitor = document.getElementById('edit_competitor').value;
         var competitor_description = document.getElementById('edit_competitor_description').value;
@@ -647,7 +655,7 @@
             contentType: 'application/x-www-form-urlencoded',
             data: {
                 quotation,revision, date, customer, enduser, project_name, site_location, product_type,type, part_no, spec, quantity, supplier_quotation_no,
-                total_value, unit,quoted_price, expected_order_date, required_onsite_date, proposer, expected_date, status, stages, how_to_support, competitor,
+                total_value, unit,quoted_price, expected_order_date, required_onsite_date, proposer, expected_date, status, stages,stages_update_date, how_to_support, competitor,
                 competitor_description, competitor_price, sale_name,department, detail
             },
             success: function (response) {
@@ -750,6 +758,10 @@
         }else{
              document.getElementById("edit_expected_date").disabled = false;
         }
+    });
+
+    $('#edit_stages').on('change',function(){
+        document.getElementById("edit_stages_update_date").value = new Date().toISOString().split('T')[0];
     });
     function remove_data(index) {
         arrType.splice(index, 1);

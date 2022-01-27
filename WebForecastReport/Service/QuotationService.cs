@@ -38,141 +38,64 @@ namespace WebForecastReport.Service
             try
             {
                 List<QuotationModel> quotations = new List<QuotationModel>();
+                string command = "";
                 if (role == "Admin")
                 {
-                    SqlCommand cmd = new SqlCommand("select * from Quotation order by date desc", ConnectSQL.OpenConnect());
-                    SqlDataReader dr = cmd.ExecuteReader();
-                    if (dr.HasRows)
-                    {
-                        while (dr.Read())
-                        {
-                            QuotationModel q = new QuotationModel()
-                            {
-                                quotation_no = dr["quotation_no"].ToString(),
-                                revision = dr["revision"].ToString(),
-                                date = dr["date"] != DBNull.Value ? Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd") : null,
-                                customer = dr["customer"].ToString(),
-                                enduser = dr["enduser"].ToString(),
-                                project_name = dr["project_name"].ToString(),
-                                site_location = dr["site_location"].ToString(),
-                                product_type = dr["product_type"].ToString(),
-                                type = dr["type"].ToString(),
-                                part_no = dr["part_no"].ToString(),
-                                spec = dr["spec"].ToString(),
-                                quantity = dr["quantity"].ToString(),
-                                supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
-                                total_value = dr["total_value"].ToString(),
-                                unit = dr["unit"].ToString(),
-                                quoted_price = dr["quoted_price"].ToString(),
-                                expected_order_date = dr["expected_order_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd") : null,
-                                required_onsite_date = dr["required_onsite_date"] != DBNull.Value ? Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd") : null,
-                                proposer = dr["proposer"].ToString(),
-                                expected_date = dr["expected_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
-                                status = dr["status"].ToString(),
-                                stages = dr["stages"].ToString(),
-                                how_to_support = dr["how_to_support"].ToString(),
-                                competitor = dr["competitor"].ToString(),
-                                competitor_description = dr["competitor_description"].ToString(),
-                                competitor_price = dr["competitor_price"].ToString(),
-                                sale_name = dr["sale_name"].ToString(),
-                                department = dr["department"].ToString(),
-                                detail = dr["detail"].ToString()
-                            };
-                            quotations.Add(q);
-                        }
-                        dr.Close();
-                    }
+                    command = "select * from Quotation order by date desc";
                 }
                 else if (role != "Admin" && role != "" && role != null)
                 {
-                    SqlCommand cmd = new SqlCommand("select * from Quotation where department='" + role + "' order by date desc", ConnectSQL.OpenConnect());
-                    SqlDataReader dr = cmd.ExecuteReader();
-                    if (dr.HasRows)
-                    {
-                        while (dr.Read())
-                        {
-                            QuotationModel q = new QuotationModel()
-                            {
-                                quotation_no = dr["quotation_no"].ToString(),
-                                revision = dr["revision"].ToString(),
-                                date = dr["date"] != DBNull.Value ? Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd") : null,
-                                customer = dr["customer"].ToString(),
-                                enduser = dr["enduser"].ToString(),
-                                project_name = dr["project_name"].ToString(),
-                                site_location = dr["site_location"].ToString(),
-                                product_type = dr["product_type"].ToString(),
-                                type = dr["type"].ToString(),
-                                part_no = dr["part_no"].ToString(),
-                                spec = dr["spec"].ToString(),
-                                quantity = dr["quantity"].ToString(),
-                                supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
-                                total_value = dr["total_value"].ToString(),
-                                unit = dr["unit"].ToString(),
-                                quoted_price = dr["quoted_price"].ToString(),
-                                expected_order_date = dr["expected_order_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd") : null,
-                                required_onsite_date = dr["required_onsite_date"] != DBNull.Value ? Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd") : null,
-                                proposer = dr["proposer"].ToString(),
-                                expected_date = dr["expected_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
-                                status = dr["status"].ToString(),
-                                stages = dr["stages"].ToString(),
-                                how_to_support = dr["how_to_support"].ToString(),
-                                competitor = dr["competitor"].ToString(),
-                                competitor_description = dr["competitor_description"].ToString(),
-                                competitor_price = dr["competitor_price"].ToString(),
-                                sale_name = dr["sale_name"].ToString(),
-                                department = dr["department"].ToString(),
-                                detail = dr["detail"].ToString()
-                            };
-                            quotations.Add(q);
-                        }
-                        dr.Close();
-                    }
+                    command = "select * from Quotation where department='" + role + "' order by date desc";
                 }
                 else
                 {
-                    SqlCommand cmd = new SqlCommand("select * from Quotation where sale_name='" + name + "' order by date desc", ConnectSQL.OpenConnect());
-                    SqlDataReader dr = cmd.ExecuteReader();
-                    if (dr.HasRows)
-                    {
-                        while (dr.Read())
-                        {
-                            QuotationModel q = new QuotationModel()
-                            {
-                                quotation_no = dr["quotation_no"].ToString(),
-                                revision = dr["revision"].ToString(),
-                                date = dr["date"] != DBNull.Value ? Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd") : null,
-                                customer = dr["customer"].ToString(),
-                                enduser = dr["enduser"].ToString(),
-                                project_name = dr["project_name"].ToString(),
-                                site_location = dr["site_location"].ToString(),
-                                product_type = dr["product_type"].ToString(),
-                                type = dr["type"].ToString(),
-                                part_no = dr["part_no"].ToString(),
-                                spec = dr["spec"].ToString(),
-                                quantity = dr["quantity"].ToString(),
-                                supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
-                                total_value = dr["total_value"].ToString(),
-                                unit = dr["unit"].ToString(),
-                                quoted_price = dr["quoted_price"].ToString(),
-                                expected_order_date = dr["expected_order_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd") : null,
-                                required_onsite_date = dr["required_onsite_date"] != DBNull.Value ? Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd") : null,
-                                proposer = dr["proposer"].ToString(),
-                                expected_date = dr["expected_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
-                                status = dr["status"].ToString(),
-                                stages = dr["stages"].ToString(),
-                                how_to_support = dr["how_to_support"].ToString(),
-                                competitor = dr["competitor"].ToString(),
-                                competitor_description = dr["competitor_description"].ToString(),
-                                competitor_price = dr["competitor_price"].ToString(),
-                                sale_name = dr["sale_name"].ToString(),
-                                department = dr["department"].ToString(),
-                                detail = dr["detail"].ToString()
-                            };
-                            quotations.Add(q);
-                        }
-                        dr.Close();
-                    }
+                    command = "select * from Quotation where sale_name='" + name + "' order by date desc";
                 }
+
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        QuotationModel q = new QuotationModel()
+                        {
+                            quotation_no = dr["quotation_no"].ToString(),
+                            revision = dr["revision"].ToString(),
+                            date = dr["date"] != DBNull.Value ? Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            customer = dr["customer"].ToString(),
+                            enduser = dr["enduser"].ToString(),
+                            project_name = dr["project_name"].ToString(),
+                            site_location = dr["site_location"].ToString(),
+                            product_type = dr["product_type"].ToString(),
+                            type = dr["type"].ToString(),
+                            part_no = dr["part_no"].ToString(),
+                            spec = dr["spec"].ToString(),
+                            quantity = dr["quantity"].ToString(),
+                            supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
+                            total_value = dr["total_value"].ToString(),
+                            unit = dr["unit"].ToString(),
+                            quoted_price = dr["quoted_price"].ToString(),
+                            expected_order_date = dr["expected_order_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            required_onsite_date = dr["required_onsite_date"] != DBNull.Value ? Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            proposer = dr["proposer"].ToString(),
+                            expected_date = dr["expected_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            status = dr["status"].ToString(),
+                            stages = dr["stages"].ToString(),
+                            stages_update_date = dr["stages_update_date"] != DBNull.Value ? Convert.ToDateTime(dr["stages_update_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            how_to_support = dr["how_to_support"].ToString(),
+                            competitor = dr["competitor"].ToString(),
+                            competitor_description = dr["competitor_description"].ToString(),
+                            competitor_price = dr["competitor_price"].ToString(),
+                            sale_name = dr["sale_name"].ToString(),
+                            department = dr["department"].ToString(),
+                            detail = dr["detail"].ToString()
+                        };
+                        quotations.Add(q);
+                    }
+                    dr.Close();
+                }
+
 
                 return quotations;
             }
@@ -239,6 +162,7 @@ namespace WebForecastReport.Service
                                                                             expected_date,
                                                                             status,
                                                                             stages,
+                                                                            stages_update_date,
                                                                             how_to_support,
                                                                             competitor,
                                                                             competitor_description,
@@ -268,6 +192,7 @@ namespace WebForecastReport.Service
                                                                             @expected_date,
                                                                             @status, 
                                                                             @stages, 
+                                                                            @stages_update_date,
                                                                             @how_to_support, 
                                                                             @competitor, 
                                                                             @competitor_description, 
@@ -300,6 +225,7 @@ namespace WebForecastReport.Service
                     cmd.Parameters.AddWithValue("@expected_date", model.expected_date);
                     cmd.Parameters.AddWithValue("@status", model.status);
                     cmd.Parameters.AddWithValue("@stages", model.stages);
+                    cmd.Parameters.AddWithValue("@stages_update_date", model.stages_update_date);
                     cmd.Parameters.AddWithValue("@how_to_support", model.how_to_support);
                     cmd.Parameters.AddWithValue("@competitor", model.competitor);
                     cmd.Parameters.AddWithValue("@competitor_description", model.competitor_description);
@@ -339,10 +265,6 @@ namespace WebForecastReport.Service
                     cmd.Parameters.AddWithValue("@quotation_no", model.quotation_no);
                     cmd.Parameters.AddWithValue("@revision", model.revision);
                     cmd.Parameters.AddWithValue("@date", model.date);
-                    //cmd.Parameters.AddWithValue("@proposer", model.proposer);
-                    //cmd.Parameters.AddWithValue("@expected_order_date", model.expected_order_date);
-                    //cmd.Parameters.AddWithValue("@required_onsite_date", model.required_onsite_date);
-                    //cmd.Parameters.AddWithValue("@expected_date", null);
                     cmd.Parameters.AddWithValue("@sale_name", model.sale_name);
                     cmd.Parameters.AddWithValue("@department", model.department);
                     cmd.ExecuteNonQuery();
@@ -367,8 +289,10 @@ namespace WebForecastReport.Service
         {
             try
             {
-
                 string expected_order_date = "";
+                string required_onsite_date = "";
+                string expected_date = "";
+                string stages_update_date = "";
                 if (model.expected_order_date != null)
                 {
                     expected_order_date = "expected_order_date='" + model.expected_order_date + "'";
@@ -377,6 +301,34 @@ namespace WebForecastReport.Service
                 {
                     expected_order_date = "expected_order_date=NULL";
                 }
+
+                if (model.required_onsite_date != null)
+                {
+                    required_onsite_date = "required_onsite_date='" + model.required_onsite_date + "'";
+                }
+                else
+                {
+                    required_onsite_date = "required_onsite_date=NULL";
+                }
+
+                if (model.expected_date != null)
+                {
+                    expected_date = "expected_date='" + model.expected_date + "'";
+                }
+                else
+                {
+                    expected_date = "expected_date=NULL";
+                }
+
+                if (model.stages_update_date != null)
+                {
+                    stages_update_date = "stages_update_date='" + model.stages_update_date + "'";
+                }
+                else
+                {
+                    stages_update_date = "stages_update_date=NULL";
+                }
+
                 SqlDataReader reader;
                 SqlCommand cmd = new SqlCommand(@"UPDATE Quotation SET revision='" + model.revision + "'," +
                                                                       "date='" + model.date + "'," +
@@ -393,12 +345,13 @@ namespace WebForecastReport.Service
                                                                       "total_value='" + model.total_value + "'," +
                                                                       "unit='" + model.unit + "'," +
                                                                       "quoted_price='" + model.quoted_price + "'," +
-                                                                       expected_order_date + "," +
-                                                                      "required_onsite_date='" + model.required_onsite_date != null ? model.required_onsite_date : DBNull.Value + "'," +
+                                                                      expected_order_date + "," +
+                                                                      required_onsite_date + "," +
                                                                       "proposer='" + model.proposer + "'," +
-                                                                      "expected_date='" + model.expected_date != null ? model.expected_date : DBNull.Value + "'," +
+                                                                      expected_date + "," +
                                                                       "status='" + model.status + "'," +
                                                                       "stages='" + model.stages + "'," +
+                                                                      stages_update_date + "," +
                                                                       "how_to_support='" + model.how_to_support + "'," +
                                                                       "competitor='" + model.competitor + "'," +
                                                                       "competitor_description='" + model.competitor_description + "'," +
@@ -414,9 +367,8 @@ namespace WebForecastReport.Service
 
                 return "Update Success";
             }
-            catch (Exception ex)
+            catch
             {
-                var n = ex.Message;
                 return "Update Failed";
             }
             finally
@@ -469,6 +421,7 @@ namespace WebForecastReport.Service
                             expected_date = dr["expected_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
                             status = dr["status"].ToString(),
                             stages = dr["stages"].ToString(),
+                            stages_update_date = dr["stages_update_date"] != DBNull.Value ? Convert.ToDateTime(dr["stages_update_date"].ToString()).ToString("yyyy-MM-dd") : null,
                             how_to_support = dr["how_to_support"].ToString(),
                             competitor = dr["competitor"].ToString(),
                             competitor_description = dr["competitor_description"].ToString(),

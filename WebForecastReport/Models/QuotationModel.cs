@@ -29,6 +29,7 @@ namespace WebForecastReport.Models
         public string expected_date { get; set; }
         public string status { get; set; }
         public string stages { get; set; }
+        public string stages_update_date { get; set; }
         public string how_to_support { get; set; }
         public string competitor { get; set; }
         public string competitor_description { get; set; }
