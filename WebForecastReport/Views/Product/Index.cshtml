@@ -9,34 +9,33 @@
     }
 </style>
 <div class="container-fluid p-3" style="background-color:#ECF0F5;">
-    <div class="row">
-        <div class="col-md-4 col-xl-4">
-            <div class="row">
-                <div class="col-md-8 col-xl-8">
-                    <input id="product" class="form-control" style="width:100%" />
-                </div>
-                <div class="col-md-4 col-xl-4">
-                    <button type="button" id="AddProduct" class="btn btn-primary" style="width: 100%">
-                        <i class="fas fa-plus" style="font-size:20px;"> ADD</i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <div class="row pt-3">
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title" id="card_title"><b>Products</b></span>
+                    <span class="card-title" id="card_title" style="font-size:20px;font-weight:bold">Product</span>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-2 col-xl-2">
+                        <div class="col-md-2 col-xl-2 pt-2">
                             <select id="types" class="form-control">
                                 <option value="Product">Product</option>
                                 <option value="Project">Project</option>
                                 <option value="Service">Service</option>
                             </select>
+                        </div>
+                        <div class="col-md-6 col-xl-6 pt-1">
+                            <div class="row">
+                                <div class="col-md-8 col-xl-8 pt-1">
+                                    <input id="name_type" class="form-control" style="width:100%" />
+                                </div>
+                                <div class="col-md-4 col-xl-4 pt-1">
+                                    <button type="button" id="btnAdd" class="btn btn-primary" style="width: 100%">
+                                        <i class="fas fa-plus" style="font-size:20px;"> ADD</i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-12 col-xl-12 pt-3">
@@ -44,12 +43,9 @@
                         </table>
                     </div>
                 </div>
-
-
             </div>
         </div>
     </div>
-</div>
 </div>
 <partial name="ModalEdit" />
 @section Scripts
@@ -58,15 +54,19 @@
     var product_data = [];
     var name = '';
     var id = null;
+    var type = "Product";
+
     $(document).ready(function () {
         init();
     });
     function init() {
+        type = document.getElementById("types").value;
     $.ajax({
         url: '@Url.Action("GetData", "Product")',
         type: "post",
         contentType: 'application/x-www-form-urlencoded',
         data: {
+            type
         },
         success: function (response) {
             var datas = response;
@@ -91,10 +91,10 @@
         tables = $('#table').DataTable({
             data: dataSet,
             columns: [
-                { title: "Edit", width: 10 },
-                { title: "Delete", width: 10 },
+                { title: "", width: 10 },
+                { title: "", width: 10 },
                 { title: "Id" , width: 10 },
-                { title: "Product" },
+                { title: type },
             ],
             "columnDefs": [
                 {
@@ -127,8 +127,10 @@
         id = cell.data()[2];
 
         if (column == "0") {
+            document.getElementById('edit_type').value = name;
+            document.getElementById("edit_card_title").innerHTML = "Edit " + type;
+            document.getElementById("lbl_type").innerHTML = type;
 
-            document.getElementById('edit_product').value = name;
             $('#EditModal').modal();
         } else if ( column == "1") {
             $.ajax({
@@ -136,7 +138,7 @@
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                name
+                name,type
             },
             success: function (response) {
                 if (response == "Delete Success") {
@@ -149,14 +151,14 @@
         });
         }
     });
-    $('#edit_ProductConfirm').on('click', function () {
-        var name = document.getElementById('edit_product').value;
+    $('#edit_typeConfirm').on('click', function () {
+        var name = document.getElementById('edit_type').value;    
         $.ajax({
             url: '@Url.Action("Update", "Product")',
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                id,name
+                id,name,type
             },
             success: function (response) {
                 if (response == "Update Success") {
@@ -170,25 +172,30 @@
 
         });
     });
-    $('#AddProduct').on('click', function () {
-        var name = document.getElementById('product').value;
+    $('#btnAdd').on('click', function () {
+        var name = document.getElementById('name_type').value;
         $.ajax({
             url: '@Url.Action("Insert", "Product")',
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                name
+                name,type
             },
             success: function (response) {
                 if (response == "Insert Success") {
                     init();
-                    document.getElementById('product').value = "";
+                    document.getElementById('name_type').value = "";
                     toastr.success("Insert Success");
                 } else {
                     toastr.error("Insert Failed");
                 }
             }
         });
+    });
+    $('#types').on('change', function () {
+        document.getElementById("card_title").innerHTML = document.getElementById("types").value;
+        type = document.getElementById("types").value;
+        init();
     });
 </script>
 }

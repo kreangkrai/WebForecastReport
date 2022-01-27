@@ -13,10 +13,14 @@ namespace WebForecastReport.Controllers
     public class ProductController : Controller
     {
         readonly IProduct Product;
+        readonly IProject Project;
+        readonly IService Service;
         readonly IAccessory Accessory;
         public ProductController()
         {
             Product = new ProductService();
+            Project = new ProjectService();
+            Service = new ServiceService();
             Accessory = new AccessoryService();
         }
         public IActionResult Index()
@@ -36,37 +40,125 @@ namespace WebForecastReport.Controllers
             }
         }
         [HttpPost]
-        public JsonResult GetData()
+        public JsonResult GetData(string type)
         {
-            List<TypeModel> products = new List<TypeModel>();
-            products = Product.GetProducts();
-            return Json(products);
+            if (type == "Product")
+            {
+                List<TypeModel> products = new List<TypeModel>();
+                products = Product.GetProducts();
+                return Json(products);
+            }
+            else if(type == "Project")
+            {
+                List<ProjectModel> projects = new List<ProjectModel>();
+                projects = Project.getProjects();
+                return Json(projects);
+            }
+            else if(type == "Service")
+            {
+                List<ServiceModel> services = new List<ServiceModel>();
+                services = Service.getService();
+                return Json(services);
+            }
+            else
+            {
+                return Json(null);
+            }
+            
         }
 
         [HttpPost]
-        public JsonResult Update(int id, string name)
+        public JsonResult Update(int id, string name,string type)
         {
-            string message = Product.Update(id, name);
-            return Json(message);
-        }
-        [HttpPost]
-        public JsonResult Insert(string name)
-        {
-            if (name != "")
+            if (type == "Product")
             {
-                string message = Product.Insert(name);
+                string message = Product.Update(id, name);
+                return Json(message);
+            }
+            else if(type == "Project")
+            {
+                string message = Project.Update(id, name);
+                return Json(message);
+            }
+            else if(type == "Service")
+            {
+                string message = Service.Update(id, name);
                 return Json(message);
             }
             else
             {
-                return Json("Insert Failed");
+                return Json(null);
             }
+            
         }
         [HttpPost]
-        public JsonResult Delete(string name)
+        public JsonResult Insert(string name,string type)
         {
-            string message = Product.Delete(name);
-            return Json(message);
+            if(type == "Product")
+            {
+                if (name != "")
+                {
+                    string message = Product.Insert(name);
+                    return Json(message);
+                }
+                else
+                {
+                    return Json("Insert Failed");
+                }
+            }
+            else if(type == "Project")
+            {
+                if (name != "")
+                {
+                    string message = Project.Insert(name);
+                    return Json(message);
+                }
+                else
+                {
+                    return Json("Insert Failed");
+                }
+            }
+            else if(type == "Service")
+            {
+                if (name != "")
+                {
+                    string message = Service.Insert(name);
+                    return Json(message);
+                }
+                else
+                {
+                    return Json("Insert Failed");
+                }
+            }
+            else
+            {
+                return Json(null);
+            }
+            
+        }
+        [HttpPost]
+        public JsonResult Delete(string name,string type)
+        {
+            if(type == "Product")
+            {
+                string message = Product.Delete(name);
+                return Json(message);
+            }
+            else if(type == "Project")
+            {
+                string message = Project.Delete(name);
+                return Json(message);
+            }
+            else if(type == "Service")
+            {
+                string message = Service.Delete(name);
+                return Json(message);
+            }
+            else
+            {
+                return Json(null);
+            }
+            
         }
     }
 }

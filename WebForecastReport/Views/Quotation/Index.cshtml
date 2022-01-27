@@ -1,6 +1,5 @@
 ﻿@model WebForecastReport.Models.UserModel;
 @{
-    bool state = true;
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Quotation";
 }
@@ -674,12 +673,12 @@
             let text = arrType.join();
            // document.getElementById("edit_type").value = text;
         }
-        $('#group_products').attr('hidden', false);
+        $('#group_types').attr('hidden', false);
         GenProductsTable();
     });
 
     function GenProductsTable() {
-        $('#table_products').DataTable({
+        $('#table_types').DataTable({
             "order": [2, "asc"],
             "columnDefs": [
                 {
