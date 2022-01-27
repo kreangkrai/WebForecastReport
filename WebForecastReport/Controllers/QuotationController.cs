@@ -18,6 +18,8 @@ namespace WebForecastReport.Controllers
         readonly IQuotation Quotation;
         readonly IAccessory Accessory;
         readonly IProduct Product;
+        readonly IProject Project;
+        readonly IService Service;
         readonly IExport Export;
         private readonly IHostingEnvironment _hostingEnvironment;
         public QuotationController(IHostingEnvironment hostingEnvironment)
@@ -25,6 +27,8 @@ namespace WebForecastReport.Controllers
             Quotation = new QuotationService();
             Accessory = new AccessoryService();
             Product = new ProductService();
+            Project = new ProjectService();
+            Service = new ServiceService();
             Export = new ExportService();
             _hostingEnvironment = hostingEnvironment;
         }
@@ -149,6 +153,30 @@ namespace WebForecastReport.Controllers
             string message = Quotation.Update(q);
             bool statepage = true;
             var list = new { message = message, statepage = statepage };
+            return Json(list);
+        }
+        [HttpPost]
+        public JsonResult GetDepartment(string name)
+        {
+            string department = Accessory.getAllUser().Where(w => w.name == name).Select(s => s.department).FirstOrDefault();
+            return Json(department);
+        }
+        [HttpPost]
+        public JsonResult GetType(string type)
+        {
+            List<string> list = new List<string>();
+            if (type == "Product")
+            {
+                list = Product.GetProducts().Select(s => s.name).ToList();
+            }
+            else if (type == "Project")
+            {
+                list = Project.getProjects().Select(s => s.name).ToList();
+            }
+            else if (type == "Service")
+            {
+                list = Service.getService().Select(s => s.name).ToList();
+            }
             return Json(list);
         }
         public IActionResult DownloadXlsxReport()

@@ -150,9 +150,6 @@
                 // add Department
                 Departments = add_department(response.departments);
 
-                // add Type
-                Types = add_type(response.types);
-
                 var datas = response.quatations;
                 var dataSet = [];
                 for (var i = 0; i < datas.length; i++) {
@@ -465,6 +462,11 @@
         }
 
         if (column == "0") {
+
+            //clear selection type and disabled button add
+            document.getElementById("btnAddType").disabled = true;
+            $('#types').empty();
+
             document.getElementById('edit_quotation_no').value = quotation;
             document.getElementById('edit_revision').value = revision;
             document.getElementById('edit_date').value = date;
@@ -533,23 +535,13 @@
 
             document.getElementById('edit_detail').value = detail;
 
-            // add select type
-            $('#types').empty();
-            var selectType = document.getElementById('types');
-            for (var i = 0, l = Types.length; i < l; i++) {
-                var option = Types[i];
-                selectType.options.add(new Option(option.text, option.value, option.selected));
-            }
-            document.getElementById('types').selectedIndex = 0;
 
             //check state admin
             var role = '@Model.role';
             if (role == "Admin") {
                 document.getElementById('edit_sale_name').disabled = false;
-                document.getElementById('edit_department').disabled = false;
             } else {
                 document.getElementById('edit_sale_name').disabled = true;
-                document.getElementById('edit_department').disabled = true;
             }
 
             $('#EditModal').modal();
@@ -675,11 +667,12 @@
 
     $('#btnAddType').on('click', function () {
         var value = document.getElementById("types").value;
+        console.log(arrType);
         if (value !== "") {
             // add data
             add_data(value);
             let text = arrType.join();
-            document.getElementById("edit_type").value = text;
+           // document.getElementById("edit_type").value = text;
         }
         $('#group_products').attr('hidden', false);
         GenProductsTable();
@@ -696,6 +689,7 @@
             ],
             paging: false,
             searching: false,
+            bInfo: false,
         });
     };
 
@@ -763,6 +757,51 @@
     $('#edit_stages').on('change',function(){
         document.getElementById("edit_stages_update_date").value = new Date().toISOString().split('T')[0];
     });
+
+    $('#edit_sale_name').on('change',function(){
+         var name = document.getElementById("edit_sale_name").value;
+         $.ajax({
+            url: '@Url.Action("GetDepartment", "Quotation")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                name
+            },
+            success: function (response) {
+                var department = response;
+                document.getElementById("edit_department").value = department;
+            }
+        });
+    });
+
+    $('#edit_product_type').on('change',function(){
+        var type = document.getElementById("edit_product_type").value;
+         $.ajax({
+            url: '@Url.Action("GetType", "Quotation")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                type
+            },
+            success: function (response) {
+
+                // Enable Add Button
+                document.getElementById("btnAddType").disabled = false;
+
+                var data = response;
+                 // add Type
+                Types = add_type(data);
+               // add select type
+                $('#types').empty();
+                var selectType = document.getElementById('types');
+                for (var i = 0, l = Types.length; i < l; i++) {
+                    var option = Types[i];
+                    selectType.options.add(new Option(option.text, option.value, option.selected));
+                }
+                document.getElementById('types').selectedIndex = 0;
+            }
+        });
+    });
     function remove_data(index) {
         arrType.splice(index, 1);
         arrPart_No.splice(index, 1);
@@ -807,8 +846,8 @@
         for (var i = 0; i < types.length; i++) {
             var data =
             {
-                "text": types[i].name,
-                "value": types[i].name
+                "text": types[i],
+                "value": types[i]
             }
             data_types.push(data);
         }

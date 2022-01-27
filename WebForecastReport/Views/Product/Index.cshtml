@@ -17,7 +17,7 @@
                 </div>
                 <div class="col-md-4 col-xl-4">
                     <button type="button" id="AddProduct" class="btn btn-primary" style="width: 100%">
-                        <i class="fas fa-plus" style="font-size:20px;"> Product</i>
+                        <i class="fas fa-plus" style="font-size:20px;"> ADD</i>
                     </button>
                 </div>
             </div>
@@ -27,15 +27,29 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title"><b>Products</b></span>
+                    <span class="card-title" id="card_title"><b>Products</b></span>
                 </div>
                 <div class="card-body">
-                    <table id="table" class="table table-xl cell-border table-dark display responsive nowrap" width="100%">
-                    </table>
+                    <div class="row">
+                        <div class="col-md-2 col-xl-2">
+                            <select id="types" class="form-control">
+                                <option value="Product">Product</option>
+                                <option value="Project">Project</option>
+                                <option value="Service">Service</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-xl-12 pt-3">
+                        <table id="table" class="table table-xl cell-border table-dark display responsive nowrap" width="100%">
+                        </table>
+                    </div>
                 </div>
+
+
             </div>
         </div>
     </div>
+</div>
 </div>
 <partial name="ModalEdit" />
 @section Scripts
