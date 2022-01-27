@@ -36,7 +36,6 @@ namespace WebForecastReport.Controllers
                 List<UserModel> users = new List<UserModel>();
                 users = Accessory.getAllUser();
                 UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name, department = s.department, role = s.role }).FirstOrDefault();
-
                 return View(u);
             }
             else
@@ -65,14 +64,16 @@ namespace WebForecastReport.Controllers
             quotations.department = department;
             quotations.date = DateTime.Now.ToString("yyyy-MM-dd");
             ///quotations.expected_date = DateTime.Now.ToString("yyyy-MM-dd");
-            quotations.expected_order_date = DateTime.Now.ToString("yyyy-MM-dd");
-            quotations.required_onsite_date = DateTime.Now.ToString("yyyy-MM-dd");
+            //quotations.expected_order_date = DateTime.Now.ToString("yyyy-MM-dd");
+            //quotations.required_onsite_date = DateTime.Now.ToString("yyyy-MM-dd");
             string message = Quotation.InsertQuotation(quotations);
 
             List<QuotationModel> getQuotation = new List<QuotationModel>();
             getQuotation = Quotation.GetQuotation(name, role);
             getQuotation = getQuotation.OrderByDescending(o => o.quotation_no).ToList();
-            return Json(getQuotation);
+
+            var list = new { quotation = getQuotation, statepage = false };
+            return Json(list);
         }
         [HttpPost]
         public JsonResult GetData(string name, string role)
@@ -83,7 +84,8 @@ namespace WebForecastReport.Controllers
 
             //get all sale
             List<string> sales = new List<string>();
-            sales = Accessory.getAllUser().Select(s => s.name).ToList();
+            sales.Add("");
+            sales.AddRange(Accessory.getAllUser().Select(s => s.name).ToList());
 
             //get all customer
             List<string> customers = new List<string>();
@@ -101,7 +103,8 @@ namespace WebForecastReport.Controllers
             List<TypeModel> types = new List<TypeModel>();
             types = Product.GetProducts();
 
-            var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers, departments = departments, types = types };
+            bool statePage = true;
+            var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers, departments = departments, types = types, statepage = statePage };
             return Json(list);
         }
         [HttpPost]
@@ -147,8 +150,9 @@ namespace WebForecastReport.Controllers
             Accessory.InsertEndUser(enduser);
 
             string message = Quotation.Update(q);
-
-            return Json(message);
+            bool statepage = true;
+            var list = new { message = message, statepage = statepage };
+            return Json(list);
         }
         public IActionResult DownloadXlsxReport()
         {

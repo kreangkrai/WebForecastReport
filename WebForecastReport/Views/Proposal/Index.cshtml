@@ -16,36 +16,7 @@
                 <span class="card-title"><b>Proposal</b></span>
             </div>
             <div class="card-body">
-                <table id="table_proposal" class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th>Quotation NO</th>
-                            <th>Quotation Created Date</th>
-                            <th>Customer</th>
-                            <th>End User</th>
-                            <th>Project Name</th>
-                            <th>Site Location</th>
-                            <th>Project Type</th>
-                            <th>Type</th>
-                            <th>Total Value</th>
-                            <th>Expected Order Date</th>
-                            <th>Required Onsite Date</th>
-                            <th>Proposal Creted By</th>
-                            <th>Proposal Expected Date</th>
-                            <th>Proposal Request Date</th>
-                            <th>Proposal Status</th>
-                            <th>Revision</th>
-                            <th>Proposal Cost</th>
-                            <th>Quoted Price</th>
-                            <th>GP</th>
-                            <th>Finish Date</th>
-                            <th>Engineering Request</th>
-                            <th>PPC Request</th>
-                            <th>Person In Charge</th>
-                        </tr>
-                    </thead>
+                <table id="table_proposal" class="table table-xl cell-border table-dark display responsive nowrap" width="100%">
                 </table>
             </div>
         </div>
@@ -78,9 +49,28 @@
                         datas[i].quotation.quotation_no,
                         datas[i].quotation.date,
                         datas[i].quotation.customer,
-                        datas[i].quotation.enduser
+                        datas[i].quotation.enduser,
+                        datas[i].quotation.project_name,
+                        datas[i].quotation.site_location,
+                        datas[i].quotation.product_type,
+                        datas[i].quotation.type,
+                        datas[i].quotation.total_value,
+                        datas[i].quotation.expected_order_date,
+                        datas[i].quotation.required_onsite_date,
+                        datas[i].quotation.proposer,
+                        datas[i].quotation.department,
+                        datas[i].quotation.expected_date,
+                        datas[i].request_date,
+                        datas[i].proposal_status,
+                        datas[i].proposal_revision,
+                        datas[i].proposal_cost,
+                        datas[i].proposal_quoted_price,
+                        datas[i].gp,
+                        datas[i].finish_date,
+                        datas[i].engineering_request,
+                        datas[i].ppc_request,
+                        datas[i].person_in_charge
                         ];
-
                         dataSet.push(data);
                 }
                 console.log(dataSet);
@@ -94,6 +84,34 @@
             tables.destroy();
             tables = $('#table_proposal').DataTable({
             data: dataSet,
+            columns: [
+                { title: ""},
+                { title: ""},
+                { title: "Quotation NO"},
+                { title: "Quotation Created Date"},
+                { title: "Customer"},
+                { title: "End User"},
+                { title: "Project Name"},
+                { title: "Site Location"},
+                { title: "Project Type"},
+                { title: "Type"},
+                { title: "Total Value"},
+                { title: "Expected Order Date"},
+                { title: "Required Onsite Date"},
+                { title: "Proposal Creted By"},
+                { title: "Proposal Departmnt"},
+                { title: "Proposal Expected Date"},
+                { title: "Proposal Request Date"},
+                { title: "Proposal Status"},
+                { title: "Revision"},
+                { title: "Proposal Cost"},
+                { title: "Quoted Price"},
+                { title: "GP"},
+                { title: "Finish Date"},
+                { title: "Engineering Request"},
+                { title: "PPC Request"},
+                { title: "Person In Charge"},
+            ],
             "columnDefs": [
                 {
                     "targets": 0,
@@ -113,6 +131,17 @@
             stateSave: true,
         });
         $(tables.table().body()).addClass('text-dark');
-    }
+    };
+    $('#table_proposal').on('click','tbody td',function(){
+         var cell = tables.cell(this);
+         var column = cell[0][0].column;
+
+         if(column == 0){
+             $('#modal_proposal').modal('show');
+         }
+         if(column == 1){
+
+         }
+    });
 </script>
 }

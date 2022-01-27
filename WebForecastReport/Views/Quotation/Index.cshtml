@@ -1,5 +1,6 @@
 ﻿@model WebForecastReport.Models.UserModel;
 @{
+    bool state = true;
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Quotation";
 }
@@ -104,7 +105,7 @@
     var arrTotal_Value = [];
     var arrUnit = [];
 
-    var Units = ["THB", "EUR", "USD", "JPY"];
+    var Units = ["THB", "EUR", "USD", "JPY","CHF","GBP","SGD"];
     var Status = ["IN", "OUT"];
     var Stages = ["Quote for Buddget", "Negotiation/Review", "Proposal/Quote for Order", "Prospecting", "Closed(Won)", "Closed(Lost)"];
     var Types = [];
@@ -115,6 +116,8 @@
     var EndUsers = [];
 
     var state_admin = false;
+
+    var statepage = false;
 
     $(document).ready(function () {
         init();
@@ -131,6 +134,9 @@
                 name, role
             },
             success: function (response) {
+                //get state page
+                statepage = response.statepage;
+
                 //add sale to select
                 Sales = add_sale(response.sales);
                 Proposers = add_proposer(response.sales);
@@ -264,7 +270,7 @@
 
             ],
             scrollX: true,
-            stateSave: true,
+            stateSave: statepage,
             createdRow: function (row, data, index) {
                 var diffDay = diffDate(data[19], new Date()); //column Required Onsite Date
                 if (diffDay > -3 && diffDay < 0) {
@@ -354,39 +360,43 @@
                 role
             },
             success: function (response) {
+                //get state page
+                statepage = response.statepage;
+
+                var datas = response.quotation;
                 var dataSet = [];
-                for (var i = 0; i < response.length; i++) {
+                for (var i = 0; i < datas.length; i++) {
                     var data = ["",
                         "",
-                        response[i].quotation_no,
-                        response[i].revision,
-                        response[i].date,
-                        response[i].customer,
-                        response[i].enduser,
-                        response[i].project_name,
-                        response[i].site_location,
-                        response[i].product_type,
-                        response[i].type,
-                        response[i].part_no,
-                        response[i].spec,
-                        response[i].quantity,
-                        response[i].supplier_quotation_no,
-                        response[i].total_value,
-                        response[i].unit,
-                        response[i].quoted_price,
-                        response[i].expected_order_date,
-                        response[i].required_onsite_date,
-                        response[i].proposer,
-                        response[i].expected_date,
-                        response[i].status,
-                        response[i].stages,
-                        response[i].how_to_support,
-                        response[i].competitor,
-                        response[i].competitor_description,
-                        response[i].competitor_price,
-                        response[i].sale_name,
-                        response[i].department,
-                        response[i].detail];
+                        datas[i].quotation_no,
+                        datas[i].revision,
+                        datas[i].date,
+                        datas[i].customer,
+                        datas[i].enduser,
+                        datas[i].project_name,
+                        datas[i].site_location,
+                        datas[i].product_type,
+                        datas[i].type,
+                        datas[i].part_no,
+                        datas[i].spec,
+                        datas[i].quantity,
+                        datas[i].supplier_quotation_no,
+                        datas[i].total_value,
+                        datas[i].unit,
+                        datas[i].quoted_price,
+                        datas[i].expected_order_date,
+                        datas[i].required_onsite_date,
+                        datas[i].proposer,
+                        datas[i].expected_date,
+                        datas[i].status,
+                        datas[i].stages,
+                        datas[i].how_to_support,
+                        datas[i].competitor,
+                        datas[i].competitor_description,
+                        datas[i].competitor_price,
+                        datas[i].sale_name,
+                        datas[i].department,
+                        datas[i].detail];
 
                     dataSet.push(data);
                 }
@@ -639,7 +649,10 @@
                 competitor_description, competitor_price, sale_name,department, detail
             },
             success: function (response) {
-                if (response == "Update Success") {
+                //get state page
+                statepage = response.statepage;
+
+                if (response.message == "Update Success") {
                     location.reload(); //reload page
                     toastr.success("Update Success");
                 } else {
@@ -708,6 +721,16 @@
         var val = document.getElementById('edit_quoted_price').value;
         var newVal = numberWithCommas(val);
         document.getElementById('edit_quoted_price').value = newVal;
+    });
+
+    $('#edit_proposer').on('change',function(){
+        var value = document.getElementById("edit_proposer").value;
+        if (value == ""){
+            document.getElementById("edit_expected_date").value = null;
+            document.getElementById("edit_expected_date").disabled = true;
+        }else{
+             document.getElementById("edit_expected_date").disabled = false;
+        }
     });
     function remove_data(index) {
         arrType.splice(index, 1);

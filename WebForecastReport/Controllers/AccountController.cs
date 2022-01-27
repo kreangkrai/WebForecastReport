@@ -14,7 +14,7 @@ namespace WebForecastReport.Controllers
     public class AccountController : Controller
     {
         string user = "";
-        byte[] image = null;
+        byte[] image = new byte[0];
         public IActionResult Index()
         {
             return View();
@@ -86,10 +86,16 @@ namespace WebForecastReport.Controllers
 
                         if (adsSearchResult != null)
                         {
+
+                            var prop = adsSearchResult.Properties["thumbnailPhoto"];
                             if (adsSearchResult.Properties["displayname"].Count == 1)
                             {
                                 user = (string)adsSearchResult.Properties["displayname"][0];
-                                image = adsSearchResult.Properties["thumbnailPhoto"][0] as byte[];
+                                var img = adsSearchResult.Properties["thumbnailPhoto"].Count;
+                                if (img > 0)
+                                {
+                                    image = adsSearchResult.Properties["thumbnailPhoto"][0] as byte[];
+                                }
                             }
                             userOk = true;
                         }

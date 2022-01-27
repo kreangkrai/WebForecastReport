@@ -50,7 +50,7 @@ namespace WebForecastReport.Service
                             {
                                 quotation_no = dr["quotation_no"].ToString(),
                                 revision = dr["revision"].ToString(),
-                                date = dr["date"] != DBNull.Value ? Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd") : "",
+                                date = dr["date"] != DBNull.Value ? Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd") : null,
                                 customer = dr["customer"].ToString(),
                                 enduser = dr["enduser"].ToString(),
                                 project_name = dr["project_name"].ToString(),
@@ -64,8 +64,8 @@ namespace WebForecastReport.Service
                                 total_value = dr["total_value"].ToString(),
                                 unit = dr["unit"].ToString(),
                                 quoted_price = dr["quoted_price"].ToString(),
-                                expected_order_date = dr["expected_order_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd") : "",
-                                required_onsite_date = dr["required_onsite_date"] != DBNull.Value ? Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd") : "",
+                                expected_order_date = dr["expected_order_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                                required_onsite_date = dr["required_onsite_date"] != DBNull.Value ? Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd") : null,
                                 proposer = dr["proposer"].ToString(),
                                 expected_date = dr["expected_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
                                 status = dr["status"].ToString(),
@@ -95,7 +95,7 @@ namespace WebForecastReport.Service
                             {
                                 quotation_no = dr["quotation_no"].ToString(),
                                 revision = dr["revision"].ToString(),
-                                date = Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd"),
+                                date = dr["date"] != DBNull.Value ? Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd") : null,
                                 customer = dr["customer"].ToString(),
                                 enduser = dr["enduser"].ToString(),
                                 project_name = dr["project_name"].ToString(),
@@ -109,10 +109,10 @@ namespace WebForecastReport.Service
                                 total_value = dr["total_value"].ToString(),
                                 unit = dr["unit"].ToString(),
                                 quoted_price = dr["quoted_price"].ToString(),
-                                expected_order_date = Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd"),
-                                required_onsite_date = Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd"),
+                                expected_order_date = dr["expected_order_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                                required_onsite_date = dr["required_onsite_date"] != DBNull.Value ? Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd") : null,
                                 proposer = dr["proposer"].ToString(),
-                                expected_date = dr["expected_date"].ToString() != "" ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                                expected_date = dr["expected_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
                                 status = dr["status"].ToString(),
                                 stages = dr["stages"].ToString(),
                                 how_to_support = dr["how_to_support"].ToString(),
@@ -140,7 +140,7 @@ namespace WebForecastReport.Service
                             {
                                 quotation_no = dr["quotation_no"].ToString(),
                                 revision = dr["revision"].ToString(),
-                                date = Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd"),
+                                date = dr["date"] != DBNull.Value ? Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd") : null,
                                 customer = dr["customer"].ToString(),
                                 enduser = dr["enduser"].ToString(),
                                 project_name = dr["project_name"].ToString(),
@@ -154,10 +154,10 @@ namespace WebForecastReport.Service
                                 total_value = dr["total_value"].ToString(),
                                 unit = dr["unit"].ToString(),
                                 quoted_price = dr["quoted_price"].ToString(),
-                                expected_order_date = Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd"),
-                                required_onsite_date = Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd"),
+                                expected_order_date = dr["expected_order_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                                required_onsite_date = dr["required_onsite_date"] != DBNull.Value ? Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd") : null,
                                 proposer = dr["proposer"].ToString(),
-                                expected_date = dr["expected_date"].ToString() != "" ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                                expected_date = dr["expected_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
                                 status = dr["status"].ToString(),
                                 stages = dr["stages"].ToString(),
                                 how_to_support = dr["how_to_support"].ToString(),
@@ -331,8 +331,8 @@ namespace WebForecastReport.Service
             {
                 using (SqlCommand cmd = new SqlCommand(@"INSERT INTO Quotation(
                                                                             quotation_no,revision,
-                                                                            date,expected_order_date,required_onsite_date,sale_name,department) VALUES (
-                                                                            @quotation_no,@revision,@date,@expected_order_date,@required_onsite_date,@sale_name,@department)", ConnectSQL.OpenConnect()))
+                                                                            date,sale_name,department) VALUES (
+                                                                            @quotation_no,@revision,@date,@sale_name,@department)", ConnectSQL.OpenConnect()))
                 {
                     cmd.CommandType = CommandType.Text;
                     cmd.Connection = ConnectSQL.OpenConnect();
@@ -340,8 +340,8 @@ namespace WebForecastReport.Service
                     cmd.Parameters.AddWithValue("@revision", model.revision);
                     cmd.Parameters.AddWithValue("@date", model.date);
                     //cmd.Parameters.AddWithValue("@proposer", model.proposer);
-                    cmd.Parameters.AddWithValue("@expected_order_date", model.expected_order_date);
-                    cmd.Parameters.AddWithValue("@required_onsite_date", model.required_onsite_date);
+                    //cmd.Parameters.AddWithValue("@expected_order_date", model.expected_order_date);
+                    //cmd.Parameters.AddWithValue("@required_onsite_date", model.required_onsite_date);
                     //cmd.Parameters.AddWithValue("@expected_date", null);
                     cmd.Parameters.AddWithValue("@sale_name", model.sale_name);
                     cmd.Parameters.AddWithValue("@department", model.department);
@@ -367,6 +367,16 @@ namespace WebForecastReport.Service
         {
             try
             {
+
+                string expected_order_date = "";
+                if (model.expected_order_date != null)
+                {
+                    expected_order_date = "expected_order_date='" + model.expected_order_date + "'";
+                }
+                else
+                {
+                    expected_order_date = "expected_order_date=NULL";
+                }
                 SqlDataReader reader;
                 SqlCommand cmd = new SqlCommand(@"UPDATE Quotation SET revision='" + model.revision + "'," +
                                                                       "date='" + model.date + "'," +
@@ -383,10 +393,10 @@ namespace WebForecastReport.Service
                                                                       "total_value='" + model.total_value + "'," +
                                                                       "unit='" + model.unit + "'," +
                                                                       "quoted_price='" + model.quoted_price + "'," +
-                                                                      "expected_order_date='" + model.expected_order_date + "'," +
-                                                                      "required_onsite_date='" + model.required_onsite_date + "'," +
+                                                                       expected_order_date + "," +
+                                                                      "required_onsite_date='" + model.required_onsite_date != null ? model.required_onsite_date : DBNull.Value + "'," +
                                                                       "proposer='" + model.proposer + "'," +
-                                                                      "expected_date='" + model.expected_date + "'," +
+                                                                      "expected_date='" + model.expected_date != null ? model.expected_date : DBNull.Value + "'," +
                                                                       "status='" + model.status + "'," +
                                                                       "stages='" + model.stages + "'," +
                                                                       "how_to_support='" + model.how_to_support + "'," +
@@ -404,8 +414,9 @@ namespace WebForecastReport.Service
 
                 return "Update Success";
             }
-            catch
+            catch (Exception ex)
             {
+                var n = ex.Message;
                 return "Update Failed";
             }
             finally
@@ -438,7 +449,7 @@ namespace WebForecastReport.Service
                         {
                             quotation_no = dr["quotation_no"].ToString(),
                             revision = dr["revision"].ToString(),
-                            date = Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd"),
+                            date = dr["date"] != DBNull.Value ? Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd") : null,
                             customer = dr["customer"].ToString(),
                             enduser = dr["enduser"].ToString(),
                             project_name = dr["project_name"].ToString(),
@@ -452,10 +463,10 @@ namespace WebForecastReport.Service
                             total_value = dr["total_value"].ToString(),
                             unit = dr["unit"].ToString(),
                             quoted_price = dr["quoted_price"].ToString(),
-                            expected_order_date = Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd"),
-                            required_onsite_date = Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd"),
+                            expected_order_date = dr["expected_order_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            required_onsite_date = dr["required_onsite_date"] != DBNull.Value ? Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd") : null,
                             proposer = dr["proposer"].ToString(),
-                            expected_date = dr["expected_date"].ToString() != "" ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            expected_date = dr["expected_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
                             status = dr["status"].ToString(),
                             stages = dr["stages"].ToString(),
                             how_to_support = dr["how_to_support"].ToString(),
