@@ -59,13 +59,9 @@ namespace WebForecastReport.Controllers
             }
             quotations.quotation_no = quo;
             quotations.revision = "0";
-            //quotations.proposer = name;
             quotations.sale_name = name;
             quotations.department = department;
             quotations.date = DateTime.Now.ToString("yyyy-MM-dd");
-            ///quotations.expected_date = DateTime.Now.ToString("yyyy-MM-dd");
-            //quotations.expected_order_date = DateTime.Now.ToString("yyyy-MM-dd");
-            //quotations.required_onsite_date = DateTime.Now.ToString("yyyy-MM-dd");
             string message = Quotation.InsertQuotation(quotations);
 
             List<QuotationModel> getQuotation = new List<QuotationModel>();
@@ -110,7 +106,7 @@ namespace WebForecastReport.Controllers
         [HttpPost]
         public JsonResult Update(string quotation, string revision, string date, string customer, string enduser, string project_name, string site_location, string product_type, string type, string part_no,
                     string spec, string quantity, string supplier_quotation_no, string total_value, string unit, string quoted_price, string expected_order_date,
-                   string required_onsite_date, string proposer, string expected_date, string status, string stages, string how_to_support, string competitor, string competitor_description,
+                   string required_onsite_date, string proposer, string expected_date, string status, string stages, string stages_update_date, string how_to_support, string competitor, string competitor_description,
                    string competitor_price, string sale_name, string department, string detail)
         {
             QuotationModel q = new QuotationModel()
@@ -137,6 +133,7 @@ namespace WebForecastReport.Controllers
                 expected_date = expected_date,
                 status = status,
                 stages = stages,
+                stages_update_date = stages_update_date,
                 how_to_support = how_to_support,
                 competitor = competitor,
                 competitor_description = competitor_description,
