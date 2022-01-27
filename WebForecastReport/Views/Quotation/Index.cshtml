@@ -346,6 +346,7 @@
         });
         $(tables_edit.table().body()).addClass('text-dark');
     };
+
     $('#AddQuotation').on('click', function () {
         var name = '@Model.name';
         var department = '@Model.department';
@@ -404,6 +405,7 @@
             }
         });
     });
+
     $('#table').on('click', 'tbody td', function () {
         var cell = tables.cell(this);
         var column = cell[0][0].column;
@@ -671,7 +673,24 @@
             let text = arrType.join();
             document.getElementById("edit_type").value = text;
         }
+        $('#group_products').attr('hidden', false);
+        GenProductsTable();
     });
+
+    function GenProductsTable() {
+        $('#table_products').DataTable({
+            "order": [2, "asc"],
+            "columnDefs": [
+                {
+                    "targets": [0, 1],
+                    "orderable": false
+                }
+            ],
+            paging: false,
+            searching: false,
+        });
+    };
+
     $('#clear_btnType').on('click', function () {
         document.getElementById("edit_type").value = "";
         arrType = [];
