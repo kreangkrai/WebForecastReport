@@ -9,8 +9,8 @@
         cursor: pointer;
     }
 
-    #tableedit tr td:nth-of-type(1),
-    #tableedit tr td:nth-of-type(2) {
+    #table_types tr td:nth-of-type(1),
+    #table_types tr td:nth-of-type(2) {
         cursor: pointer;
     }
 
@@ -288,7 +288,7 @@
     function table_view(dataSet) {
         if (tables_view !== undefined)
             tables_view.destroy();
-        tables_view = $('#tableview').DataTable({
+            tables_view = $('#tableview').DataTable({
             data: dataSet,
             columns: [
                 { title: "Type", width: 80},
@@ -310,19 +310,18 @@
     function table_edit(dataSet) {
         if (tables_edit !== undefined)
             tables_edit.destroy();
-            tables_edit = $('#tableedit').DataTable({
+        tables_edit = $('#table_types').DataTable({
             data: dataSet,
             columns: [
-                { title: "Edit" , width : 20},
-                { title: "Delete", width: 20 },
-                { title: "Type", width: 80},
+                { title: "Edit", width: 2, },
+                { title: "Delete", width: 5 },
+                { title: "Name", width: 80 },
                 { title: "Part No", width: 80 },
-                { title: "Spec", width: 80},
+                { title: "Spec", width: 80 },
                 { title: "Quantity", width: 80 },
                 { title: "Supplier Quotation No", width: 80 },
-                { title: "Total Value", width: 80},
-                { title: "Unit", width : 30 },
-
+                { title: "Total Value", width: 80 },
+                { title: "Unit", width: 30 },
             ],
             "columnDefs": [
                 {
@@ -337,10 +336,17 @@
                     "defaultContent": "<i class=\"fas fa-trash\"></i>",
                     "className": 'dt-body-center',
                 },
-
+                {
+                    "targets": [3, 4, 5, 6],
+                    "visible": false,
+                    "searchable": false,
+                    "className": 'dt-body-center',
+                }
             ],
-            scrollX: true,
-            stateSave: true,
+            "scrollX": true,
+            "paging": false,
+            "searching": false,
+            "bInfo": false,
 
         });
         $(tables_edit.table().body()).addClass('text-dark');
@@ -576,25 +582,26 @@
         }
 
     });
-    $('#tableedit').on('click', 'tbody td', function () {
+    $('#table_types').on('click', 'tbody td', function () {
         var cell = tables_edit.cell(this);
         var column = cell[0][0].column;
+        var index = arrType.indexOf(cell.data()[2]);  //index of name type
         if (column == 0) {
-            document.getElementById('edit_sub_type').value = cell.data()[2];
-            document.getElementById('edit_sub_part_no').value = cell.data()[3];
-            document.getElementById('edit_sub_spec').value = cell.data()[4];
-            document.getElementById('edit_sub_quantity').value = cell.data()[5];
-            document.getElementById('edit_sub_supplier_quotation_no').value = cell.data()[6];
-            document.getElementById('edit_sub_total_value').value = cell.data()[7];
-            document.getElementById('edit_sub_unit').value = cell.data()[8];
+            document.getElementById('edit_sub_type').value = arrType[index];
+            document.getElementById('edit_sub_part_no').value = arrPart_No[index];
+            document.getElementById('edit_sub_spec').value = arrSpec[index];
+            document.getElementById('edit_sub_quantity').value = arrQuantity[index];
+            document.getElementById('edit_sub_supplier_quotation_no').value = arrSupplier_Quotation_No[index];
+            document.getElementById('edit_sub_total_value').value = arrTotal_Value[index];
+            document.getElementById('edit_sub_unit').value = arrUnit[index];
 
-            var unit = cell.data()[8];
-            var index = Units.indexOf(unit)
-            document.getElementById('edit_sub_unit').selectedIndex = index;
+            var unit = arrUnit[index];
+            var index_unit = Units.indexOf(unit)
+            document.getElementById('edit_sub_unit').selectedIndex = index_unit;
             $('#EditTypeModal').modal('show');
         } else if (column == 1) {
-            var type = cell.data()[2];
-            var index = arrType.indexOf(type);
+            //var type = arrType[index];
+            //var index = arrType.indexOf(type);
             remove_data(index);
 
             //reload data
@@ -666,41 +673,19 @@
 
     $('#btnAddType').on('click', function () {
         var value = document.getElementById("types").value;
-        console.log(arrType);
+       
         if (value !== "") {
             // add data
             add_data(value);
-            let text = arrType.join();
-           // document.getElementById("edit_type").value = text;
+            $('#group_types').attr('hidden', false);
+
+            init_edit();          
         }
-        $('#group_types').attr('hidden', false);
-        GenProductsTable();
+        
     });
 
-    function GenProductsTable() {
-        $('#table_types').DataTable({
-            "order": [2, "asc"],
-            "columnDefs": [
-                {
-                    "targets": [0, 1],
-                    "orderable": false
-                }
-            ],
-            paging: false,
-            searching: false,
-            bInfo: false,
-        });
-    };
-
     $('#clear_btnType').on('click', function () {
-        document.getElementById("edit_type").value = "";
-        arrType = [];
-        arrPart_No = [];
-        arrSpec = [];
-        arrQuantity = [];
-        arrSupplier_Quotation_No = [];
-        arrTotal_Value = [];
-        arrUnit = [];
+        clear_dataall();
     });
     $('#edit_btnType').on('click', function () {
 
@@ -773,7 +758,9 @@
         });
     });
 
-    $('#edit_product_type').on('change',function(){
+    $('#edit_product_type').on('change', function () {
+        clear_dataall();
+
         var type = document.getElementById("edit_product_type").value;
          $.ajax({
             url: '@Url.Action("GetType", "Quotation")',
@@ -814,6 +801,18 @@
         var type = arrType.join();
         document.getElementById('edit_type').value = type;
     }
+    function clear_dataall() {
+        document.getElementById("edit_type").value = "";
+        arrType = [];
+        arrPart_No = [];
+        arrSpec = [];
+        arrQuantity = [];
+        arrSupplier_Quotation_No = [];
+        arrTotal_Value = [];
+        arrUnit = [];
+
+        init_edit();
+    };
     function add_data(type) {
         // fine index data type temp
         var index = arrType.indexOf(type);
@@ -823,7 +822,7 @@
             arrSpec.push("");
             arrQuantity.push("");
             arrSupplier_Quotation_No.push("");
-            arrTotal_Value.push("");
+            arrTotal_Value.push("0");
             arrUnit.push("");
         }
     }
