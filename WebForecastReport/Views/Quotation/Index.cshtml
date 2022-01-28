@@ -36,7 +36,7 @@
             @{
                 if (Model.role == "Admin")
                 {
-                    <div class="col-md-2 col-xl-2 pb-3">
+                    <div class="col-md-2 col-xl-2 pb-3" hidden>
                         <a type="button" class="btn btn-success form-control" style="height:55px;font-size:20px;text-align:center;padding-top:10px" href="@Url.Action("DownloadXlsxReport", "Quotation")">
                             <i class="fas fa-download" style="padding-right:10px"></i>Export
                         </a>
@@ -64,7 +64,7 @@
 <partial name="ModalEdit" />
 @section Scripts
 {
-<script type="text/javascript">
+    <script type="text/javascript">
     var quotation_datas = [];
     var quotation = '';
     var revision = '';
@@ -82,9 +82,11 @@
     var total_value = '';
     var unit = '';
     var quoted_price = '';
-    var expected_order_date = '';
+        var expected_order_date = '';
+        var old_expected_order_date = '';
     var required_onsite_date = '';
-    var proposer = '';
+        var proposer = '';
+        
     var expected_date = '';
     var status = '';
     var stages = '';
@@ -108,6 +110,7 @@
     var Units = ["THB", "EUR", "USD", "JPY","CHF","GBP","SGD"];
     var Status = ["IN", "OUT"];
     var Stages = ["Quote for Buddget", "Negotiation/Review", "Proposal/Quote for Order", "Prospecting", "Closed(Won)", "Closed(Lost)"];
+
     var Types = [];
     var Departments = [];
     var Sales = [];
@@ -119,9 +122,9 @@
 
     var statepage = false;
 
-    $(document).ready(function () {
-        init();
-    });
+        $(document).ready(function () {
+            init();
+        });
 
     function init() {
         var name = '@Model.name';
@@ -236,7 +239,7 @@
                 { title: "Quantity" },
                 { title: "Supplier Quotation No" },
                 { title: "Total Value" },
-                { title: "Unit" },
+                { title: "UModelit" },
                 { title: "Quoted Price" },
                 { title: "Expected Order Date" },
                 { title: "Required Onsite Date" },
@@ -288,19 +291,21 @@
     function table_view(dataSet) {
         if (tables_view !== undefined)
             tables_view.destroy();
-            tables_view = $('#tableview').DataTable({
+        tables_view = $('#view_table_types').DataTable({
             data: dataSet,
             columns: [
-                { title: "Type", width: 80},
-                { title: "Part No", width: 80},
-                { title: "Spec", width: 80},
-                { title: "Quantity", width: 80},
+                { title: "Type", width: 80 },
+                { title: "Part No", width: 80 },
+                { title: "Spec", width: 80 },
+                { title: "Quantity", width: 80 },
                 { title: "Supplier Quotation No", width: 80 },
                 { title: "Total Value", width: 80 },
-                { title: "Unit", width: 30},
+                { title: "Unit", width: 30 },
             ],
-            scrollX: true,
-            stateSave: true,
+            "scrollX": true,
+            "paging": false,
+            "searching": false,
+            "bInfo": false,
 
         });
         $(tables_view.table().body()).addClass('text-dark');
@@ -310,7 +315,7 @@
     function table_edit(dataSet) {
         if (tables_edit !== undefined)
             tables_edit.destroy();
-        tables_edit = $('#table_types').DataTable({
+            tables_edit = $('#table_types').DataTable({
             data: dataSet,
             columns: [
                 { title: "Edit", width: 2, },
@@ -432,6 +437,7 @@
         unit = cell.data()[16];
         quoted_price = cell.data()[17];
         expected_order_date = cell.data()[18];
+        old_expected_order_date = expected_order_date;
         required_onsite_date = cell.data()[19];
         proposer = cell.data()[20];
         expected_date = cell.data()[21];
@@ -465,7 +471,6 @@
                 arrUnit.push(unit.split(',')[i]);
             }
         }
-
         if (column == "0") {
 
             //clear selection type and disabled button add
@@ -482,7 +487,7 @@
             document.getElementById('edit_project_name').value = project_name;
             document.getElementById('edit_site_location').value = site_location;
             document.getElementById('edit_product_type').value = product_type;
-            document.getElementById('edit_type').value = type;
+           
 
             document.getElementById('edit_quoted_price').value = quoted_price;
             document.getElementById('edit_expected_order_date').value = expected_order_date;
@@ -549,6 +554,37 @@
                 document.getElementById('edit_sale_name').disabled = true;
             }
 
+            //init data table
+            init_edit();
+
+            //get type
+
+            var type = product_type;
+            $.ajax({
+                url: '@Url.Action("GetType", "Quotation")',
+                type: "post",
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    type
+                },
+                success: function (response) {
+                    // Enable Add Button
+                    document.getElementById("btnAddType").disabled = false;
+
+                    var data = response;
+                    // add Type
+                    Types = add_type(data);
+                    // add select type
+                    $('#types').empty();
+                    var selectType = document.getElementById('types');
+                    for (var i = 0, l = Types.length; i < l; i++) {
+                        var option = Types[i];
+                        selectType.options.add(new Option(option.text, option.value, option.selected));
+                    }
+                    document.getElementById('types').selectedIndex = 0;
+                }
+            });
+
             $('#EditModal').modal();
         } else if (column == "1") {
 
@@ -560,7 +596,7 @@
             document.getElementById('project_name').value = project_name;
             document.getElementById('site_location').value = site_location;
             document.getElementById('product_type').value = product_type;
-            document.getElementById('type').value = type;
+     
             document.getElementById('quoted_price').value = quoted_price;
             document.getElementById('expected_order_date').value = expected_order_date;
             document.getElementById('required_onsite_date').value = required_onsite_date;
@@ -578,6 +614,9 @@
             document.getElementById('department').innerHTML = department;
 
             document.getElementById('detail').value = detail;
+
+            //init data table view
+            init_view();
             $('#ShowModal').modal();
         }
 
@@ -609,13 +648,10 @@
         }
 
     });
-    $('#MoreType').on('click', function () {
-        init_view();
-        $('#ShowMoreModal').modal();
+        $('#edit_quotationConfirm').on('click', function () {
 
-    });
+            var user = '@Model.name';
 
-    $('#edit_quotationConfirm').on('click', function () {
         var quotation = document.getElementById('edit_quotation_no').value;
         var revision = document.getElementById('edit_revision').value;
         var date = document.getElementById('edit_date').value;
@@ -652,8 +688,8 @@
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                quotation,revision, date, customer, enduser, project_name, site_location, product_type,type, part_no, spec, quantity, supplier_quotation_no,
-                total_value, unit,quoted_price, expected_order_date, required_onsite_date, proposer, expected_date, status, stages,stages_update_date, how_to_support, competitor,
+                user,quotation, revision, date, customer, enduser, project_name, site_location, product_type, type, part_no, spec, quantity, supplier_quotation_no,
+                total_value, unit, quoted_price, expected_order_date, old_expected_order_date, required_onsite_date, proposer, expected_date, status, stages, stages_update_date, how_to_support, competitor,
                 competitor_description, competitor_price, sale_name,department, detail
             },
             success: function (response) {
@@ -670,18 +706,17 @@
         });
         $('#EditModal').modal('hide');
     });
-
     $('#btnAddType').on('click', function () {
         var value = document.getElementById("types").value;
-       
+
         if (value !== "") {
             // add data
             add_data(value);
             $('#group_types').attr('hidden', false);
 
-            init_edit();          
+            init_edit();
         }
-        
+
     });
 
     $('#clear_btnType').on('click', function () {
@@ -906,5 +941,5 @@
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays;
     };
-</script>
+    </script>
 }

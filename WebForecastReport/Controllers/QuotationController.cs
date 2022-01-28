@@ -21,6 +21,7 @@ namespace WebForecastReport.Controllers
         readonly IProject Project;
         readonly IService Service;
         readonly IExport Export;
+        readonly ILog_Expected Log_Expected;
         private readonly IHostingEnvironment _hostingEnvironment;
         public QuotationController(IHostingEnvironment hostingEnvironment)
         {
@@ -30,6 +31,7 @@ namespace WebForecastReport.Controllers
             Project = new ProjectService();
             Service = new ServiceService();
             Export = new ExportService();
+            Log_Expected = new Log_ExpectedService();
             _hostingEnvironment = hostingEnvironment;
         }
         public IActionResult Index()
@@ -108,8 +110,8 @@ namespace WebForecastReport.Controllers
             return Json(list);
         }
         [HttpPost]
-        public JsonResult Update(string quotation, string revision, string date, string customer, string enduser, string project_name, string site_location, string product_type, string type, string part_no,
-                    string spec, string quantity, string supplier_quotation_no, string total_value, string unit, string quoted_price, string expected_order_date,
+        public JsonResult Update(string user,string quotation, string revision, string date, string customer, string enduser, string project_name, string site_location, string product_type, string type, string part_no,
+                    string spec, string quantity, string supplier_quotation_no, string total_value, string unit, string quoted_price, string expected_order_date, string old_expected_order_date,
                    string required_onsite_date, string proposer, string expected_date, string status, string stages, string stages_update_date, string how_to_support, string competitor, string competitor_description,
                    string competitor_price, string sale_name, string department, string detail)
         {
@@ -149,6 +151,21 @@ namespace WebForecastReport.Controllers
 
             Accessory.InsertCustomer(customer);
             Accessory.InsertEndUser(enduser);
+
+            //update log expected order date
+            if(old_expected_order_date != expected_order_date)
+            {
+                Log_ExpectedModel log = new Log_ExpectedModel()
+                {
+                    name = user,
+                    quotation = quotation,
+                    project_name = project_name != null ? project_name :"",
+                    date_edit = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    date_from = old_expected_order_date,
+                    date_to = expected_order_date
+                };
+                Log_Expected.Insert(log);
+            }
 
             string message = Quotation.Update(q);
             bool statepage = true;

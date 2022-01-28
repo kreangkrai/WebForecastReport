@@ -13,9 +13,11 @@ namespace WebForecastReport.Controllers
     public class LogExpectedController : Controller
     {
         readonly IAccessory Accessory;
+        readonly ILog_Expected Log_Expected;
         public LogExpectedController()
         {
             Accessory = new AccessoryService();
+            Log_Expected = new Log_ExpectedService();
         }
         public IActionResult Index()
         {
@@ -31,6 +33,14 @@ namespace WebForecastReport.Controllers
             {
                 return RedirectToAction("Index", "Account");
             }
+        }
+
+        [HttpPost]
+        public JsonResult GetData()
+        {
+            List<Log_ExpectedModel> logs = new List<Log_ExpectedModel>();
+            logs = Log_Expected.getLogs();
+            return Json(logs);
         }
     }
 }

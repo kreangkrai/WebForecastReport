@@ -97,14 +97,16 @@
                             <label>Product Type</label>
                             <input id="product_type" type="text" class="form-control" style="width:100%" disabled>
                         </div>
-                        <div class="col-md-8 col-xl-8">
-                            <label>Type</label>
-                            <input id="type" type="text" class="form-control" style="width:100%" disabled>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-12 col-xl-12">
+                            <div id="view_group_types" class="form-group pb-3" style="overflow-x:auto;width:100%">
+                                <label for="view_table_types">Types</label>
+                                <table id="view_table_types" class="table table-xl cell-border table-dark display responsive nowrap" style="width:100%; overflow-x:auto">
+                                </table>
+                            </div>
                         </div>
-                        <div class="col-md-1 col-xl-1">
-                            <label>View</label>
-                            <button type="button" id="MoreType" class="btn btn-primary" style="width:100%;height:38px">View</button>
-                        </div>
+                    
                     </div>
                     <div class="form-group row m-0">
                         <div class="col-md-4 col-xl-4">
@@ -151,25 +153,3 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<div class="modal fade" id="ShowMoreModal" tabindex="-1" role="dialog" style="overflow-y:auto">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title"><b>Type</b></h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="container">
-                        <table id="tableview" class="table table-md cell-border table-dark display responsive nowrap" style="overflow-x:auto" width="100%">
-                        </table>
-                    </div>
-                </form>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->

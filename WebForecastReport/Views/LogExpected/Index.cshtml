@@ -1,4 +1,75 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Log Quotation Expected Date";
+    ViewData["Title"] = "Log Quotation Expected Order Date";
+}
+<div class="container-fluid p-3" style="background-color:#ECF0F5;">
+    <div class="row pt-3">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><b>Log Expected Order Date</b></span>
+                </div>
+                <div class="card-body">
+                    <table id="table" class="table table-xl cell-border table-dark display responsive nowrap" width="100%">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+
+    $(document).ready(function () {
+        init();
+    });
+
+    function init() {
+        $.ajax({
+            url: '@Url.Action("GetData", "LogExpected")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+            },
+            success: function (response) {
+                var datas = response;
+                var dataSet = [];
+                for (var i = 0; i < datas.length; i++) {
+                    var data = [datas[i].quotation,
+                    datas[i].project_name,
+                    datas[i].date_edit,
+                    datas[i].date_from,
+                    datas[i].date_to,
+                    datas[i].name];
+                    dataSet.push(data);
+                }
+                table(dataSet);
+            }
+        });
+    };
+
+    var tables;
+    function table(dataSet) {
+        if (tables !== undefined)
+            tables.destroy();
+            tables = $('#table').DataTable({
+            data: dataSet,
+            columns: [
+                { title: "Quotation" },
+                { title: "Project Name" },
+                { title: "Date Edit" },
+                { title: "Date From" },
+                { title: "Date To" },
+                { title: "Name" },
+            ],
+            "columnDefs": [
+                
+            ],
+            "scrollX": true,
+        });
+        $(tables.table().body()).addClass('text-dark');
+    };
+  
+    </script>
 }

@@ -62,7 +62,7 @@ namespace WebForecastReport.Service
                             quotation = dr["quotation"].ToString(),
                             project_name = dr["project_name"].ToString(),
                             date_edit = Convert.ToDateTime(dr["date_edit"].ToString()).ToString("yyyy-MM-dd HH:mm:ss"),
-                            date_from = Convert.ToDateTime(dr["date_from"].ToString()).ToString("yyyy-MM-dd"),
+                            date_from = dr["date_from"] != DBNull.Value ? Convert.ToDateTime(dr["date_from"].ToString()).ToString("yyyy-MM-dd"):null,
                             date_to = Convert.ToDateTime(dr["date_to"].ToString()).ToString("yyyy-MM-dd"),
                             name = dr["name"].ToString()
                         };
@@ -85,30 +85,21 @@ namespace WebForecastReport.Service
         {
             try
             {
-                using (SqlCommand cmd = new SqlCommand(@"INSERT INTO Log_Quotation_Expected(quotation,
-                                                                                            project_name,
-                                                                                            date_edit,
-                                                                                            date_from,
-                                                                                            date_to,name) VALUES
-                                                                                            (@quotation,
-                                                                                            @project_name,
-                                                                                            @date_edit,
-                                                                                            @date_from,
-                                                                                            @date_to,
-                                                                                            @name)", ConnectSQL.OpenConnect()))
+                if(model.date_from != null)
                 {
-                    cmd.CommandType = CommandType.Text;
-                    cmd.Connection = ConnectSQL.OpenConnect();
-                    cmd.Parameters.AddWithValue("@quotation", model.quotation);
-                    cmd.Parameters.AddWithValue("@project_name", model.project_name);
-                    cmd.Parameters.AddWithValue("@date_edit", model.date_edit);
-                    cmd.Parameters.AddWithValue("@date_from", model.date_from);
-                    cmd.Parameters.AddWithValue("@date_to", model.date_to);
-                    cmd.Parameters.AddWithValue("@name", model.name);
+                    SqlCommand cmd = new SqlCommand(@"INSERT INTO Log_Quotation_Expected VALUES('" + model.quotation + "','" + model.project_name + "','" + model.date_edit + "','" + model.date_from +"','" + model.date_to + "','" + model.name + "')", ConnectSQL.OpenConnect());
                     cmd.ExecuteNonQuery();
-                }
 
-                return "Insert Success";
+                    return "Insert Success";
+                }
+                else
+                {
+                    SqlCommand cmd = new SqlCommand(@"INSERT INTO Log_Quotation_Expected VALUES('" + model.quotation + "','" + model.project_name + "','" + model.date_edit + "',NULL,'" + model.date_to + "','" + model.name + "')", ConnectSQL.OpenConnect());
+                    cmd.ExecuteNonQuery();
+
+                    return "Insert Success";
+                }
+               
             }
             catch
             {
