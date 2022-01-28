@@ -288,74 +288,81 @@
     }
 
     var tables_view;
-    function table_view(dataSet) {
-        if (tables_view !== undefined)
-            tables_view.destroy();
-        tables_view = $('#view_table_types').DataTable({
-            data: dataSet,
-            columns: [
-                { title: "Type", width: 80 },
-                { title: "Part No", width: 80 },
-                { title: "Spec", width: 80 },
-                { title: "Quantity", width: 80 },
-                { title: "Supplier Quotation No", width: 80 },
-                { title: "Total Value", width: 80 },
-                { title: "Unit", width: 30 },
-            ],
-            "scrollX": true,
-            "paging": false,
-            "searching": false,
-            "bInfo": false,
+        function table_view(dataSet) {
+            setTimeout(function () {
+                if (tables_view !== undefined)
+                    tables_view.destroy();
+                    tables_view = $('#view_table_types').DataTable({
+                    data: dataSet,
+                    columns: [
+                        { title: "Name", width: 80 },
+                        { title: "Part No", width: 80 },
+                        { title: "Spec", width: 80 },
+                        { title: "Quantity", width: 80 },
+                        { title: "Supplier Quotation No", width: 80 },
+                        { title: "Total Value", width: 80 },
+                        { title: "Unit", width: 30 },
+                    ],
+                    "scrollX": true,
+                    "paging": false,
+                    "searching": false,
+                    "bInfo": false,
 
-        });
-        $(tables_view.table().body()).addClass('text-dark');
-    };
+                });
+                $(tables_view.table().body()).addClass('text-dark');
+            }, 300);
+       
+        };
 
     var tables_edit;
-    function table_edit(dataSet) {
-        if (tables_edit !== undefined)
-            tables_edit.destroy();
-            tables_edit = $('#table_types').DataTable({
-            data: dataSet,
-            columns: [
-                { title: "Edit", width: 2, },
-                { title: "Delete", width: 5 },
-                { title: "Name", width: 80 },
-                { title: "Part No", width: 80 },
-                { title: "Spec", width: 80 },
-                { title: "Quantity", width: 80 },
-                { title: "Supplier Quotation No", width: 80 },
-                { title: "Total Value", width: 80 },
-                { title: "Unit", width: 30 },
-            ],
-            "columnDefs": [
-                {
-                    "targets": 0,
-                    "data": null,
-                    "defaultContent": "<i class=\"fas fa-pen\"></i>",
-                    "className": 'dt-body-center',
-                },
-                {
-                    "targets": 1,
-                    "data": null,
-                    "defaultContent": "<i class=\"fas fa-trash\"></i>",
-                    "className": 'dt-body-center',
-                },
-                {
-                    "targets": [3, 4, 5, 6],
-                    "visible": false,
-                    "searchable": false,
-                    "className": 'dt-body-center',
-                }
-            ],
-            "scrollX": true,
-            "paging": false,
-            "searching": false,
-            "bInfo": false,
+        function table_edit(dataSet) {
+            setTimeout(function () {
+                if (tables_edit !== undefined)
+                    tables_edit.destroy();
+                tables_edit = $('#table_types').DataTable({
+                    data: dataSet,
+                    columns: [
+                        { title: "Edit", width: 5 },
+                        { title: "Delete", width: 5 },
+                        { title: "Name", width: 80 },
+                        { title: "Part No", width: 80 },
+                        { title: "Spec", width: 80 },
+                        { title: "Quantity", width: 80 },
+                        { title: "Supplier Quotation No", width: 80 },
+                        { title: "Total Value", width: 80 },
+                        { title: "Unit", width: 30 },
+                    ],
+                    "columnDefs": [
+                        {
+                            "targets": 0,
+                            "data": null,
+                            "defaultContent": "<i class=\"fas fa-pen\"></i>",
+                            "className": 'dt-body-center',
+                        },
+                        {
+                            "targets": 1,
+                            "data": null,
+                            "defaultContent": "<i class=\"fas fa-trash\"></i>",
+                            "className": 'dt-body-center',
+                        },
+                        {
+                            "targets": [3, 4, 5, 6],
+                            "visible": false,
+                            "searchable": false,
+                            "className": 'dt-body-center',
 
-        });
-        $(tables_edit.table().body()).addClass('text-dark');
-    };
+                        }
+                    ],
+                    "scrollX": true,
+                    "paging": false,
+                    "searching": false,
+                    "bInfo": false,
+                    "order": [[2, "asc"]],
+                });
+                $(tables_edit.table().body()).addClass('text-dark');
+            }, 300);
+        };
+        
 
     $('#AddQuotation').on('click', function () {
         var name = '@Model.name';
@@ -556,7 +563,8 @@
 
             //init data table
             init_edit();
-
+     
+           // document.getElementById('btnAddType').click();
             //get type
 
             var type = product_type;
@@ -706,7 +714,8 @@
         });
         $('#EditModal').modal('hide');
     });
-    $('#btnAddType').on('click', function () {
+        $('#btnAddType').on('click', function () {
+          
         var value = document.getElementById("types").value;
 
         if (value !== "") {
@@ -757,12 +766,16 @@
     $('#edit_proposer').on('change', function () {
         document.getElementById('edit_expected_date').disabled = false;
     });
-    $('#edit_quoted_price').on('change', function () {
-        var val = document.getElementById('edit_quoted_price').value;
-        var newVal = numberWithCommas(val);
-        document.getElementById('edit_quoted_price').value = newVal;
-    });
-
+        $('#edit_quoted_price').on('change', function () {
+            var val = document.getElementById('edit_quoted_price').value;
+            var newVal = numberWithCommas(val);
+            document.getElementById('edit_quoted_price').value = newVal;
+        });
+        $('#edit_competitor_price').on('change', function () {
+            var val = document.getElementById('edit_competitor_price').value;
+            var newVal = numberWithCommas(val);
+            document.getElementById('edit_competitor_price').value = newVal;
+        });
     $('#edit_proposer').on('change',function(){
         var value = document.getElementById("edit_proposer").value;
         if (value == ""){
@@ -940,6 +953,7 @@
         const diffTime = date2 - date1;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays;
-    };
+        };
+    
     </script>
 }
