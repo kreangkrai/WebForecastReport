@@ -466,16 +466,16 @@
         arrSupplier_Quotation_No = [];
         arrTotal_Value = [];
         arrUnit = [];
-        var count = (type.match(/,/g) || []).length;
+        var count = (type.match(/\|/g) || []).length;
         for (var i = 0; i <= count; i++) {
             if (type != "") {
-                arrType.push(type.split(',')[i]);
-                arrPart_No.push(part_no.split(',')[i]);
-                arrSpec.push(spec.split(',')[i]);
-                arrQuantity.push(quantity.split(',')[i]);
-                arrSupplier_Quotation_No.push(supplier_quotation_no.split(',')[i]);
-                arrTotal_Value.push(total_value.split(',')[i]);
-                arrUnit.push(unit.split(',')[i]);
+                arrType.push(type.split('|')[i]);
+                arrPart_No.push(part_no.split('|')[i]);
+                arrSpec.push(spec.split('|')[i]);
+                arrQuantity.push(quantity.split('|')[i]);
+                arrSupplier_Quotation_No.push(supplier_quotation_no.split('|')[i]);
+                arrTotal_Value.push(total_value.split('|')[i]);
+                arrUnit.push(unit.split('|')[i]);
             }
         }
         if (column == "0") {
@@ -668,13 +668,13 @@
         var project_name = document.getElementById('edit_project_name').value;
         var site_location = document.getElementById('edit_site_location').value;
         var product_type = document.getElementById('edit_product_type').value;
-        var type = arrType.join();
-        var part_no = arrPart_No.join();
-        var spec = arrSpec.join();
-        var quantity = arrQuantity.join();
-        var supplier_quotation_no = arrSupplier_Quotation_No.join();
-        var total_value = arrTotal_Value.join();
-        var unit = arrUnit.join();
+        var type = arrType.join('|');
+        var part_no = arrPart_No.join('|');
+        var spec = arrSpec.join('|');
+        var quantity = arrQuantity.join('|');
+        var supplier_quotation_no = arrSupplier_Quotation_No.join('|');
+        var total_value = arrTotal_Value.join('|');
+        var unit = arrUnit.join('|');
         var quoted_price = document.getElementById('edit_quoted_price').value;
         var expected_order_date = document.getElementById('edit_expected_order_date').value;
         var required_onsite_date = document.getElementById('edit_required_onsite_date').value;
@@ -776,6 +776,11 @@
             var newVal = numberWithCommas(val);
             document.getElementById('edit_competitor_price').value = newVal;
         });
+        $('#edit_sub_total_value').on('change', function () {
+            var val = document.getElementById('edit_sub_total_value').value;
+            var newVal = numberWithCommas(val);
+            document.getElementById('edit_sub_total_value').value = newVal;
+        });
     $('#edit_proposer').on('change',function(){
         var value = document.getElementById("edit_proposer").value;
         if (value == ""){
@@ -846,11 +851,13 @@
         arrUnit.splice(index, 1);
 
         // update  type
-        var type = arrType.join();
+        var type = arrType.join('|');
         document.getElementById('edit_type').value = type;
     }
     function clear_dataall() {
-        document.getElementById("edit_type").value = "";
+        //document.getElementById("edit_type").value = "";
+        //document.getElementById("edit_product_type").value = "";
+        
         arrType = [];
         arrPart_No = [];
         arrSpec = [];
