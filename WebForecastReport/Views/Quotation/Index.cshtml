@@ -36,11 +36,11 @@
             @{
                 if (Model.role == "Admin")
                 {
-                    <div class="col-md-2 col-xl-2 pb-3" hidden>
-                        <a type="button" class="btn btn-success form-control" style="height:55px;font-size:20px;text-align:center;padding-top:10px" href="@Url.Action("DownloadXlsxReport", "Quotation")">
-                            <i class="fas fa-download" style="padding-right:10px"></i>Export
-                        </a>
-                    </div>
+                                                    <div class="col-md-2 col-xl-2 pb-3" hidden>
+                                                        <a type="button" class="btn btn-success form-control" style="height:55px;font-size:20px;text-align:center;padding-top:10px" href="@Url.Action("DownloadXlsxReport", "Quotation")">
+                                                            <i class="fas fa-download" style="padding-right:10px"></i>Export
+                                                        </a>
+                                                    </div>
                 }
             }
 
@@ -274,13 +274,13 @@
             scrollX: true,
             stateSave: statepage,
             @*createdRow: function (row, data, index) {
-                                                                                                                    var diffDay = diffDate(data[20], new Date()); //column Required Onsite Date
-                                                                                                                    if (diffDay > -3 && diffDay < 0) {
-                                                                                                                        $('td', row).eq(20).addClass('highlight_yellow');
-                                                                                                                    } else if (diffDay >=0) {
-                                                                                                                        $('td', row).eq(20).addClass('highlight_red');
-                                                                                                                    }
-                                                                                                                },*@
+                                                                                                                                                        var diffDay = diffDate(data[20], new Date()); //column Required Onsite Date
+                                                                                                                                                        if (diffDay > -3 && diffDay < 0) {
+                                                                                                                                                            $('td', row).eq(20).addClass('highlight_yellow');
+                                                                                                                                                        } else if (diffDay >=0) {
+                                                                                                                                                            $('td', row).eq(20).addClass('highlight_red');
+                                                                                                                                                        }
+                                                                                                                                                    },*@
 
 
         });
