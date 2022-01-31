@@ -42,6 +42,11 @@ namespace WebForecastReport.Controllers
                 List<UserModel> users = new List<UserModel>();
                 users = Accessory.getAllUser();
                 UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name, department = s.department, role = s.role }).FirstOrDefault();
+
+                HttpContext.Session.SetString("Role", u.role);
+                HttpContext.Session.SetString("Name", u.name);
+                HttpContext.Session.SetString("Department", u.department);
+
                 return View(u);
             }
             else
@@ -110,7 +115,7 @@ namespace WebForecastReport.Controllers
             return Json(list);
         }
         [HttpPost]
-        public JsonResult Update(string user,string quotation, string revision, string date, string customer, string enduser, string project_name, string site_location, string product_type, string type, string part_no,
+        public JsonResult Update(string user, string quotation, string revision, string date, string customer, string enduser, string project_name, string site_location, string product_type, string type, string part_no,
                     string spec, string quantity, string supplier_quotation_no, string total_value, string unit, string quoted_price, string expected_order_date, string old_expected_order_date,
                    string required_onsite_date, string proposer, string expected_date, string status, string stages, string stages_update_date, string how_to_support, string competitor, string competitor_description,
                    string competitor_price, string sale_name, string department, string detail)
@@ -153,13 +158,13 @@ namespace WebForecastReport.Controllers
             Accessory.InsertEndUser(enduser);
 
             //update log expected order date
-            if(old_expected_order_date != expected_order_date)
+            if (old_expected_order_date != expected_order_date)
             {
                 Log_ExpectedModel log = new Log_ExpectedModel()
                 {
                     name = user,
                     quotation = quotation,
-                    project_name = project_name != null ? project_name :"",
+                    project_name = project_name != null ? project_name : "",
                     date_edit = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                     date_from = old_expected_order_date,
                     date_to = expected_order_date
@@ -198,9 +203,14 @@ namespace WebForecastReport.Controllers
         }
         public IActionResult DownloadXlsxReport()
         {
+            // get data
+            string role = HttpContext.Session.GetString("Role");
+            string name = HttpContext.Session.GetString("Name");
+            string department = HttpContext.Session.GetString("Department");
+
             //Download Excel
             var templateFileInfo = new FileInfo(Path.Combine(_hostingEnvironment.ContentRootPath, "./wwwroot/template", "mes_quotation.xlsx"));
-            var stream = Export.ExportQuotation(templateFileInfo);
+            var stream = Export.ExportQuotation(templateFileInfo, role, name, department);
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "mes_quotation_" + DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss") + ".xlsx");
         }
     }

@@ -8,6 +8,6 @@ namespace WebForecastReport.Interface
 {
     interface IExport
     {
-        Stream ExportQuotation(FileInfo path);
+        Stream ExportQuotation(FileInfo path, string role, string name, string department);
     }
 }

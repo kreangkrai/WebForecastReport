@@ -62,6 +62,7 @@
                         </div>
                         <div class="col-md-1 col-xl-1">
                             <label>Status</label>
+                            <i class="far fa-question-circle" id="info_status"></i>
                             <select id="edit_status" class="form-control" style="width:100%">
                                 <option value="IN">IN</option>
                                 <option value="OUT">OUT</option>
@@ -69,6 +70,7 @@
                         </div>
                         <div class="col-md-3 col-xl-3">
                             <label>Stages</label>
+                            <i class="far fa-question-circle" id="info_stages"></i>
                             <select id="edit_stages" class="form-control" style="width:100%">
                                 <option value="Quote for Buddget">Quote for Buddget</option>
                                 <option value="Negotiation/Review">Negotiation/Review</option>
@@ -76,6 +78,7 @@
                                 <option value="Prospecting">Prospecting</option>
                                 <option value="Closed(Won)">Closed(Won)</option>
                                 <option value="Closed(Lost)">Closed(Lost)</option>
+                                <option value="No go">No go</option>
                             </select>
                         </div>
                         <div class="col-md-2 col-xl-2 d-flex align-items-end">
@@ -95,7 +98,7 @@
 
                         <div class="col-md-3 col-xl-3">
                             <label>Proposal Created By</label>
-                            <select id="edit_proposer" class="form-control" style="width:100%"></select>
+                            <select id="edit_proposer" class="form-control" style="width:100%" disabled></select>
                         </div>
                         <div class="col-md-3 col-xl-3">
                             <label>Proposal Expected Date</label>
@@ -252,3 +255,25 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div class="modal fade" id="ShowInfoModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="info_title" style="font-weight:bold"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row m-0">
+                        <div class="col-md-12 col-xl-12">
+                            <textarea id="info_content" rows="8" cols="50" class="form-control" style="width:100%" readonly></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->

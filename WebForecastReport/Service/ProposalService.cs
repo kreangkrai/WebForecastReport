@@ -207,7 +207,7 @@ namespace WebForecastReport.Service
                 reader = cmd.ExecuteReader();
                 reader.Close();
 
-                //update quation {revision,quoted price} 
+                //update quotation {revision,quoted price} 
                 SqlDataReader readerquptation;
                 SqlCommand cmdquotation = new SqlCommand(@"UPDATE Quotation SET revision='" + model.proposal_revision + "'," +
                                                                       "quoted_price='" + model.proposal_quoted_price + "'" +

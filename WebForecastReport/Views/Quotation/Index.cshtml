@@ -64,7 +64,7 @@
 <partial name="ModalEdit" />
 @section Scripts
 {
-    <script type="text/javascript">
+<script type="text/javascript">
     var quotation_datas = [];
     var quotation = '';
     var revision = '';
@@ -86,7 +86,7 @@
         var old_expected_order_date = '';
     var required_onsite_date = '';
         var proposer = '';
-        
+
     var expected_date = '';
     var status = '';
     var stages = '';
@@ -109,7 +109,7 @@
 
     var Units = ["THB", "EUR", "USD", "JPY","CHF","GBP","SGD"];
     var Status = ["IN", "OUT"];
-    var Stages = ["Quote for Buddget", "Negotiation/Review", "Proposal/Quote for Order", "Prospecting", "Closed(Won)", "Closed(Lost)"];
+    var Stages = ["Quote for Buddget", "Negotiation/Review", "Proposal/Quote for Order", "Prospecting", "Closed(Won)", "Closed(Lost)","No go"];
 
     var Types = [];
     var Departments = [];
@@ -159,6 +159,7 @@
                         "",
                         datas[i].quotation_no,
                         datas[i].revision,
+                        datas[i].status,
                         datas[i].date,
                         datas[i].customer,
                         datas[i].enduser,
@@ -177,7 +178,6 @@
                         datas[i].required_onsite_date,
                         datas[i].proposer,
                         datas[i].expected_date,
-                        datas[i].status,
                         datas[i].stages,
                         datas[i].stages_update_date,
                         datas[i].how_to_support,
@@ -227,6 +227,7 @@
                 { title: "View" },
                 { title: "Quotation No" },
                 { title: "Revision" },
+                { title: "Status" },
                 { title: "Quotation Created Date" },
                 { title: "Customer" },
                 { title: "End User" },
@@ -239,19 +240,18 @@
                 { title: "Quantity" },
                 { title: "Supplier Quotation No" },
                 { title: "Total Value" },
-                { title: "UModelit" },
+                { title: "Unit" },
                 { title: "Quoted Price" },
                 { title: "Expected Order Date" },
                 { title: "Required Onsite Date" },
                 { title: "Proposal Created By" },
                 { title: "Proposal Expected Date" },
-                { title: "Status" },
                 { title: "Stages" },
                 { title: "Stages Update Date" },
                 { title: "How supplier support to win project" },
                 { title: "Competitor" },
                 { title: "Competitor Description" },
-                { title: "Competitor Price" },
+                { title: "Competitor Price(THB)" },
                 { title: "Sale Name" },
                 { title: "Department" },
                 { title: "Detail Project" },
@@ -273,14 +273,14 @@
             ],
             scrollX: true,
             stateSave: statepage,
-            createdRow: function (row, data, index) {
-                var diffDay = diffDate(data[20], new Date()); //column Required Onsite Date
-                if (diffDay > -3 && diffDay < 0) {
-                    $('td', row).eq(20).addClass('highlight_yellow');
-                } else if (diffDay >=0) {
-                    $('td', row).eq(20).addClass('highlight_red');
-                }
-            },
+            @*createdRow: function (row, data, index) {
+                                                                                                            var diffDay = diffDate(data[20], new Date()); //column Required Onsite Date
+                                                                                                            if (diffDay > -3 && diffDay < 0) {
+                                                                                                                $('td', row).eq(20).addClass('highlight_yellow');
+                                                                                                            } else if (diffDay >=0) {
+                                                                                                                $('td', row).eq(20).addClass('highlight_red');
+                                                                                                            }
+                                                                                                        },*@
 
 
         });
@@ -311,7 +311,7 @@
                 });
                 $(tables_view.table().body()).addClass('text-dark');
             }, 300);
-       
+
         };
 
     var tables_edit;
@@ -362,7 +362,7 @@
                 $(tables_edit.table().body()).addClass('text-dark');
             }, 300);
         };
-        
+
 
     $('#AddQuotation').on('click', function () {
         var name = '@Model.name';
@@ -429,26 +429,26 @@
         var column = cell[0][0].column;
         quotation = cell.data()[2];
         revision = cell.data()[3];
-        date = cell.data()[4];
-        customer = cell.data()[5];
-        enduser = cell.data()[6];
-        project_name = cell.data()[7];
-        site_location = cell.data()[8];
-        product_type = cell.data()[9];
-        type = cell.data()[10];
-        part_no = cell.data()[11];
-        spec = cell.data()[12];
-        quantity = cell.data()[13];
-        supplier_quotation_no = cell.data()[14];
-        total_value = cell.data()[15];
-        unit = cell.data()[16];
-        quoted_price = cell.data()[17];
-        expected_order_date = cell.data()[18];
+        status = cell.data()[4];
+        date = cell.data()[5];
+        customer = cell.data()[6];
+        enduser = cell.data()[7];
+        project_name = cell.data()[8];
+        site_location = cell.data()[9];
+        product_type = cell.data()[10];
+        type = cell.data()[11];
+        part_no = cell.data()[12];
+        spec = cell.data()[13];
+        quantity = cell.data()[14];
+        supplier_quotation_no = cell.data()[15];
+        total_value = cell.data()[16];
+        unit = cell.data()[17];
+        quoted_price = cell.data()[18];
+        expected_order_date = cell.data()[19];
         old_expected_order_date = expected_order_date;
-        required_onsite_date = cell.data()[19];
-        proposer = cell.data()[20];
-        expected_date = cell.data()[21];
-        status = cell.data()[22];
+        required_onsite_date = cell.data()[20];
+        proposer = cell.data()[21];
+        expected_date = cell.data()[22];
         stages = cell.data()[23];
         stages_update_date = cell.data()[24];
         how_to_support = cell.data()[25];
@@ -494,7 +494,7 @@
             document.getElementById('edit_project_name').value = project_name;
             document.getElementById('edit_site_location').value = site_location;
             document.getElementById('edit_product_type').value = product_type;
-           
+
 
             document.getElementById('edit_quoted_price').value = quoted_price;
             document.getElementById('edit_expected_order_date').value = expected_order_date;
@@ -563,8 +563,7 @@
 
             //init data table
             init_edit();
-     
-           // document.getElementById('btnAddType').click();
+
             //get type
 
             var type = product_type;
@@ -604,7 +603,7 @@
             document.getElementById('project_name').value = project_name;
             document.getElementById('site_location').value = site_location;
             document.getElementById('product_type').value = product_type;
-     
+
             document.getElementById('quoted_price').value = quoted_price;
             document.getElementById('expected_order_date').value = expected_order_date;
             document.getElementById('required_onsite_date').value = required_onsite_date;
@@ -658,7 +657,7 @@
     });
         $('#edit_quotationConfirm').on('click', function () {
 
-            var user = '@Model.name';
+        var user = '@Model.name';
 
         var quotation = document.getElementById('edit_quotation_no').value;
         var revision = document.getElementById('edit_revision').value;
@@ -712,10 +711,10 @@
                 }
             }
         });
-        $('#EditModal').modal('hide');
-    });
+            $('#EditModal').modal('hide');
+        });
         $('#btnAddType').on('click', function () {
-          
+
         var value = document.getElementById("types").value;
 
         if (value !== "") {
@@ -841,6 +840,18 @@
             }
         });
     });
+
+
+    $('#info_status').on('click',function(){
+        document.getElementById("info_title").innerHTML = "Status";
+        document.getElementById("info_content").innerHTML = "";
+        $('#ShowInfoModal').modal('show');
+    });
+    $('#info_stages').on('click',function(){
+        document.getElementById("info_title").innerHTML = "Stages";
+        document.getElementById("info_content").innerHTML = "";
+        $('#ShowInfoModal').modal('show');
+    });
     function remove_data(index) {
         arrType.splice(index, 1);
         arrPart_No.splice(index, 1);
@@ -857,7 +868,7 @@
     function clear_dataall() {
         //document.getElementById("edit_type").value = "";
         //document.getElementById("edit_product_type").value = "";
-        
+
         arrType = [];
         arrPart_No = [];
         arrSpec = [];
@@ -871,6 +882,23 @@
     function add_data(type) {
         // fine index data type temp
         var index = arrType.indexOf(type);
+
+        // auto unit
+        var unit = "";
+        if (type == "ABB" || type == "DEHN" || type == "Kobold"){
+            unit = "THB";
+        }else if(type == "Canty" || type == "Extrel" || type =="Servomex"){
+            unit = "USD";
+        }else if(type == "HK" || type == "Kemtrak" || type == "Knick" || type == "LAR" || type == "MRU" || type == "Scan" || type =="Stahl" || type == "Vaisala"){
+            unit = "EUR";
+        }else if(type == "Matsushima" || type == "M-System"){
+            unit = "JPY";
+        }else if(type == "Swan"){
+            unit = "CHF";
+        }else if(type == "Yamari"){
+            unit = "SGD";
+        }
+
         if (index == -1) {
             arrType.push(type);
             arrPart_No.push("");
@@ -878,7 +906,7 @@
             arrQuantity.push("");
             arrSupplier_Quotation_No.push("");
             arrTotal_Value.push("0");
-            arrUnit.push("");
+            arrUnit.push(unit);
         }
     }
     function add_sale(sales) {
@@ -961,6 +989,6 @@
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays;
         };
-    
-    </script>
+
+</script>
 }

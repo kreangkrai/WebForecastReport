@@ -12,13 +12,26 @@ namespace WebForecastReport.Service
 {
     public class ExportService : IExport
     {
-        public Stream ExportQuotation(FileInfo path)
+        public Stream ExportQuotation(FileInfo path, string role, string name, string department)
         {
             Stream stream = new MemoryStream();
             List<QuotationModel> quotations = new List<QuotationModel>();
             if (path.Exists)
             {
-                string connectString = "select * from Quotation order by quotation_no";
+                string connectString = "";
+                if (role == "Admin")
+                {
+                    connectString = "select * from Quotation order by quotation_no";
+                }
+                else if (role != "Admin" && role != "")
+                {
+                    connectString = "select * from Quotation where department='" + department + "' order by sale_name";
+                }
+                else
+                {
+                    connectString = "select * from Quotation where sale_name='" + name + "' order by quotation_no";
+                }
+
                 SqlCommand cmd = new SqlCommand(connectString, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
@@ -58,7 +71,7 @@ namespace WebForecastReport.Service
                             detail = dr["detail"].ToString()
                         };
 
-                        int count = q.type.Count(x => x == ',');
+                        int count = q.type.Count(x => x == '|');
                         if (count > 0)
                         {
                             for (int i = 0; i <= count; i++)
@@ -75,13 +88,13 @@ namespace WebForecastReport.Service
                                         project_name = q.project_name,
                                         site_location = q.site_location,
                                         product_type = q.product_type,
-                                        type = q.type.Split(",")[i],
-                                        part_no = q.part_no.Split(",")[i],
-                                        spec = q.spec.Split(",")[i],
-                                        quantity = q.quantity.Split(",")[i],
-                                        supplier_quotation_no = q.supplier_quotation_no.Split(",")[i],
-                                        total_value = q.total_value.Split(",")[i],
-                                        unit = q.unit.Split(",")[i],
+                                        type = q.type.Split("|")[i],
+                                        part_no = q.part_no.Split("|")[i],
+                                        spec = q.spec.Split("|")[i],
+                                        quantity = q.quantity.Split("|")[i],
+                                        supplier_quotation_no = q.supplier_quotation_no.Split("|")[i],
+                                        total_value = q.total_value.Split("|")[i],
+                                        unit = q.unit.Split("|")[i],
                                         quoted_price = q.quoted_price,
                                         expected_order_date = q.expected_order_date,
                                         required_onsite_date = q.required_onsite_date,
@@ -103,13 +116,13 @@ namespace WebForecastReport.Service
                                 {
                                     QuotationModel qu = new QuotationModel()
                                     {
-                                        type = q.type.Split(",")[i],
-                                        part_no = q.part_no.Split(",")[i],
-                                        spec = q.spec.Split(",")[i],
-                                        quantity = q.quantity.Split(",")[i],
-                                        supplier_quotation_no = q.supplier_quotation_no.Split(",")[i],
-                                        total_value = q.total_value.Split(",")[i],
-                                        unit = q.unit.Split(",")[i],
+                                        type = q.type.Split("|")[i],
+                                        part_no = q.part_no.Split("|")[i],
+                                        spec = q.spec.Split("|")[i],
+                                        quantity = q.quantity.Split("|")[i],
+                                        supplier_quotation_no = q.supplier_quotation_no.Split("|")[i],
+                                        total_value = q.total_value.Split("|")[i],
+                                        unit = q.unit.Split("|")[i],
                                     };
                                     quotations.Add(qu);
                                 }
