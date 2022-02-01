@@ -25,7 +25,7 @@ namespace WebForecastReport.Service
                 }
                 else if (role != "Admin" && role != "")
                 {
-                    connectString = "select * from Quotation where department='" + department + "' order by sale_name";
+                    connectString = "select * from Quotation where department='" + department + "' or sale_name='" + name + "' order by sale_name";
                 }
                 else
                 {
@@ -42,7 +42,7 @@ namespace WebForecastReport.Service
                         {
                             quotation_no = dr["quotation_no"].ToString(),
                             revision = dr["revision"].ToString(),
-                            date = dr["date"].ToString() != "" ? Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd") : "",
+                            date = dr["date"] != DBNull.Value ? Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd") : "",
                             customer = dr["customer"].ToString(),
                             enduser = dr["enduser"].ToString(),
                             project_name = dr["project_name"].ToString(),
@@ -56,12 +56,13 @@ namespace WebForecastReport.Service
                             total_value = dr["total_value"].ToString(),
                             unit = dr["unit"].ToString(),
                             quoted_price = dr["quoted_price"].ToString(),
-                            expected_order_date = dr["expected_order_date"].ToString() != "" ? Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd") : "",
-                            required_onsite_date = dr["required_onsite_date"].ToString() != "" ? Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd") : "",
+                            expected_order_date = dr["expected_order_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd") : "",
+                            required_onsite_date = dr["required_onsite_date"] != DBNull.Value ? Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd") : "",
                             proposer = dr["proposer"].ToString(),
-                            expected_date = dr["expected_date"].ToString() != "" ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : "",
+                            expected_date = dr["expected_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : "",
                             status = dr["status"].ToString(),
                             stages = dr["stages"].ToString(),
+                            stages_update_date = dr["stages_update_date"] != DBNull.Value ? Convert.ToDateTime(dr["stages_update_date"].ToString()).ToString("yyyy-MM-dd") : "",
                             how_to_support = dr["how_to_support"].ToString(),
                             competitor = dr["competitor"].ToString(),
                             competitor_description = dr["competitor_description"].ToString(),
@@ -102,6 +103,7 @@ namespace WebForecastReport.Service
                                         expected_date = q.expected_date,
                                         status = q.status,
                                         stages = q.stages,
+                                        stages_update_date = q.stages_update_date,
                                         how_to_support = q.how_to_support,
                                         competitor = q.competitor,
                                         competitor_description = q.competitor_description,
@@ -165,13 +167,14 @@ namespace WebForecastReport.Service
                         worksheet.Cells["T" + (i + startRows)].Value = quotations[i].expected_date != null ? quotations[i].expected_date.ToString() : "";
                         worksheet.Cells["U" + (i + startRows)].Value = quotations[i].status != null ? quotations[i].status.ToString() : "";
                         worksheet.Cells["V" + (i + startRows)].Value = quotations[i].stages != null ? quotations[i].stages.ToString() : "";
-                        worksheet.Cells["W" + (i + startRows)].Value = quotations[i].how_to_support != null ? quotations[i].how_to_support.ToString() : "";
-                        worksheet.Cells["X" + (i + startRows)].Value = quotations[i].competitor != null ? quotations[i].competitor.ToString() : "";
-                        worksheet.Cells["Y" + (i + startRows)].Value = quotations[i].competitor_description != null ? quotations[i].competitor_description.ToString() : "";
-                        worksheet.Cells["Z" + (i + startRows)].Value = quotations[i].competitor_price != null ? quotations[i].competitor_price.ToString() : "";
-                        worksheet.Cells["AA" + (i + startRows)].Value = quotations[i].sale_name != null ? quotations[i].sale_name.ToString() : "";
-                        worksheet.Cells["AB" + (i + startRows)].Value = quotations[i].department != null ? quotations[i].department.ToString() : "";
-                        worksheet.Cells["AC" + (i + startRows)].Value = quotations[i].detail != null ? quotations[i].detail.ToString() : "";
+                        worksheet.Cells["W" + (i + startRows)].Value = quotations[i].stages_update_date != null ? quotations[i].stages_update_date.ToString() : "";
+                        worksheet.Cells["X" + (i + startRows)].Value = quotations[i].how_to_support != null ? quotations[i].how_to_support.ToString() : "";
+                        worksheet.Cells["Y" + (i + startRows)].Value = quotations[i].competitor != null ? quotations[i].competitor.ToString() : "";
+                        worksheet.Cells["Z" + (i + startRows)].Value = quotations[i].competitor_description != null ? quotations[i].competitor_description.ToString() : "";
+                        worksheet.Cells["AA" + (i + startRows)].Value = quotations[i].competitor_price != null ? quotations[i].competitor_price.ToString() : "";
+                        worksheet.Cells["AB" + (i + startRows)].Value = quotations[i].sale_name != null ? quotations[i].sale_name.ToString() : "";
+                        worksheet.Cells["AC" + (i + startRows)].Value = quotations[i].department != null ? quotations[i].department.ToString() : "";
+                        worksheet.Cells["AD" + (i + startRows)].Value = quotations[i].detail != null ? quotations[i].detail.ToString() : "";
                     }
                     p.SaveAs(stream);
                     stream.Position = 0;

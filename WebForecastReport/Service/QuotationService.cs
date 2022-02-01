@@ -45,7 +45,7 @@ namespace WebForecastReport.Service
                 }
                 else if (role != "Admin" && role != "" && role != null)
                 {
-                    command = "select * from Quotation where department='" + role + "' order by date desc";
+                    command = "select * from Quotation where department='" + role + "' or sale_name='" + name + "' order by date desc";
                 }
                 else
                 {

@@ -33,17 +33,12 @@
                     <i class="fas fa-plus" style="font-size:20px"> Quotation</i>
                 </button>
             </div>
-            @{
-                if (Model.role == "Admin")
-                {
-                                                    <div class="col-md-2 col-xl-2 pb-3" hidden>
-                                                        <a type="button" class="btn btn-success form-control" style="height:55px;font-size:20px;text-align:center;padding-top:10px" href="@Url.Action("DownloadXlsxReport", "Quotation")">
-                                                            <i class="fas fa-download" style="padding-right:10px"></i>Export
-                                                        </a>
-                                                    </div>
-                }
-            }
 
+            <div class="col-md-2 col-xl-2 pb-3">
+                <a type="button" class="btn btn-success form-control" style="height:55px;font-size:20px;text-align:center;padding-top:10px" href="@Url.Action("DownloadXlsxReport", "Quotation")">
+                    <i class="fas fa-download" style="padding-right:10px"></i>Export
+                </a>
+            </div>
         </div>
     </div>
 
@@ -274,13 +269,13 @@
             scrollX: true,
             stateSave: statepage,
             @*createdRow: function (row, data, index) {
-                                                                                                                                                        var diffDay = diffDate(data[20], new Date()); //column Required Onsite Date
-                                                                                                                                                        if (diffDay > -3 && diffDay < 0) {
-                                                                                                                                                            $('td', row).eq(20).addClass('highlight_yellow');
-                                                                                                                                                        } else if (diffDay >=0) {
-                                                                                                                                                            $('td', row).eq(20).addClass('highlight_red');
-                                                                                                                                                        }
-                                                                                                                                                    },*@
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    var diffDay = diffDate(data[20], new Date()); //column Required Onsite Date
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    if (diffDay > -3 && diffDay < 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        $('td', row).eq(20).addClass('highlight_yellow');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    } else if (diffDay >=0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        $('td', row).eq(20).addClass('highlight_red');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                },*@
 
 
         });
@@ -844,14 +839,45 @@
 
     $('#info_status').on('click',function(){
         document.getElementById("info_title").innerHTML = "Status";
-        document.getElementById("info_content").innerHTML = "";
+        var arr = ["<b>IN</b> : คิดว่าจะได้งานแน่ๆ มีโอกาสจะได้งาน หรือ Target project","<b>OUT</b> : อาจจะไม่ได้งาน หรือไม่ใช่ Target project"];
+        add_info(arr);
+
         $('#ShowInfoModal').modal('show');
     });
     $('#info_stages').on('click',function(){
         document.getElementById("info_title").innerHTML = "Stages";
-        document.getElementById("info_content").innerHTML = "";
+        var arr = ["<b>Quote for Budget</b> : เสนอราคาให้ลูกค้าดูงบประมาณ",
+        "<b>Negotiation/Review</b> : เจรจาเรื่องรายละเอียด Spec ลูกค้า",
+        "<b>Proposal/Quote for Order</b> : นำเสนอราคาและ Solution ตามที่ได้คุยกับลูกค้า (งบลูกค้าต้องผ่านแล้ว)",
+        "<b>Prospecting</b> : นำเสนองานและคาดว่าจะได้งาน",
+        "<b>Closed (Won)</b> : ได้งาน",
+        "<b>Closed (Lost)</b> : ไม่ได้งาน",
+        "<b>No go</b> : ปิดไม่ไปต่อ (งบประมาณลูกค้าไม่ผ่าน)"]
+        add_info(arr);
+
         $('#ShowInfoModal').modal('show');
     });
+    $('#info_expected_order_date').on('click',function(){
+        document.getElementById("info_title").innerHTML = "Expected Order Date";
+        var arr = ["วันที่คาดว่าจะได้รับ PO"];
+        add_info(arr);
+
+        $('#ShowInfoModal').modal('show');
+    });
+    $('#info_required_onsite_date').on('click',function(){
+        document.getElementById("info_title").innerHTML = "Required Onsite Date";
+        var arr = ["วันที่ลูกค้าต้องการสินค้า"];
+        add_info(arr);
+
+        $('#ShowInfoModal').modal('show');
+    });
+    function add_info(arr){
+        var div = "";
+        for (var i=0;i<arr.length;i++){
+            div += '<span>' + arr[i] + '</span> <br>';
+        }
+        document.querySelector('#divinfo').innerHTML = div;
+    }
     function remove_data(index) {
         arrType.splice(index, 1);
         arrPart_No.splice(index, 1);

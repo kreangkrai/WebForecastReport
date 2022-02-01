@@ -89,10 +89,12 @@
                     <div class="form-group row">
                         <div class="col-md-3 col-xl-3">
                             <label>Expected Order Date</label>
+                            <i class="far fa-question-circle" id="info_expected_order_date"></i>
                             <input id="edit_expected_order_date" type="date" class="form-control" style="width:100%">
                         </div>
                         <div class="col-md-3 col-xl-3">
                             <label>Required Onsite Date</label>
+                            <i class="far fa-question-circle" id="info_required_onsite_date"></i>
                             <input id="edit_required_onsite_date" type="date" class="form-control" style="width:100%">
                         </div>
 
@@ -266,8 +268,7 @@
             <div class="modal-body">
                 <form>
                     <div class="form-group row m-0">
-                        <div class="col-md-12 col-xl-12">
-                            <textarea id="info_content" rows="8" cols="50" class="form-control" style="width:100%" readonly></textarea>
+                        <div class="col-md-12 col-xl-12" id="divinfo">
                         </div>
                     </div>
                 </form>
@@ -277,3 +278,4 @@
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
+</div>
