@@ -27,121 +27,383 @@
 @section Scripts
 {
 <script type="text/javascript">
-    $(document).ready(function () {
-       init();
-    });
-     function init() {
-        var name = '@Model.name';
-        var role = '@Model.role';
-        $.ajax({
-            url: '@Url.Action("GetData", "Proposal")',
-            type: "post",
-            contentType: 'application/x-www-form-urlencoded',
-            data: {
-                name, role
-            },
-            success: function (response) {
-                var datas = response;
-                var dataSet = [];
-                 for (var i = 0; i < datas.length; i++) {
-                    var data = ["",
-                        "",
-                        datas[i].quotation.quotation_no,
-                        datas[i].quotation.date,
-                        datas[i].quotation.customer,
-                        datas[i].quotation.enduser,
-                        datas[i].quotation.project_name,
-                        datas[i].quotation.site_location,
-                        datas[i].quotation.product_type,
-                        datas[i].quotation.type,
-                        datas[i].quotation.total_value,
-                        datas[i].quotation.expected_order_date,
-                        datas[i].quotation.required_onsite_date,
-                        datas[i].quotation.proposer,
-                        datas[i].quotation.department,
-                        datas[i].quotation.expected_date,
-                        datas[i].request_date,
-                        datas[i].proposal_status,
-                        datas[i].proposal_revision,
-                        datas[i].proposal_cost,
-                        datas[i].proposal_quoted_price,
-                        datas[i].gp,
-                        datas[i].finish_date,
-                        datas[i].engineering_request,
-                        datas[i].ppc_request,
-                        datas[i].person_in_charge
-                        ];
-                        dataSet.push(data);
+
+    var quotation_no = "";
+    var quotation_craeted_date = "";
+    var customer = "";
+    var enduser = "";
+    var project_name = "";
+    var project_location = "";
+    var product_type = "";
+    var types = "";
+    var total_value = "";
+    var Product_Types = [];
+    var Types = [];
+    var Total_Values = [];
+    var expected_order_date = "";
+    var required_onsite = "";
+    var propose_by = "";
+    var proposal_expected_date = "";
+    var proposal_request_date = "";
+    var proposal_status = "";
+    var revision = "";
+    var propose_cost = "";
+    var quoted_price = "";
+    var gp = "";
+    var finish_date = "";
+    var chk_engineering_request = false;
+    var chk_ppc_request = false;
+    var person_in_charge = "";
+
+    var Proposal_Status = ["In Progress","Finish","Cancel"];
+    var Persons = [];
+    var person_no = [];
+    var person_name = [];
+
+        $(document).ready(function () {
+           init();
+        });
+         function init() {
+            var name = '@Model.name';
+            var role = '@Model.role';
+            $.ajax({
+                url: '@Url.Action("GetData", "Proposal")',
+                type: "post",
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    name, role
+                },
+                success: function (response) {
+
+                    var persons = response.persons;
+                    Persons = add_person(persons);
+
+                    var datas = response.proposals;
+                    var dataSet = [];
+                     for (var i = 0; i < datas.length; i++) {
+                        var data = ["",
+                            "",
+                            datas[i].quotation.quotation_no,
+                            datas[i].quotation.date,
+                            datas[i].quotation.customer,
+                            datas[i].quotation.enduser,
+                            datas[i].quotation.project_name,
+                            datas[i].quotation.site_location,
+                            datas[i].quotation.product_type,
+                            datas[i].quotation.type,
+                            datas[i].quotation.total_value,
+                            datas[i].quotation.expected_order_date,
+                            datas[i].quotation.required_onsite_date,
+                            datas[i].quotation.proposer,
+                            datas[i].quotation.expected_date,
+                            datas[i].request_date,
+                            datas[i].proposal_status,
+                            datas[i].proposal_revision,
+                            datas[i].proposal_cost,
+                            datas[i].proposal_quoted_price,
+                            datas[i].gp,
+                            datas[i].finish_date,
+                            datas[i].engineering_request,
+                            datas[i].ppc_request,
+                            datas[i].person_in_charge
+                            ];
+                            dataSet.push(data);
+                    }
+
+                    table(dataSet);
                 }
-                console.log(dataSet);
-                table(dataSet);
+            });
+        };
+
+        function init_person(){
+            var dataSet = [];
+            for (var i = 0;i<person_no.length;i++){
+                var data = [person_no[i],person_name[i]];
+
+                dataSet.push(data);
             }
+            table_person(dataSet);
+        };
+
+        function init_type(){
+            var dataSet = [];
+            for (var i = 0;i<Product_Types.length;i++){
+                var data = [Product_Types[i],Types[i],Total_Values[i]];
+
+                dataSet.push(data);
+            }
+            table_type(dataSet);
+        }
+         var tables;
+        function table(dataSet) {
+            if (tables !== undefined)
+                tables.destroy();
+                tables = $('#table_proposal').DataTable({
+                data: dataSet,
+                columns: [
+                    { title: ""},
+                    { title: ""},
+                    { title: "Quotation NO"},
+                    { title: "Quotation Created Date"},
+                    { title: "Customer"},
+                    { title: "End User"},
+                    { title: "Project Name"},
+                    { title: "Site Location"},
+                    { title: "Product Type"},
+                    { title: "Type"},
+                    { title: "Total Value"},
+                    { title: "Expected Order Date"},
+                    { title: "Required Onsite Date"},
+                    { title: "Proposal Creted By"},
+                    { title: "Proposal Expected Date"},
+                    { title: "Proposal Request Date"},
+                    { title: "Proposal Status"},
+                    { title: "Revision"},
+                    { title: "Proposal Cost"},
+                    { title: "Quoted Price"},
+                    { title: "GP"},
+                    { title: "Finish Date"},
+                    { title: "Engineering Request"},
+                    { title: "PPC Request"},
+                    { title: "Person In Charge"},
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "data": null,
+                        "defaultContent": "<i class=\"fas fa-pen\"></i>",
+                        "className": 'dt-body-center',
+                    },
+                    {
+                        "targets": 1,
+                        "data": null,
+                        "defaultContent": "<i class=\"fas fa-eye\"></i>",
+                        "className": 'dt-body-center'
+                    },
+
+                ],
+                scrollX: true,
+                stateSave: true,
+            });
+            $(tables.table().body()).addClass('text-dark');
+        };
+
+        var tables_person;
+        function table_person(dataSet){
+            setTimeout(function () {
+            if (tables_person !== undefined)
+                tables_person.destroy();
+                tables_person = $('#table_proposal_edit').DataTable({
+                data: dataSet,
+                columns: [
+                    { title: "No."},
+                    { title: "Name"},
+                ],
+                "columnDefs": [
+                    {
+                    }
+                ],
+                "scrollX": true,
+                 "paging": false,
+                  "searching": false,
+                   "bInfo": false,
+            });
+            $(tables_person.table().body()).addClass('text-dark');
+            },300);
+        };
+
+        var tables_type;
+        function table_type(dataSet){
+            setTimeout(function () {
+            if (tables_person !== undefined)
+                tables_type.destroy();
+                tables_type = $('#table_type').DataTable({
+                data: dataSet,
+                columns: [
+                    { title: "Product Type"},
+                    { title: "Type"},
+                    { title: "Total Value"},
+                ],
+                "columnDefs": [
+                    {
+                    }
+                ],
+                "scrollX": true,
+                 "paging": false,
+                  "searching": false,
+                   "bInfo": false,
+            });
+            $(tables_type.table().body()).addClass('text-dark');
+            },300);
+        }
+
+
+        $('#table_proposal').on('click','tbody td',function(){
+             var cell = tables.cell(this);
+             var column = cell[0][0].column;
+             quotation_no = cell.data()[2];
+              quotation_craeted_date = cell.data()[3];
+               customer = cell.data()[4];
+                enduser = cell.data()[5];
+                 project_name = cell.data()[6];
+                  project_location = cell.data()[7];
+              product_type = cell.data()[8];
+              types = cell.data()[9];
+               total_value = cell.data()[10];
+                expected_order_date = cell.data()[11];
+                 required_onsite = cell.data()[12];
+                  propose_by = cell.data()[13];
+              proposal_expected_date = cell.data()[14];
+               proposal_request_date = cell.data()[15];
+                proposal_status = cell.data()[16];
+                 revision = cell.data()[17];
+                  propose_cost = cell.data()[18];
+              quoted_price = cell.data()[19];
+               gp = cell.data()[20];
+                finish_date = cell.data()[21];
+                 chk_engineering_request = cell.data()[22];
+                 chk_ppc_request = cell.data()[23];
+                 person_in_charge = cell.data()[24];
+
+             if(column == 0){  //edit
+
+                 document.getElementById("edit_quotation_quotation_no").value = quotation_no;
+                 document.getElementById("edit_quotation_quotation_craeted_date").value = quotation_craeted_date;
+                 document.getElementById("edit_customer").value = customer;
+                 document.getElementById("edit_quotation_enduser").value = enduser;
+                 document.getElementById("edit_quotation_project_name").value = project_name ;
+                 document.getElementById("edit_quotation_project_location").value = project_location;
+                 document.getElementById("edit_quotation_expected_order_date").value = expected_order_date;
+                 document.getElementById("edit_quotation_request_onsite").value = required_onsite;
+                 document.getElementById("edit_quotation_proposed_by").value = propose_by;
+                 document.getElementById("edit_quotation_proposal_expected_date").value = proposal_expected_date;
+                 document.getElementById("edit_request_date").value = proposal_request_date;
+
+                 document.getElementById("edit_proposal_status").value = proposal_status;
+                 var index_proposal_status = Proposal_Status.indexOf(proposal_status);
+                 document.getElementById('edit_proposal_status').selectedIndex = index_proposal_status;
+
+                 document.getElementById("edit_quotation_revision").value = revision;
+                 document.getElementById("edit_propose_cost").value = propose_cost;
+                 document.getElementById("edit_quotation_quoted_price").value = quoted_price;
+                 document.getElementById("edit_gp").value = gp;
+                 document.getElementById("edit_finish_date").value = finish_date;
+                 if (chk_engineering_request == "Yes"){
+                      document.getElementById("chk_engineering_request").checked = true;
+                 }else{
+                     document.getElementById("chk_engineering_request").checked = false;
+                 }
+                 if(chk_ppc_request == "Yes"){
+                      document.getElementById("chk_ppc_request").checked = true;
+                 }else{
+                     document.getElementById("chk_ppc_request").checked = false;
+                 }
+
+                  $('#select_persons').empty();
+                  var selectPerson = document.getElementById('select_persons');
+                  for (var i = 0, l = Persons.length; i < l; i++) {
+                    var option = Persons[i];
+                    selectPerson.options.add(new Option(option.text, option.value, option.selected));
+                    }
+
+                    document.getElementById('select_persons').selectedIndex = -1;
+
+
+                     person_no = [];
+                     person_name = [];
+                     Product_Types = [];
+                     Types = [];
+                     Total_Values = [];
+
+                    var count = (person_in_charge.match(/\|/g) || []).length;
+                    for (var i = 0; i <= count; i++) {
+                        if (person_in_charge != "") {
+                            person_no.push(i+1);
+                            person_name.push(person_in_charge.split('|')[i]);
+                        }
+                    }
+
+                    var count_type = (types.match(/\|/g) || []).length;
+                    for (var i=0;i<=count_type;i++){
+                        if(product_type != ""){
+                            Product_Types.push(product_type);
+                            Types.push(types.split('|')[i]);
+                            Total_Values.push(total_value.split('|')[i]);
+                        }
+                    }
+
+                    //init table type
+                    init_type();
+                    // init table person
+                    init_person();
+
+                 $('#modal_proposal').modal('show');
+             }
+             if(column == 1){ //view
+
+             }
         });
-    };
-     var tables;
-    function table(dataSet) {
-        if (tables !== undefined)
-            tables.destroy();
-            tables = $('#table_proposal').DataTable({
-            data: dataSet,
-            columns: [
-                { title: ""},
-                { title: ""},
-                { title: "Quotation NO"},
-                { title: "Quotation Created Date"},
-                { title: "Customer"},
-                { title: "End User"},
-                { title: "Project Name"},
-                { title: "Site Location"},
-                { title: "Project Type"},
-                { title: "Type"},
-                { title: "Total Value"},
-                { title: "Expected Order Date"},
-                { title: "Required Onsite Date"},
-                { title: "Proposal Creted By"},
-                { title: "Proposal Departmnt"},
-                { title: "Proposal Expected Date"},
-                { title: "Proposal Request Date"},
-                { title: "Proposal Status"},
-                { title: "Revision"},
-                { title: "Proposal Cost"},
-                { title: "Quoted Price"},
-                { title: "GP"},
-                { title: "Finish Date"},
-                { title: "Engineering Request"},
-                { title: "PPC Request"},
-                { title: "Person In Charge"},
-            ],
-            "columnDefs": [
-                {
-                    "targets": 0,
-                    "data": null,
-                    "defaultContent": "<i class=\"fas fa-pen\"></i>",
-                    "className": 'dt-body-center',
-                },
-                {
-                    "targets": 1,
-                    "data": null,
-                    "defaultContent": "<i class=\"fas fa-eye\"></i>",
-                    "className": 'dt-body-center'
-                },
-
-            ],
-            scrollX: true,
-            stateSave: true,
+        $('#select_persons').on('change',function(){
+            document.getElementById("add_person").disabled = false;
         });
-        $(tables.table().body()).addClass('text-dark');
+        $('#add_person').on('click',function(){
+            var name = document.getElementById("select_persons").value;
+            add_person_in_charge(name);
+
+            //init table person
+            init_person();
+        });
+        $('#clear_person').on('click',function(){
+            clearr_person_in_charge();
+
+            //clear table person
+             init_person();
+        });
+
+        $('#edit_propose_cost').on('change',function(){
+            var val = document.getElementById('edit_propose_cost').value;
+            var newVal = numberWithCommas(val);
+            document.getElementById('edit_propose_cost').value = newVal;
+        });
+        $('#edit_quotation_quoted_price').on('change',function(){
+            var val = document.getElementById('edit_quotation_quoted_price').value;
+            var newVal = numberWithCommas(val);
+            document.getElementById('edit_quotation_quoted_price').value = newVal;
+        });
+
+        $('#editProposalConfirm').on('click',function(){
+            alert("xx");
+        });
+        function add_person(persons) {
+            var data_persons = [];
+            for (var i = 0; i < persons.length; i++) {
+                var data =
+                {
+                    "text": persons[i],
+                    "value": persons[i]
+                }
+                data_persons.push(data);
+            }
+
+            return data_persons;
+        };
+        function add_person_in_charge(name){
+            var no = person_no.length + 1;
+
+            var chkName = person_name.indexOf(name);
+            if (chkName == -1){
+                person_no.push(no);
+                person_name.push(name);
+            }
+        };
+        function clearr_person_in_charge(){
+             person_no = [];
+             person_name = [];
+             person_department = [];
+        };
+        function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
-    $('#table_proposal').on('click','tbody td',function(){
-         var cell = tables.cell(this);
-         var column = cell[0][0].column;
 
-         if(column == 0){
-             $('#modal_proposal').modal('show');
-         }
-         if(column == 1){
-
-         }
-    });
 </script>
 }

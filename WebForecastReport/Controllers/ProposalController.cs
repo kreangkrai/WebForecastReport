@@ -30,7 +30,7 @@ namespace WebForecastReport.Controllers
                 users = Accessory.getAllUser();
                 UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name, department = s.department, role = s.role }).FirstOrDefault();
 
-                //u.role = "";
+                u.role = "";
                 if (u.role != "Admin")  //  add propersal
                 {
                     List<string> quotation = new List<string>();
@@ -65,7 +65,17 @@ namespace WebForecastReport.Controllers
         {
             List<ProposalModel> proposals = new List<ProposalModel>();
             proposals = Proposal.getProposals(name, role);
-            return Json(proposals);
+
+            List<string> persons = new List<string>();
+            persons = Accessory.getAllUser().Select(w => w.name).ToList();
+            var list = new { proposals = proposals, persons = persons };
+            return Json(list);
+        }
+        [HttpPost]
+        public JsonResult GetDepartment(string name)
+        {
+            string dept = Accessory.getAllUser().Where(w => w.name == name).Select(s => s.department).FirstOrDefault();
+            return Json(dept);
         }
     }
 }

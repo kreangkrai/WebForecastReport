@@ -94,6 +94,7 @@ namespace WebForecastReport.Service
                                 project_name = dr["project_name"].ToString(),
                                 site_location = dr["site_location"].ToString(),
                                 product_type = dr["product_type"].ToString(),
+                                type = dr["type"].ToString(),
                                 part_no = dr["part_no"].ToString(),
                                 spec = dr["spec"].ToString(),
                                 quantity = dr["quantity"].ToString(),
@@ -139,11 +140,13 @@ namespace WebForecastReport.Service
                                                                             quotation_no,
                                                                             proposal_created_by,
                                                                             proposal_department,
-                                                                            request_date) VALUES (
+                                                                            request_date,proposal_revision,proposal_quoted_price) VALUES (
                                                                             @quotation_no,
                                                                             @proposal_created_by,
                                                                             @proposal_department,
-                                                                            @request_date)", ConnectSQL.OpenConnect()))
+                                                                            @request_date,
+                                                                            @proposal_revision,
+                                                                            @proposal_quoted_price)", ConnectSQL.OpenConnect()))
                 {
                     cmd.CommandType = CommandType.Text;
                     cmd.Connection = ConnectSQL.OpenConnect();
@@ -151,7 +154,8 @@ namespace WebForecastReport.Service
                     cmd.Parameters.Add("@proposal_created_by", SqlDbType.NVarChar);
                     cmd.Parameters.Add("@proposal_department", SqlDbType.NVarChar);
                     cmd.Parameters.Add("@request_date", SqlDbType.NVarChar);
-
+                    cmd.Parameters.Add("@proposal_revision", SqlDbType.NVarChar);
+                    cmd.Parameters.Add("@proposal_quoted_price", SqlDbType.NVarChar);
                     for (int i = 0; i < model.Count; i++)
                     {
                         bool b = quotations.Any(a => a == model[i].quotation_no); //check match quotation
@@ -161,6 +165,8 @@ namespace WebForecastReport.Service
                             cmd.Parameters[1].Value = model[i].proposer;
                             cmd.Parameters[2].Value = model[i].department;
                             cmd.Parameters[3].Value = DateTime.Now.ToString("yyyy-MM-dd");
+                            cmd.Parameters[4].Value = model[i].revision;
+                            cmd.Parameters[5].Value = model[i].quoted_price;
 
                             cmd.ExecuteNonQuery();
                         }

@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel"><b>Edit Proposal</b></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -13,78 +13,68 @@
                     <div class="row">
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="quotation_quotation_no">Quotation NO.</label>
-                                <input id="quotation_quotation_no" type="text" class="form-control" disabled />
+                                <label for="edit_quotation_quotation_no">Quotation NO.</label>
+                                <input id="edit_quotation_quotation_no" type="text" class="form-control" disabled />
                             </div>
                         </div>
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="quotation_quotation_craeted_date">Quotation Created Date</label>
-                                <input id="quotation_quotation_craeted_date" type="date" class="form-control" disabled />
+                                <label for="edit_quotation_quotation_craeted_date">Quotation Created Date</label>
+                                <input id="edit_quotation_quotation_craeted_date" type="date" class="form-control" disabled />
                             </div>
                         </div>
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="Customer">Customer</label>
-                                <input id="Customer" type="text" class="form-control" />
+                                <label for="edit_customer">Customer</label>
+                                <input id="edit_customer" type="text" class="form-control" disabled />
                             </div>
                         </div>
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="EndUser">EndUser</label>
-                                <input id="EndUser" type="text" class="form-control" />
+                                <label for="edit_quotation_enduser">End User</label>
+                                <input id="edit_quotation_enduser" type="text" class="form-control" disabled />
                             </div>
                         </div>
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="ProjectName">Project Name</label>
-                                <input id="ProjectName" type="text" class="form-control" />
+                                <label for="edit_quotation_project_name">Project Name</label>
+                                <input id="edit_quotation_project_name" type="text" class="form-control" disabled />
                             </div>
                         </div>
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="ProjectLocation">Location</label>
-                                <input id="ProjectLocation" type="text" class="form-control" />
+                                <label for="edit_quotation_project_location">Location</label>
+                                <input id="edit_quotation_project_location" type="text" class="form-control" disabled />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-6">
+                            <table class="table table-md cell-border table-dark display responsive nowrap" id="table_type" style="width:100%;overflow-x:auto">
+                            </table>
+                        </div>
+
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="edit_quotation_expected_order_date">Expected Order Date</label>
+                                <input id="edit_quotation_expected_order_date" type="date" class="form-control" disabled />
                             </div>
                         </div>
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="ProjectType">Project Type</label>
-                                <select id="ProjectType" class="form-control">
-                                    <option>Please Select Type</option>
-                                </select>
+                                <label for="edit_quotation_request_onsite">Request On Site</label>
+                                <input id="edit_quotation_request_onsite" type="text" class="form-control" disabled />
                             </div>
                         </div>
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="TotalValue">Total Value</label>
-                                <input id="TotalValue" type="number" class="form-control" />
+                                <label for="edit_quotation_proposed_by">Proposed By</label>
+                                <input id="edit_quotation_proposed_by" class="form-control" disabled />
                             </div>
                         </div>
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="ExpectedOrderDate">Expected Order Date</label>
-                                <input id="ExpectedOrderDate" type="date" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-xl-3">
-                            <div class="form-group">
-                                <label for="RequestOnSite">Request On Site</label>
-                                <input id="RequestOnSite" type="text" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-xl-3">
-                            <div class="form-group">
-                                <label for="ProposedBy">Proposed By</label>
-                                <select id="ProposedBy" class="form-control">
-                                    <option>Please Select</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-xl-3">
-                            <div class="form-group">
-                                <label for="ExpectedDate">Expected Date</label>
-                                <input id="ExpectedDate" type="date" class="form-control" />
+                                <label for="edit_quotation_proposal_expected_date">Proposal Expected Date</label>
+                                <input id="edit_quotation_proposal_expected_date" type="date" class="form-control" disabled />
                             </div>
                         </div>
                     </div>
@@ -93,34 +83,34 @@
                     <div class="row">
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="RequestDate">Request Date</label>
-                                <input id="RequestDate" type="date" class="form-control" />
+                                <label for="edit_request_date">Request Date</label>
+                                <input id="edit_request_date" type="date" class="form-control" />
                             </div>
                         </div>
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="ProposalState">Proposal State</label>
-                                <select id="ProposalState" class="form-control">
-                                    <option>Please Select</option>
+                                <label for="edit_proposal_status">Proposal Status</label>
+                                <select id="edit_proposal_status" class="form-control">
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Finish">Finish</option>
+                                    <option value="Cancel">Cancel</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="Revision">Revision</label>
-                                <select id="Revision" class="form-control">
-                                    <option>Please Select</option>
-                                </select>
+                                <label for="edit_quotation_revision">Revision</label>
+                                <input type="number" id="edit_quotation_revision" class="form-control" />
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="ProposeCost">Propose Cost</label>
+                                <label for="edit_propose_cost">Propose Cost</label>
                                 <div class="row">
                                     <div class="col-8">
-                                        <input id="ProposeCost" type="number" class="form-control" />
+                                        <input id="edit_propose_cost" type="text" class="form-control" />
                                     </div>
                                     <div class="col-4 d-flex align-items-end">
                                         <label>THB</label>
@@ -130,10 +120,10 @@
                         </div>
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="ProposePrice">Propose Price</label>
+                                <label for="edit_quotation_quoted_price">Quoted Price</label>
                                 <div class="row">
                                     <div class="col-8">
-                                        <input id="ProposePrice" type="number" class="form-control" />
+                                        <input id="edit_quotation_quoted_price" type="text" class="form-control" />
                                     </div>
                                     <div class="col-4 d-flex align-items-end">
                                         <label>THB</label>
@@ -143,10 +133,10 @@
                         </div>
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="GP">GP</label>
+                                <label for="edit_gp">GP</label>
                                 <div class="row">
                                     <div class="col-8">
-                                        <input id="GP" type="number" class="form-control" />
+                                        <input id="edit_gp" type="number" class="form-control" />
                                     </div>
                                     <div class="col-4 d-flex align-items-end">
                                         <label>%</label>
@@ -156,15 +146,15 @@
                         </div>
                         <div class="col-xl-3">
                             <div class="form-group">
-                                <label for="FinishDate">Finish Date</label>
-                                <input id="FinishDate" type="date" class="form-control" />
+                                <label for="edit_finish_date">Finish Date</label>
+                                <input id="edit_finish_date" type="date" class="form-control" />
                             </div>
                         </div>
                         <div class="col-xl-3">
                             <div class="form-group">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input type="checkbox" class="form-check-input" value="">Engineering Request
+                                        <input type="checkbox" class="form-check-input" value="" id="chk_engineering_request">Engineering Request
                                     </label>
                                 </div>
                             </div>
@@ -173,24 +163,28 @@
                             <div class="form-group">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input type="checkbox" class="form-check-input" value="">PPC Request
+                                        <input type="checkbox" class="form-check-input" value="" id="chk_ppc_request">PPC Request
                                     </label>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-group">
-                                <label for="table_pic">Person In Charge</label>
-                                <table class="table table-sm table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Name</th>
-                                            <th>Dept.</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
+                                <label for="table_proposal_edit">Person In Charge</label>
+                                <div class="form-group row">
+                                    <div class="col-md-3 col-xl-3 pt-1">
+                                        <select class="form-control" id="select_persons">
+                                            <option>Please Select</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1 col-xl-1 pt-1">
+                                        <input type="button" class="btn btn-success form-control" id="add_person" value="ADD" disabled />
+                                    </div>
+                                    <div class="col-md-1 col-xl-1 pt-1">
+                                        <input type="button" id="clear_person" class="btn btn-warning form-control" value="Clear" />
+                                    </div>
+                                </div>
+                                <table class="table table-md cell-border table-dark display responsive nowrap" id="table_proposal_edit" style="width:100%;overflow-x:auto">
                                 </table>
                             </div>
                         </div>
@@ -199,7 +193,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary" id="editProposalConfirm">Save changes</button>
             </div>
         </div>
     </div>
