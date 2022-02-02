@@ -59,7 +59,7 @@
 <partial name="ModalEdit" />
 @section Scripts
 {
-<script type="text/javascript">
+    <script type="text/javascript">
     var quotation_datas = [];
     var quotation = '';
     var revision = '';
@@ -495,8 +495,12 @@
 
             document.getElementById('edit_project_name').value = project_name;
             document.getElementById('edit_site_location').value = site_location;
-            document.getElementById('edit_product_type').value = product_type;
 
+            if (product_type == "") {
+                document.getElementById("edit_product_type").options[0].disabled = true;
+            } else {
+                document.getElementById('edit_product_type').value = product_type;
+            }
 
             document.getElementById('edit_quoted_price').value = quoted_price;
             document.getElementById('edit_expected_order_date').value = expected_order_date;
@@ -569,6 +573,8 @@
             //get type
 
             var type = product_type;
+            $('#brands').empty();
+            $('#types').empty();
             $.ajax({
                 url: '@Url.Action("GetType", "Quotation")',
                 type: "post",
@@ -577,21 +583,53 @@
                     type
                 },
                 success: function (response) {
-                    // Enable Add Button
-                    document.getElementById("btnAddType").disabled = false;
+                     // hide group type  default=> Please Select
+                    if (response.length == 1) {
+                        document.getElementById("group_types").hidden = true;
 
-                    var data = response;
-                    // add Type
-                    Types = add_type(data);
-                    // add select type
-                    $('#types').empty();
-                    var selectType = document.getElementById('types');
-                    for (var i = 0, l = Types.length; i < l; i++) {
-                        var option = Types[i];
-                        selectType.options.add(new Option(option.text, option.value, option.selected));
+                        var type = document.getElementById("edit_product_type").value;
+                        $.ajax({
+                            url: '@Url.Action("GetBrand", "Quotation")',
+                            type: "post",
+                            contentType: 'application/x-www-form-urlencoded',
+                            data: {
+                                type
+                            },
+                            success: function (response) {
+                                //disable button
+                                document.getElementById("btnAddType").disabled = true;
+
+                                var data = response;
+                                // add Brand
+                                Brands = add_brand(data);
+                                // add select type
+                               
+                                var selectBrand = document.getElementById('brands');
+                                for (var i = 0, l = Brands.length; i < l; i++) {
+                                    var option = Brands[i];
+                                    selectBrand.options.add(new Option(option.text, option.value, option.selected));
+                                }
+                                document.getElementById('brands').selectedIndex = 0;
+                                document.getElementById("brands").options[0].disabled = true;
+                            }
+                        });
+                    } else {
+                        // Enable Add Button
+                        document.getElementById("btnAddType").disabled = false;
+
+                        var data = response;
+                        // add Type
+                        Types = add_type(data);
+                        // add select type
+                        
+                        var selectType = document.getElementById('types');
+                        for (var i = 0, l = Types.length; i < l; i++) {
+                            var option = Types[i];
+                            selectType.options.add(new Option(option.text, option.value, option.selected));
+                        }
+                        document.getElementById('types').selectedIndex = 0;
+                        document.getElementById("types").options[0].disabled = true;
                     }
-                    document.getElementById('types').selectedIndex = 0;
-                    document.getElementById("types").options[0].disabled = true;
                 }
             });
 
@@ -742,6 +780,7 @@
 
     $('#clear_btnType').on('click', function () {
         clear_dataall();
+        document.getElementById('edit_product_type').value = "";
     });
     $('#edit_btnType').on('click', function () {
 
@@ -826,10 +865,12 @@
     });
 
     $('#edit_product_type').on('change', function () {
-        clear_dataall();
 
+        clear_dataall();
+        $('#types').empty();
+        $('#brands').empty();
         var type = document.getElementById("edit_product_type").value;
-         $.ajax({
+        $.ajax({
             url: '@Url.Action("GetType", "Quotation")',
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
@@ -839,7 +880,7 @@
             success: function (response) {
 
                 // hide group type  default=> Please Select
-                if(response.length == 1){
+                if (response.length == 1) {
                     document.getElementById("group_types").hidden = true;
 
                     var type = document.getElementById("edit_product_type").value;
@@ -855,10 +896,10 @@
                             document.getElementById("btnAddType").disabled = true;
 
                             var data = response;
-                             // add Brand
+                            // add Brand
                             Brands = add_brand(data);
-                           // add select type
-                            $('#brands').empty();
+                            // add select type
+                            
                             var selectBrand = document.getElementById('brands');
                             for (var i = 0, l = Brands.length; i < l; i++) {
                                 var option = Brands[i];
@@ -868,24 +909,24 @@
                             document.getElementById("brands").options[0].disabled = true;
                         }
                     });
-                }else{
-                     document.getElementById("group_types").hidden = false;
+                } else {
+                    document.getElementById("group_types").hidden = false;
 
-                     // Disable Add Button
-                     document.getElementById("btnAddType").disabled = true;
+                    // Disable Add Button
+                    document.getElementById("btnAddType").disabled = true;
 
-                     var data = response;
-                         // add Type
-                     Types = add_type(data);
-                     // add select type
-                     $('#types').empty();
-                     var selectType = document.getElementById('types');
-                     for (var i = 0, l = Types.length; i < l; i++) {
-                         var option = Types[i];
-                         selectType.options.add(new Option(option.text, option.value, option.selected));
-                     }
-                     document.getElementById('types').selectedIndex = 0;
-                     document.getElementById("types").options[0].disabled = true;
+                    var data = response;
+                    // add Type
+                    Types = add_type(data);
+                    // add select type
+
+                    var selectType = document.getElementById('types');
+                    for (var i = 0, l = Types.length; i < l; i++) {
+                        var option = Types[i];
+                        selectType.options.add(new Option(option.text, option.value, option.selected));
+                    }
+                    document.getElementById('types').selectedIndex = 0;
+                    document.getElementById("types").options[0].disabled = true;
                 }
             }
         });
@@ -967,7 +1008,7 @@
     };
     function clear_dataall() {
         arrProductType = [];
-
+        
         init_edit();
     };
     function add_data(type,brand) {
@@ -1028,7 +1069,7 @@
 
         return data_types;
     };
-     function add_brand(brands) {
+    function add_brand(brands) {
         var data_brands = [];
         for (var i = 0; i < brands.length; i++) {
             var data =
@@ -1137,5 +1178,5 @@
         return arr;
     };
 
-</script>
+    </script>
 }
