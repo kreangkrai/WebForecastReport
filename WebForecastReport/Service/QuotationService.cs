@@ -69,6 +69,7 @@ namespace WebForecastReport.Service
                             site_location = dr["site_location"].ToString(),
                             product_type = dr["product_type"].ToString(),
                             type = dr["type"].ToString(),
+                            brand = dr["brand"].ToString(),
                             part_no = dr["part_no"].ToString(),
                             spec = dr["spec"].ToString(),
                             quantity = dr["quantity"].ToString(),
@@ -255,22 +256,14 @@ namespace WebForecastReport.Service
         {
             try
             {
-                using (SqlCommand cmd = new SqlCommand(@"INSERT INTO Quotation(
-                                                                            quotation_no,revision,
-                                                                            date,sale_name,department) VALUES (
-                                                                            @quotation_no,@revision,@date,@sale_name,@department)", ConnectSQL.OpenConnect()))
-                {
-                    cmd.CommandType = CommandType.Text;
-                    cmd.Connection = ConnectSQL.OpenConnect();
-                    cmd.Parameters.AddWithValue("@quotation_no", model.quotation_no);
-                    cmd.Parameters.AddWithValue("@revision", model.revision);
-                    cmd.Parameters.AddWithValue("@date", model.date);
-                    cmd.Parameters.AddWithValue("@sale_name", model.sale_name);
-                    cmd.Parameters.AddWithValue("@department", model.department);
-                    cmd.ExecuteNonQuery();
+                SqlCommand cmd = new SqlCommand(@"INSERT INTO Quotation(quotation_no,revision,date,sale_name,department)
+                                                                            VALUES ('" + model.quotation_no + "','0',GETDATE(),'" + model.sale_name + "','" + model.department + "')",
+                                                                            ConnectSQL.OpenConnect());
 
-                    return "Insert Success";
-                }
+                cmd.ExecuteNonQuery();
+
+                return "Insert Success";
+
             }
             catch
             {
@@ -408,6 +401,7 @@ namespace WebForecastReport.Service
                             site_location = dr["site_location"].ToString(),
                             product_type = dr["product_type"].ToString(),
                             type = dr["type"].ToString(),
+                            brand = dr["brand"].ToString(),
                             part_no = dr["part_no"].ToString(),
                             spec = dr["spec"].ToString(),
                             quantity = dr["quantity"].ToString(),

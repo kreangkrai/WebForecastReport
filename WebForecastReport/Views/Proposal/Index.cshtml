@@ -8,6 +8,10 @@
     #table_proposal tr td:nth-of-type(2) {
         cursor: pointer;
     }
+
+    #table_proposal_edit tr td:nth-of-type(1) {
+        cursor: pointer;
+    }
 </style>
 <div class="row p-3">
     <div class="col-xl-12">
@@ -57,7 +61,6 @@
 
     var Proposal_Status = ["In Progress","Finish","Cancel"];
     var Persons = [];
-    var person_no = [];
     var person_name = [];
 
         $(document).ready(function () {
@@ -117,8 +120,8 @@
 
         function init_person(){
             var dataSet = [];
-            for (var i = 0;i<person_no.length;i++){
-                var data = [person_no[i],person_name[i]];
+            for (var i = 0;i<person_name.length;i++){
+                var data = ["",person_name[i]];
 
                 dataSet.push(data);
             }
@@ -196,12 +199,17 @@
                 tables_person = $('#table_proposal_edit').DataTable({
                 data: dataSet,
                 columns: [
-                    { title: "No."},
+                    { title: ""},
                     { title: "Name"},
                 ],
                 "columnDefs": [
-                    {
-                    }
+
+                        {
+                            "targets": 0,
+                            "data": null,
+                            "defaultContent": "<i class=\"fas fa-trash\"></i>",
+                            "className": 'dt-body-center',
+                        },
                 ],
                 "scrollX": true,
                  "paging": false,
@@ -242,28 +250,28 @@
              var cell = tables.cell(this);
              var column = cell[0][0].column;
              quotation_no = cell.data()[2];
-              quotation_craeted_date = cell.data()[3];
-               customer = cell.data()[4];
-                enduser = cell.data()[5];
-                 project_name = cell.data()[6];
-                  project_location = cell.data()[7];
-              product_type = cell.data()[8];
-              types = cell.data()[9];
-               total_value = cell.data()[10];
-                expected_order_date = cell.data()[11];
-                 required_onsite = cell.data()[12];
-                  propose_by = cell.data()[13];
-              proposal_expected_date = cell.data()[14];
-               proposal_request_date = cell.data()[15];
-                proposal_status = cell.data()[16];
-                 revision = cell.data()[17];
-                  propose_cost = cell.data()[18];
-              quoted_price = cell.data()[19];
-               gp = cell.data()[20];
-                finish_date = cell.data()[21];
-                 chk_engineering_request = cell.data()[22];
-                 chk_ppc_request = cell.data()[23];
-                 person_in_charge = cell.data()[24];
+             quotation_craeted_date = cell.data()[3];
+             customer = cell.data()[4];
+             enduser = cell.data()[5];
+             project_name = cell.data()[6];
+             project_location = cell.data()[7];
+             product_type = cell.data()[8];
+             types = cell.data()[9];
+             total_value = cell.data()[10];
+             expected_order_date = cell.data()[11];
+             required_onsite = cell.data()[12];
+             propose_by = cell.data()[13];
+             proposal_expected_date = cell.data()[14];
+             proposal_request_date = cell.data()[15];
+             proposal_status = cell.data()[16];
+             revision = cell.data()[17];
+             propose_cost = cell.data()[18];
+             quoted_price = cell.data()[19];
+             gp = cell.data()[20];
+             finish_date = cell.data()[21];
+             chk_engineering_request = cell.data()[22];
+             chk_ppc_request = cell.data()[23];
+             person_in_charge = cell.data()[24];
 
              if(column == 0){  //edit
 
@@ -308,8 +316,6 @@
 
                     document.getElementById('select_persons').selectedIndex = -1;
 
-
-                     person_no = [];
                      person_name = [];
                      Product_Types = [];
                      Types = [];
@@ -318,7 +324,6 @@
                     var count = (person_in_charge.match(/\|/g) || []).length;
                     for (var i = 0; i <= count; i++) {
                         if (person_in_charge != "") {
-                            person_no.push(i+1);
                             person_name.push(person_in_charge.split('|')[i]);
                         }
                     }
@@ -341,6 +346,19 @@
              }
              if(column == 1){ //view
 
+             }
+        });
+        $('#table_proposal_edit').on('click','tbody td',function(){
+             var cell = tables_person.cell(this);
+             var column = cell[0][0].column;
+
+             if (column == 0){
+                 var person = cell.data()[1];
+                 var index = person_name.indexOf(person);
+                 romove_person(index);
+
+                 //init table person
+                 init_person();
              }
         });
         $('#select_persons').on('change',function(){
@@ -387,23 +405,21 @@
 
             return data_persons;
         };
+        function romove_person(index){
+            person_name.splice(index, 1);
+        };
         function add_person_in_charge(name){
-            var no = person_no.length + 1;
-
             var chkName = person_name.indexOf(name);
-            if (chkName == -1){
-                person_no.push(no);
+            if (chkName == -1 && name !== ""){
                 person_name.push(name);
             }
         };
         function clearr_person_in_charge(){
-             person_no = [];
              person_name = [];
-             person_department = [];
         };
         function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    };
+        };
 
 </script>
 }

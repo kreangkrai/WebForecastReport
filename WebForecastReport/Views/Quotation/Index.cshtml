@@ -70,6 +70,7 @@
     var site_location = '';
     var product_type = '';
     var type = '';
+    var brand = '';
     var part_no = '';
     var spec = '';
     var quantity = '';
@@ -94,19 +95,14 @@
     var department = '';
     var detail = '';
 
-    var arrType = [];
-    var arrPart_No = [];
-    var arrSpec = [];
-    var arrQuantity = [];
-    var arrSupplier_Quotation_No = [];
-    var arrTotal_Value = [];
-    var arrUnit = [];
+    var arrProductType = [];
 
     var Units = ["THB", "EUR", "USD", "JPY","CHF","GBP","SGD"];
     var Status = ["IN", "OUT"];
     var Stages = ["Quote for Buddget", "Negotiation/Review", "Proposal/Quote for Order", "Prospecting", "Closed(Won)", "Closed(Lost)","No go"];
 
     var Types = [];
+    var Brands = [];
     var Departments = [];
     var Sales = [];
     var Proposers = [];
@@ -162,6 +158,7 @@
                         datas[i].site_location,
                         datas[i].product_type,
                         datas[i].type,
+                        datas[i].brand,
                         datas[i].part_no,
                         datas[i].spec,
                         datas[i].quantity,
@@ -193,9 +190,9 @@
     };
     function init_view() {
         var dataSet = [];
-        for (var i = 0; i < arrType.length; i++) {
-            var data = [arrType[i], arrPart_No[i], arrSpec[i], arrQuantity[i], arrSupplier_Quotation_No[i], arrTotal_Value[i], arrUnit[i]];
-
+        for (var i = 0; i < arrProductType.length; i++) {
+            //var data = [arrType[i],arrBrand[i], arrPart_No[i], arrSpec[i], arrQuantity[i], arrSupplier_Quotation_No[i], arrTotal_Value[i], arrUnit[i]];
+            var data = [arrProductType[i][0].type,arrProductType[i][0].brand, arrProductType[i][0].part_no, arrProductType[i][0].spec, arrProductType[i][0].quantity, arrProductType[i][0].supplier_quotation_no, arrProductType[i][0].total_value, arrProductType[i][0].unit];
             dataSet.push(data);
         }
         table_view(dataSet);
@@ -203,9 +200,11 @@
     };
     function init_edit() {
         var dataSet = [];
-        for (var i = 0; i < arrType.length; i++) {
-            var data = ["","",arrType[i], arrPart_No[i], arrSpec[i], arrQuantity[i], arrSupplier_Quotation_No[i], arrTotal_Value[i], arrUnit[i]];
 
+        for (var i = 0; i < arrProductType.length; i++) {
+
+            //var data = ["","",arrType[i],arrBrand[i], arrPart_No[i], arrSpec[i], arrQuantity[i], arrSupplier_Quotation_No[i], arrTotal_Value[i], arrUnit[i]];
+             var data = [arrProductType[i][0].edit,arrProductType[i][0].delete,arrProductType[i][0].type,arrProductType[i][0].brand, arrProductType[i][0].part_no, arrProductType[i][0].spec, arrProductType[i][0].quantity, arrProductType[i][0].supplier_quotation_no, arrProductType[i][0].total_value, arrProductType[i][0].unit];
             dataSet.push(data);
         }
         table_edit(dataSet);
@@ -230,6 +229,7 @@
                 { title: "Site Location" },
                 { title: "Product Type" },
                 { title: "Type" },
+                { title: "Brand" },
                 { title: "Part No" },
                 { title: "Spec" },
                 { title: "Quantity" },
@@ -269,13 +269,13 @@
             scrollX: true,
             stateSave: statepage,
             @*createdRow: function (row, data, index) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    var diffDay = diffDate(data[20], new Date()); //column Required Onsite Date
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    if (diffDay > -3 && diffDay < 0) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        $('td', row).eq(20).addClass('highlight_yellow');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    } else if (diffDay >=0) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        $('td', row).eq(20).addClass('highlight_red');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                },*@
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    var diffDay = diffDate(data[20], new Date()); //column Required Onsite Date
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    if (diffDay > -3 && diffDay < 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $('td', row).eq(20).addClass('highlight_yellow');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    } else if (diffDay >=0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $('td', row).eq(20).addClass('highlight_red');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                },*@
 
 
         });
@@ -290,7 +290,8 @@
                     tables_view = $('#view_table_types').DataTable({
                     data: dataSet,
                     columns: [
-                        { title: "Name", width: 80 },
+                        { title: "Type", width: 80 },
+                        { title: "Brand", width: 80 },
                         { title: "Part No", width: 80 },
                         { title: "Spec", width: 80 },
                         { title: "Quantity", width: 80 },
@@ -319,7 +320,8 @@
                     columns: [
                         { title: "Edit", width: 5 },
                         { title: "Delete", width: 5 },
-                        { title: "Name", width: 80 },
+                        { title: "Type", width: 80 },
+                        { title: "Brand", width: 80 },
                         { title: "Part No", width: 80 },
                         { title: "Spec", width: 80 },
                         { title: "Quantity", width: 80 },
@@ -341,7 +343,7 @@
                             "className": 'dt-body-center',
                         },
                         {
-                            "targets": [3, 4, 5, 6],
+                            "targets": [ 4, 5, 6, 7],
                             "visible": false,
                             "searchable": false,
                             "className": 'dt-body-center',
@@ -432,47 +434,56 @@
         site_location = cell.data()[9];
         product_type = cell.data()[10];
         type = cell.data()[11];
-        part_no = cell.data()[12];
-        spec = cell.data()[13];
-        quantity = cell.data()[14];
-        supplier_quotation_no = cell.data()[15];
-        total_value = cell.data()[16];
-        unit = cell.data()[17];
-        quoted_price = cell.data()[18];
-        expected_order_date = cell.data()[19];
+        brand = cell.data()[12];
+        part_no = cell.data()[13];
+        spec = cell.data()[14];
+        quantity = cell.data()[15];
+        supplier_quotation_no = cell.data()[16];
+        total_value = cell.data()[17];
+        unit = cell.data()[18];
+        quoted_price = cell.data()[19];
+        expected_order_date = cell.data()[20];
         old_expected_order_date = expected_order_date;
-        required_onsite_date = cell.data()[20];
-        proposer = cell.data()[21];
-        expected_date = cell.data()[22];
-        stages = cell.data()[23];
-        stages_update_date = cell.data()[24];
-        how_to_support = cell.data()[25];
-        competitor = cell.data()[26];
-        competitor_description = cell.data()[27];
-        competitor_price = cell.data()[28];
-        sale_name = cell.data()[29];
-        department = cell.data()[30];
-        detail = cell.data()[31];
+        required_onsite_date = cell.data()[21];
+        proposer = cell.data()[22];
+        expected_date = cell.data()[23];
+        stages = cell.data()[24];
+        stages_update_date = cell.data()[25];
+        how_to_support = cell.data()[26];
+        competitor = cell.data()[27];
+        competitor_description = cell.data()[28];
+        competitor_price = cell.data()[29];
+        sale_name = cell.data()[30];
+        department = cell.data()[31];
+        detail = cell.data()[32];
 
-        arrType = [];
-        arrPart_No = [];
-        arrSpec = [];
-        arrQuantity = [];
-        arrSupplier_Quotation_No = [];
-        arrTotal_Value = [];
-        arrUnit = [];
+        arrProductType = [];
+
         var count = (type.match(/\|/g) || []).length;
         for (var i = 0; i <= count; i++) {
             if (type != "") {
-                arrType.push(type.split('|')[i]);
-                arrPart_No.push(part_no.split('|')[i]);
-                arrSpec.push(spec.split('|')[i]);
-                arrQuantity.push(quantity.split('|')[i]);
-                arrSupplier_Quotation_No.push(supplier_quotation_no.split('|')[i]);
-                arrTotal_Value.push(total_value.split('|')[i]);
-                arrUnit.push(unit.split('|')[i]);
+                var _type = type.split('|')[i];
+                var _brand = brand.split('|')[i];
+                var _part_no = part_no.split('|')[i];
+                var _spec = spec.split('|')[i];
+                var _quantity = quantity.split('|')[i];
+                var _supplier = supplier_quotation_no.split('|')[i];
+                var _total_value = total_value.split('|')[i];
+                var _unit = unit.split('|')[i];
+
+                arrProductType.push([{"edit":"",
+                                        "delete":"",
+                                        "type":_type,
+                                        "brand":_brand,
+                                        "part_no":_part_no,
+                                        "spec":_spec,
+                                        "quantity":_quantity,
+                                        "supplier_quotation_no":_supplier,
+                                        "total_value":_total_value,
+                                        "unit":_unit}]);
             }
         }
+
         if (column == "0") {
 
             //clear selection type and disabled button add
@@ -626,23 +637,27 @@
     $('#table_types').on('click', 'tbody td', function () {
         var cell = tables_edit.cell(this);
         var column = cell[0][0].column;
-        var index = arrType.indexOf(cell.data()[2]);  //index of name type
-        if (column == 0) {
-            document.getElementById('edit_sub_type').value = arrType[index];
-            document.getElementById('edit_sub_part_no').value = arrPart_No[index];
-            document.getElementById('edit_sub_spec').value = arrSpec[index];
-            document.getElementById('edit_sub_quantity').value = arrQuantity[index];
-            document.getElementById('edit_sub_supplier_quotation_no').value = arrSupplier_Quotation_No[index];
-            document.getElementById('edit_sub_total_value').value = arrTotal_Value[index];
-            document.getElementById('edit_sub_unit').value = arrUnit[index];
 
-            var unit = arrUnit[index];
+        var type = cell.data()[2];
+        var brand = cell.data()[3];
+
+        var index = findIndex(arrProductType,cell.data()[2],cell.data()[3]);
+
+        if (column == 0) {
+            document.getElementById('edit_sub_type').value = arrProductType[index][0].type;
+            document.getElementById('edit_sub_brand').value = arrProductType[index][0].brand;
+            document.getElementById('edit_sub_part_no').value = arrProductType[index][0].part_no;
+            document.getElementById('edit_sub_spec').value = arrProductType[index][0].spec;
+            document.getElementById('edit_sub_quantity').value = arrProductType[index][0].quantity;
+            document.getElementById('edit_sub_supplier_quotation_no').value = arrProductType[index][0].supplier_quotation_no;
+            document.getElementById('edit_sub_total_value').value = arrProductType[index][0].total_value;
+            document.getElementById('edit_sub_unit').value = arrProductType[index][0].unit;
+
+            var unit = arrProductType[index][0].unit;
             var index_unit = Units.indexOf(unit)
             document.getElementById('edit_sub_unit').selectedIndex = index_unit;
             $('#EditTypeModal').modal('show');
         } else if (column == 1) {
-            //var type = arrType[index];
-            //var index = arrType.indexOf(type);
             remove_data(index);
 
             //reload data
@@ -650,7 +665,7 @@
         }
 
     });
-        $('#edit_quotationConfirm').on('click', function () {
+    $('#edit_quotationConfirm').on('click', function () {
 
         var user = '@Model.name';
 
@@ -662,13 +677,17 @@
         var project_name = document.getElementById('edit_project_name').value;
         var site_location = document.getElementById('edit_site_location').value;
         var product_type = document.getElementById('edit_product_type').value;
-        var type = arrType.join('|');
-        var part_no = arrPart_No.join('|');
-        var spec = arrSpec.join('|');
-        var quantity = arrQuantity.join('|');
-        var supplier_quotation_no = arrSupplier_Quotation_No.join('|');
-        var total_value = arrTotal_Value.join('|');
-        var unit = arrUnit.join('|');
+
+        var arrJoin = joinArray(arrProductType);
+        var type = arrJoin[0].type;
+        var brand =arrJoin[0].brand;
+        var part_no = arrJoin[0].part_no;
+        var spec = arrJoin[0].spec;
+        var quantity = arrJoin[0].quantity;
+        var supplier_quotation_no = arrJoin[0].supplier_quotation_no;
+        var total_value = arrJoin[0].total_value;
+        var unit = arrJoin[0].unit;
+
         var quoted_price = document.getElementById('edit_quoted_price').value;
         var expected_order_date = document.getElementById('edit_expected_order_date').value;
         var required_onsite_date = document.getElementById('edit_required_onsite_date').value;
@@ -708,18 +727,19 @@
         });
             $('#EditModal').modal('hide');
         });
-        $('#btnAddType').on('click', function () {
+    $('#btnAddType').on('click', function () {
 
-        var value = document.getElementById("types").value;
+        var type = document.getElementById("types").value;
+        var brand = document.getElementById("brands").value;
 
-        if (value !== "") {
+        if (brand != ""){
             // add data
-            add_data(value);
-            $('#group_types').attr('hidden', false);
+            add_data(type,brand);
+
+            //$('#group_types').attr('hidden', false);
 
             init_edit();
-        }
-
+         }
     });
 
     $('#clear_btnType').on('click', function () {
@@ -734,6 +754,7 @@
     });
     $('#edit_TypeConfirm').on('click', function () {
         var type = document.getElementById('edit_sub_type').value;
+        var brand = document.getElementById('edit_sub_brand').value;
         var part_no = document.getElementById('edit_sub_part_no').value;
         var spec = document.getElementById('edit_sub_spec').value;
         var quantity = document.getElementById('edit_sub_quantity').value;
@@ -741,17 +762,18 @@
         var total_value = document.getElementById('edit_sub_total_value').value;
         var unit = Units[document.getElementById('edit_sub_unit').selectedIndex];
 
-        var index = arrType.indexOf(type);
+        var index = findIndex(arrProductType,type,brand);
 
         // update data array
+        arrProductType[index][0].type = type;
+        arrProductType[index][0].brand = brand;
+        arrProductType[index][0].part_no = part_no;
+        arrProductType[index][0].spec = spec;
+        arrProductType[index][0].quantity = quantity;
+        arrProductType[index][0].supplier_quotation_no = supplier;
+        arrProductType[index][0].total_value = total_value;
+        arrProductType[index][0].unit = unit;
 
-        arrType[index] = type;
-        arrPart_No[index] = part_no;
-        arrSpec[index] = spec;
-        arrQuantity[index] = quantity;
-        arrSupplier_Quotation_No[index] = supplier;
-        arrTotal_Value[index] = total_value;
-        arrUnit[index] = unit;
         //update data in table edit
         init_edit();
 
@@ -760,11 +782,11 @@
     $('#edit_proposer').on('change', function () {
         document.getElementById('edit_expected_date').disabled = false;
     });
-        $('#edit_quoted_price').on('change', function () {
+    $('#edit_quoted_price').on('change', function () {
             var val = document.getElementById('edit_quoted_price').value;
             var newVal = numberWithCommas(val);
             document.getElementById('edit_quoted_price').value = newVal;
-        });
+    });
         $('#edit_competitor_price').on('change', function () {
             var val = document.getElementById('edit_competitor_price').value;
             var newVal = numberWithCommas(val);
@@ -802,7 +824,7 @@
                 var department = response;
                 document.getElementById("edit_department").value = department;
             }
-        });
+         });
     });
 
     $('#edit_product_type').on('change', function () {
@@ -817,6 +839,13 @@
                 type
             },
             success: function (response) {
+
+                // hide group type
+                if(response.length == 0){
+                    document.getElementById("group_types").hidden = true;
+                }else{
+                     document.getElementById("group_types").hidden = false;
+                }
 
                 // Enable Add Button
                 document.getElementById("btnAddType").disabled = false;
@@ -835,8 +864,34 @@
             }
         });
     });
+    $('#types').on('change',function(){
+         var type = document.getElementById("edit_product_type").value;
+         $.ajax({
+            url: '@Url.Action("GetBrand", "Quotation")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                type
+            },
+            success: function (response) {
 
+                // Enable Add Button
+                document.getElementById("btnAddType").disabled = false;
 
+                var data = response;
+                 // add Brand
+                Brands = add_brand(data);
+               // add select type
+                $('#brands').empty();
+                var selectBrand = document.getElementById('brands');
+                for (var i = 0, l = Brands.length; i < l; i++) {
+                    var option = Brands[i];
+                    selectBrand.options.add(new Option(option.text, option.value, option.selected));
+                }
+                document.getElementById('brands').selectedIndex = 0;
+            }
+         });
+    });
     $('#info_status').on('click',function(){
         document.getElementById("info_title").innerHTML = "Status";
         var arr = ["<b>IN</b> : คิดว่าจะได้งานแน่ๆ มีโอกาสจะได้งาน หรือ Target project","<b>OUT</b> : อาจจะไม่ได้งาน หรือไม่ใช่ Target project"];
@@ -879,60 +934,43 @@
         document.querySelector('#divinfo').innerHTML = div;
     }
     function remove_data(index) {
-        arrType.splice(index, 1);
-        arrPart_No.splice(index, 1);
-        arrSpec.splice(index, 1);
-        arrQuantity.splice(index, 1);
-        arrSupplier_Quotation_No.splice(index, 1);
-        arrTotal_Value.splice(index, 1);
-        arrUnit.splice(index, 1);
-
-        // update  type
-        var type = arrType.join('|');
-        document.getElementById('edit_type').value = type;
+        arrProductType.splice(index, 1);
     }
     function clear_dataall() {
-        //document.getElementById("edit_type").value = "";
-        //document.getElementById("edit_product_type").value = "";
-
-        arrType = [];
-        arrPart_No = [];
-        arrSpec = [];
-        arrQuantity = [];
-        arrSupplier_Quotation_No = [];
-        arrTotal_Value = [];
-        arrUnit = [];
+        arrProductType = [];
 
         init_edit();
     };
-    function add_data(type) {
+    function add_data(type,brand) {
         // fine index data type temp
-        var index = arrType.indexOf(type);
+         var index = findIndex(arrProductType,type,brand);
 
         // auto unit
         var unit = "";
-        if (type == "ABB" || type == "DEHN" || type == "Kobold"){
+        if (brand == "ABB" || brand == "DEHN" || brand == "Kobold"){
             unit = "THB";
-        }else if(type == "Canty" || type == "Extrel" || type =="Servomex"){
+        }else if(brand == "Canty" || brand == "Extrel" || brand =="Servomex"){
             unit = "USD";
-        }else if(type == "HK" || type == "Kemtrak" || type == "Knick" || type == "LAR" || type == "MRU" || type == "Scan" || type =="Stahl" || type == "Vaisala"){
+        }else if(brand == "HK" || brand == "Kemtrak" || brand == "Knick" || brand == "LAR" || brand == "MRU" || brand == "Scan" || brand =="Stahl" || brand == "Vaisala"){
             unit = "EUR";
-        }else if(type == "Matsushima" || type == "M-System"){
+        }else if(brand == "Matsushima" || brand == "M-System"){
             unit = "JPY";
-        }else if(type == "Swan"){
+        }else if(brand == "Swan"){
             unit = "CHF";
-        }else if(type == "Yamari"){
+        }else if(brand == "Yamari"){
             unit = "SGD";
         }
-
-        if (index == -1) {
-            arrType.push(type);
-            arrPart_No.push("");
-            arrSpec.push("");
-            arrQuantity.push("");
-            arrSupplier_Quotation_No.push("");
-            arrTotal_Value.push("0");
-            arrUnit.push(unit);
+        if (index == -1 ) {
+            arrProductType.push([{"edit":"",
+            "delete":"",
+            "type":type,
+            "brand":brand,
+            "part_no":"",
+            "spec":"",
+            "quantity":"",
+            "supplier_quotation_no":"",
+            "total_value":"0",
+            "unit":unit}]);
         }
     }
     function add_sale(sales) {
@@ -960,6 +998,19 @@
         }
 
         return data_types;
+    };
+     function add_brand(brands) {
+        var data_brands = [];
+        for (var i = 0; i < brands.length; i++) {
+            var data =
+            {
+                "text": brands[i],
+                "value": brands[i]
+            }
+            data_brands.push(data);
+        }
+
+        return data_brands;
     };
     function add_department(department) {
         var data_department = [];
@@ -1014,7 +1065,48 @@
         const diffTime = date2 - date1;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays;
-        };
+    };
+    function findIndex(arr,type,brand){
+        var index = -1;
+        for(var i=0;i<arr.length;i++){
+            if(arr[i][0].type == type && arr[i][0].brand == brand){
+                index = i;
+                break;
+            }
+        }
+        return index;
+    };
+    function joinArray(array){
+        var arr = [];
+        var arrType = [];
+        var arrBrand = [];
+        var arrPart_No = [];
+        var arrSpec = [];
+        var arrQuantity = [];
+        var arrSupplier = [];
+        var arrTotal = [];
+        var arrUnit = [];
+
+        for(var i=0;i<array.length;i++){
+            arrType.push(array[i][0].type);
+            arrBrand.push(array[i][0].brand);
+            arrPart_No.push(array[i][0].part_no);
+            arrSpec.push(array[i][0].spec);
+            arrQuantity.push(array[i][0].quantity);
+            arrSupplier.push(array[i][0].supplier_quotation_no);
+            arrTotal.push(array[i][0].total_value);
+            arrUnit.push(array[i][0].unit);
+        }
+        arr = [{"type": arrType.join('|'),
+        "brand": arrBrand.join('|'),
+        "part_no" : arrPart_No.join('|'),
+        "spec" : arrSpec.join('|'),
+        "quantity":arrQuantity.join('|'),
+        "supplier_quotation_no":arrSupplier.join('|'),
+        "total_value":arrTotal.join('|'),
+        "unit":arrUnit.join('|')}]
+        return arr;
+    }
 
 </script>
 }

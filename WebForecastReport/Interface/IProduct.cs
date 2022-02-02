@@ -8,9 +8,12 @@ namespace WebForecastReport.Interface
 {
     interface IProduct
     {
-        List<TypeModel> GetProducts();
-        string Insert(string name);
-        string Update(int id,string name);
-        string Delete(string name);
+        List<TypeModel> GetProductType();
+        List<TypeModel> GetProductBrand();
+
+        List<TypeModel> GetProducts(string type_brand);
+        string Insert(string name, string type_brand);
+        string Update(int id, string name, string type_brand);
+        string Delete(string name, string type_brand);
     }
 }

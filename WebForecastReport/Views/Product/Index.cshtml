@@ -20,18 +20,26 @@
                     <div class="row">
                         <div class="col-md-2 col-xl-2 pt-2">
                             <select id="types" class="form-control">
+                                <option value="" disabled>Please Select</option>
                                 <option value="Product">Product</option>
                                 <option value="Project">Project</option>
                                 <option value="Service">Service</option>
                             </select>
                         </div>
-                        <div class="col-md-6 col-xl-6 pt-1">
+                        <div class="col-md-2 col-xl-2 pt-2">
+                            <select id="type_brand_select" class="form-control">
+                                <option value="" disabled>Please Select</option>
+                                <option value="Type">Type</option>
+                                <option value="Brand">Brand</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 col-xl-4 pt-1">
                             <div class="row">
                                 <div class="col-md-8 col-xl-8 pt-1">
                                     <input id="name_type" class="form-control" style="width:100%" />
                                 </div>
                                 <div class="col-md-4 col-xl-4 pt-1">
-                                    <button type="button" id="btnAdd" class="btn btn-primary" style="width: 100%">
+                                    <button type="button" id="btnAdd" class="btn btn-primary" style="width: 100%" disabled>
                                         <i class="fas fa-plus" style="font-size:20px;"> ADD</i>
                                     </button>
                                 </div>
@@ -54,35 +62,45 @@
     var product_data = [];
     var name = '';
     var id = null;
-    var type = "Product";
+    var type = "";
+    var type_brand = "";
 
     $(document).ready(function () {
         init();
+        document.getElementById("types").selectedIndex = 0;
+         document.getElementById("card_title").innerHTML = "";
     });
     function init() {
+        document.getElementById("type_brand_select").selectedIndex = 0;
+        var dataSet = [];
+        table(dataSet);
+    };
+
+     function fetch() {
         type = document.getElementById("types").value;
-    $.ajax({
-        url: '@Url.Action("GetData", "Product")',
-        type: "post",
-        contentType: 'application/x-www-form-urlencoded',
-        data: {
-            type
-        },
-        success: function (response) {
-            var datas = response;
-            var dataSet = [];
-            for (var i = 0; i < datas.length; i++) {
-                var data = ["","",
-                    datas[i].id,
-                    datas[i].name];
+        type_brand = document.getElementById("type_brand_select").value;
+        $.ajax({
+            url: '@Url.Action("GetData", "Product")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                type,type_brand
+            },
+            success: function (response) {
+                var datas = response;
+                var dataSet = [];
+                for (var i = 0; i < datas.length; i++) {
+                    var data = ["","",
+                        datas[i].id,
+                        datas[i].name];
 
-                dataSet.push(data);
+                    dataSet.push(data);
+                }
+                product_data = dataSet;
+
+                table(dataSet);
             }
-            product_data = dataSet;
-
-            table(dataSet);
-        }
-    });
+        });
     };
     var tables;
     function table(dataSet) {
@@ -128,7 +146,7 @@
 
         if (column == "0") {
             document.getElementById('edit_type').value = name;
-            document.getElementById("edit_card_title").innerHTML = "Edit " + type;
+            document.getElementById("edit_card_title").innerHTML = "Edit " + type + " " + type_brand;
             document.getElementById("lbl_type").innerHTML = type;
 
             $('#EditModal').modal();
@@ -138,11 +156,11 @@
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                name,type
+                name,type,type_brand
             },
             success: function (response) {
                 if (response == "Delete Success") {
-                    init();
+                    fetch();
                     toastr.success("Delete Success");
                 } else {
                     toastr.error("Delete Failed");
@@ -152,17 +170,17 @@
         }
     });
     $('#edit_typeConfirm').on('click', function () {
-        var name = document.getElementById('edit_type').value;    
+        var name = document.getElementById('edit_type').value;
         $.ajax({
             url: '@Url.Action("Update", "Product")',
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                id,name,type
+                id,name,type,type_brand
             },
             success: function (response) {
                 if (response == "Update Success") {
-                    init();
+                    fetch();
                     toastr.success("Update Success");
                 } else {
                     toastr.error("Update Failed");
@@ -179,11 +197,11 @@
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                name,type
+                name,type,type_brand
             },
             success: function (response) {
                 if (response == "Insert Success") {
-                    init();
+                    fetch();
                     document.getElementById('name_type').value = "";
                     toastr.success("Insert Success");
                 } else {
@@ -193,9 +211,16 @@
         });
     });
     $('#types').on('change', function () {
-        document.getElementById("card_title").innerHTML = document.getElementById("types").value;
         type = document.getElementById("types").value;
+        document.getElementById("card_title").innerHTML = document.getElementById("types").value;
+        document.getElementById("type_brand_select").selectedIndex = 0;
+        document.getElementById("btnAdd").disabled = true;
         init();
+    });
+    $('#type_brand_select').on('change',function(){
+         type_brand = document.getElementById("type_brand_select").value;
+         document.getElementById("btnAdd").disabled = false;
+         fetch();
     });
 </script>
 }

@@ -11,12 +11,20 @@ namespace WebForecastReport.Service
 {
     public class ProjectService : IProject
     {
-        public string Delete(string name)
+        public string Delete(string name, string type_brand)
         {
             try
             {
-                string sql_user = "DELETE FROM Project WHERE name='" + name + "'";
-                SqlCommand com = new SqlCommand(sql_user, ConnectSQL.OpenConnect());
+                string command = "";
+                if (type_brand == "Type")
+                {
+                    command = "DELETE FROM type_project WHERE name='" + name + "'";
+                }
+                else
+                {
+                    command = "DELETE FROM Project WHERE name='" + name + "'";
+                }
+                SqlCommand com = new SqlCommand(command, ConnectSQL.OpenConnect());
                 com.ExecuteNonQuery();
                 return "Delete Success";
             }
@@ -33,7 +41,7 @@ namespace WebForecastReport.Service
             }
         }
 
-        public List<ProjectModel> getProjects()
+        public List<ProjectModel> GetProjectBrand()
         {
             try
             {
@@ -64,12 +72,96 @@ namespace WebForecastReport.Service
             }
         }
 
-        public string Insert(string name)
+        public List<ProjectModel> GetProjects(string type_brand)
+        {
+            try
+            {
+                string command = "";
+                if (type_brand == "Type")
+                {
+                    command = "select * from type_project order by name";
+                }
+                else if (type_brand == "Brand")
+                {
+                    command = "select * from Project order by name";
+                }
+
+                List<ProjectModel> projects = new List<ProjectModel>();
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        ProjectModel p = new ProjectModel()
+                        {
+                            id = Int32.Parse(dr["Id"].ToString()),
+                            name = dr["name"].ToString()
+                        };
+                        projects.Add(p);
+                    }
+                    dr.Close();
+                }
+                return projects;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public List<ProjectModel> GetProjectType()
+        {
+            try
+            {
+                List<ProjectModel> projects = new List<ProjectModel>();
+                SqlCommand cmd = new SqlCommand("select * from type_project order by name", ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        ProjectModel p = new ProjectModel()
+                        {
+                            id = Int32.Parse(dr["Id"].ToString()),
+                            name = dr["name"].ToString()
+                        };
+                        projects.Add(p);
+                    }
+                    dr.Close();
+                }
+                return projects;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public string Insert(string name, string type_brand)
         {
             try
             {
                 bool b = false;
-                SqlCommand cmd1 = new SqlCommand("select * from Project where name = '" + name + "'", ConnectSQL.OpenConnect());
+                string commandchk = "";
+                string command = "";
+                if (type_brand == "Type")
+                {
+                    commandchk = "select * from type_project where name = '" + name + "'";
+                    command = @"INSERT INTO type_project(name) VALUES (@name)";
+                }
+                else
+                {
+                    commandchk = "select * from Project where name = '" + name + "'";
+                    command = @"INSERT INTO Project(name) VALUES (@name)";
+                }
+                SqlCommand cmd1 = new SqlCommand(commandchk, ConnectSQL.OpenConnect());
                 SqlDataReader dr1 = cmd1.ExecuteReader();
                 if (dr1.HasRows)
                 {
@@ -77,7 +169,7 @@ namespace WebForecastReport.Service
                 }
                 if (!b)
                 {
-                    using (SqlCommand cmd = new SqlCommand(@"INSERT INTO Project(name) VALUES (@name)", ConnectSQL.OpenConnect()))
+                    using (SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect()))
                     {
                         cmd.CommandType = CommandType.Text;
                         cmd.Connection = ConnectSQL.OpenConnect();
@@ -103,13 +195,23 @@ namespace WebForecastReport.Service
             }
         }
 
-        public string Update(int id, string name)
+        public string Update(int id, string name, string type_brand)
         {
             try
             {
+                string command = "";
+                if (type_brand == "Type")
+                {
+                    command = @"UPDATE type_project SET name='" + name + "'" +
+                                                                      "WHERE Id='" + id + "'";
+                }
+                else
+                {
+                    command = @"UPDATE Project SET name='" + name + "'" +
+                                                                     "WHERE Id='" + id + "'";
+                }
                 SqlDataReader reader;
-                SqlCommand cmd = new SqlCommand(@"UPDATE Project SET name='" + name + "'" +
-                                                                      "WHERE Id='" + id + "'");
+                SqlCommand cmd = new SqlCommand(command);
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = ConnectSQL.OpenConnect();
                 reader = cmd.ExecuteReader();

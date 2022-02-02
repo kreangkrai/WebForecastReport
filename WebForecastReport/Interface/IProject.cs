@@ -8,9 +8,11 @@ namespace WebForecastReport.Interface
 {
     interface IProject
     {
-        List<ProjectModel> getProjects();
-        string Delete(string name);
-        string Insert(string name);
-        string Update(int id, string name);
+        List<ProjectModel> GetProjects(string type_brand);
+        List<ProjectModel> GetProjectType();
+        List<ProjectModel> GetProjectBrand();
+        string Delete(string name, string type_brand);
+        string Insert(string name, string type_brand);
+        string Update(int id, string name, string type_brand);
     }
 }

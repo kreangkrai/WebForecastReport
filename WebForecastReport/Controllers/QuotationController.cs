@@ -69,10 +69,8 @@ namespace WebForecastReport.Controllers
                 quo = year + number.ToString().PadLeft(4, '0');
             }
             quotations.quotation_no = quo;
-            quotations.revision = "0";
             quotations.sale_name = name;
             quotations.department = department;
-            quotations.date = DateTime.Now.ToString("yyyy-MM-dd");
             string message = Quotation.InsertQuotation(quotations);
 
             List<QuotationModel> getQuotation = new List<QuotationModel>();
@@ -108,7 +106,7 @@ namespace WebForecastReport.Controllers
 
             //get Type
             List<TypeModel> types = new List<TypeModel>();
-            types = Product.GetProducts();
+            types = Product.GetProducts("Brand");
 
             bool statePage = true;
             var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers, departments = departments, types = types, statepage = statePage };
@@ -189,15 +187,33 @@ namespace WebForecastReport.Controllers
             List<string> list = new List<string>();
             if (type == "Product")
             {
-                list = Product.GetProducts().Select(s => s.name).ToList();
+                list = Product.GetProductType().Select(s => s.name).ToList();
             }
             else if (type == "Project")
             {
-                list = Project.getProjects().Select(s => s.name).ToList();
+                list = Project.GetProjectType().Select(s => s.name).ToList();
             }
             else if (type == "Service")
             {
-                list = Service.getService().Select(s => s.name).ToList();
+                list = Service.GetServiceType().Select(s => s.name).ToList();
+            }
+            return Json(list);
+        }
+        [HttpPost]
+        public JsonResult GetBrand(string type, string type_brand)
+        {
+            List<string> list = new List<string>();
+            if (type == "Product")
+            {
+                list = Product.GetProducts(type_brand).Select(s => s.name).ToList();
+            }
+            else if (type == "Project")
+            {
+                list = Project.GetProjects(type_brand).Select(s => s.name).ToList();
+            }
+            else if (type == "Service")
+            {
+                list = Service.GetService(type_brand).Select(s => s.name).ToList();
             }
             return Json(list);
         }

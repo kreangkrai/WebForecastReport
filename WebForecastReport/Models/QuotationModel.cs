@@ -16,6 +16,7 @@ namespace WebForecastReport.Models
         public string site_location { get; set; }
         public string product_type { get; set; }
         public string type { get; set; }
+        public string brand { get; set; }
         public string part_no { get; set; }
         public string spec { get; set; }
         public string quantity { get; set; }
