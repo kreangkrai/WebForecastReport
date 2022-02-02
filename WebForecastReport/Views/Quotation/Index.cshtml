@@ -78,10 +78,10 @@
     var total_value = '';
     var unit = '';
     var quoted_price = '';
-        var expected_order_date = '';
-        var old_expected_order_date = '';
+    var expected_order_date = '';
+    var old_expected_order_date = '';
     var required_onsite_date = '';
-        var proposer = '';
+    var proposer = '';
 
     var expected_date = '';
     var status = '';
@@ -113,9 +113,9 @@
 
     var statepage = false;
 
-        $(document).ready(function () {
-            init();
-        });
+    $(document).ready(function () {
+        init();
+    });
 
     function init() {
         var name = '@Model.name';
@@ -191,21 +191,17 @@
     function init_view() {
         var dataSet = [];
         for (var i = 0; i < arrProductType.length; i++) {
-            //var data = [arrType[i],arrBrand[i], arrPart_No[i], arrSpec[i], arrQuantity[i], arrSupplier_Quotation_No[i], arrTotal_Value[i], arrUnit[i]];
             var data = [arrProductType[i][0].type,arrProductType[i][0].brand, arrProductType[i][0].part_no, arrProductType[i][0].spec, arrProductType[i][0].quantity, arrProductType[i][0].supplier_quotation_no, arrProductType[i][0].total_value, arrProductType[i][0].unit];
             dataSet.push(data);
         }
         table_view(dataSet);
-
     };
     function init_edit() {
         var dataSet = [];
 
         for (var i = 0; i < arrProductType.length; i++) {
-
-            //var data = ["","",arrType[i],arrBrand[i], arrPart_No[i], arrSpec[i], arrQuantity[i], arrSupplier_Quotation_No[i], arrTotal_Value[i], arrUnit[i]];
              var data = [arrProductType[i][0].edit,arrProductType[i][0].delete,arrProductType[i][0].type,arrProductType[i][0].brand, arrProductType[i][0].part_no, arrProductType[i][0].spec, arrProductType[i][0].quantity, arrProductType[i][0].supplier_quotation_no, arrProductType[i][0].total_value, arrProductType[i][0].unit];
-            dataSet.push(data);
+             dataSet.push(data);
         }
         table_edit(dataSet);
     };
@@ -269,13 +265,13 @@
             scrollX: true,
             stateSave: statepage,
             @*createdRow: function (row, data, index) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                var diffDay = diffDate(data[20], new Date()); //column Required Onsite Date
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                if (diffDay > -3 && diffDay < 0) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $('td', row).eq(20).addClass('highlight_yellow');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } else if (diffDay >=0) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $('td', row).eq(20).addClass('highlight_red');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            },*@
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    var diffDay = diffDate(data[20], new Date()); //column Required Onsite Date
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    if (diffDay > -3 && diffDay < 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $('td', row).eq(20).addClass('highlight_yellow');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    } else if (diffDay >=0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $('td', row).eq(20).addClass('highlight_red');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                },*@
 
 
         });
@@ -459,9 +455,9 @@
 
         arrProductType = [];
 
-        var count = (type.match(/\|/g) || []).length;
+        var count = (brand.match(/\|/g) || []).length;
         for (var i = 0; i <= count; i++) {
-            if (type != "") {
+            if (brand != "") {
                 var _type = type.split('|')[i];
                 var _brand = brand.split('|')[i];
                 var _part_no = part_no.split('|')[i];
@@ -595,6 +591,7 @@
                         selectType.options.add(new Option(option.text, option.value, option.selected));
                     }
                     document.getElementById('types').selectedIndex = 0;
+                    document.getElementById("types").options[0].disabled = true;
                 }
             });
 
@@ -709,7 +706,7 @@
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                user,quotation, revision, date, customer, enduser, project_name, site_location, product_type, type, part_no, spec, quantity, supplier_quotation_no,
+                user,quotation, revision, date, customer, enduser, project_name, site_location, product_type, type,brand, part_no, spec, quantity, supplier_quotation_no,
                 total_value, unit, quoted_price, expected_order_date, old_expected_order_date, required_onsite_date, proposer, expected_date, status, stages, stages_update_date, how_to_support, competitor,
                 competitor_description, competitor_price, sale_name,department, detail
             },
@@ -732,11 +729,12 @@
         var type = document.getElementById("types").value;
         var brand = document.getElementById("brands").value;
 
+        if(type == "Please Select"){
+            type = "";
+        }
         if (brand != ""){
             // add data
             add_data(type,brand);
-
-            //$('#group_types').attr('hidden', false);
 
             init_edit();
          }
@@ -787,16 +785,16 @@
             var newVal = numberWithCommas(val);
             document.getElementById('edit_quoted_price').value = newVal;
     });
-        $('#edit_competitor_price').on('change', function () {
+    $('#edit_competitor_price').on('change', function () {
             var val = document.getElementById('edit_competitor_price').value;
             var newVal = numberWithCommas(val);
             document.getElementById('edit_competitor_price').value = newVal;
-        });
-        $('#edit_sub_total_value').on('change', function () {
+    });
+    $('#edit_sub_total_value').on('change', function () {
             var val = document.getElementById('edit_sub_total_value').value;
             var newVal = numberWithCommas(val);
             document.getElementById('edit_sub_total_value').value = newVal;
-        });
+    });
     $('#edit_proposer').on('change',function(){
         var value = document.getElementById("edit_proposer").value;
         if (value == ""){
@@ -840,27 +838,55 @@
             },
             success: function (response) {
 
-                // hide group type
-                if(response.length == 0){
+                // hide group type  default=> Please Select
+                if(response.length == 1){
                     document.getElementById("group_types").hidden = true;
+
+                    var type = document.getElementById("edit_product_type").value;
+                    $.ajax({
+                        url: '@Url.Action("GetBrand", "Quotation")',
+                        type: "post",
+                        contentType: 'application/x-www-form-urlencoded',
+                        data: {
+                            type
+                        },
+                        success: function (response) {
+                            //disable button
+                            document.getElementById("btnAddType").disabled = true;
+
+                            var data = response;
+                             // add Brand
+                            Brands = add_brand(data);
+                           // add select type
+                            $('#brands').empty();
+                            var selectBrand = document.getElementById('brands');
+                            for (var i = 0, l = Brands.length; i < l; i++) {
+                                var option = Brands[i];
+                                selectBrand.options.add(new Option(option.text, option.value, option.selected));
+                            }
+                            document.getElementById('brands').selectedIndex = 0;
+                            document.getElementById("brands").options[0].disabled = true;
+                        }
+                    });
                 }else{
                      document.getElementById("group_types").hidden = false;
-                }
 
-                // Enable Add Button
-                document.getElementById("btnAddType").disabled = false;
+                     // Disable Add Button
+                     document.getElementById("btnAddType").disabled = true;
 
-                var data = response;
-                 // add Type
-                Types = add_type(data);
-               // add select type
-                $('#types').empty();
-                var selectType = document.getElementById('types');
-                for (var i = 0, l = Types.length; i < l; i++) {
-                    var option = Types[i];
-                    selectType.options.add(new Option(option.text, option.value, option.selected));
+                     var data = response;
+                         // add Type
+                     Types = add_type(data);
+                     // add select type
+                     $('#types').empty();
+                     var selectType = document.getElementById('types');
+                     for (var i = 0, l = Types.length; i < l; i++) {
+                         var option = Types[i];
+                         selectType.options.add(new Option(option.text, option.value, option.selected));
+                     }
+                     document.getElementById('types').selectedIndex = 0;
+                     document.getElementById("types").options[0].disabled = true;
                 }
-                document.getElementById('types').selectedIndex = 0;
             }
         });
     });
@@ -874,9 +900,8 @@
                 type
             },
             success: function (response) {
-
-                // Enable Add Button
-                document.getElementById("btnAddType").disabled = false;
+                //disable button
+                document.getElementById("btnAddType").disabled = true;
 
                 var data = response;
                  // add Brand
@@ -889,8 +914,12 @@
                     selectBrand.options.add(new Option(option.text, option.value, option.selected));
                 }
                 document.getElementById('brands').selectedIndex = 0;
+                document.getElementById("brands").options[0].disabled = true;
             }
          });
+    });
+    $('#brands').on('change',function(){
+        document.getElementById("btnAddType").disabled = false;
     });
     $('#info_status').on('click',function(){
         document.getElementById("info_title").innerHTML = "Status";
@@ -932,10 +961,10 @@
             div += '<span>' + arr[i] + '</span> <br>';
         }
         document.querySelector('#divinfo').innerHTML = div;
-    }
+    };
     function remove_data(index) {
         arrProductType.splice(index, 1);
-    }
+    };
     function clear_dataall() {
         arrProductType = [];
 
@@ -1058,7 +1087,7 @@
     };
     function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
+    };
     function diffDate(date_start, date_stop) {
         const date1 = new Date(date_start);
         const date2 = new Date(date_stop);
@@ -1106,7 +1135,7 @@
         "total_value":arrTotal.join('|'),
         "unit":arrUnit.join('|')}]
         return arr;
-    }
+    };
 
 </script>
 }

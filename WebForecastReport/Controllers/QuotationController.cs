@@ -113,7 +113,7 @@ namespace WebForecastReport.Controllers
             return Json(list);
         }
         [HttpPost]
-        public JsonResult Update(string user, string quotation, string revision, string date, string customer, string enduser, string project_name, string site_location, string product_type, string type, string part_no,
+        public JsonResult Update(string user, string quotation, string revision, string date, string customer, string enduser, string project_name, string site_location, string product_type, string type, string brand, string part_no,
                     string spec, string quantity, string supplier_quotation_no, string total_value, string unit, string quoted_price, string expected_order_date, string old_expected_order_date,
                    string required_onsite_date, string proposer, string expected_date, string status, string stages, string stages_update_date, string how_to_support, string competitor, string competitor_description,
                    string competitor_price, string sale_name, string department, string detail)
@@ -129,6 +129,7 @@ namespace WebForecastReport.Controllers
                 site_location = site_location,
                 product_type = product_type,
                 type = type,
+                brand = brand,
                 part_no = part_no,
                 spec = spec,
                 quantity = quantity,
@@ -185,17 +186,18 @@ namespace WebForecastReport.Controllers
         public JsonResult GetType(string type)
         {
             List<string> list = new List<string>();
+            list.Add("Please Select");
             if (type == "Product")
             {
-                list = Product.GetProductType().Select(s => s.name).ToList();
+                list.AddRange(Product.GetProductType().Select(s => s.name).ToList());
             }
             else if (type == "Project")
             {
-                list = Project.GetProjectType().Select(s => s.name).ToList();
+                list.AddRange(Project.GetProjectType().Select(s => s.name).ToList());
             }
             else if (type == "Service")
             {
-                list = Service.GetServiceType().Select(s => s.name).ToList();
+                list.AddRange(Service.GetServiceType().Select(s => s.name).ToList());
             }
             return Json(list);
         }
@@ -203,17 +205,18 @@ namespace WebForecastReport.Controllers
         public JsonResult GetBrand(string type, string type_brand)
         {
             List<string> list = new List<string>();
+            list.Add("Please Select");
             if (type == "Product")
             {
-                list = Product.GetProducts(type_brand).Select(s => s.name).ToList();
+                list.AddRange(Product.GetProducts(type_brand).Select(s => s.name).ToList());
             }
             else if (type == "Project")
             {
-                list = Project.GetProjects(type_brand).Select(s => s.name).ToList();
+                list.AddRange(Project.GetProjects(type_brand).Select(s => s.name).ToList());
             }
             else if (type == "Service")
             {
-                list = Service.GetService(type_brand).Select(s => s.name).ToList();
+                list.AddRange(Service.GetService(type_brand).Select(s => s.name).ToList());
             }
             return Json(list);
         }

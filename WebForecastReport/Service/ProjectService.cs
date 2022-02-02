@@ -81,7 +81,7 @@ namespace WebForecastReport.Service
                 {
                     command = "select * from type_project order by name";
                 }
-                else if (type_brand == "Brand")
+                else
                 {
                     command = "select * from Project order by name";
                 }

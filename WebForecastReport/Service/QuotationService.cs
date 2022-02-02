@@ -331,6 +331,7 @@ namespace WebForecastReport.Service
                                                                       "site_location='" + model.site_location + "'," +
                                                                       "product_type='" + model.product_type + "'," +
                                                                       "type='" + model.type + "'," +
+                                                                      "brand='" + model.brand + "'," +
                                                                       "part_no='" + model.part_no + "'," +
                                                                       "spec='" + model.spec + "'," +
                                                                       "quantity='" + model.quantity + "'," +

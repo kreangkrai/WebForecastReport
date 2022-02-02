@@ -50,7 +50,7 @@ namespace WebForecastReport.Service
                 {
                     command = "select * from type_service order by name";
                 }
-                else if (type_brand == "Brand")
+                else
                 {
                     command = "select * from Service order by name";
                 }
