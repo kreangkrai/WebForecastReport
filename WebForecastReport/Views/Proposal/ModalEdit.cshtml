@@ -20,7 +20,7 @@
                         <div class="col-xl-3">
                             <div class="form-group">
                                 <label for="edit_quotation_quotation_craeted_date">Quotation Created Date</label>
-                                <input id="edit_quotation_quotation_craeted_date" type="date" class="form-control" disabled />
+                                <input id="edit_quotation_quotation_craeted_date" type="text" class="form-control" disabled />
                             </div>
                         </div>
                         <div class="col-xl-3">
@@ -56,7 +56,7 @@
                         <div class="col-xl-3">
                             <div class="form-group">
                                 <label for="edit_quotation_expected_order_date">Expected Order Date</label>
-                                <input id="edit_quotation_expected_order_date" type="date" class="form-control" disabled />
+                                <input id="edit_quotation_expected_order_date" type="text" class="form-control" disabled />
                             </div>
                         </div>
                         <div class="col-xl-3">
@@ -74,7 +74,7 @@
                         <div class="col-xl-3">
                             <div class="form-group">
                                 <label for="edit_quotation_proposal_expected_date">Proposal Expected Date</label>
-                                <input id="edit_quotation_proposal_expected_date" type="date" class="form-control" disabled />
+                                <input id="edit_quotation_proposal_expected_date" type="text" class="form-control" disabled />
                             </div>
                         </div>
                     </div>
@@ -180,8 +180,8 @@
                                     <div class="col-md-1 col-xl-1 pt-1">
                                         <input type="button" class="btn btn-success form-control" id="add_person" value="ADD" disabled />
                                     </div>
-                                    <div class="col-md-1 col-xl-1 pt-1">
-                                        <input type="button" id="clear_person" class="btn btn-warning form-control" value="Clear" />
+                                    <div class="col-md-1 col-xl-1 pt-1" hidden>
+                                        <input type="button" id="clear_person" class="btn btn-warning form-control" value="Clear" hidden />
                                     </div>
                                 </div>
                                 <table class="table table-md cell-border table-dark display responsive nowrap" id="table_proposal_edit" style="width:100%;overflow-x:auto">
@@ -194,6 +194,189 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="editProposalConfirm">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_view_proposal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><b>Proposal</b></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <!-- From Quotation -->
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_quotation_quotation_no">Quotation NO.</label>
+                                <input id="view_quotation_quotation_no" type="text" class="form-control" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_quotation_quotation_craeted_date">Quotation Created Date</label>
+                                <input id="view_quotation_quotation_craeted_date" type="text" class="form-control" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_customer">Customer</label>
+                                <input id="view_customer" type="text" class="form-control" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_quotation_enduser">End User</label>
+                                <input id="view_quotation_enduser" type="text" class="form-control" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_quotation_project_name">Project Name</label>
+                                <input id="view_quotation_project_name" type="text" class="form-control" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_quotation_project_location">Location</label>
+                                <input id="view_quotation_project_location" type="text" class="form-control" disabled />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-6">
+                            <table class="table table-md cell-border table-dark display responsive nowrap" id="table_view_type" style="width:100%;overflow-x:auto">
+                            </table>
+                        </div>
+
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_quotation_expected_order_date">Expected Order Date</label>
+                                <input id="view_quotation_expected_order_date" type="text" class="form-control" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_quotation_request_onsite">Request On Site</label>
+                                <input id="view_quotation_request_onsite" type="text" class="form-control" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_quotation_proposed_by">Proposed By</label>
+                                <input id="view_quotation_proposed_by" class="form-control" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_quotation_proposal_expected_date">Proposal Expected Date</label>
+                                <input id="view_quotation_proposal_expected_date" type="text" class="form-control" disabled />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- From Proposal -->
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_request_date">Request Date</label>
+                                <input id="view_request_date" type="date" class="form-control" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_proposal_status">Proposal Status</label>
+                                <input type="text" id="view_proposal_status" class="form-control" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_quotation_revision">Revision</label>
+                                <input type="number" id="view_quotation_revision" class="form-control" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_propose_cost">Propose Cost</label>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <input id="view_propose_cost" type="text" class="form-control" disabled />
+                                    </div>
+                                    <div class="col-4 d-flex align-items-end">
+                                        <label>THB</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_quotation_quoted_price">Quoted Price</label>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <input id="view_quotation_quoted_price" type="text" class="form-control" disabled />
+                                    </div>
+                                    <div class="col-4 d-flex align-items-end">
+                                        <label>THB</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_gp">GP</label>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <input id="view_gp" type="number" class="form-control" disabled />
+                                    </div>
+                                    <div class="col-4 d-flex align-items-end">
+                                        <label>%</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="view_finish_date">Finish Date</label>
+                                <input id="view_finish_date" type="text" class="form-control" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" value="" id="view_chk_engineering_request" disabled>Engineering Request
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" value="" id="view_chk_ppc_request" disabled>PPC Request
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="table_proposal_view">Person In Charge</label>
+                                <table class="table table-md cell-border table-dark display responsive nowrap" id="table_proposal_view" style="width:100%;overflow-x:auto">
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

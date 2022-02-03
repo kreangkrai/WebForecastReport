@@ -49,6 +49,7 @@ namespace WebForecastReport.Service
                             site_location = dr["site_location"].ToString(),
                             product_type = dr["product_type"].ToString(),
                             type = dr["type"].ToString(),
+                            brand = dr["brand"].ToString(),
                             part_no = dr["part_no"].ToString(),
                             spec = dr["spec"].ToString(),
                             quantity = dr["quantity"].ToString(),
@@ -72,7 +73,7 @@ namespace WebForecastReport.Service
                             detail = dr["detail"].ToString()
                         };
 
-                        int count = q.type.Count(x => x == '|');
+                        int count = q.brand.Count(x => x == '|');
                         if (count > 0)
                         {
                             for (int i = 0; i <= count; i++)
@@ -90,6 +91,7 @@ namespace WebForecastReport.Service
                                         site_location = q.site_location,
                                         product_type = q.product_type,
                                         type = q.type.Split("|")[i],
+                                        brand = q.brand.Split("|")[i],
                                         part_no = q.part_no.Split("|")[i],
                                         spec = q.spec.Split("|")[i],
                                         quantity = q.quantity.Split("|")[i],
@@ -119,6 +121,7 @@ namespace WebForecastReport.Service
                                     QuotationModel qu = new QuotationModel()
                                     {
                                         type = q.type.Split("|")[i],
+                                        brand = q.brand.Split("|")[i],
                                         part_no = q.part_no.Split("|")[i],
                                         spec = q.spec.Split("|")[i],
                                         quantity = q.quantity.Split("|")[i],
@@ -154,27 +157,28 @@ namespace WebForecastReport.Service
                         worksheet.Cells["G" + (i + startRows)].Value = quotations[i].site_location != null ? quotations[i].site_location.ToString() : "";
                         worksheet.Cells["H" + (i + startRows)].Value = quotations[i].product_type != null ? quotations[i].product_type.ToString() : "";
                         worksheet.Cells["I" + (i + startRows)].Value = quotations[i].type != null ? quotations[i].type.ToString() : "";
-                        worksheet.Cells["J" + (i + startRows)].Value = quotations[i].part_no != null ? quotations[i].part_no.ToString() : "";
-                        worksheet.Cells["K" + (i + startRows)].Value = quotations[i].spec != null ? quotations[i].spec.ToString() : "";
-                        worksheet.Cells["L" + (i + startRows)].Value = quotations[i].quantity != null ? quotations[i].quantity.ToString() : "";
-                        worksheet.Cells["M" + (i + startRows)].Value = quotations[i].supplier_quotation_no != null ? quotations[i].supplier_quotation_no.ToString() : "";
-                        worksheet.Cells["N" + (i + startRows)].Value = quotations[i].total_value != null ? quotations[i].total_value.ToString() : "";
-                        worksheet.Cells["O" + (i + startRows)].Value = quotations[i].unit != null ? quotations[i].unit.ToString() : "";
-                        worksheet.Cells["P" + (i + startRows)].Value = quotations[i].quoted_price != null ? quotations[i].quoted_price.ToString() : "";
-                        worksheet.Cells["Q" + (i + startRows)].Value = quotations[i].expected_order_date != null ? quotations[i].expected_order_date.ToString() : "";
-                        worksheet.Cells["R" + (i + startRows)].Value = quotations[i].required_onsite_date != null ? quotations[i].required_onsite_date.ToString() : "";
-                        worksheet.Cells["S" + (i + startRows)].Value = quotations[i].proposer != null ? quotations[i].proposer.ToString() : "";
-                        worksheet.Cells["T" + (i + startRows)].Value = quotations[i].expected_date != null ? quotations[i].expected_date.ToString() : "";
-                        worksheet.Cells["U" + (i + startRows)].Value = quotations[i].status != null ? quotations[i].status.ToString() : "";
-                        worksheet.Cells["V" + (i + startRows)].Value = quotations[i].stages != null ? quotations[i].stages.ToString() : "";
-                        worksheet.Cells["W" + (i + startRows)].Value = quotations[i].stages_update_date != null ? quotations[i].stages_update_date.ToString() : "";
-                        worksheet.Cells["X" + (i + startRows)].Value = quotations[i].how_to_support != null ? quotations[i].how_to_support.ToString() : "";
-                        worksheet.Cells["Y" + (i + startRows)].Value = quotations[i].competitor != null ? quotations[i].competitor.ToString() : "";
-                        worksheet.Cells["Z" + (i + startRows)].Value = quotations[i].competitor_description != null ? quotations[i].competitor_description.ToString() : "";
-                        worksheet.Cells["AA" + (i + startRows)].Value = quotations[i].competitor_price != null ? quotations[i].competitor_price.ToString() : "";
-                        worksheet.Cells["AB" + (i + startRows)].Value = quotations[i].sale_name != null ? quotations[i].sale_name.ToString() : "";
-                        worksheet.Cells["AC" + (i + startRows)].Value = quotations[i].department != null ? quotations[i].department.ToString() : "";
-                        worksheet.Cells["AD" + (i + startRows)].Value = quotations[i].detail != null ? quotations[i].detail.ToString() : "";
+                        worksheet.Cells["J" + (i + startRows)].Value = quotations[i].brand != null ? quotations[i].brand.ToString() : "";
+                        worksheet.Cells["K" + (i + startRows)].Value = quotations[i].part_no != null ? quotations[i].part_no.ToString() : "";
+                        worksheet.Cells["L" + (i + startRows)].Value = quotations[i].spec != null ? quotations[i].spec.ToString() : "";
+                        worksheet.Cells["M" + (i + startRows)].Value = quotations[i].quantity != null ? quotations[i].quantity.ToString() : "";
+                        worksheet.Cells["N" + (i + startRows)].Value = quotations[i].supplier_quotation_no != null ? quotations[i].supplier_quotation_no.ToString() : "";
+                        worksheet.Cells["O" + (i + startRows)].Value = quotations[i].total_value != null ? quotations[i].total_value.ToString() : "";
+                        worksheet.Cells["P" + (i + startRows)].Value = quotations[i].unit != null ? quotations[i].unit.ToString() : "";
+                        worksheet.Cells["Q" + (i + startRows)].Value = quotations[i].quoted_price != null ? quotations[i].quoted_price.ToString() : "";
+                        worksheet.Cells["R" + (i + startRows)].Value = quotations[i].expected_order_date != null ? quotations[i].expected_order_date.ToString() : "";
+                        worksheet.Cells["S" + (i + startRows)].Value = quotations[i].required_onsite_date != null ? quotations[i].required_onsite_date.ToString() : "";
+                        worksheet.Cells["T" + (i + startRows)].Value = quotations[i].proposer != null ? quotations[i].proposer.ToString() : "";
+                        worksheet.Cells["U" + (i + startRows)].Value = quotations[i].expected_date != null ? quotations[i].expected_date.ToString() : "";
+                        worksheet.Cells["V" + (i + startRows)].Value = quotations[i].status != null ? quotations[i].status.ToString() : "";
+                        worksheet.Cells["W" + (i + startRows)].Value = quotations[i].stages != null ? quotations[i].stages.ToString() : "";
+                        worksheet.Cells["X" + (i + startRows)].Value = quotations[i].stages_update_date != null ? quotations[i].stages_update_date.ToString() : "";
+                        worksheet.Cells["Y" + (i + startRows)].Value = quotations[i].how_to_support != null ? quotations[i].how_to_support.ToString() : "";
+                        worksheet.Cells["Z" + (i + startRows)].Value = quotations[i].competitor != null ? quotations[i].competitor.ToString() : "";
+                        worksheet.Cells["AA" + (i + startRows)].Value = quotations[i].competitor_description != null ? quotations[i].competitor_description.ToString() : "";
+                        worksheet.Cells["AB" + (i + startRows)].Value = quotations[i].competitor_price != null ? quotations[i].competitor_price.ToString() : "";
+                        worksheet.Cells["AC" + (i + startRows)].Value = quotations[i].sale_name != null ? quotations[i].sale_name.ToString() : "";
+                        worksheet.Cells["AD" + (i + startRows)].Value = quotations[i].department != null ? quotations[i].department.ToString() : "";
+                        worksheet.Cells["AE" + (i + startRows)].Value = quotations[i].detail != null ? quotations[i].detail.ToString() : "";
                     }
                     p.SaveAs(stream);
                     stream.Position = 0;

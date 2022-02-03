@@ -40,9 +40,11 @@
     var project_location = "";
     var product_type = "";
     var types = "";
+    var brands = "";
     var total_value = "";
     var Product_Types = [];
     var Types = [];
+    var Brands = [];
     var Total_Values = [];
     var expected_order_date = "";
     var required_onsite = "";
@@ -94,6 +96,7 @@
                             datas[i].quotation.site_location,
                             datas[i].quotation.product_type,
                             datas[i].quotation.type,
+                            datas[i].quotation.brand,
                             datas[i].quotation.total_value,
                             datas[i].quotation.expected_order_date,
                             datas[i].quotation.required_onsite_date,
@@ -131,7 +134,7 @@
         function init_type(){
             var dataSet = [];
             for (var i = 0;i<Product_Types.length;i++){
-                var data = [Product_Types[i],Types[i],Total_Values[i]];
+                var data = [Product_Types[i],Types[i],Brands[i],Total_Values[i]];
 
                 dataSet.push(data);
             }
@@ -154,6 +157,7 @@
                     { title: "Site Location"},
                     { title: "Product Type"},
                     { title: "Type"},
+                    { title: "Brand"},
                     { title: "Total Value"},
                     { title: "Expected Order Date"},
                     { title: "Required Onsite Date"},
@@ -230,6 +234,7 @@
                 columns: [
                     { title: "Product Type"},
                     { title: "Type"},
+                    { title: "Brand"},
                     { title: "Total Value"},
                 ],
                 "columnDefs": [
@@ -257,21 +262,22 @@
              project_location = cell.data()[7];
              product_type = cell.data()[8];
              types = cell.data()[9];
-             total_value = cell.data()[10];
-             expected_order_date = cell.data()[11];
-             required_onsite = cell.data()[12];
-             propose_by = cell.data()[13];
-             proposal_expected_date = cell.data()[14];
-             proposal_request_date = cell.data()[15];
-             proposal_status = cell.data()[16];
-             revision = cell.data()[17];
-             propose_cost = cell.data()[18];
-             quoted_price = cell.data()[19];
-             gp = cell.data()[20];
-             finish_date = cell.data()[21];
-             chk_engineering_request = cell.data()[22];
-             chk_ppc_request = cell.data()[23];
-             person_in_charge = cell.data()[24];
+             brands = cell.data()[10];
+             total_value = cell.data()[11];
+             expected_order_date = cell.data()[12];
+             required_onsite = cell.data()[13];
+             propose_by = cell.data()[14];
+             proposal_expected_date = cell.data()[15];
+             proposal_request_date = cell.data()[16];
+             proposal_status = cell.data()[17];
+             revision = cell.data()[18];
+             propose_cost = cell.data()[19];
+             quoted_price = cell.data()[20];
+             gp = cell.data()[21];
+             finish_date = cell.data()[22];
+             chk_engineering_request = cell.data()[23];
+             chk_ppc_request = cell.data()[24];
+             person_in_charge = cell.data()[25];
 
              if(column == 0){  //edit
 
@@ -319,6 +325,7 @@
                      person_name = [];
                      Product_Types = [];
                      Types = [];
+                     Brands = [];
                      Total_Values = [];
 
                     var count = (person_in_charge.match(/\|/g) || []).length;
@@ -328,11 +335,12 @@
                         }
                     }
 
-                    var count_type = (types.match(/\|/g) || []).length;
-                    for (var i=0;i<=count_type;i++){
+                    var count_brand = (brands.match(/\|/g) || []).length;
+                    for (var i=0;i<=count_brand;i++){
                         if(product_type != ""){
                             Product_Types.push(product_type);
                             Types.push(types.split('|')[i]);
+                            Brands.push(brands.split('|')[i]);
                             Total_Values.push(total_value.split('|')[i]);
                         }
                     }
@@ -345,7 +353,7 @@
                  $('#modal_proposal').modal('show');
              }
              if(column == 1){ //view
-
+             $('#modal_view_proposal').modal('show');
              }
         });
         $('#table_proposal_edit').on('click','tbody td',function(){

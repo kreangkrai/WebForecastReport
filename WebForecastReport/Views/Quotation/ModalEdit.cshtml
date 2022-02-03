@@ -36,7 +36,7 @@
                         </div>
                         <div class="col-md-3 col-xl-3">
                             <label>Quotation Created Date</label>
-                            <input id="edit_date" type="date" value="" class="form-control" style="width:100%" disabled>
+                            <input id="edit_date" type="text" value="" class="form-control" style="width:100%" disabled>
                         </div>
                         <div class="col-md-3 col-xl-3">
                             <label>Customer</label>
@@ -60,7 +60,7 @@
                             <label>Site Location</label>
                             <input id="edit_site_location" type="text" class="form-control" style="width:100%">
                         </div>
-                        <div class="col-md-1 col-xl-1">
+                        <div class="col-md-1 col-lg-1 col-xl-1">
                             <label>Status</label>
                             <i class="far fa-question-circle" id="info_status"></i>
                             <select id="edit_status" class="form-control" style="width:100%">
@@ -68,7 +68,7 @@
                                 <option value="OUT">OUT</option>
                             </select>
                         </div>
-                        <div class="col-md-3 col-xl-3">
+                        <div class="col-md-3 col-lg-3 col-xl-3">
                             <label>Stages</label>
                             <i class="far fa-question-circle" id="info_stages"></i>
                             <select id="edit_stages" class="form-control" style="width:100%">
@@ -111,27 +111,27 @@
                         <div class="col-md-2 col-xl-2">
                             <label>Product Type</label>
                             <select id="edit_product_type" type="text" class="form-control" style="width:100%">
-                                <option value="">Please Select</option>
+                                <option value="" disabled>Please Select</option>
                                 <option value="Product">Product</option>
                                 <option value="Project">Project</option>
                                 <option value="Service">Service</option>
                             </select>
                         </div>
-                        <div class="col-md-4 col-xl-4" id="group_types">
+                        <div class="col-md-3 col-xl-3" id="group_types">
                             <label>Types</label>
                             <select id="types" class="form-control">
                             </select>
                         </div>
-                        <div class="col-md-4 col-xl-4">
+                        <div class="col-md-3 col-xl-3">
                             <label>Brand</label>
                             <select id="brands" class="form-control">
                             </select>
                         </div>
                         <div class="col-md-1 col-xl-1 pt-1 d-flex align-items-end">
-                            <input type="button" class="btn btn-success form-control" id="btnAddType" value="ADD" disabled />
+                            <input type="button" class="btn btn-success form-control" id="btnAddType" value="ADD" />
                         </div>
-                        <div class="col-md-1 col-xl-1 pt-1 d-flex align-items-end">
-                            <input type="button" id="clear_btnType" class="btn btn-warning form-control" value="Clear" />
+                        <div class="col-md-1 col-xl-1 pt-1 d-flex align-items-end" hidden>
+                            <input type="button" id="clear_btnType" class="btn btn-warning form-control" value="Clear" hidden />
                         </div>
                     </div>
                     <div id="group_types" class="form-group pb-3" style="overflow-x:auto;width:100%">

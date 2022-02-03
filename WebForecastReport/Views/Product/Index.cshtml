@@ -27,7 +27,7 @@
                             </select>
                         </div>
                         <div class="col-md-2 col-xl-2 pt-2">
-                            <select id="type_brand_select" class="form-control">
+                            <select id="type_brand_select" class="form-control" disabled>
                                 <option value="" disabled>Please Select</option>
                                 <option value="Type">Type</option>
                                 <option value="Brand">Brand</option>
@@ -214,6 +214,7 @@
         type = document.getElementById("types").value;
         document.getElementById("card_title").innerHTML = document.getElementById("types").value;
         document.getElementById("type_brand_select").selectedIndex = 0;
+        document.getElementById("type_brand_select").disabled = false;
         document.getElementById("btnAdd").disabled = true;
         init();
     });

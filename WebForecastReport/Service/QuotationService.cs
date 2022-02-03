@@ -324,7 +324,6 @@ namespace WebForecastReport.Service
 
                 SqlDataReader reader;
                 SqlCommand cmd = new SqlCommand(@"UPDATE Quotation SET revision='" + model.revision + "'," +
-                                                                      "date='" + model.date + "'," +
                                                                       "customer='" + model.customer + "'," +
                                                                       "enduser='" + model.enduser + "'," +
                                                                       "project_name='" + model.project_name + "'," +
