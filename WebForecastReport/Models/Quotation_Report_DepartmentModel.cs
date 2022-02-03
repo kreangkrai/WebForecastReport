@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace WebForecastReport.Models
+{
+    public class Quotation_Report_DepartmentModel
+    {
+        public string sale { get; set; }
+        public string quo_mb { get; set; }
+        public string quo_cnt { get; set; }
+        public string product_cnt { get; set; }
+        public string project_cnt { get; set; }
+        public string service_cnt { get; set; }
+        public string won_quo_cnt { get; set; }
+        public string won_mb { get; set; }
+        public string loss_quo_cnt { get; set; }
+        public string loss_mb { get; set; }
+        public string nogo_quo_cnt { get; set; }
+        public string nogo_mb { get; set; }
+
+
+    }
+}

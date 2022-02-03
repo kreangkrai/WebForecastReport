@@ -87,8 +87,8 @@ namespace WebForecastReport.Service
                     while (dr.Read())
                     {
                         DepartmentModel d = new DepartmentModel()
-                        {                          
-                            department = dr["Department2"].ToString(),                          
+                        {
+                            department = dr["Department2"].ToString(),
                         };
                         departments.Add(d);
                     }
@@ -101,6 +101,32 @@ namespace WebForecastReport.Service
                 if (ConnectSQL.con_db_gps.State == System.Data.ConnectionState.Open)
                 {
                     ConnectSQL.Close_db_gps_Connect();
+                }
+            }
+        }
+
+        public List<string> GetDepartmentOfQuotation()
+        {
+            try
+            {
+                List<string> departments = new List<string>();
+                SqlCommand cmd = new SqlCommand("select distinct department from Quotation order by department", ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        departments.Add(dr["department"].ToString());
+                    }
+                    dr.Close();
+                }
+                return departments;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
                 }
             }
         }
@@ -188,7 +214,7 @@ namespace WebForecastReport.Service
 
                         cmd1.ExecuteNonQuery();
 
-                        
+
                     }
                 }
                 return "Insert Success";

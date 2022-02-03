@@ -18,17 +18,41 @@
                     <p>Opportunity</p>
                     </a>
                     </li>*@
+
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Quotation" asp-action="Index">
-                        <i class="nav-icon fas fa-file-invoice"></i>
-                        <p>Quotation</p>
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-tasks"></i>
+                        <p><b>QUOTATION</b><i class="right fas fa-angle-left"></i></p>
                     </a>
+                    <ul id="group_management" class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a class="nav-link pl-4" asp-controller="Quotation" asp-action="Index">
+                                <i class="nav-icon fas fa-file-invoice"></i>
+                                <p>Quotation</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link pl-4" asp-controller="QuotationReport" asp-action="Index">
+                                <i class="nav-icon fas fa-file-invoice"></i>
+                                <p>Report</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Proposal" asp-action="Index">
-                        <i class="nav-icon fas fa-file-invoice"></i>
-                        <p>Proposal</p>
+                    <a class="nav-link">
+                        <i class="nav-icon fas fa-tasks"></i>
+                        <p><b>PROPOSAL</b><i class="right fas fa-angle-left"></i></p>
                     </a>
+                    <ul id="group_management" class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a class="nav-link pl-4" asp-controller="Proposal" asp-action="Index">
+                                <i class="nav-icon fas fa-file-invoice"></i>
+                                <p>Proposal</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 @* <li class="nav-item">
                     <a class="nav-link" asp-controller="OpportunityProposal" asp-action="Index">
@@ -36,23 +60,40 @@
                     <p>OpportunityProposal</p>
                     </a>
                     </li>*@
+
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="User" asp-action="Index">
-                        <i class="nav-icon fas fa-user"></i>
-                        <p>User Management</p>
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-tasks"></i>
+                        <p><b>MANAGEMENT</b><i class="right fas fa-angle-left"></i></p>
                     </a>
+                    <ul id="group_management" class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a class="nav-link pl-4" asp-controller="Product" asp-action="Index">
+                                <i class="nav-icon fab fa-product-hunt"></i>
+                                <p>Product</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link pl-4" asp-controller="User" asp-action="Index">
+                                <i class="nav-icon fas fa-user"></i>
+                                <p>User</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Product" asp-action="Index">
-                        <i class="nav-icon fab fa-product-hunt"></i>
-                        <p>Product Management</p>
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-tasks"></i>
+                        <p><b>LOG</b><i class="right fas fa-angle-left"></i></p>
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="LogExpected" asp-action="Index">
-                        <i class="nav-icon fas fa-question-circle"></i>
-                        <p>Log Expected Order Date</p>
-                    </a>
+                    <ul id="group_management" class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a class="nav-link pl-4" asp-controller="LogExpected" asp-action="Index">
+                                <i class="nav-icon fas fa-question-circle"></i>
+                                <p>Expected Order Date</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="Account" asp-action="Logout">

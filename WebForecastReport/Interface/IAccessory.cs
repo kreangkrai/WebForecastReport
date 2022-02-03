@@ -8,6 +8,7 @@ namespace WebForecastReport.Interface
 {
     interface IAccessory
     {
+        List<string> GetDepartmentOfQuotation();
         List<SaleModel> getSale();
         List<UserModel> getAllUser();
         string InsertCustomer(string customer);

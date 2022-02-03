@@ -1,0 +1,184 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Quotation Report";
+}
+<style>
+    #table_department thead th {
+        background-color: #1D1B1A;
+    }
+
+</style>
+<div class="row p-3">
+    <div class="col-md-12 col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><b>Quotations Report</b></span>
+            </div>
+            <div class="card-body">
+                <div class="col-md-12 col-xl-12">
+                    <div class="row d-flex justify-content-between">
+                        <div class="col-md-6 col-xl-6 pb-3">
+                            <div class="row">
+                                <div class="col-md-4 col-xl-4 pb-3">
+                                    <select id="department" class="form-control">
+                                        <option value="QIR">QIR</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 col-xl-4 pb-3">
+                                    <input type="month" id="month" class="form-control" />
+                                </div>
+                                <div class="col-md-2 col-xl-2 pb-3">
+                                    <button type="button" id="btnOK" class="btn btn-primary form-control">OK</button>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="col-md-2 col-xl-2 pb-3">
+                            <a type="button" class="btn btn-success form-control" style="height:55px;font-size:20px;text-align:center;padding-top:10px" href="@Url.Action("DownloadXlsxReport", "QuotationReport")">
+                                <i class="fas fa-download" style="padding-right:10px"></i>Export
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-xl-12">
+                    <table id="table_department" class="table table-xl cell-border table-dark table-bordered display responsive nowrap" width="100%">
+                        <thead>
+                            <tr>
+                                <th rowspan="3" style="text-align:center;vertical-align:middle">Sale</th>
+                                <th colspan="2" style="text-align:center">Quotation</th>
+                                <th colspan="3" style="text-align:center">Description</th>
+                                <th colspan="6" style="text-align:center">Status Quotation</th>
+                            </tr>
+                            <tr>
+                                <th rowspan="2" style="text-align:center;vertical-align:middle">MB</th>
+                                <th rowspan="2" style="text-align:center;vertical-align:middle">Quo.</th>
+                                <th rowspan="2" style="text-align:center;vertical-align:middle">Project</th>
+                                <th rowspan="2" style="text-align:center;vertical-align:middle">Product</th>
+                                <th rowspan="2" style="text-align:center;vertical-align:middle">Service</th>
+                                <th colspan="2" style="text-align:center">Won</th>
+                                <th colspan="2" style="text-align:center">Loss</th>
+                                <th colspan="2" style="text-align:center">No go</th>
+                            </tr>
+                            <tr>
+                                <th style="text-align:center">Quo.</th>
+                                <th style="text-align:center">MB</th>
+                                <th style="text-align:center">Quo.</th>
+                                <th style="text-align:center">MB</th>
+                                <th style="text-align:center">Quo.</th>
+                                <th style="text-align:center">MB</th>
+
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+<script type="text/javascript">
+    var Departments = [];
+        $(document).ready(function () {
+               init();
+           });
+
+           $('#btnOK').on('click',function(){
+            var department = document.getElementById("department").value;
+            var month = document.getElementById("month").value;
+               $.ajax({
+                   url: '@Url.Action("GetReportDepartment", "QuotationReport")',
+                   type: "post",
+                   contentType: 'application/x-www-form-urlencoded',
+                   data: {
+                       department, month
+                   },
+                   success: function (response) {
+
+                       var datas = response;
+                       var dataSet = [];
+                       for (var i = 0; i < datas.length; i++) {
+                           var data = [
+                               datas[i].sale,
+                               datas[i].quo_mb,
+                               datas[i].quo_cnt,
+                               datas[i].project_cnt,
+                               datas[i].product_cnt,
+                               datas[i].service_cnt,
+                               datas[i].won_quo_cnt,
+                               datas[i].won_mb,
+                               datas[i].loss_quo_cnt,
+                               datas[i].loss_mb,
+                               datas[i].nogo_quo_cnt,
+                               datas[i].nogo_mb];
+
+                           dataSet.push(data);
+                       }
+                       tableDepartment(dataSet);
+                   }
+               });
+           });
+        function init() {
+
+               $.ajax({
+                   url: '@Url.Action("GetDepartment", "QuotationReport")',
+                   type: "post",
+                   contentType: 'application/x-www-form-urlencoded',
+                   data: {
+                   },
+                   success: function (response) {
+                        Departments = add_department(response);
+
+                        $('#department').empty();
+            var selectDepartment = document.getElementById('department');
+            for (var i = 0, l = Departments.length; i < l; i++) {
+                var option = Departments[i];
+                selectDepartment.options.add(new Option(option.text, option.value, option.selected));
+            }
+            document.getElementById('department').selectedIndex = 0;
+                   }
+               });
+           };
+
+        var tables_department;
+        function tableDepartment(dataSet) {
+            setTimeout(function(){
+                if (tables_department !== undefined)
+                tables_department.destroy();
+                tables_department = $('#table_department').DataTable({
+                data: dataSet,
+
+                "columnDefs": [
+                        {
+                            "targets": [1,2,3,4,5,6,7,8,9,10,11],
+                            "className": "text-center",
+                       },
+                ],
+                    "scrollX": true,
+                    "paging": false,
+                    "searching": false,
+                    "bInfo": false,
+
+            });
+            $(tables_department.table().body()).addClass('text-dark');
+            },300);
+
+        }
+        function add_department(departments) {
+            var data_departments = [];
+            for (var i = 0; i < departments.length; i++) {
+                var data =
+                {
+                    "text": departments[i],
+                    "value": departments[i]
+                }
+                data_departments.push(data);
+            }
+
+            return data_departments;
+        };
+</script>
+}
