@@ -3,85 +3,191 @@
     ViewData["Title"] = "Quotation Report";
 }
 <style>
-    #table_department thead th {
-        background-color: #1D1B1A;
-    }
 
 </style>
 <div class="row p-3">
     <div class="col-md-12 col-xl-12">
-        <div class="card">
-            <div class="card-header">
-                <span class="card-title"><b>Quotations Report</b></span>
-            </div>
-            <div class="card-body">
-                <div class="col-md-12 col-xl-12">
-                    <div class="row d-flex justify-content-between">
-                        <div class="col-md-6 col-xl-6 pb-3">
-                            <div class="row">
-                                <div class="col-md-4 col-xl-4 pb-3">
-                                    <select id="department" class="form-control">
-                                        <option value="QIR">QIR</option>
-                                    </select>
+        <ul class="nav nav-tabs pl-2 pb-2" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="report_department-tab" data-toggle="tab" href="#report_department" role="tab" aria-controls="report_department" aria-selected="true"><b>Report Department</b></a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="report_quarter-tab" data-toggle="tab" href="#report_quarter" role="tab" aria-controls="report_quarter" aria-selected="false"><b>Report Quarter</b></a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content container-fluid" id="myTabContent">
+        <div class="tab-pane fade show active" id="report_department" role="tabpanel" aria-labelledby="home-tab">
+            <div class="col-md-12 col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title"><b>Quotations Report Department</b></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-md-12 col-xl-12">
+                            <div class="row d-flex justify-content-between">
+                                <div class="col-md-6 col-xl-6 pb-3">
+                                    <div class="row">
+                                        <div class="col-md-4 col-xl-4 pb-3">
+                                            <select id="department" class="form-control">
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 col-xl-4 pb-3">
+                                            <input type="month" id="month" class="form-control" />
+                                        </div>
+                                        <div class="col-md-2 col-xl-2 pb-3">
+                                            <button type="button" id="btnOK" class="btn btn-primary form-control">OK</button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-4 col-xl-4 pb-3">
-                                    <input type="month" id="month" class="form-control" />
-                                </div>
-                                <div class="col-md-2 col-xl-2 pb-3">
-                                    <button type="button" id="btnOK" class="btn btn-primary form-control">OK</button>
+                                <div class="col-md-1 col-xl-1 pb-3">
+                                    <button type="button" id="export_department" class="btn btn-success form-control">Export</button>
                                 </div>
                             </div>
-
-
                         </div>
-
-                        <div class="col-md-2 col-xl-2 pb-3">
-                            <a type="button" class="btn btn-success form-control" style="height:55px;font-size:20px;text-align:center;padding-top:10px" href="@Url.Action("DownloadXlsxReport", "QuotationReport")">
-                                <i class="fas fa-download" style="padding-right:10px"></i>Export
-                            </a>
+                        <div class="col-md-12 col-xl-12">
+                            <table id="table_department" class="table table-xl cell-border  table-dark  table-bordered display responsive nowrap" style="overflow-x:scroll" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="3" style="text-align:center;vertical-align:middle;width:200px">Department</th>
+                                        <th rowspan="3" style="text-align:center;vertical-align:middle;width:250px">Sale</th>
+                                        <th colspan="2" style="text-align:center">Quotation</th>
+                                        <th colspan="6" style="text-align:center">Description</th>
+                                        <th colspan="6" style="text-align:center">Status Quotation</th>
+                                    </tr>
+                                    <tr>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;width:150px">Quo.</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;width:150px">MB</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;width:150px">Project</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;width:150px">Product</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;width:150px">Service</th>
+                                        <th colspan="2" style="text-align:center">Won</th>
+                                        <th colspan="2" style="text-align:center">Loss</th>
+                                        <th colspan="2" style="text-align:center">No go</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align:center;width:150px">Quo.</th>
+                                        <th style="text-align:center;width:150px">MB</th>
+                                        <th style="text-align:center;width:150px">Quo.</th>
+                                        <th style="text-align:center;width:150px">MB</th>
+                                        <th style="text-align:center;width:150px">Quo.</th>
+                                        <th style="text-align:center;width:150px">MB</th>
+                                        <th style="text-align:center;width:150px">Quo.</th>
+                                        <th style="text-align:center;width:150px">MB</th>
+                                        <th style="text-align:center;width:150px">Quo.</th>
+                                        <th style="text-align:center;width:150px">MB</th>
+                                        <th style="text-align:center;width:150px">Quo.</th>
+                                        <th style="text-align:center;width:150px">MB</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 col-xl-12">
-                    <table id="table_department" class="table table-xl cell-border table-dark table-bordered display responsive nowrap" width="100%">
-                        <thead>
-                            <tr>
-                                <th rowspan="3" style="text-align:center;vertical-align:middle">Sale</th>
-                                <th colspan="2" style="text-align:center">Quotation</th>
-                                <th colspan="3" style="text-align:center">Description</th>
-                                <th colspan="6" style="text-align:center">Status Quotation</th>
-                            </tr>
-                            <tr>
-                                <th rowspan="2" style="text-align:center;vertical-align:middle">MB</th>
-                                <th rowspan="2" style="text-align:center;vertical-align:middle">Quo.</th>
-                                <th rowspan="2" style="text-align:center;vertical-align:middle">Project</th>
-                                <th rowspan="2" style="text-align:center;vertical-align:middle">Product</th>
-                                <th rowspan="2" style="text-align:center;vertical-align:middle">Service</th>
-                                <th colspan="2" style="text-align:center">Won</th>
-                                <th colspan="2" style="text-align:center">Loss</th>
-                                <th colspan="2" style="text-align:center">No go</th>
-                            </tr>
-                            <tr>
-                                <th style="text-align:center">Quo.</th>
-                                <th style="text-align:center">MB</th>
-                                <th style="text-align:center">Quo.</th>
-                                <th style="text-align:center">MB</th>
-                                <th style="text-align:center">Quo.</th>
-                                <th style="text-align:center">MB</th>
 
-                            </tr>
-                        </thead>
-                    </table>
+                </div>
+
+            </div>
+        </div>
+        <div class="tab-pane fade" id="report_quarter" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="col-md-12 col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title"><b>Quotations Report Quarter</b></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-md-12 col-xl-12">
+                            <div class="row d-flex justify-content-between">
+                                <div class="col-md-6 col-xl-6 pb-3">
+                                    <div class="row">
+                                        <div class="col-md-4 col-xl-4 pb-3">
+                                            <select id="quarter_department" class="form-control">
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 col-xl-4 pb-3">
+                                            <select id="quarter_year" class="form-control">
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 col-xl-2 pb-3">
+                                            <button type="button" id="btnquarter_OK" class="btn btn-primary form-control">OK</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-1 col-xl-1 pb-3">
+                                    <button type="button" id="export_quarter" class="btn btn-success form-control">Export</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-xl-12">
+                            <table id="table_quarter" class="table table-xl cell-border  table-dark  table-bordered display responsive nowrap" style="overflow-x:scroll" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="3" style="text-align:center;vertical-align:middle">Department</th>
+                                        <th rowspan="3" style="text-align:center;vertical-align:middle">Sale</th>
+                                        <th colspan="6" style="text-align:center">Q1</th>
+                                        <th rowspan="3" style="text-align:center;vertical-align:middle">Total Q1</th>
+                                        <th colspan="6" style="text-align:center">Q2</th>
+                                        <th rowspan="3" style="text-align:center;vertical-align:middle">Total Q2</th>
+                                        <th colspan="6" style="text-align:center">Q3</th>
+                                        <th rowspan="3" style="text-align:center;vertical-align:middle">Total Q3</th>
+                                        <th colspan="6" style="text-align:center">Q4</th>
+                                        <th rowspan="3" style="text-align:center;vertical-align:middle">Total Q4</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle">January</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle">February</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle">March</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle">April</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle">May</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle">June</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle">July</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle">August</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle">September</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle">October</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle">November</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle">December</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align:center;vertical-align:middle">IN</th>
+                                        <th style="text-align:center;vertical-align:middle">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle">IN</th>
+                                        <th style="text-align:center;vertical-align:middle">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle">IN</th>
+                                        <th style="text-align:center;vertical-align:middle">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle">IN</th>
+                                        <th style="text-align:center;vertical-align:middle">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle">IN</th>
+                                        <th style="text-align:center;vertical-align:middle">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle">IN</th>
+                                        <th style="text-align:center;vertical-align:middle">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle">IN</th>
+                                        <th style="text-align:center;vertical-align:middle">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle">IN</th>
+                                        <th style="text-align:center;vertical-align:middle">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle">IN</th>
+                                        <th style="text-align:center;vertical-align:middle">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle">IN</th>
+                                        <th style="text-align:center;vertical-align:middle">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle">IN</th>
+                                        <th style="text-align:center;vertical-align:middle">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle">IN</th>
+                                        <th style="text-align:center;vertical-align:middle">OUT</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 
 @section Scripts
 {
 <script type="text/javascript">
     var Departments = [];
+    var Years = [];
         $(document).ready(function () {
                init();
            });
@@ -102,12 +208,16 @@
                        var dataSet = [];
                        for (var i = 0; i < datas.length; i++) {
                            var data = [
+                               datas[i].department,
                                datas[i].sale,
-                               datas[i].quo_mb,
                                datas[i].quo_cnt,
+                               datas[i].quo_mb,
                                datas[i].project_cnt,
+                               datas[i].project_mb,
                                datas[i].product_cnt,
+                               datas[i].product_mb,
                                datas[i].service_cnt,
+                               datas[i].service_mb,
                                datas[i].won_quo_cnt,
                                datas[i].won_mb,
                                datas[i].loss_quo_cnt,
@@ -121,6 +231,70 @@
                    }
                });
            });
+           $('#btnquarter_OK').on('click',function(){
+            var department = document.getElementById("quarter_department").value;
+            var year = document.getElementById("quarter_year").value;
+               $.ajax({
+                   url: '@Url.Action("GetReportQuarter", "QuotationReport")',
+                   type: "post",
+                   contentType: 'application/x-www-form-urlencoded',
+                   data: {
+                       department, year
+                   },
+                   success: function (response) {
+
+                       var datas = response;
+                       var dataSet = [];
+                       for (var i = 0; i < datas.length; i++) {
+                           var data = [
+                               datas[i].department,
+                               datas[i].sale,
+                               datas[i].jan_in,
+                               datas[i].jan_out,
+                               datas[i].feb_in,
+                               datas[i].feb_out,
+                               datas[i].mar_in,
+                               datas[i].mar_out,
+                               datas[i].sum_q1,
+                               datas[i].apr_in,
+                               datas[i].apr_out,
+                               datas[i].may_in,
+                               datas[i].may_out,
+                               datas[i].jun_in,
+                               datas[i].jun_out,
+                               datas[i].sum_q2,
+                               datas[i].jul_in,
+                               datas[i].jul_out,
+                               datas[i].aug_in,
+                               datas[i].aug_out,
+                               datas[i].sep_in,
+                               datas[i].sep_out,
+                               datas[i].sum_q3,
+                               datas[i].oct_in,
+                               datas[i].oct_out,
+                               datas[i].nov_in,
+                               datas[i].nov_out,
+                               datas[i].dec_in,
+                               datas[i].dec_out,
+                               datas[i].sum_q4
+                               ];
+
+                           dataSet.push(data);
+                       }
+                       tableQuarter(dataSet);
+                   }
+               });
+           });
+           $('#export_department').on('click',function(){
+               var department = document.getElementById("department").value;
+               var month = document.getElementById("month").value;
+               location.href = '@Url.Action("DownloadXlsxReportDepartment", "QuotationReport")?department='+department+'&month='+month;
+           });
+            $('#export_quarter').on('click',function(){
+               var department = document.getElementById("quarter_department").value;
+               var year = document.getElementById("quarter_year").value;
+               location.href = '@Url.Action("DownloadXlsxReportQuarter", "QuotationReport")?department='+department+'&year='+year;
+           });
         function init() {
 
                $.ajax({
@@ -130,43 +304,82 @@
                    data: {
                    },
                    success: function (response) {
-                        Departments = add_department(response);
+                        Departments = add_department(response.departments);
+                        Years = add_year(response.years);
 
                         $('#department').empty();
-            var selectDepartment = document.getElementById('department');
-            for (var i = 0, l = Departments.length; i < l; i++) {
-                var option = Departments[i];
-                selectDepartment.options.add(new Option(option.text, option.value, option.selected));
-            }
-            document.getElementById('department').selectedIndex = 0;
+                        var selectDepartment = document.getElementById('department');
+                        for (var i = 0, l = Departments.length; i < l; i++) {
+                            var option = Departments[i];
+                            selectDepartment.options.add(new Option(option.text, option.value, option.selected));
+                        }
+                        document.getElementById('department').selectedIndex = 0;
+
+                        $('#quarter_department').empty();
+                        var selectQuarterDepartment = document.getElementById('quarter_department');
+                        for (var i = 0, l = Departments.length; i < l; i++) {
+                            var option = Departments[i];
+                            selectQuarterDepartment.options.add(new Option(option.text, option.value, option.selected));
+                        }
+                        document.getElementById('quarter_department').selectedIndex = 0;
+
+                        $('#quarter_year').empty();
+                        var selectQuarterYear = document.getElementById('quarter_year');
+                        for (var i = 0, l = Years.length; i < l; i++) {
+                            var option = Years[i];
+                            selectQuarterYear.options.add(new Option(option.text, option.value, option.selected));
+                        }
+                        document.getElementById('quarter_year').selectedIndex = 0;
                    }
                });
            };
 
         var tables_department;
         function tableDepartment(dataSet) {
-            setTimeout(function(){
+
                 if (tables_department !== undefined)
                 tables_department.destroy();
                 tables_department = $('#table_department').DataTable({
                 data: dataSet,
-
                 "columnDefs": [
-                        {
-                            "targets": [1,2,3,4,5,6,7,8,9,10,11],
+                       {
+                            "targets": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
                             "className": "text-center",
                        },
                 ],
-                    "scrollX": true,
-                    "paging": false,
-                    "searching": false,
+
+                  "paging": false,
+                   "searching": false,
                     "bInfo": false,
-
+                    "scrollX": true,
             });
-            $(tables_department.table().body()).addClass('text-dark');
-            },300);
 
-        }
+            $(tables_department.table().body()).addClass('text-dark');
+        };
+
+
+         var tables_quarter;
+        function tableQuarter(dataSet) {
+
+                if (tables_quarter !== undefined)
+                tables_quarter.destroy();
+                tables_quarter = $('#table_quarter').DataTable({
+                data: dataSet,
+                "columnDefs": [
+                       {
+                            "targets": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],
+                            "className": "text-center",
+                       },
+                ],
+
+                  "paging": false,
+                   "searching": false,
+                   "bInfo": false,
+                   "scrollX": true,
+            });
+
+            $(tables_quarter.table().body()).addClass('text-dark');
+        };
         function add_department(departments) {
             var data_departments = [];
             for (var i = 0; i < departments.length; i++) {
@@ -179,6 +392,19 @@
             }
 
             return data_departments;
+        };
+        function add_year(years) {
+            var data_years = [];
+            for (var i = 0; i < years.length; i++) {
+                var data =
+                {
+                    "text": years[i],
+                    "value": years[i]
+                }
+                data_years.push(data);
+            }
+
+            return data_years;
         };
 </script>
 }

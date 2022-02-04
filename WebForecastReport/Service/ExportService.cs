@@ -12,6 +12,11 @@ namespace WebForecastReport.Service
 {
     public class ExportService : IExport
     {
+        readonly IQuotation_Report Quotation_Report;
+        public ExportService()
+        {
+            Quotation_Report = new Quotation_ReportService();
+        }
         public Stream ExportQuotation(FileInfo path, string role, string name, string department)
         {
             Stream stream = new MemoryStream();
@@ -25,7 +30,7 @@ namespace WebForecastReport.Service
                 }
                 else if (role != "Admin" && role != "")
                 {
-                    connectString = "select * from Quotation where department='" + department + "' or sale_name='" + name + "' order by sale_name";
+                    connectString = "select * from Quotation where department='" + role + "' or sale_name='" + name + "' order by sale_name";
                 }
                 else
                 {
@@ -180,6 +185,99 @@ namespace WebForecastReport.Service
                         worksheet.Cells["AD" + (i + startRows)].Value = quotations[i].department != null ? quotations[i].department.ToString() : "";
                         worksheet.Cells["AE" + (i + startRows)].Value = quotations[i].detail != null ? quotations[i].detail.ToString() : "";
                     }
+                    p.SaveAs(stream);
+                    stream.Position = 0;
+                }
+            }
+            return stream;
+        }
+
+        public Stream ExportQuotation_Report_Department(FileInfo path, string department, string month)
+        {
+            Stream stream = new MemoryStream();
+            List<Quotation_Report_DepartmentModel> reports = new List<Quotation_Report_DepartmentModel>();
+            if (path.Exists)
+            {
+
+                reports = Quotation_Report.GetReportDepartment(department, month);
+                using (ExcelPackage p = new ExcelPackage(path))
+                {
+                    ExcelWorksheet worksheet = p.Workbook.Worksheets["Report"];
+
+                    int startRows = 5;
+                    for (int i = 0; i < reports.Count; i++)
+                    {
+                        worksheet.Cells["A" + (i + startRows)].Value = reports[i].department != null ? reports[i].department.ToString() : "";
+                        worksheet.Cells["B" + (i + startRows)].Value = reports[i].sale != null ? reports[i].sale.ToString() : "";
+                        worksheet.Cells["C" + (i + startRows)].Value = reports[i].quo_mb != null ? reports[i].quo_cnt.ToString() : "";
+                        worksheet.Cells["D" + (i + startRows)].Value = reports[i].quo_cnt != null ? reports[i].quo_mb.ToString() : "";
+                        worksheet.Cells["E" + (i + startRows)].Value = reports[i].project_cnt != null ? reports[i].project_cnt.ToString() : "";
+                        worksheet.Cells["F" + (i + startRows)].Value = reports[i].project_mb != null ? reports[i].project_mb.ToString() : "";
+                        worksheet.Cells["G" + (i + startRows)].Value = reports[i].product_cnt != null ? reports[i].product_cnt.ToString() : "";
+                        worksheet.Cells["H" + (i + startRows)].Value = reports[i].product_mb != null ? reports[i].product_mb.ToString() : "";
+                        worksheet.Cells["I" + (i + startRows)].Value = reports[i].service_cnt != null ? reports[i].service_cnt.ToString() : "";
+                        worksheet.Cells["J" + (i + startRows)].Value = reports[i].service_mb != null ? reports[i].service_mb.ToString() : "";
+                        worksheet.Cells["K" + (i + startRows)].Value = reports[i].won_quo_cnt != null ? reports[i].won_quo_cnt.ToString() : "";
+                        worksheet.Cells["L" + (i + startRows)].Value = reports[i].won_mb != null ? reports[i].won_mb.ToString() : "";
+                        worksheet.Cells["M" + (i + startRows)].Value = reports[i].loss_quo_cnt != null ? reports[i].loss_quo_cnt.ToString() : "";
+                        worksheet.Cells["N" + (i + startRows)].Value = reports[i].loss_mb != null ? reports[i].loss_mb.ToString() : "";
+                        worksheet.Cells["O" + (i + startRows)].Value = reports[i].nogo_quo_cnt != null ? reports[i].nogo_quo_cnt.ToString() : "";
+                        worksheet.Cells["P" + (i + startRows)].Value = reports[i].nogo_mb != null ? reports[i].nogo_mb.ToString() : "";
+                    }
+                    worksheet.Cells["B1"].Value = month;
+                    p.SaveAs(stream);
+                    stream.Position = 0;
+                }
+            }
+            return stream;
+        }
+
+        public Stream ExportQuotation_Report_Quarter(FileInfo path, string department, string year)
+        {
+            Stream stream = new MemoryStream();
+            List<Quotation_Report_QuarterModel> reports = new List<Quotation_Report_QuarterModel>();
+            if (path.Exists)
+            {
+                reports = Quotation_Report.GetReportQuarter(department, year);
+                using (ExcelPackage p = new ExcelPackage(path))
+                {
+                    ExcelWorksheet worksheet = p.Workbook.Worksheets["Report"];
+
+                    int startRows = 5;
+                    for (int i = 0; i < reports.Count; i++)
+                    {
+                        worksheet.Cells["A" + (i + startRows)].Value = reports[i].department != null ? reports[i].department.ToString() : "";
+                        worksheet.Cells["B" + (i + startRows)].Value = reports[i].sale != null ? reports[i].sale.ToString() : "";
+                        worksheet.Cells["C" + (i + startRows)].Value = reports[i].jan_in != null ? reports[i].jan_in.ToString() : "";
+                        worksheet.Cells["D" + (i + startRows)].Value = reports[i].jan_out != null ? reports[i].jan_out.ToString() : "";
+                        worksheet.Cells["E" + (i + startRows)].Value = reports[i].feb_in != null ? reports[i].feb_in.ToString() : "";
+                        worksheet.Cells["F" + (i + startRows)].Value = reports[i].feb_out != null ? reports[i].feb_out.ToString() : "";
+                        worksheet.Cells["G" + (i + startRows)].Value = reports[i].mar_in != null ? reports[i].mar_in.ToString() : "";
+                        worksheet.Cells["H" + (i + startRows)].Value = reports[i].mar_out != null ? reports[i].mar_out.ToString() : "";
+                        worksheet.Cells["I" + (i + startRows)].Value = reports[i].sum_q1 != null ? reports[i].sum_q1.ToString() : "";
+                        worksheet.Cells["J" + (i + startRows)].Value = reports[i].apr_in != null ? reports[i].apr_in.ToString() : "";
+                        worksheet.Cells["K" + (i + startRows)].Value = reports[i].apr_out != null ? reports[i].apr_out.ToString() : "";
+                        worksheet.Cells["L" + (i + startRows)].Value = reports[i].may_in != null ? reports[i].may_in.ToString() : "";
+                        worksheet.Cells["M" + (i + startRows)].Value = reports[i].may_out != null ? reports[i].may_out.ToString() : "";
+                        worksheet.Cells["N" + (i + startRows)].Value = reports[i].jun_in != null ? reports[i].jun_in.ToString() : "";
+                        worksheet.Cells["O" + (i + startRows)].Value = reports[i].jun_out != null ? reports[i].jun_out.ToString() : "";
+                        worksheet.Cells["P" + (i + startRows)].Value = reports[i].sum_q2 != null ? reports[i].sum_q2.ToString() : "";
+                        worksheet.Cells["Q" + (i + startRows)].Value = reports[i].jul_in != null ? reports[i].jul_in.ToString() : "";
+                        worksheet.Cells["R" + (i + startRows)].Value = reports[i].jul_out != null ? reports[i].jul_out.ToString() : "";
+                        worksheet.Cells["S" + (i + startRows)].Value = reports[i].aug_in != null ? reports[i].aug_in.ToString() : "";
+                        worksheet.Cells["T" + (i + startRows)].Value = reports[i].aug_out != null ? reports[i].aug_out.ToString() : "";
+                        worksheet.Cells["U" + (i + startRows)].Value = reports[i].sep_in != null ? reports[i].sep_in.ToString() : "";
+                        worksheet.Cells["V" + (i + startRows)].Value = reports[i].sep_out != null ? reports[i].sep_out.ToString() : "";
+                        worksheet.Cells["W" + (i + startRows)].Value = reports[i].sum_q3 != null ? reports[i].sum_q3.ToString() : "";
+                        worksheet.Cells["X" + (i + startRows)].Value = reports[i].oct_in != null ? reports[i].oct_in.ToString() : "";
+                        worksheet.Cells["Y" + (i + startRows)].Value = reports[i].oct_out != null ? reports[i].oct_out.ToString() : "";
+                        worksheet.Cells["Z" + (i + startRows)].Value = reports[i].nov_in != null ? reports[i].nov_in.ToString() : "";
+                        worksheet.Cells["AA" + (i + startRows)].Value = reports[i].nov_out != null ? reports[i].nov_out.ToString() : "";
+                        worksheet.Cells["AB" + (i + startRows)].Value = reports[i].dec_in != null ? reports[i].dec_in.ToString() : "";
+                        worksheet.Cells["AC" + (i + startRows)].Value = reports[i].dec_out != null ? reports[i].dec_out.ToString() : "";
+                        worksheet.Cells["AD" + (i + startRows)].Value = reports[i].sum_q4 != null ? reports[i].sum_q4.ToString() : "";
+                    }
+                    worksheet.Cells["B1"].Value = year;
                     p.SaveAs(stream);
                     stream.Position = 0;
                 }

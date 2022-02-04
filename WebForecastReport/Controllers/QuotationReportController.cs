@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -15,11 +16,13 @@ namespace WebForecastReport.Controllers
     {
         readonly IAccessory Accessory;
         readonly IQuotation_Report Quotation_Report;
+        readonly IExport Export;
         private readonly IHostingEnvironment _hostingEnvironment;
         public QuotationReportController(IHostingEnvironment hostingEnvironment)
         {
             Accessory = new AccessoryService();
             Quotation_Report = new Quotation_ReportService();
+            Export = new ExportService();
             _hostingEnvironment = hostingEnvironment;
         }
         public IActionResult Index()
@@ -47,8 +50,18 @@ namespace WebForecastReport.Controllers
         public JsonResult GetDepartment()
         {
             List<string> departments = new List<string>();
-            departments = Accessory.GetDepartmentOfQuotation();
-            return Json(departments);
+            departments.Add("ALL");
+            departments.AddRange(Accessory.GetDepartmentOfQuotation());
+
+            List<string> years = new List<string>();
+            for (int year = DateTime.Now.Year; year > DateTime.Now.Year - 5; year--)
+            {
+                years.Add(year.ToString());
+            }
+
+            var list = new { departments = departments, years = years };
+
+            return Json(list);
         }
 
         [HttpPost]
@@ -57,6 +70,29 @@ namespace WebForecastReport.Controllers
             List<Quotation_Report_DepartmentModel> reports = new List<Quotation_Report_DepartmentModel>();
             reports = Quotation_Report.GetReportDepartment(department, month);
             return Json(reports);
+        }
+        [HttpPost]
+        public JsonResult GetReportQuarter(string department, string year)
+        {
+            List<Quotation_Report_QuarterModel> reports = new List<Quotation_Report_QuarterModel>();
+            reports = Quotation_Report.GetReportQuarter(department, year);
+            return Json(reports);
+        }
+
+        public IActionResult DownloadXlsxReportDepartment(string department, string month)
+        {
+            //Download Excel
+            var templateFileInfo = new FileInfo(Path.Combine(_hostingEnvironment.ContentRootPath, "./wwwroot/template", "quotation_report_department.xlsx"));
+            var stream = Export.ExportQuotation_Report_Department(templateFileInfo, department, month);
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "quotation_report_department_" + DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss") + ".xlsx");
+        }
+
+        public IActionResult DownloadXlsxReportQuarter(string department, string year)
+        {
+            //Download Excel
+            var templateFileInfo = new FileInfo(Path.Combine(_hostingEnvironment.ContentRootPath, "./wwwroot/template", "quotation_report_quarter.xlsx"));
+            var stream = Export.ExportQuotation_Report_Quarter(templateFileInfo, department, year);
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "quotation_report_quarter_" + DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss") + ".xlsx");
         }
     }
 }
