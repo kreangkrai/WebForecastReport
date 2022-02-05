@@ -103,7 +103,6 @@
 
     var Types = [];
     var Brands = [];
-    var Departments = [];
     var Sales = [];
     var Proposers = [];
     var Customers = [];
@@ -139,9 +138,6 @@
 
                 //add end user to datalist
                 EndUsers = add_enduser(response.endusers);
-
-                // add Department
-                Departments = add_department(response.departments);
 
                 var datas = response.quatations;
                 var dataSet = [];
@@ -540,14 +536,7 @@
             var index_sale = Sales.map(function (e) { return e.value; }).indexOf(sale_name);
             document.getElementById('edit_sale_name').selectedIndex = index_sale;
 
-            $('#edit_department').empty();
-            var selectDepartment = document.getElementById('edit_department');
-            for (var i = 0, l = Departments.length; i < l; i++) {
-                var option = Departments[i];
-                selectDepartment.options.add(new Option(option.text.department, option.value.department, option.selected));
-            }
-            var index_department = Departments.map(function (e) { return e.value.department; }).indexOf(department);
-            document.getElementById('edit_department').selectedIndex = index_department;
+            document.getElementById('edit_department').innerHTML = department;
 
 
             document.getElementById('edit_detail').value = detail;
@@ -625,7 +614,7 @@
         var type = cell.data()[2];
         var brand = cell.data()[3];
 
-        var index = findIndex(arrProductType,cell.data()[2],cell.data()[3]);
+        var index = findIndex(arrProductType, type, brand);
 
         if (column == 0) {
             document.getElementById('edit_sub_type').value = arrProductType[index][0].type;
@@ -685,7 +674,7 @@
         var competitor_description = document.getElementById('edit_competitor_description').value;
         var competitor_price = document.getElementById('edit_competitor_price').value;
         var sale_name = document.getElementById('edit_sale_name').value;
-        var department = document.getElementById('edit_department').value;
+        var department = document.getElementById('edit_department').innerHTML;
         var detail = document.getElementById('edit_detail').value;
 
         $.ajax({
@@ -808,7 +797,7 @@
             },
             success: function (response) {
                 var department = response;
-                document.getElementById("edit_department").value = department;
+                document.getElementById("edit_department").innerHTML = department;
             }
          });
     });
@@ -982,19 +971,6 @@
         }
 
         return data_brands;
-    };
-    function add_department(department) {
-        var data_department = [];
-        for (var i = 0; i < department.length; i++) {
-            var data =
-            {
-                "text": department[i],
-                "value": department[i]
-            }
-            data_department.push(data);
-        }
-
-        return data_department;
     };
     function add_proposer(proposer) {
         var data_proposer = [];

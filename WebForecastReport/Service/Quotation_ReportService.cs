@@ -18,7 +18,7 @@ namespace WebForecastReport.Service
                 string command = "";
                 if (department == "ALL")
                 {
-                    command = @"select department,sale_name as sale,
+                    command = @"with s1 as(select department,sale_name as sale,
                                                     sum(sum(cast(replace(quoted_price,',','') as float))/1000000) over (partition by sale_name) as quo_mb,
                                                     count(quotation_no) as quo_cnt,
                                                     sum(case when product_type ='product' then 1 else 0 end) as product_cnt,
@@ -33,26 +33,100 @@ namespace WebForecastReport.Service
                                                     sum(case when stages='Closed(Lost)' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as loss_mb,
                                                     sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt,
                                                     sum(case when stages='No go' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as nogo_mb
-                                                    from Quotation where date like '" + month + "%' group by department,sale_name";
+                                                    from Quotation where date like '" + month + "%' group by department,sale_name union all " +
+
+                                                    "select (department + ' Total') as department, " +
+                                                    "'' as sale," +
+                                                    "sum(sum(cast(replace(quoted_price,',','') as float))/1000000) over (partition by department) as quo_mb," +
+                                                    "count(quotation_no) as quo_cnt," +
+                                                    "sum(case when product_type ='product' then 1 else 0 end) as product_cnt," +
+                                                    "sum(case when product_type ='product' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as product_mb," +
+                                                    "sum(case when product_type ='project' then 1 else 0 end) as project_cnt," +
+                                                    "sum(case when product_type ='project' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as project_mb," +
+                                                    "sum(case when product_type ='service' then 1 else 0 end) as service_cnt," +
+                                                    "sum(case when product_type ='service' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as service_mb," +
+                                                    "sum(case when stages='Closed(Won)' then 1 else 0 end) as won_quo_cnt," +
+                                                    "sum(case when stages='Closed(Won)' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as won_mb," +
+                                                    "sum(case when stages='Closed(Lost)' then 1 else 0 end) as loss_quo_cnt," +
+                                                    "sum(case when stages='Closed(Lost)' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as loss_mb," +
+                                                    "sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt," +
+                                                    "sum(case when stages='No go' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as nogo_mb " +
+                                                    "from Quotation where date like '" + month + "%' group by department union all " +
+
+                                                    "select ('Total') as department," +
+                                                    "'' as sale," +
+                                                    "sum(cast(replace(quoted_price,',','') as float))/1000000 as quo_mb," +
+                                                    "count(quotation_no)as quo_cnt," +
+                                                    "sum(case when product_type ='product' then 1 else 0 end) as product_cnt," +
+                                                    "sum(case when product_type ='product' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as product_mb," +
+                                                    "sum(case when product_type ='project' then 1 else 0 end) as project_cnt," +
+                                                    "sum(case when product_type ='project' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as project_mb," +
+                                                    "sum(case when product_type ='service' then 1 else 0 end) as service_cnt," +
+                                                    "sum(case when product_type ='service' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as service_mb," +
+                                                    "sum(case when stages='Closed(Won)' then 1 else 0 end) as won_quo_cnt," +
+                                                    "sum(case when stages='Closed(Won)' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as won_mb," +
+                                                    "sum(case when stages='Closed(Lost)' then 1 else 0 end) as loss_quo_cnt," +
+                                                    "sum(case when stages='Closed(Lost)' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as loss_mb," +
+                                                    "sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt," +
+                                                    "sum(case when stages='No go' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as nogo_mb " +
+                                                    "from Quotation where date like '" + month + "%') " +
+                                                    "select * from s1 order by s1.department";
                 }
                 else
                 {
-                    command = @"select department,sale_name as sale,
-                                                    sum(sum(cast(replace(quoted_price,',','') as float))/1000000) over (partition by sale_name) as quo_mb,
+                    command = @"with s1 as (select department, sale_name as sale,
+                                                    sum(sum(cast(replace(quoted_price, ',', '') as float)) / 1000000) over(partition by sale_name) as quo_mb,
                                                     count(quotation_no) as quo_cnt,
-                                                    sum(case when product_type ='product' then 1 else 0 end) as product_cnt,
-													sum(case when product_type ='product' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as product_mb,
-                                                    sum(case when product_type ='project' then 1 else 0 end) as project_cnt,
-													sum(case when product_type ='project' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as project_mb,
-                                                    sum(case when product_type ='service' then 1 else 0 end) as service_cnt,
-													sum(case when product_type ='service' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as service_mb,
-                                                    sum(case when stages='Closed(Won)' then 1 else 0 end) as won_quo_cnt,
-                                                    sum(case when stages='Closed(Won)' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as won_mb,
-                                                    sum(case when stages='Closed(Lost)' then 1 else 0 end) as loss_quo_cnt,
-                                                    sum(case when stages='Closed(Lost)' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as loss_mb,
-                                                    sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt,
-                                                    sum(case when stages='No go' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as nogo_mb
-                                                    from Quotation where department='" + department + "' and date like '" + month + "%' group by department,sale_name";
+                                                    sum(case when product_type = 'product' then 1 else 0 end) as product_cnt,
+													sum(case when product_type = 'product' then cast(replace(quoted_price, ',', '') as float) / 1000000 else 0 end) as product_mb,
+                                                    sum(case when product_type = 'project' then 1 else 0 end) as project_cnt,
+													sum(case when product_type = 'project' then cast(replace(quoted_price, ',', '') as float) / 1000000 else 0 end) as project_mb,
+                                                    sum(case when product_type = 'service' then 1 else 0 end) as service_cnt,
+													sum(case when product_type = 'service' then cast(replace(quoted_price, ',', '') as float) / 1000000 else 0 end) as service_mb,
+                                                    sum(case when stages = 'Closed(Won)' then 1 else 0 end) as won_quo_cnt,
+                                                    sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price, ',', '') as float) / 1000000 else 0 end) as won_mb,
+                                                    sum(case when stages = 'Closed(Lost)' then 1 else 0 end) as loss_quo_cnt,
+                                                    sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price, ',', '') as float) / 1000000 else 0 end) as loss_mb,
+                                                    sum(case when stages = 'No go' then 1 else 0 end) as nogo_quo_cnt,
+                                                    sum(case when stages = 'No go' then cast(replace(quoted_price, ',', '') as float) / 1000000 else 0 end) as nogo_mb
+                                                    from Quotation where department='" + department + "' and date like '" + month + "%' group by department,sale_name union all " +
+
+                                                    "select (department + ' Total') as department, " +
+                                                    "'' as sale," +
+                                                    "sum(sum(cast(replace(quoted_price,',','') as float))/1000000) over (partition by department) as quo_mb," +
+                                                    "count(quotation_no) as quo_cnt," +
+                                                    "sum(case when product_type ='product' then 1 else 0 end) as product_cnt," +
+                                                    "sum(case when product_type ='product' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as product_mb," +
+                                                    "sum(case when product_type ='project' then 1 else 0 end) as project_cnt," +
+                                                    "sum(case when product_type ='project' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as project_mb," +
+                                                    "sum(case when product_type ='service' then 1 else 0 end) as service_cnt," +
+                                                    "sum(case when product_type ='service' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as service_mb," +
+                                                    "sum(case when stages='Closed(Won)' then 1 else 0 end) as won_quo_cnt," +
+                                                    "sum(case when stages='Closed(Won)' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as won_mb," +
+                                                    "sum(case when stages='Closed(Lost)' then 1 else 0 end) as loss_quo_cnt," +
+                                                    "sum(case when stages='Closed(Lost)' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as loss_mb," +
+                                                    "sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt," +
+                                                    "sum(case when stages='No go' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as nogo_mb " +
+                                                    "from Quotation where department='" + department + "' and date like '" + month + "%' group by department union all " +
+
+                                                    "select ('Total') as department," +
+                                                    "'' as sale," +
+                                                    "sum(cast(replace(quoted_price,',','') as float))/1000000 as quo_mb," +
+                                                    "count(quotation_no)as quo_cnt," +
+                                                    "sum(case when product_type ='product' then 1 else 0 end) as product_cnt," +
+                                                    "sum(case when product_type ='product' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as product_mb," +
+                                                    "sum(case when product_type ='project' then 1 else 0 end) as project_cnt," +
+                                                    "sum(case when product_type ='project' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as project_mb," +
+                                                    "sum(case when product_type ='service' then 1 else 0 end) as service_cnt," +
+                                                    "sum(case when product_type ='service' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as service_mb," +
+                                                    "sum(case when stages='Closed(Won)' then 1 else 0 end) as won_quo_cnt," +
+                                                    "sum(case when stages='Closed(Won)' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as won_mb," +
+                                                    "sum(case when stages='Closed(Lost)' then 1 else 0 end) as loss_quo_cnt," +
+                                                    "sum(case when stages='Closed(Lost)' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as loss_mb," +
+                                                    "sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt," +
+                                                    "sum(case when stages='No go' then cast(replace(quoted_price,',','') as float)/1000000 else 0 end) as nogo_mb " +
+                                                    "from Quotation where department='" + department + "' and date like '" + month + "%') " +
+                                                    "select * from s1 order by s1.department";
                 }
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -102,61 +176,171 @@ namespace WebForecastReport.Service
                 string command = "";
                 if (department == "ALL")
                 {
-                    command = @"select department,sale_name as sale,
-                              sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then 1 else 0 end end) as jan_in," +
-                             "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then 1 else 0 end end) as jan_out," +
-                             "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then 1 else 0 end end) as feb_in," +
-                             "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then 1 else 0 end end) as feb_out," +
-                             "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then 1 else 0 end end) as mar_in," +
-                             "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then 1 else 0 end end) as mar_out," +
-                             "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then 1 else 0 end end) as apr_in," +
-                             "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then 1 else 0 end end) as apr_out," +
-                             "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then 1 else 0 end end) as may_in," +
-                             "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then 1 else 0 end end) as may_out," +
-                             "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then 1 else 0 end end) as jun_in," +
-                             "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then 1 else 0 end end) as jun_out," +
-                             "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then 1 else 0 end end) as jul_in," +
-                             "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then 1 else 0 end end) as jul_out," +
-                             "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then 1 else 0 end end) as aug_in," +
-                             "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then 1 else 0 end end) as aug_out," +
-                             "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then 1 else 0 end end) as sep_in," +
-                             "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then 1 else 0 end end) as sep_out," +
-                             "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then 1 else 0 end end) as oct_in," +
-                             "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then 1 else 0 end end) as oct_out," +
-                             "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then 1 else 0 end end) as nov_in," +
-                             "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then 1 else 0 end end) as nov_out," +
-                             "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then 1 else 0 end end) as dec_in," +
-                             "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then 1 else 0 end end) as dec_out" +
-                             " from Quotation group by department,sale_name order by department,sale_name";
+                    command = @"with s1 as(select department,sale_name as sale, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then 1 else 0 end end) as jan_in, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then 1 else 0 end end) as jan_out, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then 1 else 0 end end) as feb_in, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then 1 else 0 end end) as feb_out, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then 1 else 0 end end) as mar_in, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then 1 else 0 end end) as mar_out, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then 1 else 0 end end) as apr_in, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then 1 else 0 end end) as apr_out, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then 1 else 0 end end) as may_in, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then 1 else 0 end end) as may_out, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then 1 else 0 end end) as jun_in, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then 1 else 0 end end) as jun_out, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then 1 else 0 end end) as jul_in, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then 1 else 0 end end) as jul_out, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then 1 else 0 end end) as aug_in, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then 1 else 0 end end) as aug_out, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then 1 else 0 end end) as sep_in, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then 1 else 0 end end) as sep_out, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then 1 else 0 end end) as oct_in, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then 1 else 0 end end) as oct_out, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then 1 else 0 end end) as nov_in, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then 1 else 0 end end) as nov_out, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then 1 else 0 end end) as dec_in, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then 1 else 0 end end) as dec_out " +
+                            "from Quotation group by department,sale_name union all " +
+
+                            "select(department + ' Total') as department,'' as sale, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then 1 else 0 end end) as jan_in, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then 1 else 0 end end) as jan_out, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then 1 else 0 end end) as feb_in, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then 1 else 0 end end) as feb_out, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then 1 else 0 end end) as mar_in, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then 1 else 0 end end) as mar_out, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then 1 else 0 end end) as apr_in, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then 1 else 0 end end) as apr_out, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then 1 else 0 end end) as may_in, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then 1 else 0 end end) as may_out, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then 1 else 0 end end) as jun_in, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then 1 else 0 end end) as jun_out, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then 1 else 0 end end) as jul_in, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then 1 else 0 end end) as jul_out, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then 1 else 0 end end) as aug_in, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then 1 else 0 end end) as aug_out, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then 1 else 0 end end) as sep_in, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then 1 else 0 end end) as sep_out, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then 1 else 0 end end) as oct_in, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then 1 else 0 end end) as oct_out, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then 1 else 0 end end) as nov_in, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then 1 else 0 end end) as nov_out, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then 1 else 0 end end) as dec_in, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then 1 else 0 end end) as dec_out " +
+                            "from Quotation group by department union all " +
+
+                            "select 'Total' as department,'' as sale, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then 1 else 0 end end) as jan_in, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then 1 else 0 end end) as jan_out, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then 1 else 0 end end) as feb_in, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then 1 else 0 end end) as feb_out, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then 1 else 0 end end) as mar_in, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then 1 else 0 end end) as mar_out, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then 1 else 0 end end) as apr_in, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then 1 else 0 end end) as apr_out, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then 1 else 0 end end) as may_in, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then 1 else 0 end end) as may_out, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then 1 else 0 end end) as jun_in, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then 1 else 0 end end) as jun_out, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then 1 else 0 end end) as jul_in, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then 1 else 0 end end) as jul_out, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then 1 else 0 end end) as aug_in, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then 1 else 0 end end) as aug_out, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then 1 else 0 end end) as sep_in, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then 1 else 0 end end) as sep_out, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then 1 else 0 end end) as oct_in, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then 1 else 0 end end) as oct_out, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then 1 else 0 end end) as nov_in, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then 1 else 0 end end) as nov_out, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then 1 else 0 end end) as dec_in, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then 1 else 0 end end) as dec_out " +
+                            "from Quotation) " +
+                            "select* from s1 order by s1.department ";
                 }
                 else
                 {
-                    command = @"select department,sale_name as sale,
-                              sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then 1 else 0 end end) as jan_in," +
-                             "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then 1 else 0 end end) as jan_out," +
-                             "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then 1 else 0 end end) as feb_in," +
-                             "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then 1 else 0 end end) as feb_out," +
-                             "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then 1 else 0 end end) as mar_in," +
-                             "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then 1 else 0 end end) as mar_out," +
-                             "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then 1 else 0 end end) as apr_in," +
-                             "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then 1 else 0 end end) as apr_out," +
-                             "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then 1 else 0 end end) as may_in," +
-                             "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then 1 else 0 end end) as may_out," +
-                             "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then 1 else 0 end end) as jun_in," +
-                             "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then 1 else 0 end end) as jun_out," +
-                             "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then 1 else 0 end end) as jul_in," +
-                             "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then 1 else 0 end end) as jul_out," +
-                             "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then 1 else 0 end end) as aug_in," +
-                             "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then 1 else 0 end end) as aug_out," +
-                             "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then 1 else 0 end end) as sep_in," +
-                             "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then 1 else 0 end end) as sep_out," +
-                             "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then 1 else 0 end end) as oct_in," +
-                             "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then 1 else 0 end end) as oct_out," +
-                             "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then 1 else 0 end end) as nov_in," +
-                             "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then 1 else 0 end end) as nov_out," +
-                             "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then 1 else 0 end end) as dec_in," +
-                             "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then 1 else 0 end end) as dec_out" +
-                             " from Quotation where department='" + department + "' group by department,sale_name order by department,sale_name ";
+                    command = @"with s1 as(select department,sale_name as sale, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then 1 else 0 end end) as jan_in, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then 1 else 0 end end) as jan_out, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then 1 else 0 end end) as feb_in, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then 1 else 0 end end) as feb_out, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then 1 else 0 end end) as mar_in, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then 1 else 0 end end) as mar_out, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then 1 else 0 end end) as apr_in, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then 1 else 0 end end) as apr_out, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then 1 else 0 end end) as may_in, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then 1 else 0 end end) as may_out, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then 1 else 0 end end) as jun_in, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then 1 else 0 end end) as jun_out, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then 1 else 0 end end) as jul_in, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then 1 else 0 end end) as jul_out, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then 1 else 0 end end) as aug_in, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then 1 else 0 end end) as aug_out, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then 1 else 0 end end) as sep_in, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then 1 else 0 end end) as sep_out, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then 1 else 0 end end) as oct_in, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then 1 else 0 end end) as oct_out, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then 1 else 0 end end) as nov_in, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then 1 else 0 end end) as nov_out, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then 1 else 0 end end) as dec_in, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then 1 else 0 end end) as dec_out " +
+                            "from Quotation where department='" + department + "' group by department,sale_name union all " +
+
+                            "select(department + ' Total') as department,'' as sale, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then 1 else 0 end end) as jan_in, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then 1 else 0 end end) as jan_out, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then 1 else 0 end end) as feb_in, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then 1 else 0 end end) as feb_out, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then 1 else 0 end end) as mar_in, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then 1 else 0 end end) as mar_out, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then 1 else 0 end end) as apr_in, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then 1 else 0 end end) as apr_out, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then 1 else 0 end end) as may_in, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then 1 else 0 end end) as may_out, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then 1 else 0 end end) as jun_in, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then 1 else 0 end end) as jun_out, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then 1 else 0 end end) as jul_in, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then 1 else 0 end end) as jul_out, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then 1 else 0 end end) as aug_in, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then 1 else 0 end end) as aug_out, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then 1 else 0 end end) as sep_in, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then 1 else 0 end end) as sep_out, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then 1 else 0 end end) as oct_in, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then 1 else 0 end end) as oct_out, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then 1 else 0 end end) as nov_in, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then 1 else 0 end end) as nov_out, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then 1 else 0 end end) as dec_in, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then 1 else 0 end end) as dec_out " +
+                            "from Quotation where department='" + department + "' group by department union all " +
+
+                            "select 'Total' as department,'' as sale, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then 1 else 0 end end) as jan_in, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then 1 else 0 end end) as jan_out, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then 1 else 0 end end) as feb_in, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then 1 else 0 end end) as feb_out, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then 1 else 0 end end) as mar_in, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then 1 else 0 end end) as mar_out, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then 1 else 0 end end) as apr_in, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then 1 else 0 end end) as apr_out, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then 1 else 0 end end) as may_in, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then 1 else 0 end end) as may_out, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then 1 else 0 end end) as jun_in, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then 1 else 0 end end) as jun_out, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then 1 else 0 end end) as jul_in, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then 1 else 0 end end) as jul_out, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then 1 else 0 end end) as aug_in, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then 1 else 0 end end) as aug_out, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then 1 else 0 end end) as sep_in, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then 1 else 0 end end) as sep_out, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then 1 else 0 end end) as oct_in, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then 1 else 0 end end) as oct_out, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then 1 else 0 end end) as nov_in, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then 1 else 0 end end) as nov_out, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then 1 else 0 end end) as dec_in, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then 1 else 0 end end) as dec_out " +
+                            "from Quotation where department='" + department + "') " +
+                            "select* from s1 order by s1.department ";
                 }
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();

@@ -157,7 +157,7 @@ namespace WebForecastReport.Controllers
             Accessory.InsertEndUser(enduser);
 
             //update log expected order date
-            if (old_expected_order_date != expected_order_date)
+            if (old_expected_order_date != expected_order_date && old_expected_order_date != null)
             {
                 Log_ExpectedModel log = new Log_ExpectedModel()
                 {
