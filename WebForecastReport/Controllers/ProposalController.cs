@@ -30,7 +30,10 @@ namespace WebForecastReport.Controllers
                 users = Accessory.getAllUser();
                 UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name, department = s.department, role = s.role }).FirstOrDefault();
 
-                u.role = "";
+                HttpContext.Session.SetString("Role", u.role);
+                HttpContext.Session.SetString("Name", u.name);
+                HttpContext.Session.SetString("Department", u.department);
+                //u.role = "";
                 if (u.role != "Admin")  //  add propersal
                 {
                     List<string> quotation = new List<string>();
@@ -61,14 +64,28 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetUserEngineering()
+        {
+            List<string> users = new List<string>();
+            users = Accessory.getAllUser().Where(w => w.group.Trim() == "Engineer").Select(s => s.name).ToList();
+            return Json(users);
+        }
+
+        [HttpPost]
+        public JsonResult GetUserPPC()
+        {
+            List<string> users = new List<string>();
+            users = Accessory.getAllUser().Where(w => w.department == "PPC").Select(s => s.name).ToList();
+            return Json(users);
+        }
+
+        [HttpPost]
         public JsonResult GetData(string name, string role)
         {
             List<ProposalModel> proposals = new List<ProposalModel>();
             proposals = Proposal.getProposals(name, role);
 
-            List<string> persons = new List<string>();
-            persons = Accessory.getAllUser().Select(w => w.name).ToList();
-            var list = new { proposals = proposals, persons = persons };
+            var list = new { proposals = proposals };
             return Json(list);
         }
         [HttpPost]
@@ -76,6 +93,31 @@ namespace WebForecastReport.Controllers
         {
             string dept = Accessory.getAllUser().Where(w => w.name == name).Select(s => s.department).FirstOrDefault();
             return Json(dept);
+        }
+
+        [HttpPost]
+        public JsonResult Update(string quotation, string request_date, string proposal_status, string revision, string propose_cost, string quoted_price,
+                    string gp, string finish_date, string engineering_request, string ppc_request, string person_in_charge)
+        {
+            ProposalModel proposal = new ProposalModel()
+            {
+                quotation = new QuotationModel()
+                {
+                    quotation_no = quotation
+                },
+                request_date = request_date,
+                proposal_status = proposal_status,
+                proposal_revision = revision,
+                proposal_cost = propose_cost,
+                proposal_quoted_price = quoted_price,
+                gp = gp,
+                finish_date = finish_date,
+                engineering_request = engineering_request,
+                ppc_request = ppc_request,
+                person_in_charge = person_in_charge
+            };
+            string message = Proposal.Update(proposal);
+            return Json(message);
         }
     }
 }

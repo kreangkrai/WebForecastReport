@@ -197,9 +197,7 @@ namespace WebForecastReport.Service
             try
             {
                 SqlDataReader reader;
-                SqlCommand cmd = new SqlCommand(@"UPDATE Proposal SET proposal_created_by='" + model.proposal_created_by + "'," +
-                                                                      "proposal_department='" + model.proposal_department + "'," +
-                                                                      "request_date='" + model.request_date + "'," +
+                SqlCommand cmd = new SqlCommand(@"UPDATE Proposal SET request_date='" + model.request_date + "'," +
                                                                       "proposal_status='" + model.proposal_status + "'," +
                                                                       "proposal_revision='" + model.proposal_revision + "'," +
                                                                       "proposal_cost='" + model.proposal_cost + "'," +
@@ -222,7 +220,7 @@ namespace WebForecastReport.Service
                                                                       "WHERE quotation_no='" + model.quotation.quotation_no + "'");
                 cmdquotation.CommandType = CommandType.Text;
                 cmdquotation.Connection = ConnectSQL.OpenConnect();
-                readerquptation = cmd.ExecuteReader();
+                readerquptation = cmdquotation.ExecuteReader();
                 readerquptation.Close();
 
                 return "Update Success";

@@ -65,6 +65,9 @@
     var Persons = [];
     var person_name = [];
 
+    var state_engineering = false;
+    var state_ppc = false;
+
         $(document).ready(function () {
            init();
         });
@@ -79,10 +82,6 @@
                     name, role
                 },
                 success: function (response) {
-
-                    var persons = response.persons;
-                    Persons = add_person(persons);
-
                     var datas = response.proposals;
                     var dataSet = [];
                      for (var i = 0; i < datas.length; i++) {
@@ -131,6 +130,16 @@
             table_person(dataSet);
         };
 
+        function init_view_person(){
+            var dataSet = [];
+            for (var i = 0;i<person_name.length;i++){
+                var data = [person_name[i]];
+
+                dataSet.push(data);
+            }
+            table_view_person(dataSet);
+        };
+
         function init_type(){
             var dataSet = [];
             for (var i = 0;i<Product_Types.length;i++){
@@ -139,8 +148,19 @@
                 dataSet.push(data);
             }
             table_type(dataSet);
-        }
-         var tables;
+        };
+
+        function init_view_type(){
+            var dataSet = [];
+            for (var i = 0;i<Product_Types.length;i++){
+                var data = [Product_Types[i],Types[i],Brands[i],Total_Values[i]];
+
+                dataSet.push(data);
+            }
+            table_view_type(dataSet);
+        };
+
+        var tables;
         function table(dataSet) {
             if (tables !== undefined)
                 tables.destroy();
@@ -224,10 +244,30 @@
             },300);
         };
 
+        var tables_view_person;
+        function table_view_person(dataSet){
+            setTimeout(function () {
+                if (tables_view_person !== undefined)
+                    tables_view_person.destroy();
+                    tables_view_person = $('#table_proposal_view').DataTable({
+                    data: dataSet,
+                    columns: [
+                        { title: "Name"},
+                    ],
+                    "columnDefs": [
+                    ],
+                    "scrollX": true,
+                    "paging": false,
+                    "searching": false,
+                    "bInfo": false,
+                });
+                $(tables_view_person.table().body()).addClass('text-dark');
+            },300);
+        };
         var tables_type;
         function table_type(dataSet){
             setTimeout(function () {
-            if (tables_person !== undefined)
+            if (tables_type !== undefined)
                 tables_type.destroy();
                 tables_type = $('#table_type').DataTable({
                 data: dataSet,
@@ -242,13 +282,39 @@
                     }
                 ],
                 "scrollX": true,
-                 "paging": false,
-                  "searching": false,
-                   "bInfo": false,
+                "paging": false,
+                "searching": false,
+                "bInfo": false,
             });
             $(tables_type.table().body()).addClass('text-dark');
             },300);
-        }
+        };
+
+        var tables_view_type;
+        function table_view_type(dataSet){
+            setTimeout(function () {
+            if (tables_view_type !== undefined)
+                tables_view_type.destroy();
+                tables_view_type = $('#table_view_type').DataTable({
+                data: dataSet,
+                columns: [
+                    { title: "Product Type"},
+                    { title: "Type"},
+                    { title: "Brand"},
+                    { title: "Total Value"},
+                ],
+                "columnDefs": [
+                    {
+                    }
+                ],
+                "scrollX": true,
+                "paging": false,
+                "searching": false,
+                "bInfo": false,
+            });
+            $(tables_view_type.table().body()).addClass('text-dark');
+            },300);
+        };
 
 
         $('#table_proposal').on('click','tbody td',function(){
@@ -304,23 +370,25 @@
                  document.getElementById("edit_finish_date").value = finish_date;
                  if (chk_engineering_request == "Yes"){
                       document.getElementById("chk_engineering_request").checked = true;
+                      init_engineer();
                  }else{
                      document.getElementById("chk_engineering_request").checked = false;
                  }
                  if(chk_ppc_request == "Yes"){
                       document.getElementById("chk_ppc_request").checked = true;
+                      init_ppc();
                  }else{
                      document.getElementById("chk_ppc_request").checked = false;
                  }
 
-                  $('#select_persons').empty();
+                 $('#select_persons').empty();
                   var selectPerson = document.getElementById('select_persons');
                   for (var i = 0, l = Persons.length; i < l; i++) {
                     var option = Persons[i];
                     selectPerson.options.add(new Option(option.text, option.value, option.selected));
                     }
 
-                    document.getElementById('select_persons').selectedIndex = -1;
+                     document.getElementById('select_persons').selectedIndex = -1;
 
                      person_name = [];
                      Product_Types = [];
@@ -353,7 +421,66 @@
                  $('#modal_proposal').modal('show');
              }
              if(column == 1){ //view
-             $('#modal_view_proposal').modal('show');
+                document.getElementById("view_quotation_quotation_no").value = quotation_no;
+                 document.getElementById("view_quotation_quotation_craeted_date").value = quotation_craeted_date;
+                 document.getElementById("view_customer").value = customer;
+                 document.getElementById("view_quotation_enduser").value = enduser;
+                 document.getElementById("view_quotation_project_name").value = project_name ;
+                 document.getElementById("view_quotation_project_location").value = project_location;
+                 document.getElementById("view_quotation_expected_order_date").value = expected_order_date;
+                 document.getElementById("view_quotation_request_onsite").value = required_onsite;
+                 document.getElementById("view_quotation_proposed_by").value = propose_by;
+                 document.getElementById("view_quotation_proposal_expected_date").value = proposal_expected_date;
+                 document.getElementById("view_request_date").value = proposal_request_date;
+
+                 document.getElementById("view_proposal_status").value = proposal_status;
+                 var index_proposal_status = Proposal_Status.indexOf(proposal_status);
+                 document.getElementById('view_proposal_status').selectedIndex = index_proposal_status;
+
+                 document.getElementById("view_quotation_revision").value = revision;
+                 document.getElementById("view_propose_cost").value = propose_cost;
+                 document.getElementById("view_quotation_quoted_price").value = quoted_price;
+                 document.getElementById("view_gp").value = gp;
+                 document.getElementById("view_finish_date").value = finish_date;
+                 if (chk_engineering_request == "Yes"){
+                      document.getElementById("view_chk_engineering_request").checked = true;
+                 }else{
+                     document.getElementById("view_chk_engineering_request").checked = false;
+                 }
+                 if(chk_ppc_request == "Yes"){
+                      document.getElementById("view_chk_ppc_request").checked = true;
+                 }else{
+                     document.getElementById("view_chk_ppc_request").checked = false;
+                 }
+
+                 person_name = [];
+                 Product_Types = [];
+                 Types = [];
+                 Brands = [];
+                 Total_Values = [];
+
+                    var count = (person_in_charge.match(/\|/g) || []).length;
+                    for (var i = 0; i <= count; i++) {
+                        if (person_in_charge != "") {
+                            person_name.push(person_in_charge.split('|')[i]);
+                        }
+                    }
+
+                    var count_brand = (brands.match(/\|/g) || []).length;
+                    for (var i=0;i<=count_brand;i++){
+                        if(product_type != ""){
+                            Product_Types.push(product_type);
+                            Types.push(types.split('|')[i]);
+                            Brands.push(brands.split('|')[i]);
+                            Total_Values.push(total_value.split('|')[i]);
+                        }
+                    }
+
+                    //init table view type
+                    init_view_type();
+                    // init table view person
+                    init_view_person();
+                $('#modal_view_proposal').modal('show');
              }
         });
         $('#table_proposal_edit').on('click','tbody td',function(){
@@ -375,15 +502,6 @@
         $('#add_person').on('click',function(){
             var name = document.getElementById("select_persons").value;
             add_person_in_charge(name);
-
-            //init table person
-            init_person();
-        });
-        $('#clear_person').on('click',function(){
-            clearr_person_in_charge();
-
-            //clear table person
-             init_person();
         });
 
         $('#edit_propose_cost').on('change',function(){
@@ -398,7 +516,63 @@
         });
 
         $('#editProposalConfirm').on('click',function(){
-            alert("xx");
+             var quotation = document.getElementById("edit_quotation_quotation_no").value;
+             var request_date = document.getElementById("edit_request_date").value;
+             var proposal_status = document.getElementById("edit_proposal_status").value;
+             var revision = document.getElementById("edit_quotation_revision").value;
+             var propose_cost = document.getElementById("edit_propose_cost").value;
+             var quoted_price = document.getElementById("edit_quotation_quoted_price").value;
+             var gp = document.getElementById("edit_gp").value;
+             var finish_date = document.getElementById("edit_finish_date").value;
+             var engineering_request = "";
+             if(document.getElementById("chk_engineering_request").checked == true){
+                 engineering_request = "Yes";
+             }else{
+                  engineering_request = "No";
+             }
+             var ppc_request = "";
+             if(document.getElementById("chk_ppc_request").checked == true){
+                 ppc_request = "Yes";
+             }else{
+                  ppc_request = "No";
+             }
+             var person_in_charge = person_name.join('|');
+
+             $.ajax({
+                url: '@Url.Action("Update", "Proposal")',
+                type: "post",
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    quotation,request_date,proposal_status,revision,propose_cost,quoted_price,
+                    gp,finish_date,engineering_request,ppc_request,person_in_charge
+                },
+                success: function (response) {
+                    if (response == "Update Success") {
+                    toastr.success("Update Success");
+                    location.reload(); //reload page
+                    } else {
+                        toastr.error("Update Failed");
+                    }
+                }
+             });
+              $('#modal_proposal').modal('hide');
+        });
+
+        $('#chk_engineering_request').on('change',function(){
+            document.getElementById("chk_engineering_request").checked = true;
+            document.getElementById("chk_ppc_request").checked = false;
+            clear_person_in_charge();
+
+            init_engineer();
+        });
+
+        $('#chk_ppc_request').on('change',function(){
+            document.getElementById("chk_engineering_request").checked = false;
+            document.getElementById("chk_ppc_request").checked = true;
+            clear_person_in_charge();
+
+            init_ppc();
+
         });
         function add_person(persons) {
             var data_persons = [];
@@ -420,14 +594,62 @@
             var chkName = person_name.indexOf(name);
             if (chkName == -1 && name !== ""){
                 person_name.push(name);
+
+                //init table person
+                init_person();
             }
         };
-        function clearr_person_in_charge(){
+        function clear_person_in_charge(){
              person_name = [];
+             //init table person
+             init_person();
         };
         function numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         };
+        function init_engineer(){
+            $.ajax({
+                url: '@Url.Action("GetUserEngineering", "Proposal")',
+                type: "post",
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                },
+                success: function (response) {
+                    Persons = add_person(response);
 
+                    $('#select_persons').empty();
+                    var selectPerson = document.getElementById('select_persons');
+                    selectPerson.options.add(new Option("Please Select", "", true));
+                    for (var i = 0, l = Persons.length; i < l; i++) {
+                        var option = Persons[i];
+                        selectPerson.options.add(new Option(option.text, option.value, option.selected));
+                    }
+                    document.getElementById("select_persons").options[0].disabled = true;
+                    document.getElementById('select_persons').selectedIndex = 0;
+                }
+            });
+        };
+        function init_ppc(){
+            $.ajax({
+                url: '@Url.Action("GetUserPPC", "Proposal")',
+                type: "post",
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                },
+                success: function (response) {
+                    Persons = add_person(response);
+
+                    $('#select_persons').empty();
+                    var selectPerson = document.getElementById('select_persons');
+                    selectPerson.options.add(new Option("Please Select", "", true));
+                    for (var i = 0, l = Persons.length; i < l; i++) {
+                         var option = Persons[i];
+                         selectPerson.options.add(new Option(option.text, option.value, option.selected));
+                    }
+                    document.getElementById("select_persons").options[0].disabled = true;
+                    document.getElementById('select_persons').selectedIndex = 0;
+                }
+            });
+        };
 </script>
 }

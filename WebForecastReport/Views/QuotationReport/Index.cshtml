@@ -3,8 +3,13 @@
     ViewData["Title"] = "Quotation Report";
 }
 <style>
-    .highlight{
-        font-weight:bold;
+    .highlight {
+        font-weight: bold;
+    }
+
+    .dataTables_scrollHeadInner,
+    .table {
+        width: 100% !important;
     }
 </style>
 <div class="row p-3">
@@ -48,7 +53,7 @@
                             </div>
                         </div>
                         <div class="col-md-12 col-xl-12">
-                            <table id="table_department" class="table table-xl cell-border  table-dark  table-bordered display responsive nowrap" style="overflow-x:scroll" width="100%">
+                            <table id="table_department" class="table table-xl cell-border table-dark  table-bordered display text-center responsive nowrap" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th rowspan="3" style="text-align:center;vertical-align:middle">Department</th>
@@ -120,7 +125,7 @@
                             </div>
                         </div>
                         <div class="col-md-12 col-xl-12">
-                            <table id="table_quarter" class="table table-xl cell-border  table-dark  table-bordered display responsive nowrap" style="overflow-x:scroll" width="100%">
+                            <table id="table_quarter" class="table-xl cell-border  table-dark  table-bordered display responsive nowrap " style="width:100%">
                                 <thead>
                                     <tr>
                                         <th rowspan="3" style="text-align:center;vertical-align:middle">Department</th>
@@ -342,7 +347,7 @@
 
         var tables_department;
         function tableDepartment(dataSet) {
-
+            setTimeout(()=>{
                 if (tables_department !== undefined)
                 tables_department.destroy();
             tables_department = $('#table_department').DataTable({
@@ -369,12 +374,14 @@
             });
 
             $(tables_department.table().body()).addClass('text-dark');
+            },100);
+
         };
 
 
          var tables_quarter;
         function tableQuarter(dataSet) {
-
+            setTimeout(()=>{
                 if (tables_quarter !== undefined)
                 tables_quarter.destroy();
             tables_quarter = $('#table_quarter').DataTable({
@@ -399,8 +406,10 @@
                 "bInfo": false,
                 "scrollX": true,
             });
-
             $(tables_quarter.table().body()).addClass('text-dark');
+            },100);
+
+
     };
         function add_department(departments) {
             var data_departments = [];
