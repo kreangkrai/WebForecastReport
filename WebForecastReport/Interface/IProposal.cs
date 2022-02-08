@@ -13,5 +13,7 @@ namespace WebForecastReport.Interface
         string Update(ProposalModel model);
 
         List<string> chkQuotation(string name, string role);
+        List<string> chkForUpdate(string name, string role);
+        string UpdateName(List<string> quotations, string name);
     }
 }

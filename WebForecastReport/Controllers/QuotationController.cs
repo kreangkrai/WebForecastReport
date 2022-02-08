@@ -90,7 +90,18 @@ namespace WebForecastReport.Controllers
             //get all sale
             List<string> sales = new List<string>();
             sales.Add("");
-            sales.AddRange(Accessory.getAllUser().Select(s => s.name).ToList());
+            if (role == "Admin")
+            {
+                sales.AddRange(Accessory.getAllUser().Select(s => s.name).ToList());
+            }
+            else if (role != "Admin" && role != "" && role != null)
+            {
+                sales.AddRange(Accessory.getAllUser().Where(w => w.department == role).Select(s => s.name).ToList());
+            }
+            else
+            {
+                sales.AddRange(Accessory.getAllUser().Where(s => s.name == name).Select(s => s.name).ToList());
+            }
 
             //get all customer
             List<string> customers = new List<string>();
@@ -112,9 +123,10 @@ namespace WebForecastReport.Controllers
             var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers, departments = departments, types = types, statepage = statePage };
             return Json(list);
         }
+
         [HttpPost]
         public JsonResult Update(string user, string quotation, string revision, string date, string customer, string enduser, string project_name, string site_location, string product_type, string type, string brand, string part_no,
-                    string spec, string quantity, string supplier_quotation_no, string total_value, string unit, string quoted_price, string expected_order_date, string old_expected_order_date,
+                   string spec, string quantity, string supplier_quotation_no, string total_value, string unit, string quoted_price, string expected_order_date, string old_expected_order_date,
                    string required_onsite_date, string proposer, string expected_date, string status, string stages, string stages_update_date, string how_to_support, string competitor, string competitor_description,
                    string competitor_price, string sale_name, string department, string detail)
         {

@@ -23,6 +23,8 @@ namespace WebForecastReport.Models
         public string loss_mb { get; set; }
         public string nogo_quo_cnt { get; set; }
         public string nogo_mb { get; set; }
+        public string pending_quo_cnt { get; set; }
+        public string pending_mb { get; set; }
 
 
     }

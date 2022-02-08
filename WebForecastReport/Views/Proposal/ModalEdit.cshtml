@@ -116,7 +116,7 @@
                                         <input id="edit_gp" type="number" class="form-control" />
                                     </div>
                                     <div class="col-4 d-flex align-items-end">
-                                        <label>%</label>
+                                        <label style="font-weight:bold">%</label>
                                     </div>
                                 </div>
                             </div>
@@ -129,39 +129,19 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-xl-3">
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" class="form-check-input" value="" id="chk_engineering_request">Engineering Request
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3">
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" class="form-check-input" value="" id="chk_ppc_request">PPC Request
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
                         <div class="col-12">
-                            <label for="table_proposal_edit">Person In Charge</label>
+                            <label for="table_proposal_edit">Engineering In Charge</label>
                             <div class="form-group row">
                                 <div class="col-md-3 col-xl-3 pt-1">
                                     <select class="form-control" id="select_persons">
                                         <option value="" disabled>Please Select</option>
                                     </select>
                                 </div>
-                                <div class="col-md-1 col-xl-1 pt-1">
-                                    <input type="button" class="btn btn-success form-control" id="add_person" value="ADD" disabled />
+                                <div class="col-md-2 col-xl-2 pt-1">
+                                    <input type="text" id="edit_department" class="form-control" disabled />
                                 </div>
-                                <div class="col-md-1 col-xl-1 pt-1" hidden>
-                                    <input type="button" id="clear_person" class="btn btn-warning form-control" value="Clear" hidden />
+                                <div class="col-md-2 col-xl-2 pt-1">
+                                    <input type="button" class="btn btn-success form-control" id="add_person" value="ADD" disabled />
                                 </div>
                             </div>
                             <table class="table table-md cell-border table-dark display responsive nowrap" id="table_proposal_edit" style="width:100%;overflow-x:auto">
@@ -302,22 +282,6 @@
                         <div class="col-md-3 col-xl-3">
                             <label for="view_finish_date">Finish Date</label>
                             <input id="view_finish_date" type="text" class="form-control" disabled />
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-3 col-xl-3">
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" value="" id="view_chk_engineering_request" disabled>Engineering Request
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-xl-3">
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" value="" id="view_chk_ppc_request" disabled>PPC Request
-                                </label>
-                            </div>
                         </div>
                     </div>
                     <div class="form-group row">

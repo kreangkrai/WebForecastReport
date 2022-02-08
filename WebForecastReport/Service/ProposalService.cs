@@ -11,6 +11,41 @@ namespace WebForecastReport.Service
 {
     public class ProposalService : IProposal
     {
+        public List<string> chkForUpdate(string name, string role)
+        {
+            List<string> proposals = new List<string>();
+            if (role != "Admin")
+            {
+                try
+                {
+                    SqlCommand cmd = new SqlCommand(@"select quotation_no as quotation,proposal_created_by as proposal_by from Proposal except
+                                                      select quotation_no as quotation,proposer from Quotation where proposer ='" + name + "'", ConnectSQL.OpenConnect());
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+
+                            proposals.Add(dr["quotation"].ToString());
+                        }
+                        dr.Close();
+                    }
+                    return proposals;
+                }
+                finally
+                {
+                    if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                    {
+                        ConnectSQL.CloseConnect();
+                    }
+                }
+            }
+            else
+            {
+                return proposals;
+            }
+        }
+
         public List<string> chkQuotation(string name, string role)
         {
             List<string> quotations = new List<string>();
@@ -18,8 +53,8 @@ namespace WebForecastReport.Service
             {
                 try
                 {
-                    SqlCommand cmd = new SqlCommand(@"select quotation_no,proposer from Quotation where proposer ='" + name + "' except " +
-                                                     "select quotation_no,proposal_created_by from Proposal where proposal_created_by='" + name + "'", ConnectSQL.OpenConnect());
+                    SqlCommand cmd = new SqlCommand(@"select quotation_no from Quotation where proposer ='" + name + "' except " +
+                                                     "select quotation_no from Proposal", ConnectSQL.OpenConnect());
                     SqlDataReader dr = cmd.ExecuteReader();
                     if (dr.HasRows)
                     {
@@ -81,9 +116,9 @@ namespace WebForecastReport.Service
                             proposal_quoted_price = dr["proposal_quoted_price"].ToString(),
                             gp = dr["gp"].ToString(),
                             finish_date = dr["finish_date"] != DBNull.Value ? Convert.ToDateTime(dr["finish_date"].ToString()).ToString("yyyy-MM-dd") : "",
-                            engineering_request = dr["engineering_request"].ToString(),
-                            ppc_request = dr["ppc_request"].ToString(),
-                            person_in_charge = dr["person_in_charge"].ToString(),
+                            engineer_in_charge = dr["engineer_in_charge"].ToString(),
+                            engineer_department = dr["engineer_department"].ToString(),
+                            man_hours = dr["man_hours"].ToString(),
                             quotation = new QuotationModel()
                             {
                                 quotation_no = dr["quotation_no"].ToString(),
@@ -204,9 +239,9 @@ namespace WebForecastReport.Service
                                                                       "proposal_quoted_price='" + model.proposal_quoted_price + "'," +
                                                                       "gp='" + model.gp + "'," +
                                                                       "finish_date='" + model.finish_date + "'," +
-                                                                      "engineering_request='" + model.engineering_request + "'," +
-                                                                      "ppc_request='" + model.ppc_request + "'," +
-                                                                      "person_in_charge='" + model.person_in_charge + "'" +
+                                                                      "engineer_in_charge='" + model.engineer_in_charge + "'" +
+                                                                      "engineer_department='" + model.engineer_department + "'" +
+                                                                      "man_hours='" + model.man_hours + "'" +
                                                                       "WHERE quotation_no='" + model.quotation.quotation_no + "'");
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = ConnectSQL.OpenConnect();
@@ -223,6 +258,36 @@ namespace WebForecastReport.Service
                 readerquptation = cmdquotation.ExecuteReader();
                 readerquptation.Close();
 
+                return "Update Success";
+            }
+            catch
+            {
+                return "Update Failed";
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public string UpdateName(List<string> quotations, string name)
+        {
+            try
+            {
+                //update name 
+                for (int i = 0; i < quotations.Count; i++)
+                {
+                    SqlDataReader readerquptation;
+                    SqlCommand cmdquotation = new SqlCommand(@"UPDATE Proposal SET proposal_created_by='" + name + "'" +
+                                                                          "WHERE quotation_no='" + quotations[i] + "'");
+                    cmdquotation.CommandType = CommandType.Text;
+                    cmdquotation.Connection = ConnectSQL.OpenConnect();
+                    readerquptation = cmdquotation.ExecuteReader();
+                    readerquptation.Close();
+                }
                 return "Update Success";
             }
             catch

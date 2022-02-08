@@ -132,6 +132,7 @@
 
                 //add sale to select
                 Sales = add_sale(response.sales);
+
                 Proposers = add_proposer(response.sales);
                 //add customer to datalist
                 Customers = add_customer(response.customers);
@@ -544,7 +545,7 @@
 
             //check state admin
             var role = '@Model.role';
-            if (role == "Admin") {
+            if (role == "Admin" || role != "") {
                 document.getElementById('edit_sale_name').disabled = false;
             } else {
                 document.getElementById('edit_sale_name').disabled = true;

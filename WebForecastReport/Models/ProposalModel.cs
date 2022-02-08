@@ -16,10 +16,9 @@ namespace WebForecastReport.Models
         public string proposal_quoted_price { get; set; }
         public string gp { get; set; }
         public string finish_date { get; set; }
-        public string engineering_request { get; set; }
-        public string ppc_request { get; set; }
-        public string person_in_charge { get; set; }
-
+        public string engineer_in_charge { get; set; }
+        public string engineer_department { get; set; }
+        public string man_hours { get; set; }
         public QuotationModel quotation { get; set; }
 
     }
