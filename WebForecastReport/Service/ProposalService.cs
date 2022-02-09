@@ -231,6 +231,15 @@ namespace WebForecastReport.Service
         {
             try
             {
+                string finish_date = "";
+                if (model.finish_date != null)
+                {
+                    finish_date = "finish_date='" + model.finish_date + "',";
+                }
+                else
+                {
+                    finish_date = "finish_date=NULL,";
+                }
                 SqlDataReader reader;
                 SqlCommand cmd = new SqlCommand(@"UPDATE Proposal SET request_date='" + model.request_date + "'," +
                                                                       "proposal_status='" + model.proposal_status + "'," +
@@ -238,10 +247,10 @@ namespace WebForecastReport.Service
                                                                       "proposal_cost='" + model.proposal_cost + "'," +
                                                                       "proposal_quoted_price='" + model.proposal_quoted_price + "'," +
                                                                       "gp='" + model.gp + "'," +
-                                                                      "finish_date='" + model.finish_date + "'," +
-                                                                      "engineer_in_charge='" + model.engineer_in_charge + "'" +
-                                                                      "engineer_department='" + model.engineer_department + "'" +
-                                                                      "man_hours='" + model.man_hours + "'" +
+                                                                      finish_date +
+                                                                      "engineer_in_charge='" + model.engineer_in_charge + "'," +
+                                                                      "engineer_department='" + model.engineer_department + "'," +
+                                                                      "man_hours='" + model.man_hours + "' " +
                                                                       "WHERE quotation_no='" + model.quotation.quotation_no + "'");
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = ConnectSQL.OpenConnect();

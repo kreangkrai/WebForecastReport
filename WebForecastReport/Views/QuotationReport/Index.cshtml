@@ -52,51 +52,49 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-xl-12">
+                        <div class="col-12">
                             <table id="table_department" class="table table-xl cell-border table-dark  table-bordered display text-center responsive nowrap" style="width:100%">
-                                <thead>
+                                <thead style="color:black">
                                     <tr>
-                                        <th rowspan="3" style="text-align:center;vertical-align:middle">Department</th>
-                                        <th rowspan="3" style="text-align:center;vertical-align:middle">Sale</th>
-                                        <th colspan="2" style="text-align:center">Quotation</th>
-                                        <th colspan="6" style="text-align:center">Description</th>
-                                        <th colspan="6" style="text-align:center">Status Quotation</th>
-                                        <th colspan="2" style="text-align:center">Pending</th>
+                                        <th rowspan="3" style="text-align:center;vertical-align:middle;background-color:#D9D9D9">Department</th>
+                                        <th rowspan="3" style="text-align:center;vertical-align:middle;background-color:#D9D9D9">Sale</th>
+                                        <th colspan="2" style="text-align:center;background-color:#D9D9D9">Quotation</th>
+                                        <th colspan="6" style="text-align:center;background-color:#ACB9CA">Description</th>
+                                        <th colspan="6" style="text-align:center;background-color:#D9D9D9">Status Quotation</th>
+                                        <th colspan="2" style="text-align:center;background-color:#2F75B5">Pending</th>
                                     </tr>
                                     <tr>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle">Quo.</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle">MB</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">Project</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">Product</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">Service</th>
-                                        <th colspan="2" style="text-align:center">Won</th>
-                                        <th colspan="2" style="text-align:center">Loss</th>
-                                        <th colspan="2" style="text-align:center">No go</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle">Quo.</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle">MB</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#D9D9D9">Quo.</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#D9D9D9">MB</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ACB9CA">Project</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ACB9CA">Product</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ACB9CA">Service</th>
+                                        <th colspan="2" style="text-align:center;background-color:#92D050">Won</th>
+                                        <th colspan="2" style="text-align:center;background-color:#F4B084">Loss</th>
+                                        <th colspan="2" style="text-align:center;background-color:#A9D08E">No go</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
                                     </tr>
                                     <tr>
-                                        <th style="text-align:center">Quo.</th>
-                                        <th style="text-align:center">MB</th>
-                                        <th style="text-align:center">Quo.</th>
-                                        <th style="text-align:center">MB</th>
-                                        <th style="text-align:center">Quo.</th>
-                                        <th style="text-align:center">MB</th>
-                                        <th style="text-align:center">Quo.</th>
-                                        <th style="text-align:center">MB</th>
-                                        <th style="text-align:center">Quo.</th>
-                                        <th style="text-align:center">MB</th>
-                                        <th style="text-align:center">Quo.</th>
-                                        <th style="text-align:center">MB</th>
+                                        <th style="text-align:center;background-color:#ACB9CA">Quo.</th>
+                                        <th style="text-align:center;background-color:#ACB9CA">MB</th>
+                                        <th style="text-align:center;background-color:#ACB9CA">Quo.</th>
+                                        <th style="text-align:center;background-color:#ACB9CA">MB</th>
+                                        <th style="text-align:center;background-color:#ACB9CA">Quo.</th>
+                                        <th style="text-align:center;background-color:#ACB9CA">MB</th>
+                                        <th style="text-align:center;background-color:#92D050">Quo.</th>
+                                        <th style="text-align:center;background-color:#92D050">MB</th>
+                                        <th style="text-align:center;background-color:#F4B084">Quo.</th>
+                                        <th style="text-align:center;background-color:#F4B084">MB</th>
+                                        <th style="text-align:center;background-color:#A9D08E">Quo.</th>
+                                        <th style="text-align:center;background-color:#A9D08E">MB</th>
 
                                     </tr>
                                 </thead>
                             </table>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
         <div class="tab-pane fade" id="report_quarter" role="tabpanel" aria-labelledby="profile-tab">
@@ -128,69 +126,93 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-xl-12">
+                        <div class="col-12" id="chkGroup" hidden>
+                            <div class="form-group row">
+                                <div class="col-3">
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <input type="checkbox" id="chkQ1" />
+                                            <label>Q1</label>
+                                        </div>
+                                        <div class="col-2">
+                                            <input type="checkbox" id="chkQ2" />
+                                            <label>Q2</label>
+                                        </div>
+                                        <div class="col-2">
+                                            <input type="checkbox" id="chkQ3" />
+                                            <label>Q3</label>
+                                        </div>
+                                        <div class="col-2">
+                                            <input type="checkbox" id="chkQ4" />
+                                            <label>Q4</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
                             <table id="table_quarter" class="table-xl cell-border  table-dark  table-bordered display responsive nowrap " style="width:100%">
-                                <thead>
+                                <thead style="color:black;background-color:#2F75B5">
                                     <tr>
                                         <th rowspan="3" style="text-align:center;vertical-align:middle">Department</th>
                                         <th rowspan="3" style="text-align:center;vertical-align:middle">Sale</th>
-                                        <th colspan="8" style="text-align:center">Q1</th>
-                                        <th colspan="8" style="text-align:center">Q2</th>
-                                        <th colspan="8" style="text-align:center">Q3</th>
-                                        <th colspan="8" style="text-align:center">Q4</th>
+                                        <th colspan="8" style="text-align:center;background-color:#EFF5EC">Q1</th>
+                                        <th colspan="8" style="text-align:center;background-color:#C7D0C4">Q2</th>
+                                        <th colspan="8" style="text-align:center;background-color:#BCD9B2">Q3</th>
+                                        <th colspan="8" style="text-align:center;background-color:#ADE3DF">Q4</th>
 
                                     </tr>
                                     <tr>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">January</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">February</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">March</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">Total Q1</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">April</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">May</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">June</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">Total Q2</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">July</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">August</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">September</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">Total Q3</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">October</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">November</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">December</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle">Total Q4</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#EFF5EC">January</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#EFF5EC">February</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#EFF5EC">March</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#EFF5EC">Total Q1</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#C7D0C4">April</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#C7D0C4">May</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#C7D0C4">June</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#C7D0C4">Total Q2</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#BCD9B2">July</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#BCD9B2">August</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#BCD9B2">September</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#BCD9B2">Total Q3</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">October</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">November</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">December</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">Total Q4</th>
                                     </tr>
                                     <tr>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle">IN</th>
-                                        <th style="text-align:center;vertical-align:middle">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">OUT</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">IN</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">OUT</th>
 
                                     </tr>
                                 </thead>
@@ -209,6 +231,13 @@
 <script type="text/javascript">
     var Departments = [];
     var Years = [];
+    var columnQ1 = [2,3,4,5,6,7];
+    var columnQ2 = [10,11,12,13,14,15];
+    var columnQ3 = [18,19,20,21,22,23];
+    var columnQ4 = [26,27,28,29,30,31];
+    var temp_dataset_quarter = [];
+    var hide_column = columnQ1.concat(columnQ2).concat(columnQ3).concat(columnQ4);
+
         $(document).ready(function () {
             init();
             document.getElementById("table_department").hidden = true;
@@ -259,6 +288,7 @@
            });
     $('#btnquarter_OK').on('click', function () {
         document.getElementById("table_quarter").hidden = false;
+        document.getElementById("chkGroup").hidden = false;
             var department = document.getElementById("quarter_department").value;
             var year = document.getElementById("quarter_year").value;
                $.ajax({
@@ -312,6 +342,7 @@
 
                            dataSet.push(data);
                        }
+                       temp_dataset_quarter = dataSet;
                        tableQuarter(dataSet);
                    }
                });
@@ -321,10 +352,22 @@
                var month = document.getElementById("month").value;
                location.href = '@Url.Action("DownloadXlsxReportDepartment", "QuotationReport")?department='+department+'&month='+month;
            });
-            $('#export_quarter').on('click',function(){
+           $('#export_quarter').on('click',function(){
                var department = document.getElementById("quarter_department").value;
                var year = document.getElementById("quarter_year").value;
                location.href = '@Url.Action("DownloadXlsxReportQuarter", "QuotationReport")?department='+department+'&year='+year;
+           });
+           $('#chkQ1').on('change',function(){
+               hide_column_quarter();
+           });
+            $('#chkQ2').on('change',function(){
+               hide_column_quarter();
+           });
+            $('#chkQ3').on('change',function(){
+               hide_column_quarter();
+           });
+            $('#chkQ4').on('change',function(){
+               hide_column_quarter();
            });
         function init() {
 
@@ -363,7 +406,7 @@
                         document.getElementById('quarter_year').selectedIndex = 0;
                    }
                });
-           };
+        };
 
         var tables_department;
         function tableDepartment(dataSet) {
@@ -395,11 +438,8 @@
 
             $(tables_department.table().body()).addClass('text-dark');
             },100);
-
         };
-
-
-         var tables_quarter;
+        var tables_quarter;
         function tableQuarter(dataSet) {
             setTimeout(()=>{
                 if (tables_quarter !== undefined)
@@ -410,6 +450,11 @@
                     {
                         "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,30,31,32,33],
                         "className": "text-center",
+                    },
+                    {
+                        "targets": hide_column,
+                        "visible": false,
+                        "searchable": false
                     },
                 ],
                 "createdRow": function (row, data, index) {
@@ -428,9 +473,7 @@
             });
             $(tables_quarter.table().body()).addClass('text-dark');
             },100);
-
-
-    };
+        };
         function add_department(departments) {
             var data_departments = [];
             for (var i = 0; i < departments.length; i++) {
@@ -456,6 +499,30 @@
             }
 
             return data_years;
+        };
+        function hide_column_quarter(){
+               hide_column = [];
+               var chkQ1 = document.getElementById("chkQ1").checked;
+               var chkQ2 = document.getElementById("chkQ2").checked;
+               var chkQ3 = document.getElementById("chkQ3").checked;
+               var chkQ4 = document.getElementById("chkQ4").checked;
+
+
+               if(chkQ1 == false){
+                  hide_column =  hide_column.concat(columnQ1);
+               }
+               if(chkQ2 == false){
+                   hide_column = hide_column.concat(columnQ2);
+               }
+               if(chkQ3 == false){
+                   hide_column = hide_column.concat(columnQ3);
+               }
+               if(chkQ4 == false){
+                  hide_column = hide_column.concat(columnQ4);
+               }
+
+               // show column
+               tableQuarter(temp_dataset_quarter);
         };
 </script>
 }

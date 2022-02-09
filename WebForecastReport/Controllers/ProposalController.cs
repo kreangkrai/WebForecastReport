@@ -33,7 +33,7 @@ namespace WebForecastReport.Controllers
                 HttpContext.Session.SetString("Role", u.role);
                 HttpContext.Session.SetString("Name", u.name);
                 HttpContext.Session.SetString("Department", u.department);
-                // u.role = "";
+                //u.role = "";
                 if (u.role != "Admin")  //  add propersal
                 {
                     List<string> quotations = new List<string>();
@@ -68,7 +68,8 @@ namespace WebForecastReport.Controllers
         public JsonResult GetUserEngineering()
         {
             List<string> users = new List<string>();
-            users = Accessory.getAllUser().Where(w => w.group.Trim() == "Engineer").Select(s => s.name).ToList();
+            users.Add("Please Select");
+            users.AddRange(Accessory.getAllUser().Where(w => w.group.Trim() == "Engineer").Select(s => s.name).ToList());
             return Json(users);
         }
 
@@ -79,7 +80,8 @@ namespace WebForecastReport.Controllers
             proposals = Proposal.getProposals(name, role);
 
             List<string> users = new List<string>();
-            users = Accessory.getAllUser().Where(w => w.group == "Engineer").Select(s => s.name).ToList();
+            users.Add("Please Select");
+            users.AddRange(Accessory.getAllUser().Where(w => w.group == "Engineer").Select(s => s.name).ToList());
             var list = new { proposals = proposals, users = users };
 
             return Json(list);

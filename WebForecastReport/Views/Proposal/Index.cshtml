@@ -83,10 +83,7 @@
                 },
                 success: function (response) {
                     var datas = response.proposals;
-                    var users =response.users;
-
-                    //Add Person
-                    init_engineer();
+                    //var users =response.users;
 
                     var dataSet = [];
                      for (var i = 0; i < datas.length; i++) {
@@ -227,7 +224,7 @@
                 data: dataSet,
                 columns: [
                     { title: ""},
-                    { title: "Name"},
+                    { title: "Engineer"},
                     { title: "Department"},
                     { title: "Man Hours"},
                 ],
@@ -257,7 +254,7 @@
                     tables_view_person = $('#table_proposal_view').DataTable({
                     data: dataSet,
                     columns: [
-                        { title: "Name"},
+                        { title: "Engineer"},
                         { title: "Department"},
                         { title: "Man Hours"},
                     ],
@@ -377,14 +374,11 @@
                  document.getElementById("edit_gp").value = gp;
                  document.getElementById("edit_finish_date").value = finish_date;
 
-                 $('#select_persons').empty();
-                  var selectPerson = document.getElementById('select_persons');
-                  for (var i = 0, l = Persons.length; i < l; i++) {
-                    var option = Persons[i];
-                    selectPerson.options.add(new Option(option.text, option.value, option.selected));
-                    }
+                 document.getElementById("edit_department").value = "";
+                 document.getElementById("add_person").disabled = true;
 
-                     document.getElementById('select_persons').selectedIndex = -1;
+                 //Add Person
+                 init_engineer();
 
                      person_name = [];
                      person_department = [];
@@ -421,7 +415,7 @@
                  $('#modal_proposal').modal('show');
              }
              if(column == 1){ //view
-                document.getElementById("view_quotation_quotation_no").value = quotation_no;
+                 document.getElementById("view_quotation_quotation_no").value = quotation_no;
                  document.getElementById("view_quotation_quotation_craeted_date").value = quotation_craeted_date;
                  document.getElementById("view_customer").value = customer;
                  document.getElementById("view_quotation_enduser").value = enduser;
@@ -451,30 +445,30 @@
                  Brands = [];
                  Total_Values = [];
 
-                    var count = (engineer_in_charge.match(/\|/g) || []).length;
-                    for (var i = 0; i <= count; i++) {
-                        if (engineer_in_charge != "") {
-                            person_name.push(engineer_in_charge.split('|')[i]);
-                            person_department.push(engineer_department.split('|')[i]);
-                            person_man_hours.push(man_hours.split('|')[i]);
-                        }
-                    }
+                 var count = (engineer_in_charge.match(/\|/g) || []).length;
+                 for (var i = 0; i <= count; i++) {
+                     if (engineer_in_charge != "") {
+                         person_name.push(engineer_in_charge.split('|')[i]);
+                         person_department.push(engineer_department.split('|')[i]);
+                         person_man_hours.push(man_hours.split('|')[i]);
+                     }
+                 }
 
-                    var count_brand = (brands.match(/\|/g) || []).length;
-                    for (var i=0;i<=count_brand;i++){
-                        if(product_type != ""){
-                            Product_Types.push(product_type);
-                            Types.push(types.split('|')[i]);
-                            Brands.push(brands.split('|')[i]);
-                            Total_Values.push(total_value.split('|')[i]);
-                        }
-                    }
+                 var count_brand = (brands.match(/\|/g) || []).length;
+                 for (var i=0;i<=count_brand;i++){
+                     if(product_type != ""){
+                         Product_Types.push(product_type);
+                         Types.push(types.split('|')[i]);
+                         Brands.push(brands.split('|')[i]);
+                         Total_Values.push(total_value.split('|')[i]);
+                     }
+                 }
 
-                    //init table view type
-                    init_view_type();
-                    // init table view person
-                    init_view_person();
-                $('#modal_view_proposal').modal('show');
+                 //init table view type
+                 init_view_type();
+                 // init table view person
+                 init_view_person();
+                 $('#modal_view_proposal').modal('show');
              }
         });
         $('#table_proposal_edit').on('click','tbody td',function(){
@@ -572,6 +566,8 @@
         };
         function romove_person(index){
             person_name.splice(index, 1);
+            person_department.splice(index, 1);
+            person_man_hours.splice(index, 1);
         };
         function add_person_in_charge(name,department,man_hour){
             var chkName = person_name.indexOf(name);
@@ -582,11 +578,6 @@
                 //init table person
                 init_person();
             }
-        };
-        function clear_person_in_charge(){
-             person_name = [];
-             //init table person
-             init_person();
         };
         function numberWithCommas(x) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -603,7 +594,6 @@
 
                     $('#select_persons').empty();
                     var selectPerson = document.getElementById('select_persons');
-                    selectPerson.options.add(new Option("Please Select", "", true));
                     for (var i = 0, l = Persons.length; i < l; i++) {
                         var option = Persons[i];
                         selectPerson.options.add(new Option(option.text, option.value, option.selected));
