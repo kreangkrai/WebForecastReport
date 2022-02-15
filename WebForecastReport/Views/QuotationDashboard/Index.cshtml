@@ -5,13 +5,29 @@
 <div class="container-fluid" style="padding-top:10px">
     <div class="row">
         <div class="col-12">
-            <div class="card bg-dark" style="height:390px">
-                <div class="card-header">
-                    <span class="card-title">Chart</span>
+            <div class="row">
+                <div class="col-md-6 col-xl-6">
+                    <div class="card bg-dark" style="height:390px">
+                        <div class="card-header">
+                            <span class="card-title">Chart</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="w-100 h-100">
+                                <canvas id="pie_chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="w-100 h-100">
-                        <canvas id="pie_chart"></canvas>
+                <div class="col-md-6 col-xl-6">
+                    <div class="card bg-dark" style="height:390px">
+                        <div class="card-header">
+                            <span class="card-title">Chart</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="w-100 h-100">
+                                <canvas id="doughnut_chart"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -38,6 +54,7 @@
 <script type="text/javascript">
      $(document).ready(function () {
          UpdatePieChart();
+         UpdateDoughnutChart();
          UpdateLineChart();
      });
 
@@ -54,7 +71,7 @@
         var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
         var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
 
-        pie_kg_cylinders = new Chart("pie_chart", {
+        new Chart("pie_chart", {
             type: "pie",
             data: {
                 datasets: [
@@ -88,19 +105,67 @@
             }
         });
     };
+    var Doughnut_chart;
+    function UpdateDoughnutChart() {
 
-     var line_chart;
-        function UpdateLineChart() {
+        if (Doughnut_chart != null)
+            Doughnut_chart.destroy();
+
+        var datas = [1,2,3,4,5,6,7,8];
+
+        var departments = [ "A", "B", "C", "D","E", "F", "G", "H" ];
+
+        var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
+        var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
+
+        new Chart("doughnut_chart", {
+            type: "doughnut",
+            data: {
+                datasets: [
+                    {
+                        data: datas,
+                        backgroundColor: bg_colors,
+                        borderColor: border_colors,
+                        borderWidth: 2,
+                    }
+                ],
+                labels: departments
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: false,
+                        text: '100 Kg Cylinders',
+                    },
+                    legend: {
+                        position: 'right',
+                        display: true,
+                        labels: {
+                            color: '#FFFFFFC8',
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                },
+                maintainAspectRatio: false,
+            }
+        });
+    };
+
+    var line_chart;
+    function UpdateLineChart() {
             if (line_chart != null)
                 line_chart.destroy();
 
             var date = ["2022-01-01","2022-01-02","2022-01-03","2022-01-04","2022-01-05","2022-01-06","2022-01-07","2022-01-08"];
             var data1 = [1,2,3,4,5,6,7,8];
             var data2 = [2,4,3,8,9,1,2,5];
+            var data3 = [9,1,1,5,7,3,1,9];
 
 
 
-            line_chart = new Chart("line_chart", {
+            new Chart("line_chart", {
                 type: "line",
                 data: {
                     datasets: [
@@ -123,7 +188,17 @@
                             pointRadius: 2,
                             label: 'Data2',
                             fill: false
-                        }
+                        },
+                        {
+                            type: 'line',
+                            data: data3,
+                            backgroundColor: ['rgba(55,85,150,0.75)'],
+                            borderColor: ['rgba(55,85,150,1)'],
+                            borderWidth: 2,
+                            pointRadius: 2,
+                            label: 'Data3',
+                            fill: false
+                        },
                     ],
                     labels: date
                 },
@@ -176,6 +251,6 @@
                     }
                 }
             });
-        };
+    };
 </script>
 }
