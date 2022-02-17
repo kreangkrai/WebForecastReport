@@ -1,0 +1,555 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Home";
+}
+<div class="row pt-3">
+    <div class="col-md-12 col-xl-12">
+        <ul class="nav nav-tabs pb-2" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="tab-a" data-toggle="tab" href="#dashboard_a" role="tab" aria-controls="dashboard_a" aria-selected="true"><b>XXXX</b></a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="tab-b" data-toggle="tab" href="#dashboard_b" role="tab" aria-controls="dashboard_b" aria-selected="false"><b>YYYY</b></a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content container-fluid" id="myTabContent">
+        <div class="tab-pane fade show active " id="dashboard_a" role="tabpanel" aria-labelledby="home-tab">
+            <div class="row pt-3">
+                <div class="col-md-6 col-xl-6">
+                    <div class="row">
+                        <div class="col-md-4 col-xl-4 pb-3">
+                            <select id="quarter_department" class="form-control">
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-xl-3 pb-4">
+                            <button type="button" id="btnquarter_OK" class="btn btn-primary form-control">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card bg-dark" style="height:500px">
+                                <div class="card-header">
+                                    <span class="card-title">Chart</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="w-90 h-90 pt-5">
+                                        <canvas id="pie_chart1"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card bg-dark" style="height:500px">
+                                <div class="card-header">
+                                    <span class="card-title">Chart</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-xl-12">
+                                            <div class="pt-3">
+                                                <canvas id="pie_chart2" style="width:80px;height:100%"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-xl-12">
+                                            <div class="pt-5">
+                                                <canvas id="pie_chart3" style="width:80px;height:100%"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card bg-dark" style="height:500px">
+                                <div class="card-header">
+                                    <span class="card-title">Chart</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-xl-12">
+                                            <div class="pt-3">
+                                                <canvas id="pie_chart4" style="width:100%;height:100%"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-xl-12">
+                                            <div class="pt-5">
+                                                <canvas id="pie_chart5" style="width:100%;height:100%"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card bg-dark" style="height:500px">
+                                <div class="card-header">
+                                    <span class="card-title">Chart</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-xl-12">
+                                            <div class="w-100 h-100">
+                                                <canvas id="pie_chart6"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-xl-8">
+                            <div class="card bg-dark" style="height:auto">
+                                <div class="card-header">
+                                    <span class="card-title">Chart</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 col-xl-6 pt-3">
+                                            <div class="w-100">
+                                                <canvas id="pie_chart7" style="height:350px"></canvas>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6 pt-2">
+                                            <div style="overflow:auto; height:400px">
+                                                <table id="table_quarter" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">
+                                                    <thead style="color:black;background-color:#2F75B5;">
+                                                        <tr>
+                                                            <th style="text-align:center">Quotation</th>
+                                                            <th style="text-align:center">Quotation</th>
+                                                            <th style="text-align:center">Quotation</th>
+                                                            <th style="text-align:center">Quotation</th>
+                                                            <th style="text-align:center">Quotation</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Tiger Nixon</td>
+                                                            <td>System Architect</td>
+                                                            <td>Edinburgh</td>
+                                                            <td>61</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Tiger Nixon</td>
+                                                            <td>System Architect</td>
+                                                            <td>Edinburgh</td>
+                                                            <td>61</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Tiger Nixon</td>
+                                                            <td>System Architect</td>
+                                                            <td>Edinburgh</td>
+                                                            <td>61</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Tiger Nixon</td>
+                                                            <td>System Architect</td>
+                                                            <td>Edinburgh</td>
+                                                            <td>61</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Tiger Nixon</td>
+                                                            <td>System Architect</td>
+                                                            <td>Edinburgh</td>
+                                                            <td>61</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Tiger Nixon</td>
+                                                            <td>System Architect</td>
+                                                            <td>Edinburgh</td>
+                                                            <td>61</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Tiger Nixon</td>
+                                                            <td>System Architect</td>
+                                                            <td>Edinburgh</td>
+                                                            <td>61</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Tiger Nixon</td>
+                                                            <td>System Architect</td>
+                                                            <td>Edinburgh</td>
+                                                            <td>61</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Tiger Nixon</td>
+                                                            <td>System Architect</td>
+                                                            <td>Edinburgh</td>
+                                                            <td>61</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Tiger Nixon</td>
+                                                            <td>System Architect</td>
+                                                            <td>Edinburgh</td>
+                                                            <td>61</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="dashboard_b" role="tabpanel" aria-labelledby="home-tab">
+            <div class="row">
+                <div class="col-12">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+<script type="text/javascript">
+    $(document).ready(function () {
+             UpdatePieChart1();
+              UpdatePieChart2();
+               UpdatePieChart3();
+               UpdatePieChart4();
+               UpdatePieChart5();
+               UpdatePieChart6();
+                UpdatePieChart7();
+         });
+        var pie_chart;
+        function UpdatePieChart1() {
+
+            if (pie_chart != null)
+                pie_chart.destroy();
+
+            var datas = [1,2,3,4,5,6,7,8];
+
+            var departments = [ "A", "B", "C", "D","E", "F", "G", "H" ];
+
+            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
+            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
+
+            new Chart("pie_chart1", {
+                type: "pie",
+                data: {
+                    datasets: [
+                        {
+                            data: datas,
+                            backgroundColor: bg_colors,
+                            borderColor: border_colors,
+                            borderWidth: 2,
+                        }
+                    ],
+                    labels: departments
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'ALL',
+                        },
+                        legend: {
+                            position: 'right',
+                            display: true,
+                            labels: {
+                                color: '#FFFFFFC8',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    },
+                    maintainAspectRatio: false,
+                }
+            });
+        };
+        function UpdatePieChart2() {
+
+            if (pie_chart != null)
+                pie_chart.destroy();
+
+            var datas = [1,2,3,4,5,6,7,8];
+
+            var departments = [ "A", "B", "C", "D","E", "F", "G", "H" ];
+
+            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
+            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
+
+            new Chart("pie_chart2", {
+                type: "pie",
+                data: {
+                    datasets: [
+                        {
+                            data: datas,
+                            backgroundColor: bg_colors,
+                            borderColor: border_colors,
+                            borderWidth: 2,
+                        }
+                    ],
+                    labels: departments
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Won',
+                        },
+                        legend: {
+                            position: 'right',
+                            display: true,
+                            labels: {
+                                color: '#FFFFFFC8',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    },
+                    maintainAspectRatio: false,
+                }
+            });
+        };
+        function UpdatePieChart3() {
+
+            if (pie_chart != null)
+                pie_chart.destroy();
+
+            var datas = [1,2,3,4,5,6,7,8];
+
+            var departments = [ "A", "B", "C", "D","E", "F", "G", "H" ];
+
+            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
+            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
+
+            new Chart("pie_chart3", {
+                type: "pie",
+                data: {
+                    datasets: [
+                        {
+                            data: datas,
+                            backgroundColor: bg_colors,
+                            borderColor: border_colors,
+                            borderWidth: 2,
+                        }
+                    ],
+                    labels: departments
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Loss',
+                        },
+                        legend: {
+                            position: 'right',
+                            display: true,
+                            labels: {
+                                color: '#FFFFFFC8',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    },
+                    maintainAspectRatio: false,
+                }
+            });
+        };
+         function UpdatePieChart4() {
+
+            if (pie_chart != null)
+                pie_chart.destroy();
+
+            var datas = [1,2,3,4,5,6,7,8];
+
+            var departments = [ "A", "B", "C", "D","E", "F", "G", "H" ];
+
+            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
+            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
+
+            new Chart("pie_chart4", {
+                type: "pie",
+                data: {
+                    datasets: [
+                        {
+                            data: datas,
+                            backgroundColor: bg_colors,
+                            borderColor: border_colors,
+                            borderWidth: 2,
+                        }
+                    ],
+                    labels: departments
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Pending',
+                        },
+                        legend: {
+                            position: 'right',
+                            display: true,
+                            labels: {
+                                color: '#FFFFFFC8',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    },
+                    maintainAspectRatio: false,
+                }
+            });
+        };
+        function UpdatePieChart5() {
+
+            if (pie_chart != null)
+                pie_chart.destroy();
+
+            var datas = [1,2,3,4,5,6,7,8];
+
+            var departments = [ "A", "B", "C", "D","E", "F", "G", "H" ];
+
+            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
+            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
+
+            new Chart("pie_chart5", {
+                type: "pie",
+                data: {
+                    datasets: [
+                        {
+                            data: datas,
+                            backgroundColor: bg_colors,
+                            borderColor: border_colors,
+                            borderWidth: 2,
+                        }
+                    ],
+                    labels: departments
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'No go',
+                        },
+                        legend: {
+                            position: 'right',
+                            display: true,
+                            labels: {
+                                color: '#FFFFFFC8',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    },
+                    maintainAspectRatio: false,
+                }
+            });
+        };
+        function UpdatePieChart6() {
+
+            if (pie_chart != null)
+                pie_chart.destroy();
+
+            var datas = [1,2,3,4,5,6,7,8];
+
+            var departments = [ "A", "B", "C", "D","E", "F", "G", "H" ];
+
+            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
+            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
+
+            new Chart("pie_chart6", {
+                type: "pie",
+                data: {
+                    datasets: [
+                        {
+                            data: datas,
+                            backgroundColor: bg_colors,
+                            borderColor: border_colors,
+                            borderWidth: 2,
+                        }
+                    ],
+                    labels: departments
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'No go',
+                        },
+                        legend: {
+                            position: 'right',
+                            display: true,
+                            labels: {
+                                color: '#FFFFFFC8',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    },
+                    maintainAspectRatio: false,
+                }
+            });
+        };
+        function UpdatePieChart7() {
+
+            if (pie_chart != null)
+                pie_chart.destroy();
+
+            var datas = [1,2,3,4,5,6,7,8];
+
+            var departments = [ "A", "B", "C", "D","E", "F", "G", "H" ];
+
+            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
+            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
+
+            new Chart("pie_chart7", {
+                type: "bar",
+                data: {
+                    datasets: [
+                        {
+                            data: datas,
+                            backgroundColor: bg_colors,
+                            borderColor: border_colors,
+                            borderWidth: 2,
+                        }
+                    ],
+                    labels: departments
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: false,
+                            text: 'No go',
+                        },
+                        legend: {
+                            position: 'top',
+                            display: true,
+                            labels: {
+                                color: '#FFFFFFC8',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    },
+                    maintainAspectRatio: false,
+                }
+            });
+        };
+
+</script>
+}
