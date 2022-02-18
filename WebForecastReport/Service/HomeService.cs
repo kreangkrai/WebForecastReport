@@ -74,7 +74,7 @@ namespace WebForecastReport.Service
 		                                            stages,
 		                                            DATEDIFF(Day, stages_update_date,getDate()) as day
 	                                            from Quotation 
-	                                            where sale_name = '" + name + "' and stages <> '' ) as s1 " +
+	                                            where sale_name = '" + name + "' and stages not in ('','Closed(Won)','Closed(Lost)','No go')) as s1 " +
                                                "group by s1.sale_name", ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
@@ -113,7 +113,7 @@ namespace WebForecastReport.Service
                                                     stages,
                                                     stages_update_date 
                                                     from Quotation 
-                                                    where sale_name = '" + sale_name + "' and DATEDIFF(day,stages_update_date,getDate()) " + day, ConnectSQL.OpenConnect());
+                                                    where sale_name = '" + sale_name + "' and stages not in ('','Closed(Won)','Closed(Lost)','No go') and DATEDIFF(day,stages_update_date,getDate()) " + day, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -123,7 +123,7 @@ namespace WebForecastReport.Service
                         {
                             quotation_no = dr["quotation_no"].ToString(),
                             stages = dr["stages"].ToString(),
-                            stages_update_date = dr["stages_update_date"].ToString()
+                            stages_update_date = dr["stages_update_date"] != DBNull.Value ? Convert.ToDateTime(dr["stages_update_date"].ToString()).ToString("yyyy-MM-dd") : "",
                         };
                         stages.Add(p);
                     }

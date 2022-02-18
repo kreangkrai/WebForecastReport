@@ -2,14 +2,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Home";
 }
+<style>
+    .dataTables_scrollHeadInner,
+    .table {
+        width: 100% !important;
+    }
+</style>
 <div class="row pt-3">
     <div class="col-md-12 col-xl-12">
         <ul class="nav nav-tabs pb-2" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="tab-a" data-toggle="tab" href="#dashboard_a" role="tab" aria-controls="dashboard_a" aria-selected="true"><b>XXXX</b></a>
+                <a class="nav-link active" id="tab-a" data-toggle="tab" href="#dashboard_a" role="tab" aria-controls="dashboard_a" aria-selected="true"><b>Dashboard</b></a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="tab-b" data-toggle="tab" href="#dashboard_b" role="tab" aria-controls="dashboard_b" aria-selected="false"><b>YYYY</b></a>
+                <a class="nav-link" id="tab-b" data-toggle="tab" href="#dashboard_b" role="tab" aria-controls="dashboard_b" aria-selected="false"><b>---</b></a>
             </li>
         </ul>
     </div>
@@ -97,7 +103,7 @@
                         <div class="col-md-4 col-xl-4">
                             <div class="card bg-dark" style="height:500px">
                                 <div class="card-header">
-                                    <span class="card-title">Chart</span>
+                                    <span class="card-title">Stages</span>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
@@ -113,7 +119,7 @@
                         <div class="col-md-8 col-xl-8">
                             <div class="card bg-dark" style="height:auto">
                                 <div class="card-header">
-                                    <span class="card-title">Chart</span>
+                                    <span class="card-title">Stages Day</span>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
@@ -124,14 +130,7 @@
                                         </div>
                                         <div class="col-md-6 col-xl-6 pt-2">
                                             <div style="overflow:auto; height:400px">
-                                                <table id="table_stages" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">
-                                                    <thead style="color:black;background-color:#2F75B5;">
-                                                        <tr>
-                                                            <th style="text-align:center">Quotation</th>
-                                                            <th style="text-align:center">Stages</th>
-                                                            <th style="text-align:center">Stages Date</th>
-                                                        </tr>
-                                                    </thead>                                                   
+                                                <table id="table_stages" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">                                                  
                                                 </table>
                                             </div>
                                         </div>
@@ -237,7 +236,8 @@
                 }
             });
          };
-         $('#btn_OK').on('click',function(){
+        $('#btn_OK').on('click', function () {
+            $("#table_stages").empty();
              var name = document.getElementById("sale_name").value;
              pie_chart_data(name);
          });
@@ -727,7 +727,7 @@
                         position: 'left',
                         type: 'linear',
                         scaleLabel: { display: true, labelString: 'Count' },
-                        gridLines: { display: true, color: "rgba(255,99,164,0.2)" },
+                        gridLines: { display: true, color: "rgba(255,255,164,0.9)" },
                         ticks: { min: 0, beginAtZero: true },
                     }],
                     xAxes: [{
@@ -809,7 +809,11 @@
                 tables.destroy();
             tables = $('#table_stages').DataTable({
                 data: dataSet,
-                
+                columns: [
+                    { title: "Quotation"},
+                    { title: "Stages"},
+                    { title: "Stages Date" },
+                ],
                 "columnDefs": [
                     {
                         "targets": [0, 1, 2],
@@ -817,7 +821,7 @@
                         
                     },
                 ],
-                "paging": true,
+                "paging": false,
                 "searching": false,
                 "bInfo": false,
                 "scrollX": true,
