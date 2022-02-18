@@ -11,6 +11,7 @@ namespace WebForecastReport.Interface
         List<string> GetDepartmentOfQuotation();
         List<SaleModel> getSale();
         List<UserModel> getAllUser();
+        List<SaleModel> getUserQuotation();
         string InsertCustomer(string customer);
         List<CustomerModel> getCustomers();
         string InsertEndUser(string enduser);

@@ -13,9 +13,11 @@ namespace WebForecastReport.Controllers
     public class HomeController : Controller
     {
         readonly IAccessory Accessory;
+        readonly IHome Home;
         public HomeController()
         {
             Accessory = new AccessoryService();
+            Home = new HomeService();
         }
         public IActionResult Index()
         {
@@ -36,6 +38,44 @@ namespace WebForecastReport.Controllers
             {
                 return RedirectToAction("Index", "Account");
             }
+        }
+
+        [HttpPost]
+        public JsonResult GetUser(string name, string department, string role)
+        {
+            List<SaleModel> sales = new List<SaleModel>();
+
+            if (role == "Admin")
+            {
+                sales = Accessory.getUserQuotation();
+            }
+            else if (role != "Admin" || role != "" || role != null) //Manager or admin department
+            {
+                sales = Accessory.getUserQuotation().Where(w => w.department == department).ToList();
+            }
+            else // sale
+            {
+                sales = Accessory.getUserQuotation().Where(w => w.name == name).ToList();
+            }
+
+            return Json(sales);
+        }
+
+        [HttpPost]
+        public JsonResult GetData(string name)
+        {
+            List<Home_DataModel> datas = new List<Home_DataModel>();
+            datas = Home.getData(name);
+
+            List<Home_StagesModel> stages = new List<Home_StagesModel>();
+            stages = Home.getDataStages(name);
+
+            Home_DayModel day = new Home_DayModel();
+            day = Home.getDataDay(name);
+
+            var list = new { datas = datas, stages = stages, day = day };
+
+            return Json(list);
         }
     }
 }

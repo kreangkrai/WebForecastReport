@@ -19,26 +19,26 @@
                 <div class="col-md-6 col-xl-6">
                     <div class="row">
                         <div class="col-md-4 col-xl-4 pb-3">
-                            <select id="quarter_department" class="form-control">
+                            <select id="sale_name" class="form-control">
                             </select>
                         </div>
                         <div class="col-md-3 col-xl-3 pb-4">
-                            <button type="button" id="btnquarter_OK" class="btn btn-primary form-control">OK</button>
+                            <button type="button" id="btn_OK" class="btn btn-primary form-control">OK</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-12">
+                <div class="col-md-12 col-xl-12">
                     <div class="row">
                         <div class="col-md-4 col-xl-4">
                             <div class="card bg-dark" style="height:500px">
                                 <div class="card-header">
-                                    <span class="card-title">Chart</span>
+                                    <span class="card-title">Type</span>
                                 </div>
                                 <div class="card-body">
                                     <div class="w-90 h-90 pt-5">
-                                        <canvas id="pie_chart1"></canvas>
+                                        <canvas id="pie_chart_type"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -46,20 +46,20 @@
                         <div class="col-md-4 col-xl-4">
                             <div class="card bg-dark" style="height:500px">
                                 <div class="card-header">
-                                    <span class="card-title">Chart</span>
+                                    <span class="card-title">Won - Lost</span>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-12 col-xl-12">
-                                            <div class="pt-3">
-                                                <canvas id="pie_chart2" style="width:80px;height:100%"></canvas>
+                                            <div class="pt-1">
+                                                <canvas id="pie_chart_won" style="width:200px;height:200px"></canvas>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 col-xl-12">
-                                            <div class="pt-5">
-                                                <canvas id="pie_chart3" style="width:80px;height:100%"></canvas>
+                                            <div class="pt-1">
+                                                <canvas id="pie_chart_lost" style="width:200px;height:200px"></canvas>
                                             </div>
                                         </div>
                                     </div>
@@ -69,20 +69,20 @@
                         <div class="col-md-4 col-xl-4">
                             <div class="card bg-dark" style="height:500px">
                                 <div class="card-header">
-                                    <span class="card-title">Chart</span>
+                                    <span class="card-title">No go - Pending</span>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-12 col-xl-12">
-                                            <div class="pt-3">
-                                                <canvas id="pie_chart4" style="width:100%;height:100%"></canvas>
+                                            <div class="pt-1">
+                                                <canvas id="pie_chart_nogo" style="width:200px;height:200px"></canvas>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 col-xl-12">
-                                            <div class="pt-5">
-                                                <canvas id="pie_chart5" style="width:100%;height:100%"></canvas>
+                                            <div class="pt-1">
+                                                <canvas id="pie_chart_pending" style="width:200px;height:200px"></canvas>
                                             </div>
                                         </div>
                                     </div>
@@ -92,7 +92,7 @@
                     </div>
                 </div>
 
-                <div class="col-12">
+                <div class="col-md-12 col-xl-12">
                     <div class="row">
                         <div class="col-md-4 col-xl-4">
                             <div class="card bg-dark" style="height:500px">
@@ -103,7 +103,7 @@
                                     <div class="row">
                                         <div class="col-md-12 col-xl-12">
                                             <div class="w-100 h-100">
-                                                <canvas id="pie_chart6"></canvas>
+                                                <canvas id="pie_chart_stages"></canvas>
                                             </div>
                                         </div>
                                     </div>
@@ -216,31 +216,270 @@
     </div>
 </div>
 @section Scripts
-{
+    {
 <script type="text/javascript">
+    var Sales = [];
+    var Datas = [];
+    var Data_Stages = [];
+    var Data_Stages_Day = [];
+
+    var product = "0";
+    var project = "0";
+    var service = "0";
+
+    var won_product = "0";
+    var won_project = "0";
+    var won_service = "0";
+
+    var lost_product = "0";
+    var lost_project = "0";
+    var lost_service = "0";
+
+    var nogo_product = "0";
+    var nogo_project = "0";
+    var nogo_service = "0";
+
+    var pending_product = "0";
+    var pending_project = "0";
+    var pending_service = "0";
+
+    var stages_won = "0";
+    var stages_lost = "0";
+    var stages_negotiation_review = "0";
+    var stages_nogo = "0";
+    var stages_quote_for_buddget = "0";
+    var stages_proposal = "0";
+    var stages_perspectng = "0";
+
+    var day_7 = "0";
+    var day_14 = "0";
+    var day_30 = "0";
+    var day_60 = "0";
+    var day_90 = "0";
+
+    var pie_chart_type;
+    var pie_chart_won;
+
+
     $(document).ready(function () {
-             UpdatePieChart1();
-              UpdatePieChart2();
-               UpdatePieChart3();
-               UpdatePieChart4();
-               UpdatePieChart5();
-               UpdatePieChart6();
-                UpdatePieChart7();
+        init();
+    });
+
+         function init(){
+             var name = '@Model.name';
+             var role = '@Model.role';
+             var department = '@Model.department';
+             $.ajax({
+                url: '@Url.Action("GetUser", "Home")',
+                type: "post",
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    name,department, role
+                },
+                success: function (response) {
+
+                    Sales = add_sale(response);
+
+                    $('#sale_name').empty();
+                    var selectsale = document.getElementById('sale_name');
+                    for (var i = 0, l = Sales.length; i < l; i++) {
+                        var option = Sales[i];
+                        selectsale.options.add(new Option(option.text, option.value, option.selected));
+                    }
+                    var index_sale = Sales.map(function (e) { return e.value; }).indexOf(name);
+                    if(role == "Admin"){
+                        document.getElementById('sale_name').selectedIndex = 0;
+                    }else{
+                        document.getElementById('sale_name').selectedIndex = index_sale;
+                    }
+
+
+                    //draw pie chart
+                    var name = document.getElementById("sale_name").value;
+                    pie_chart_data(name);
+
+                }
+            });
+         };
+         $('#btn_OK').on('click',function(){
+             var name = document.getElementById("sale_name").value;
+             pie_chart_data(name);
          });
-        var pie_chart;
-        function UpdatePieChart1() {
+         function pie_chart_data(name){
+             $.ajax({
+                url: '@Url.Action("GetData", "Home")',
+                type: "post",
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    name
+                },
+                success: function (response) {
+                    Datas = response.datas;
+                    Data_Stages = response.stages;
+                    Data_Stages_Day = response.day;
 
-            if (pie_chart != null)
-                pie_chart.destroy();
+                    product = "0";
+                    project = "0";
+                    service = "0";
 
-            var datas = [1,2,3,4,5,6,7,8];
+                    var _product = Datas.find(x=> x.type === "Product" && x.stages === "");
+                    var _project = Datas.find(x=> x.type === "Project" && x.stages === "");
+                    var _service = Datas.find(x=> x.type === "Service" && x.stages === "");
+                    if (typeof _product !== 'undefined' ){
+                        product =  _product.mb;
+                    }
+                    if (typeof _project !== 'undefined' ){
+                        project =  _project.mb;
+                    }
+                    if (typeof _service !== 'undefined' ){
+                        service =  _service.mb;
+                    }
 
-            var departments = [ "A", "B", "C", "D","E", "F", "G", "H" ];
+                    // draw Won
 
-            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
-            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
+                    won_product = "0";
+                    won_project = "0";
+                    won_service = "0";
 
-            new Chart("pie_chart1", {
+                    var _won_product = Datas.find(x=>x.type ==="Product" && x.stages === "Closed(Won)");
+                    var _won_project = Datas.find(x=>x.type ==="Project" && x.stages === "Closed(Won)");
+                    var _won_service = Datas.find(x=>x.type ==="Service" && x.stages === "Closed(Won)");
+
+
+                    if (typeof _won_product !== 'undefined' ){
+                        won_product = _won_product.mb;
+                    }
+                    if (typeof _won_project !== 'undefined' ){
+                        won_project = _won_project.mb;
+                    }
+                    if (typeof _won_service !== 'undefined' ){
+                        won_service = _won_service.mb;
+                    }
+
+                    //draw lost
+
+                    lost_product = "0";
+                    lost_project = "0";
+                    lost_service = "0";
+
+                    var _lost_product = Datas.find(x=>x.type ==="Product" && x.stages === "Closed(Lost)");
+                    var _lost_project = Datas.find(x=>x.type ==="Project" && x.stages === "Closed(Lost)");
+                    var _lost_service = Datas.find(x=>x.type ==="Service" && x.stages === "Closed(Lost)");
+
+                    if (typeof _lost_product !== 'undefined' ){
+                        lost_product = _lost_product.mb;
+                    }
+                    if (typeof _lost_project !== 'undefined' ){
+                        lost_project = _lost_project.mb;
+                    }
+                    if (typeof _lost_service !== 'undefined' ){
+                        lost_service = _lost_service.mb;
+                    }
+
+                    // draw nogo
+
+                    nogo_product = "0";
+                    nogo_project = "0";
+                    nogo_service = "0";
+
+                    var _nogo_product = Datas.find(x=>x.type ==="Product" && x.stages === "No go");
+                    var _nogo_project = Datas.find(x=>x.type ==="Project" && x.stages === "No go");
+                    var _nogo_service = Datas.find(x=>x.type ==="Service" && x.stages === "No go");
+
+                    if(typeof _nogo_product !== 'undefined' ){
+                        nogo_product = _nogo_product.mb;
+                    }
+                    if(typeof _nogo_project !== 'undefined' ){
+                        nogo_project = _nogo_project.mb;
+                    }
+                    if(typeof _nogo_service !== 'undefined' ){
+                        nogo_service = _nogo_service.mb;
+                    }
+
+
+                    //draw pending
+
+                    pending_product = "0";
+                    pending_project = "0";
+                    pending_service = "0";
+
+                    var _pending_product = Datas.find(x=>x.type ==="Product" && x.stages === "Pending");
+                    var _pending_project = Datas.find(x=>x.type ==="Project" && x.stages === "Pending");
+                    var _pending_service = Datas.find(x=>x.type ==="Service" && x.stages === "Pending");
+
+                    if(typeof _pending_product !== 'undefined' ){
+                        pending_product = _pending_product.mb;
+                    }
+                    if(typeof _pending_project !== 'undefined' ){
+                        pending_project = _pending_project.mb;
+                    }
+                    if(typeof _pending_service !== 'undefined' ){
+                        pending_service = _pending_service.mb;
+                    }
+
+
+                    // draw all stages
+                    stages_won = "0";
+                    stages_lost = "0";
+                    stages_negotiation_review = "0";
+                    stages_nogo = "0";
+                    stages_quote_for_buddget = "0";
+                    stages_proposal = "0";
+                    stages_perspectng = "0";
+
+                    var _stages_won = Data_Stages.find(x=>x.stages ==="Closed (Won)");
+                    var _stages_lost = Data_Stages.find(x=>x.stages ==="Closed (Lost)");
+                    var _stages_negotiation_review = Data_Stages.find(x=>x.stages ==="Negotiation/Review");
+                    var _stages_nogo = Data_Stages.find(x=>x.stages ==="No go");
+                    var _stages_quote_for_buddget = Data_Stages.find(x=>x.stages ==="Quote for Budget");
+                    var _stages_proposal = Data_Stages.find(x=>x.stages ==="Proposal/Quote for Order");
+                    var _stages_perspectng = Data_Stages.find(x=>x.stages ==="Prospecting");
+
+                    if(typeof _stages_won !== 'undefined' ){
+                        stages_won = _stages_won.mb;
+                    }
+                    if(typeof _stages_lost !== 'undefined' ){
+                        stages_lost = _stages_lost.mb;
+                    }
+                    if(typeof _stages_negotiation_review !== 'undefined' ){
+                        stages_negotiation_review = _stages_negotiation_review.mb;
+                    }
+                    if(typeof _stages_nogo !== 'undefined' ){
+                        stages_nogo = _stages_nogo.mb;
+                    }
+                    if(typeof _stages_quote_for_buddget !== 'undefined' ){
+                        stages_quote_for_buddget = _stages_quote_for_buddget.mb;
+                    }
+                    if(typeof _stages_proposal !== 'undefined' ){
+                        stages_proposal = _stages_proposal.mb;
+                    }
+                    if(typeof _stages_perspectng !== 'undefined' ){
+                        stages_perspectng = _stages_perspectng.mb;
+                    }
+
+                     UpdatePieChartType();
+                     UpdatePieChartWon();
+                     UpdatePieChartLost();
+                     UpdatePieChartNogo();
+                     UpdatePieChartPending();
+                     UpdatePieChartStages();
+                }
+             });
+         };
+
+        function UpdatePieChartType() {
+            setTimeout(()=>{
+                if (pie_chart_type != null)
+                pie_chart_type.destroy();
+
+            var datas = [product,project,service];
+
+            var type = [ "Product", "Project", "Service"];
+
+            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8'];
+            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF'];
+
+            pie_chart_type = new Chart("pie_chart_type", {
                 type: "pie",
                 data: {
                     datasets: [
@@ -251,7 +490,7 @@
                             borderWidth: 2,
                         }
                     ],
-                    labels: departments
+                    labels: type
                 },
                 options: {
                     plugins: {
@@ -273,20 +512,24 @@
                     maintainAspectRatio: false,
                 }
             });
+            },200);
+
         };
-        function UpdatePieChart2() {
 
-            if (pie_chart != null)
-                pie_chart.destroy();
 
-            var datas = [1,2,3,4,5,6,7,8];
+        function UpdatePieChartWon() {
+            setTimeout(()=>{
+                 if (pie_chart_won != null)
+                pie_chart_won.destroy();
 
-            var departments = [ "A", "B", "C", "D","E", "F", "G", "H" ];
+            var datas = [won_product,won_project,won_service];
 
-            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
-            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
+            var type = [ "Product", "Project", "Service"];
 
-            new Chart("pie_chart2", {
+            var bg_colors = ['#3DE513', '#25930A', '#4D8340'];
+            var border_colors = ['#3DE513', '#25930A', '#4D8340'];
+
+            pie_chart_won = new Chart("pie_chart_won", {
                 type: "pie",
                 data: {
                     datasets: [
@@ -297,7 +540,7 @@
                             borderWidth: 2,
                         }
                     ],
-                    labels: departments
+                    labels: type
                 },
                 options: {
                     plugins: {
@@ -319,20 +562,23 @@
                     maintainAspectRatio: false,
                 }
             });
+            },300);
+
         };
-        function UpdatePieChart3() {
+        var pie_chart_lost;
+        function UpdatePieChartLost() {
 
-            if (pie_chart != null)
-                pie_chart.destroy();
+            if (pie_chart_lost != null)
+                pie_chart_lost.destroy();
 
-            var datas = [1,2,3,4,5,6,7,8];
+            var datas = [lost_product,lost_project,lost_service];
 
-            var departments = [ "A", "B", "C", "D","E", "F", "G", "H" ];
+            var type = [ "Product", "Project", "Service"];
 
-            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
-            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
+            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8'];
+            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF'];
 
-            new Chart("pie_chart3", {
+            pie_chart_lost = new Chart("pie_chart_lost", {
                 type: "pie",
                 data: {
                     datasets: [
@@ -343,13 +589,13 @@
                             borderWidth: 2,
                         }
                     ],
-                    labels: departments
+                    labels: type
                 },
                 options: {
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Loss',
+                            text: 'Lost',
                         },
                         legend: {
                             position: 'right',
@@ -366,19 +612,22 @@
                 }
             });
         };
-         function UpdatePieChart4() {
 
-            if (pie_chart != null)
-                pie_chart.destroy();
 
-            var datas = [1,2,3,4,5,6,7,8];
+        var pie_chart_nogo;
+        function UpdatePieChartNogo() {
 
-            var departments = [ "A", "B", "C", "D","E", "F", "G", "H" ];
+            if (pie_chart_nogo != null)
+                pie_chart_nogo.destroy();
 
-            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
-            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
+            var datas = [nogo_product,nogo_project,nogo_service];
 
-            new Chart("pie_chart4", {
+            var type = [ "Product", "Project", "Service"];
+
+            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8'];
+            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF'];
+
+            pie_chart_nogo = new Chart("pie_chart_nogo", {
                 type: "pie",
                 data: {
                     datasets: [
@@ -389,7 +638,55 @@
                             borderWidth: 2,
                         }
                     ],
-                    labels: departments
+                    labels: type
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'No go',
+                        },
+                        legend: {
+                            position: 'right',
+                            display: true,
+                            labels: {
+                                color: '#FFFFFFC8',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    },
+                    maintainAspectRatio: false,
+                }
+            });
+        };
+
+        var pie_chart_pending;
+        function UpdatePieChartPending() {
+
+            if (pie_chart_pending != null)
+                pie_chart_pending.destroy();
+
+            var datas = [pending_product,pending_project,pending_service];
+
+            var type = [ "Product", "Project", "Service"];
+
+            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8'];
+            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF'];
+
+            pie_chart_pending = new Chart("pie_chart_pending", {
+                type: "pie",
+                data: {
+                    datasets: [
+                        {
+                            data: datas,
+                            backgroundColor: bg_colors,
+                            borderColor: border_colors,
+                            borderWidth: 2,
+                        }
+                    ],
+                    labels: type
                 },
                 options: {
                     plugins: {
@@ -412,19 +709,21 @@
                 }
             });
         };
-        function UpdatePieChart5() {
 
-            if (pie_chart != null)
-                pie_chart.destroy();
+        var pie_chart_stages;
+        function UpdatePieChartStages() {
 
-            var datas = [1,2,3,4,5,6,7,8];
+            if (pie_chart_stages != null)
+                pie_chart_stages.destroy();
 
-            var departments = [ "A", "B", "C", "D","E", "F", "G", "H" ];
+            var datas = [stages_quote_for_buddget,stages_negotiation_review,stages_proposal,stages_perspectng,stages_won,stages_lost,stages_nogo];
 
-            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
-            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
+            var type = ["Quote for Budget", "Negotiation/Review", "Proposal/Quote for Order","Prospecting ","Closed (Won)","Closed (Lost)","No go"];
 
-            new Chart("pie_chart5", {
+            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8','#003F5CC8', '#2F4B7CC8', '#665191C8','#665191C8'];
+            var border_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8','#003F5CC8', '#2F4B7CC8', '#665191C8','#665191C8'];
+
+            pie_chart_stages = new Chart("pie_chart_stages", {
                 type: "pie",
                 data: {
                     datasets: [
@@ -435,13 +734,13 @@
                             borderWidth: 2,
                         }
                     ],
-                    labels: departments
+                    labels: type
                 },
                 options: {
                     plugins: {
                         title: {
                             display: true,
-                            text: 'No go',
+                            text: 'Stages',
                         },
                         legend: {
                             position: 'right',
@@ -458,98 +757,19 @@
                 }
             });
         };
-        function UpdatePieChart6() {
 
-            if (pie_chart != null)
-                pie_chart.destroy();
-
-            var datas = [1,2,3,4,5,6,7,8];
-
-            var departments = [ "A", "B", "C", "D","E", "F", "G", "H" ];
-
-            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
-            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
-
-            new Chart("pie_chart6", {
-                type: "pie",
-                data: {
-                    datasets: [
-                        {
-                            data: datas,
-                            backgroundColor: bg_colors,
-                            borderColor: border_colors,
-                            borderWidth: 2,
-                        }
-                    ],
-                    labels: departments
-                },
-                options: {
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'No go',
-                        },
-                        legend: {
-                            position: 'right',
-                            display: true,
-                            labels: {
-                                color: '#FFFFFFC8',
-                                font: {
-                                    size: 14
-                                }
-                            }
-                        }
-                    },
-                    maintainAspectRatio: false,
+        function add_sale(sales) {
+                var data_sales = [];
+                for (var i = 0; i < sales.length; i++) {
+                    var data =
+                    {
+                        "text": sales[i].name,
+                        "value": sales[i].name,
+                    }
+                    data_sales.push(data);
                 }
-            });
+
+                return data_sales;
         };
-        function UpdatePieChart7() {
-
-            if (pie_chart != null)
-                pie_chart.destroy();
-
-            var datas = [1,2,3,4,5,6,7,8];
-
-            var departments = [ "A", "B", "C", "D","E", "F", "G", "H" ];
-
-            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#a05195C8', '#d45087c8', '#f95d6ac8', '#ff7c43c8', '#ffa600c8'];
-            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#a05195ff','#d45087ff', '#f95d6aff', '#ff7c43ff', '#ffa600ff'];
-
-            new Chart("pie_chart7", {
-                type: "bar",
-                data: {
-                    datasets: [
-                        {
-                            data: datas,
-                            backgroundColor: bg_colors,
-                            borderColor: border_colors,
-                            borderWidth: 2,
-                        }
-                    ],
-                    labels: departments
-                },
-                options: {
-                    plugins: {
-                        title: {
-                            display: false,
-                            text: 'No go',
-                        },
-                        legend: {
-                            position: 'top',
-                            display: true,
-                            labels: {
-                                color: '#FFFFFFC8',
-                                font: {
-                                    size: 14
-                                }
-                            }
-                        }
-                    },
-                    maintainAspectRatio: false,
-                }
-            });
-        };
-
 </script>
-}
+    }

@@ -193,6 +193,37 @@ namespace WebForecastReport.Service
             }
         }
 
+        public List<SaleModel> getUserQuotation()
+        {
+            try
+            {
+                List<SaleModel> sales = new List<SaleModel>();
+                SqlCommand cmd = new SqlCommand("select Distinct sale_name,department from Quotation order by sale_name", ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        SaleModel s = new SaleModel()
+                        {
+                            name = dr["sale_name"].ToString(),
+                            department = dr["department"].ToString()
+                        };
+                        sales.Add(s);
+                    }
+                    dr.Close();
+                }
+                return sales;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
         public string InsertCustomer(string customer)
         {
             try
