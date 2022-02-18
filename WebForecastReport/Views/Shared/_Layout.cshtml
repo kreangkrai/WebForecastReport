@@ -23,8 +23,8 @@
                     </a>
                     @{
                         var userId = Context.Session.GetString("userId");
-                        byte[] image = Context.Session.Get("Image");
-                        @* byte[] image = new byte[128];*@
+                       // byte[] image = Context.Session.Get("Image");
+                         byte[] image = new byte[128];
                     if (userId == null)
                     {
                         //Context.Response.Redirect("/Account");

@@ -21,9 +21,11 @@ namespace WebForecastReport.Controllers
         }
         public IActionResult Index()
         {
+            HttpContext.Session.SetString("Login", "1234");
             if (HttpContext.Session.GetString("Login") != null)
             {
                 string user = HttpContext.Session.GetString("userId");
+                user = "kriangkrai rattanawan";
                 List<UserModel> users = new List<UserModel>();
                 users = Accessory.getAllUser();
                 UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name, department = s.department, role = s.role }).FirstOrDefault();
@@ -76,6 +78,14 @@ namespace WebForecastReport.Controllers
             var list = new { datas = datas, stages = stages, day = day };
 
             return Json(list);
+        }
+
+        [HttpPost]
+        public JsonResult GetStagesDay(string name,string day)
+        {
+            List<Home_Stages_DayModel> quotations = new List<Home_Stages_DayModel>();
+            quotations = Home.getDataQuotationMoreDay(name, day);
+            return Json(quotations);
         }
     }
 }

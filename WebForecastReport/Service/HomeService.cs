@@ -104,6 +104,42 @@ namespace WebForecastReport.Service
             }
         }
 
+        public List<Home_Stages_DayModel> getDataQuotationMoreDay(string sale_name, string day)
+        {
+            try
+            {
+                List<Home_Stages_DayModel> stages = new List<Home_Stages_DayModel>();
+                SqlCommand cmd = new SqlCommand(@"select quotation_no,
+                                                    stages,
+                                                    stages_update_date 
+                                                    from Quotation 
+                                                    where sale_name = '" + sale_name + "' and DATEDIFF(day,stages_update_date,getDate()) " + day, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        Home_Stages_DayModel p = new Home_Stages_DayModel()
+                        {
+                            quotation_no = dr["quotation_no"].ToString(),
+                            stages = dr["stages"].ToString(),
+                            stages_update_date = dr["stages_update_date"].ToString()
+                        };
+                        stages.Add(p);
+                    }
+                    dr.Close();
+                }
+                return stages;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
         public List<Home_StagesModel> getDataStages(string name)
         {
             try
@@ -113,7 +149,7 @@ namespace WebForecastReport.Service
                                                          stages,
                                                          format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as mb
                                                   from Quotation 
-                                                  where sale_name = '" + name + "' " +
+                                                  where sale_name = '" + name + "' and stages <> ''" +
                                                  "group by sale_name,stages having stages <> ''", ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)

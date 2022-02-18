@@ -119,83 +119,19 @@
                                     <div class="row">
                                         <div class="col-md-6 col-xl-6 pt-3">
                                             <div class="w-100">
-                                                <canvas id="pie_chart7" style="height:350px"></canvas>
+                                                <canvas id="bar_chart_stages" style="height:350px"></canvas>
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-xl-6 pt-2">
                                             <div style="overflow:auto; height:400px">
-                                                <table id="table_quarter" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">
+                                                <table id="table_stages" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">
                                                     <thead style="color:black;background-color:#2F75B5;">
                                                         <tr>
                                                             <th style="text-align:center">Quotation</th>
-                                                            <th style="text-align:center">Quotation</th>
-                                                            <th style="text-align:center">Quotation</th>
-                                                            <th style="text-align:center">Quotation</th>
-                                                            <th style="text-align:center">Quotation</th>
+                                                            <th style="text-align:center">Stages</th>
+                                                            <th style="text-align:center">Stages Date</th>
                                                         </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>Tiger Nixon</td>
-                                                            <td>System Architect</td>
-                                                            <td>Edinburgh</td>
-                                                            <td>61</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Tiger Nixon</td>
-                                                            <td>System Architect</td>
-                                                            <td>Edinburgh</td>
-                                                            <td>61</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Tiger Nixon</td>
-                                                            <td>System Architect</td>
-                                                            <td>Edinburgh</td>
-                                                            <td>61</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Tiger Nixon</td>
-                                                            <td>System Architect</td>
-                                                            <td>Edinburgh</td>
-                                                            <td>61</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Tiger Nixon</td>
-                                                            <td>System Architect</td>
-                                                            <td>Edinburgh</td>
-                                                            <td>61</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Tiger Nixon</td>
-                                                            <td>System Architect</td>
-                                                            <td>Edinburgh</td>
-                                                            <td>61</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Tiger Nixon</td>
-                                                            <td>System Architect</td>
-                                                            <td>Edinburgh</td>
-                                                            <td>61</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Tiger Nixon</td>
-                                                            <td>System Architect</td>
-                                                            <td>Edinburgh</td>
-                                                            <td>61</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Tiger Nixon</td>
-                                                            <td>System Architect</td>
-                                                            <td>Edinburgh</td>
-                                                            <td>61</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Tiger Nixon</td>
-                                                            <td>System Architect</td>
-                                                            <td>Edinburgh</td>
-                                                            <td>61</td>
-                                                        </tr>
-                                                    </tbody>
+                                                    </thead>                                                   
                                                 </table>
                                             </div>
                                         </div>
@@ -217,7 +153,7 @@
 </div>
 @section Scripts
     {
-<script type="text/javascript">
+    <script type="text/javascript">
     var Sales = [];
     var Datas = [];
     var Data_Stages = [];
@@ -259,7 +195,7 @@
 
     var pie_chart_type;
     var pie_chart_won;
-
+    var bar_chart_stages;
 
     $(document).ready(function () {
         init();
@@ -307,155 +243,156 @@
          });
          function pie_chart_data(name){
              $.ajax({
-                url: '@Url.Action("GetData", "Home")',
-                type: "post",
-                contentType: 'application/x-www-form-urlencoded',
-                data: {
-                    name
-                },
-                success: function (response) {
-                    Datas = response.datas;
-                    Data_Stages = response.stages;
-                    Data_Stages_Day = response.day;
+                 url: '@Url.Action("GetData", "Home")',
+                 type: "post",
+                 contentType: 'application/x-www-form-urlencoded',
+                 data: {
+                     name
+                 },
+                 success: function (response) {
+                     Datas = response.datas;
+                     Data_Stages = response.stages;
+                     Data_Stages_Day = response.day;
 
-                    product = "0";
-                    project = "0";
-                    service = "0";
+                     product = "0";
+                     project = "0";
+                     service = "0";
 
-                    var _product = Datas.find(x=> x.type === "Product" && x.stages === "");
-                    var _project = Datas.find(x=> x.type === "Project" && x.stages === "");
-                    var _service = Datas.find(x=> x.type === "Service" && x.stages === "");
-                    if (typeof _product !== 'undefined' ){
-                        product =  _product.mb;
-                    }
-                    if (typeof _project !== 'undefined' ){
-                        project =  _project.mb;
-                    }
-                    if (typeof _service !== 'undefined' ){
-                        service =  _service.mb;
-                    }
+                     var _product = Datas.find(x => x.type === "Product" && x.stages === "");
+                     var _project = Datas.find(x => x.type === "Project" && x.stages === "");
+                     var _service = Datas.find(x => x.type === "Service" && x.stages === "");
+                     if (typeof _product !== 'undefined') {
+                         product = _product.mb;
+                     }
+                     if (typeof _project !== 'undefined') {
+                         project = _project.mb;
+                     }
+                     if (typeof _service !== 'undefined') {
+                         service = _service.mb;
+                     }
 
-                    // draw Won
+                     // draw Won
 
-                    won_product = "0";
-                    won_project = "0";
-                    won_service = "0";
+                     won_product = "0";
+                     won_project = "0";
+                     won_service = "0";
 
-                    var _won_product = Datas.find(x=>x.type ==="Product" && x.stages === "Closed(Won)");
-                    var _won_project = Datas.find(x=>x.type ==="Project" && x.stages === "Closed(Won)");
-                    var _won_service = Datas.find(x=>x.type ==="Service" && x.stages === "Closed(Won)");
-
-
-                    if (typeof _won_product !== 'undefined' ){
-                        won_product = _won_product.mb;
-                    }
-                    if (typeof _won_project !== 'undefined' ){
-                        won_project = _won_project.mb;
-                    }
-                    if (typeof _won_service !== 'undefined' ){
-                        won_service = _won_service.mb;
-                    }
-
-                    //draw lost
-
-                    lost_product = "0";
-                    lost_project = "0";
-                    lost_service = "0";
-
-                    var _lost_product = Datas.find(x=>x.type ==="Product" && x.stages === "Closed(Lost)");
-                    var _lost_project = Datas.find(x=>x.type ==="Project" && x.stages === "Closed(Lost)");
-                    var _lost_service = Datas.find(x=>x.type ==="Service" && x.stages === "Closed(Lost)");
-
-                    if (typeof _lost_product !== 'undefined' ){
-                        lost_product = _lost_product.mb;
-                    }
-                    if (typeof _lost_project !== 'undefined' ){
-                        lost_project = _lost_project.mb;
-                    }
-                    if (typeof _lost_service !== 'undefined' ){
-                        lost_service = _lost_service.mb;
-                    }
-
-                    // draw nogo
-
-                    nogo_product = "0";
-                    nogo_project = "0";
-                    nogo_service = "0";
-
-                    var _nogo_product = Datas.find(x=>x.type ==="Product" && x.stages === "No go");
-                    var _nogo_project = Datas.find(x=>x.type ==="Project" && x.stages === "No go");
-                    var _nogo_service = Datas.find(x=>x.type ==="Service" && x.stages === "No go");
-
-                    if(typeof _nogo_product !== 'undefined' ){
-                        nogo_product = _nogo_product.mb;
-                    }
-                    if(typeof _nogo_project !== 'undefined' ){
-                        nogo_project = _nogo_project.mb;
-                    }
-                    if(typeof _nogo_service !== 'undefined' ){
-                        nogo_service = _nogo_service.mb;
-                    }
+                     var _won_product = Datas.find(x => x.type === "Product" && x.stages === "Closed(Won)");
+                     var _won_project = Datas.find(x => x.type === "Project" && x.stages === "Closed(Won)");
+                     var _won_service = Datas.find(x => x.type === "Service" && x.stages === "Closed(Won)");
 
 
-                    //draw pending
+                     if (typeof _won_product !== 'undefined') {
+                         won_product = _won_product.mb;
+                     }
+                     if (typeof _won_project !== 'undefined') {
+                         won_project = _won_project.mb;
+                     }
+                     if (typeof _won_service !== 'undefined') {
+                         won_service = _won_service.mb;
+                     }
 
-                    pending_product = "0";
-                    pending_project = "0";
-                    pending_service = "0";
+                     //draw lost
 
-                    var _pending_product = Datas.find(x=>x.type ==="Product" && x.stages === "Pending");
-                    var _pending_project = Datas.find(x=>x.type ==="Project" && x.stages === "Pending");
-                    var _pending_service = Datas.find(x=>x.type ==="Service" && x.stages === "Pending");
+                     lost_product = "0";
+                     lost_project = "0";
+                     lost_service = "0";
 
-                    if(typeof _pending_product !== 'undefined' ){
-                        pending_product = _pending_product.mb;
-                    }
-                    if(typeof _pending_project !== 'undefined' ){
-                        pending_project = _pending_project.mb;
-                    }
-                    if(typeof _pending_service !== 'undefined' ){
-                        pending_service = _pending_service.mb;
-                    }
+                     var _lost_product = Datas.find(x => x.type === "Product" && x.stages === "Closed(Lost)");
+                     var _lost_project = Datas.find(x => x.type === "Project" && x.stages === "Closed(Lost)");
+                     var _lost_service = Datas.find(x => x.type === "Service" && x.stages === "Closed(Lost)");
+
+                     if (typeof _lost_product !== 'undefined') {
+                         lost_product = _lost_product.mb;
+                     }
+                     if (typeof _lost_project !== 'undefined') {
+                         lost_project = _lost_project.mb;
+                     }
+                     if (typeof _lost_service !== 'undefined') {
+                         lost_service = _lost_service.mb;
+                     }
+
+                     // draw nogo
+
+                     nogo_product = "0";
+                     nogo_project = "0";
+                     nogo_service = "0";
+
+                     var _nogo_product = Datas.find(x => x.type === "Product" && x.stages === "No go");
+                     var _nogo_project = Datas.find(x => x.type === "Project" && x.stages === "No go");
+                     var _nogo_service = Datas.find(x => x.type === "Service" && x.stages === "No go");
+
+                     if (typeof _nogo_product !== 'undefined') {
+                         nogo_product = _nogo_product.mb;
+                     }
+                     if (typeof _nogo_project !== 'undefined') {
+                         nogo_project = _nogo_project.mb;
+                     }
+                     if (typeof _nogo_service !== 'undefined') {
+                         nogo_service = _nogo_service.mb;
+                     }
 
 
-                    // draw all stages
-                    stages_won = "0";
-                    stages_lost = "0";
-                    stages_negotiation_review = "0";
-                    stages_nogo = "0";
-                    stages_quote_for_buddget = "0";
-                    stages_proposal = "0";
-                    stages_perspectng = "0";
+                     //draw pending
 
-                    var _stages_won = Data_Stages.find(x=>x.stages ==="Closed (Won)");
-                    var _stages_lost = Data_Stages.find(x=>x.stages ==="Closed (Lost)");
-                    var _stages_negotiation_review = Data_Stages.find(x=>x.stages ==="Negotiation/Review");
-                    var _stages_nogo = Data_Stages.find(x=>x.stages ==="No go");
-                    var _stages_quote_for_buddget = Data_Stages.find(x=>x.stages ==="Quote for Budget");
-                    var _stages_proposal = Data_Stages.find(x=>x.stages ==="Proposal/Quote for Order");
-                    var _stages_perspectng = Data_Stages.find(x=>x.stages ==="Prospecting");
+                     pending_product = "0";
+                     pending_project = "0";
+                     pending_service = "0";
 
-                    if(typeof _stages_won !== 'undefined' ){
-                        stages_won = _stages_won.mb;
-                    }
-                    if(typeof _stages_lost !== 'undefined' ){
-                        stages_lost = _stages_lost.mb;
-                    }
-                    if(typeof _stages_negotiation_review !== 'undefined' ){
-                        stages_negotiation_review = _stages_negotiation_review.mb;
-                    }
-                    if(typeof _stages_nogo !== 'undefined' ){
-                        stages_nogo = _stages_nogo.mb;
-                    }
-                    if(typeof _stages_quote_for_buddget !== 'undefined' ){
-                        stages_quote_for_buddget = _stages_quote_for_buddget.mb;
-                    }
-                    if(typeof _stages_proposal !== 'undefined' ){
-                        stages_proposal = _stages_proposal.mb;
-                    }
-                    if(typeof _stages_perspectng !== 'undefined' ){
-                        stages_perspectng = _stages_perspectng.mb;
-                    }
+                     var _pending_product = Datas.find(x => x.type === "Product" && x.stages === "Pending");
+                     var _pending_project = Datas.find(x => x.type === "Project" && x.stages === "Pending");
+                     var _pending_service = Datas.find(x => x.type === "Service" && x.stages === "Pending");
+
+                     if (typeof _pending_product !== 'undefined') {
+                         pending_product = _pending_product.mb;
+                     }
+                     if (typeof _pending_project !== 'undefined') {
+                         pending_project = _pending_project.mb;
+                     }
+                     if (typeof _pending_service !== 'undefined') {
+                         pending_service = _pending_service.mb;
+                     }
+
+
+                     // draw all stages
+                     stages_won = "0";
+                     stages_lost = "0";
+                     stages_negotiation_review = "0";
+                     stages_nogo = "0";
+                     stages_quote_for_buddget = "0";
+                     stages_proposal = "0";
+                     stages_perspectng = "0";
+
+                     var _stages_won = Data_Stages.find(x => x.stages === "Closed (Won)");
+                     var _stages_lost = Data_Stages.find(x => x.stages === "Closed (Lost)");
+                     var _stages_negotiation_review = Data_Stages.find(x => x.stages === "Negotiation/Review");
+                     var _stages_nogo = Data_Stages.find(x => x.stages === "No go");
+                     var _stages_quote_for_buddget = Data_Stages.find(x => x.stages === "Quote for Budget");
+                     var _stages_proposal = Data_Stages.find(x => x.stages === "Proposal/Quote for Order");
+                     var _stages_perspectng = Data_Stages.find(x => x.stages === "Prospecting");
+
+                     if (typeof _stages_won !== 'undefined') {
+                         stages_won = _stages_won.mb;
+                     }
+                     if (typeof _stages_lost !== 'undefined') {
+                         stages_lost = _stages_lost.mb;
+                     }
+                     if (typeof _stages_negotiation_review !== 'undefined') {
+                         stages_negotiation_review = _stages_negotiation_review.mb;
+                     }
+                     if (typeof _stages_nogo !== 'undefined') {
+                         stages_nogo = _stages_nogo.mb;
+                     }
+                     if (typeof _stages_quote_for_buddget !== 'undefined') {
+                         stages_quote_for_buddget = _stages_quote_for_buddget.mb;
+                     }
+                     if (typeof _stages_proposal !== 'undefined') {
+                         stages_proposal = _stages_proposal.mb;
+                     }
+                     if (typeof _stages_perspectng !== 'undefined') {
+                         stages_perspectng = _stages_perspectng.mb;
+                     }
+
 
                      UpdatePieChartType();
                      UpdatePieChartWon();
@@ -463,7 +400,8 @@
                      UpdatePieChartNogo();
                      UpdatePieChartPending();
                      UpdatePieChartStages();
-                }
+                     PopulateDataBarChart(Data_Stages_Day);
+                 }
              });
          };
 
@@ -514,7 +452,7 @@
             });
             },200);
 
-        };
+    };
 
 
         function UpdatePieChartWon() {
@@ -756,8 +694,137 @@
                     maintainAspectRatio: false,
                 }
             });
+    };
+
+        function PopulateDataBarChart(datas) {
+        $(function () {
+            if (bar_chart_stages != null)
+                bar_chart_stages.destroy();
+            var chartName = "bar_chart_stages";
+            var ctx = document.getElementById(chartName).getContext('2d');
+            var _datas = [datas.day_7, datas.day_14, datas.day_30, datas.day_60, datas.day_90];
+
+            var type = ["> 7 Day", "> 14 Day", "> 30 Day","> 60 Day","> 90 Day"];
+
+            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#2F4B7CC8', '#665191C8'];
+            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#2F4B7CC8', '#665191C8'];
+            var data = {
+                datasets: [
+                    {
+                        data: _datas,
+                        backgroundColor: bg_colors,
+                        borderColor: border_colors,
+                        borderWidth: 2,
+                    }
+                ],
+                labels: type
+            }
+            var options = {
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        id: 'first-y-axis',
+                        position: 'left',
+                        type: 'linear',
+                        scaleLabel: { display: true, labelString: 'Count' },
+                        gridLines: { display: true, color: "rgba(255,99,164,0.2)" },
+                        ticks: { min: 0, beginAtZero: true },
+                    }],
+                    xAxes: [{
+                        ticks: { min: 0, beginAtZero: true },
+                        scaleLabel: { display: true, labelString: 'Day' },
+                        gridLines: { display: true }
+                    }],
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "Stages Day",
+                        fontColor: "white",
+                        fontSize: 24,
+                    },
+                    legend: {
+                        position: 'top',
+                        display: false,
+                        labels: {
+                            color: '#FFFFFFC8',
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                },
+                onHover: (event, chartElement) => {
+
+                    /*event.target.style.cursor = chartElement[0] ? 'pointer' : 'default';*/
+                },
+                onClick: BarChartClick
+            };
+            bar_chart_stages = new Chart(ctx, { type: 'bar', data: data, options: options });
+        });
+    };
+        function BarChartClick(evt, point) {
+            var name = document.getElementById("sale_name").value;
+            if (point.length > 0) {
+                var index = point[0].index;
+                var day = "";
+                if (index == 0) {
+                    day = "between 7 and 14";
+                } else if (index == 1) {
+                    day = "between 14 and 30";
+                } else if (index == 2) {
+                    day = "between 30 and 60";
+                } else if (index == 3) {
+                    day = "between 60 and 90";
+                } else if (index == 4) {
+                    day = " > 90";
+                }
+
+                $.ajax({
+                    url: '@Url.Action("GetStagesDay", "Home")',
+                    type: "post",
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: {
+                        name, day
+                    },
+                    success: function (response) {
+                        var datas = response;
+                        var dataSet = [];
+                        for (var i = 0; i < datas.length; i++) {
+                            var data = [
+                                datas[i].quotation_no,
+                                datas[i].stages,
+                                datas[i].stages_update_date];
+                            dataSet.push(data);
+                        }
+                        table(dataSet);
+                    }
+                });
+            }
         };
 
+        var tables;
+        function table(dataSet) {
+            if (tables !== undefined)
+                tables.destroy();
+            tables = $('#table_stages').DataTable({
+                data: dataSet,
+                
+                "columnDefs": [
+                    {
+                        "targets": [0, 1, 2],
+                        "className": "dt-center",
+                        
+                    },
+                ],
+                "paging": true,
+                "searching": false,
+                "bInfo": false,
+                "scrollX": true,
+                "fixedHeader":true,
+            });
+            $(tables.table().body()).addClass('text-dark');
+        }
         function add_sale(sales) {
                 var data_sales = [];
                 for (var i = 0; i < sales.length; i++) {
@@ -770,6 +837,6 @@
                 }
 
                 return data_sales;
-        };
-</script>
-    }
+    };
+    </script>
+}

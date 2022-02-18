@@ -11,5 +11,6 @@ namespace WebForecastReport.Interface
         List<Home_DataModel> getData(string name);
         List<Home_StagesModel> getDataStages(string name);
         Home_DayModel getDataDay(string name);
+        List<Home_Stages_DayModel> getDataQuotationMoreDay(string sale_name, string day);
     }
 }
