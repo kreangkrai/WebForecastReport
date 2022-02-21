@@ -41,8 +41,10 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetUser(string name, string department, string role)
+        public JsonResult GetUserDepartment(string name, string department, string role)
         {
+
+            // Sale name
             List<SaleModel> sales = new List<SaleModel>();
 
             if (role == "Admin")
@@ -58,7 +60,21 @@ namespace WebForecastReport.Controllers
                 sales = Accessory.getUserQuotation().Where(w => w.name == name).ToList();
             }
 
-            return Json(sales);
+            //Department
+
+            List<DepartmentModel> departments = new List<DepartmentModel>();
+
+            if (role == "Admin")
+            {
+                departments = Accessory.getDepartmentQuotation();
+            }
+            else
+            {
+                departments = Accessory.getDepartmentQuotation().Where(w => w.department == department).ToList();
+            }
+
+            var list = new { sales = sales, departments = departments };
+            return Json(list);
         }
 
         [HttpPost]
@@ -79,7 +95,15 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetStagesDay(string name,string day)
+        public JsonResult GetDataPerformance(string department)
+        {
+            List<PerformanceModel> performances = new List<PerformanceModel>();
+            performances = Home.getPerformance(department);
+            return Json(performances);
+        }
+
+        [HttpPost]
+        public JsonResult GetStagesDay(string name, string day)
         {
             List<Home_Stages_DayModel> quotations = new List<Home_Stages_DayModel>();
             quotations = Home.getDataQuotationMoreDay(name, day);

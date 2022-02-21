@@ -132,6 +132,36 @@ namespace WebForecastReport.Service
             }
         }
 
+        public List<DepartmentModel> getDepartmentQuotation()
+        {
+            try
+            {
+                List<DepartmentModel> departments = new List<DepartmentModel>();
+                SqlCommand cmd = new SqlCommand("select Distinct department from Quotation order by department", ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        DepartmentModel d = new DepartmentModel()
+                        {
+                            department = dr["department"].ToString()
+                        };
+                        departments.Add(d);
+                    }
+                    dr.Close();
+                }
+                return departments;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
         public List<EndUserModel> getEndUsers()
         {
             try

@@ -8,6 +8,7 @@ namespace WebForecastReport.Models
     public class Home_Stages_DayModel
     {
         public string quotation_no { get; set; }
+        public string project_name { get; set; }
         public string stages { get; set; }
         public string stages_update_date { get; set; }
     }

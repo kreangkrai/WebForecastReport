@@ -3,6 +3,10 @@
     ViewData["Title"] = "Home";
 }
 <style>
+    .highlight {
+        font-weight: bold;
+    }
+
     .dataTables_scrollHeadInner,
     .table {
         width: 100% !important;
@@ -12,10 +16,10 @@
     <div class="col-md-12 col-xl-12">
         <ul class="nav nav-tabs pb-2" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="tab-a" data-toggle="tab" href="#dashboard_a" role="tab" aria-controls="dashboard_a" aria-selected="true"><b>Dashboard</b></a>
+                <a class="nav-link active" id="tab_a" data-toggle="tab" href="#dashboard_a" role="tab" aria-controls="dashboard_a" aria-selected="true"><b>Dashboard</b></a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="tab-b" data-toggle="tab" href="#dashboard_b" role="tab" aria-controls="dashboard_b" aria-selected="false"><b>---</b></a>
+                <a class="nav-link" id="tab_b" data-toggle="tab" href="#dashboard_b" role="tab" aria-controls="dashboard_b" aria-selected="false"><b>Performance</b></a>
             </li>
         </ul>
     </div>
@@ -117,7 +121,7 @@
                             </div>
                         </div>
                         <div class="col-md-8 col-xl-8">
-                            <div class="card bg-dark" style="height:auto">
+                            <div class="card bg-dark " style="height:auto">
                                 <div class="card-header">
                                     <span class="card-title">Stages Day</span>
                                 </div>
@@ -130,7 +134,7 @@
                                         </div>
                                         <div class="col-md-6 col-xl-6 pt-2">
                                             <div style="overflow:auto; height:400px">
-                                                <table id="table_stages" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">                                                  
+                                                <table id="table_stages" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">
                                                 </table>
                                             </div>
                                         </div>
@@ -143,8 +147,43 @@
             </div>
         </div>
         <div class="tab-pane fade" id="dashboard_b" role="tabpanel" aria-labelledby="home-tab">
-            <div class="row">
-                <div class="col-12">
+            <div class="row pt-3">
+                <div class="col-md-6 col-xl-6">
+                    <div class="row">
+                        <div class="col-md-4 col-xl-4 pb-3">
+                            <select id="departments" class="form-control">
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-xl-3 pb-4">
+                            <button type="button" id="btn_department_OK" class="btn btn-primary form-control">OK</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-xl-12 pt-2">
+                    <div style="overflow:auto; height:400px">
+                        <table id="table_performance" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">
+                            <thead class="text-center" style="background-color:#0F8DF6;color:black">
+                                <tr>
+                                    <th rowspan="2" style="text-align:center;vertical-align:middle">Department</th>
+                                    <th rowspan="2" style="text-align:center;vertical-align:middle">Sale Namet</th>
+                                    <th colspan="2" style="text-align:center;">Product(MB)</th>
+                                    <th colspan="2" style="text-align:center;">Project(MB)</th>
+                                    <th colspan="2" style="text-align:center;">Service(MB)</th>
+                                    <th colspan="3" style="text-align:center;">Sales Total(MB)</th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align:center;">Target</th>
+                                    <th style="text-align:center;">Actual</th>
+                                    <th style="text-align:center;">Target</th>
+                                    <th style="text-align:center;">Actual</th>
+                                    <th style="text-align:center;">Target</th>
+                                    <th style="text-align:center;">Actual</th>
+                                    <th style="text-align:center;">Target</th>
+                                    <th style="text-align:center;">Actual</th>
+                                    <th style="text-align:center;">%</th>
+                                </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -152,8 +191,10 @@
 </div>
 @section Scripts
     {
-    <script type="text/javascript">
+<script type="text/javascript">
     var Sales = [];
+    var Departments = [];
+    var Role = "";
     var Datas = [];
     var Data_Stages = [];
     var Data_Stages_Day = [];
@@ -200,12 +241,13 @@
         init();
     });
 
-         function init(){
+        function init(){
              var name = '@Model.name';
              var role = '@Model.role';
              var department = '@Model.department';
+             Role = role;
              $.ajax({
-                url: '@Url.Action("GetUser", "Home")',
+                url: '@Url.Action("GetUserDepartment", "Home")',
                 type: "post",
                 contentType: 'application/x-www-form-urlencoded',
                 data: {
@@ -213,35 +255,93 @@
                 },
                 success: function (response) {
 
-                    Sales = add_sale(response);
+                    Sales = add_sale(response.sales);
+                    Departments = add_department(response.departments);
 
-                    $('#sale_name').empty();
-                    var selectsale = document.getElementById('sale_name');
-                    for (var i = 0, l = Sales.length; i < l; i++) {
-                        var option = Sales[i];
-                        selectsale.options.add(new Option(option.text, option.value, option.selected));
-                    }
-                    var index_sale = Sales.map(function (e) { return e.value; }).indexOf(name);
-                    if(role == "Admin"){
-                        document.getElementById('sale_name').selectedIndex = 0;
-                    }else{
-                        document.getElementById('sale_name').selectedIndex = index_sale;
-                    }
-
+                    initSale(role,Sales);
 
                     //draw pie chart
                     var name = document.getElementById("sale_name").value;
                     pie_chart_data(name);
 
                 }
-            });
-         };
+             });
+        };
         $('#btn_OK').on('click', function () {
             $("#table_stages").empty();
              var name = document.getElementById("sale_name").value;
              pie_chart_data(name);
-         });
-         function pie_chart_data(name){
+        });
+
+        $('#tab_b').on('click',function(){
+             initDepartment(Role,Departments);
+        });
+
+        $('#btn_department_OK').on('click',function(){
+            var department = document.getElementById("departments").value;
+            $.ajax({
+                url: '@Url.Action("GetDataPerformance", "Home")',
+                type: "post",
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    department
+                },
+                success: function (response) {
+                    var datas = response;
+                    var dataSet = [];
+                    for (var i = 0; i < datas.length; i++) {
+                           var sum_target = (parseFloat(datas[i].product_target) + parseFloat(datas[i].project_target) +  parseFloat(datas[i].service_target)).toFixed(3);
+                           var sum_actual = (parseFloat(datas[i].product_actual) + parseFloat(datas[i].project_actual) +  parseFloat(datas[i].service_actual)).toFixed(3);
+                           var percent = ((sum_actual / sum_target) * 100).toFixed(2);
+                           var data = [
+                               datas[i].department,
+                               datas[i].sale_name,
+                               datas[i].product_target,
+                               datas[i].product_actual,
+                               datas[i].project_target,
+                               datas[i].project_actual,
+                               datas[i].service_target,
+                               datas[i].service_actual,
+                               sum_target,sum_actual,
+                               percent
+                               ];
+
+                           dataSet.push(data);
+                       }
+                    tablePerformance(dataSet);
+                }
+           });
+        });
+        function initSale(role,Sales){
+            $('#sale_name').empty();
+            var selectsale = document.getElementById('sale_name');
+            for (var i = 0, l = Sales.length; i < l; i++) {
+                 var option = Sales[i];
+                 selectsale.options.add(new Option(option.text, option.value, option.selected));
+            }
+            var index_sale = Sales.map(function (e) { return e.value; }).indexOf(name);
+            if(role == "Admin"){
+                 document.getElementById('sale_name').selectedIndex = 0;
+            }else{
+                 document.getElementById('sale_name').selectedIndex = index_sale;
+            }
+        };
+        function initDepartment(role,Departments){
+            //Department
+            $('#departments').empty();
+            var selectdepartment = document.getElementById('departments');
+            for (var i = 0, l = Departments.length; i < l; i++) {
+                 var option = Departments[i];
+                 selectdepartment.options.add(new Option(option.text, option.value, option.selected));
+            }
+            var index_department = Departments.map(function (e) { return e.value; }).indexOf(name);
+            if(role == "Admin"){
+                document.getElementById('departments').selectedIndex = 0;
+            }else{
+                document.getElementById('departments').selectedIndex = index_department;
+            }
+        }
+        function pie_chart_data(name){
              $.ajax({
                  url: '@Url.Action("GetData", "Home")',
                  type: "post",
@@ -363,8 +463,8 @@
                      stages_proposal = "0";
                      stages_perspectng = "0";
 
-                     var _stages_won = Data_Stages.find(x => x.stages === "Closed (Won)");
-                     var _stages_lost = Data_Stages.find(x => x.stages === "Closed (Lost)");
+                     var _stages_won = Data_Stages.find(x => x.stages === "Closed(Won)");
+                     var _stages_lost = Data_Stages.find(x => x.stages === "Closed(Lost)");
                      var _stages_negotiation_review = Data_Stages.find(x => x.stages === "Negotiation/Review");
                      var _stages_nogo = Data_Stages.find(x => x.stages === "No go");
                      var _stages_quote_for_buddget = Data_Stages.find(x => x.stages === "Quote for Budget");
@@ -403,7 +503,7 @@
                      PopulateDataBarChart(Data_Stages_Day);
                  }
              });
-         };
+        };
 
         function UpdatePieChartType() {
             setTimeout(()=>{
@@ -445,15 +545,26 @@
                                     size: 14
                                 }
                             }
-                        }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    var sum = parseFloat(product) + parseFloat(project) + parseFloat(service) ;
+                                    var percent = ((context.parsed / sum) * 100).toFixed(2);
+                                    let label = context.dataset.label || context.label;
+                                    if (label) {
+                                        label += ' : ' +  percent +   ' % , ' + context.parsed + " MB";
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
                     },
                     maintainAspectRatio: false,
                 }
             });
             },200);
-
-    };
-
+        };
 
         function UpdatePieChartWon() {
             setTimeout(()=>{
@@ -495,7 +606,20 @@
                                     size: 14
                                 }
                             }
-                        }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    var sum = parseFloat(won_product) + parseFloat(won_project) + parseFloat(won_service) ;
+                                    var percent = ((context.parsed / sum) * 100).toFixed(2);
+                                    let label = context.dataset.label || context.label;
+                                    if (label) {
+                                        label += ' : ' +  percent +   ' % , ' + context.parsed + " MB";
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
                     },
                     maintainAspectRatio: false,
                 }
@@ -513,8 +637,8 @@
 
             var type = [ "Product", "Project", "Service"];
 
-            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8'];
-            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF'];
+            var bg_colors = ['#E38231', '#C28756', '#E85608'];
+            var border_colors = ['#E38231', '#C28756', '#E85608'];
 
             pie_chart_lost = new Chart("pie_chart_lost", {
                 type: "pie",
@@ -544,13 +668,25 @@
                                     size: 14
                                 }
                             }
-                        }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    var sum = parseFloat(lost_product) + parseFloat(lost_project) + parseFloat(lost_service) ;
+                                    var percent = ((context.parsed / sum) * 100).toFixed(2);
+                                    let label = context.dataset.label || context.label;
+                                    if (label) {
+                                        label += ' : ' +  percent +   ' % , ' + context.parsed + " MB";
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
                     },
                     maintainAspectRatio: false,
                 }
             });
         };
-
 
         var pie_chart_nogo;
         function UpdatePieChartNogo() {
@@ -562,8 +698,8 @@
 
             var type = [ "Product", "Project", "Service"];
 
-            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8'];
-            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF'];
+            var bg_colors = ['#40EFD7', '#7ABEBF', '#169294'];
+            var border_colors = ['#40EFD7', '#7ABEBF', '#169294'];
 
             pie_chart_nogo = new Chart("pie_chart_nogo", {
                 type: "pie",
@@ -593,7 +729,20 @@
                                     size: 14
                                 }
                             }
-                        }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    var sum = parseFloat(nogo_product) + parseFloat(nogo_project) + parseFloat(nogo_service) ;
+                                    var percent = ((context.parsed / sum) * 100).toFixed(2);
+                                    let label = context.dataset.label || context.label;
+                                    if (label) {
+                                        label += ' : ' +  percent +   ' % , ' + context.parsed + " MB";
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
                     },
                     maintainAspectRatio: false,
                 }
@@ -610,8 +759,8 @@
 
             var type = [ "Product", "Project", "Service"];
 
-            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8'];
-            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF'];
+            var bg_colors = ['#1D7DE8', '#6097D4', '#1059EA'];
+            var border_colors = ['#1D7DE8', '#6097D4', '#1059EA'];
 
             pie_chart_pending = new Chart("pie_chart_pending", {
                 type: "pie",
@@ -641,7 +790,20 @@
                                     size: 14
                                 }
                             }
-                        }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    var sum = parseFloat(pending_product) + parseFloat(pending_project) + parseFloat(pending_service) ;
+                                    var percent = ((context.parsed / sum) * 100).toFixed(2);
+                                    let label = context.dataset.label || context.label;
+                                    if (label) {
+                                        label += ' : ' +  percent +   ' % , ' + context.parsed + " MB";
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
                     },
                     maintainAspectRatio: false,
                 }
@@ -658,8 +820,8 @@
 
             var type = ["Quote for Budget", "Negotiation/Review", "Proposal/Quote for Order","Prospecting ","Closed (Won)","Closed (Lost)","No go"];
 
-            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8','#003F5CC8', '#2F4B7CC8', '#665191C8','#665191C8'];
-            var border_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8','#003F5CC8', '#2F4B7CC8', '#665191C8','#665191C8'];
+            var bg_colors = ['#8237EE', '#2F4B7CC8', '#DD2D8A','#003F5CC8', '#1AF30F', '#E3AC26','#2B94D3'];
+            var border_colors = ['#8237EE', '#2F4B7CC8', '#DD2D8A','#003F5CC8', '#1AF30F', '#E3AC26','#2B94D3'];
 
             pie_chart_stages = new Chart("pie_chart_stages", {
                 type: "pie",
@@ -689,95 +851,110 @@
                                     size: 14
                                 }
                             }
-                        }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    var sum = parseFloat(stages_quote_for_buddget) + parseFloat(stages_negotiation_review) + parseFloat(stages_proposal) +
+                                              parseFloat(stages_perspectng) + parseFloat(stages_won) + parseFloat(stages_lost) + parseFloat(stages_nogo);
+                                    var percent = ((context.parsed / sum) * 100).toFixed(2);
+                                    let label = context.dataset.label || context.label;
+                                    if (label) {
+                                        label += ' : ' +  percent +   ' % , ' + context.parsed + " MB";
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
                     },
                     maintainAspectRatio: false,
                 }
             });
-    };
+        };
 
         function PopulateDataBarChart(datas) {
-        $(function () {
-            if (bar_chart_stages != null)
-                bar_chart_stages.destroy();
-            var chartName = "bar_chart_stages";
-            var ctx = document.getElementById(chartName).getContext('2d');
-            var _datas = [datas.day_7, datas.day_14, datas.day_30, datas.day_60, datas.day_90];
+            $(function () {
+                if (bar_chart_stages != null)
+                    bar_chart_stages.destroy();
+                var chartName = "bar_chart_stages";
+                var ctx = document.getElementById(chartName).getContext('2d');
+                var _datas = [datas.day_0, datas.day_7, datas.day_14, datas.day_30, datas.day_60];
 
-            var type = ["> 7 Day", "> 14 Day", "> 30 Day","> 60 Day","> 90 Day"];
+                var type = ["< 7 Day", "< 14 Day", "< 30 Day","< 60 Day","> 60 Day"];
 
-            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8', '#2F4B7CC8', '#665191C8'];
-            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF', '#2F4B7CC8', '#665191C8'];
-            var data = {
-                datasets: [
-                    {
-                        data: _datas,
-                        backgroundColor: bg_colors,
-                        borderColor: border_colors,
-                        borderWidth: 2,
-                    }
-                ],
-                labels: type
-            }
-            var options = {
-                maintainAspectRatio: false,
-                scales: {
-                    yAxes: [{
-                        id: 'first-y-axis',
-                        position: 'left',
-                        type: 'linear',
-                        scaleLabel: { display: true, labelString: 'Count' },
-                        gridLines: { display: true, color: "rgba(255,255,164,0.9)" },
-                        ticks: { min: 0, beginAtZero: true },
-                    }],
-                    xAxes: [{
-                        ticks: { min: 0, beginAtZero: true },
-                        scaleLabel: { display: true, labelString: 'Day' },
-                        gridLines: { display: true }
-                    }],
-                },
-                plugins: {
-                    title: {
-                        display: true,
-                        text: "Stages Day",
-                        fontColor: "white",
-                        fontSize: 24,
+                var bg_colors = ['#F1F48F', '#E2D445', '#DEA824', '#DE8124', '#E35812'];
+                var border_colors = ['#F1F48F', '#E2D445', '#DEA824', '#DE8124', '#E35812'];
+                var data = {
+                    datasets: [
+                        {
+                            data: _datas,
+                            backgroundColor: bg_colors,
+                            borderColor: border_colors,
+                            borderWidth: 2,
+                        }
+                    ],
+                    labels: type
+                }
+                var options = {
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{
+                            id: 'first-y-axis',
+                            position: 'left',
+                            type: 'linear',
+                            scaleLabel: { display: true, labelString: 'Count' },
+                            gridLines: { display: true, color:'#FFFFFFC8'},
+                            ticks: { min: 0, beginAtZero: true },
+                        }],
+                        xAxes: [{
+                            ticks: { min: 0, beginAtZero: true },
+                            scaleLabel: { display: true, labelString: 'Day' },
+                            gridLines: { display: false }
+                        }],
                     },
-                    legend: {
-                        position: 'top',
-                        display: false,
-                        labels: {
-                            color: '#FFFFFFC8',
-                            font: {
-                                size: 14
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Stages Day",
+                            fontColor: "white",
+                            fontSize: 24,
+                        },
+                        legend: {
+                            position: 'top',
+                            display: false,
+                            labels: {
+                                color: '#FFFFFFC8',
+                                font: {
+                                    size: 14
+                                }
                             }
                         }
-                    }
-                },
-                onHover: (event, chartElement) => {
+                    },
+                    onHover: (event, chartElement) => {
 
-                    /*event.target.style.cursor = chartElement[0] ? 'pointer' : 'default';*/
-                },
-                onClick: BarChartClick
-            };
-            bar_chart_stages = new Chart(ctx, { type: 'bar', data: data, options: options });
-        });
-    };
+                        /*event.target.style.cursor = chartElement[0] ? 'pointer' : 'default';*/
+                    },
+                    onClick: BarChartClick
+                };
+                bar_chart_stages = new Chart(ctx, { type: 'bar', data: data, options: options });
+            });
+        };
         function BarChartClick(evt, point) {
+            $("#table_stages").empty();
             var name = document.getElementById("sale_name").value;
             if (point.length > 0) {
                 var index = point[0].index;
                 var day = "";
                 if (index == 0) {
-                    day = "between 7 and 14";
+                    day = " < 7";
                 } else if (index == 1) {
-                    day = "between 14 and 30";
+                    day = "between 7 and 13";
                 } else if (index == 2) {
-                    day = "between 30 and 60";
+                    day = "between 14 and 29";
                 } else if (index == 3) {
-                    day = "between 60 and 90";
+                    day = "between 30 and 59";
                 } else if (index == 4) {
-                    day = " > 90";
+                    day = " > 60";
                 }
 
                 $.ajax({
@@ -807,7 +984,7 @@
         function table(dataSet) {
             if (tables !== undefined)
                 tables.destroy();
-            tables = $('#table_stages').DataTable({
+                tables = $('#table_stages').DataTable({
                 data: dataSet,
                 columns: [
                     { title: "Quotation"},
@@ -818,7 +995,7 @@
                     {
                         "targets": [0, 1, 2],
                         "className": "dt-center",
-                        
+
                     },
                 ],
                 "paging": false,
@@ -841,6 +1018,48 @@
                 }
 
                 return data_sales;
-    };
-    </script>
+        };
+
+        var tables_performance;
+        function tablePerformance(dataSet) {
+            setTimeout(()=>{
+                if (tables_performance !== undefined)
+                tables_performance.destroy();
+                tables_performance = $('#table_performance').DataTable({
+                data: dataSet,
+                "columnDefs": [
+                    {
+                        "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                        "className": "text-center",
+                    },
+                ],
+                "createdRow": function (row, data, index) {
+                    if (data[0] === "Total") {
+                        $('td', row).css('background-color', '#E3C871');
+                        $('td', row).addClass('highlight');
+                    }
+                },
+                "paging": false,
+                "searching": false,
+                "bInfo": false,
+                "scrollX": true,
+            });
+
+            $(tables_performance.table().body()).addClass('text-dark');
+            },100);
+        };
+        function add_department(departments) {
+                var data_departments = [];
+                for (var i = 0; i < departments.length; i++) {
+                    var data =
+                    {
+                        "text": departments[i].department,
+                        "value": departments[i].department,
+                    }
+                    data_departments.push(data);
+                }
+
+                return data_departments;
+        };
+</script>
 }

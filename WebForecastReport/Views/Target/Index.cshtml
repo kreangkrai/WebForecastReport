@@ -1,0 +1,283 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Target";
+}
+<style>
+    #table tr td:nth-of-type(1),
+    #table tr td:nth-of-type(2) {
+        cursor: pointer;
+    }
+</style>
+<div class="container-fluid p-3" style="background-color:#ECF0F5;">
+
+    <div class="row pt-3">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title" id="card_title" style="font-size:20px;font-weight:bold">Target</span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2 col-xl-2 pt-2">
+                            <select id="sale_name" class="form-control">
+                                <option value="" disabled>Please Select</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-xl-3 pt-2">
+                            <select id="department" class="form-control">
+                                <option value="" disabled>Please Select</option>
+                            </select>
+                        </div>
+                        <div class="col-md-5 col-xl-5 pt-1">
+                            <div class="row">
+                                <div class="col-md-4 col-xl-4 pt-1">
+                                    <button type="button" id="btnAdd" class="btn btn-primary" style="width: 100%" disabled>
+                                        <i class="fas fa-plus" style="font-size:20px;"> ADD</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-xl-12 pt-3">
+                        <table id="table" class="table table-xl cell-border table-dark display responsive nowrap" width="100%">
+                            <thead class="text-center"></thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="ModalEdit" />
+@section Scripts
+{
+<script type="text/javascript">
+    var Sales = [];
+    var Departments = [];
+
+    $(document).ready(function () {
+        init();
+        fetch();
+        document.getElementById("btnAdd").disabled = true;
+    });
+
+    function init(){
+         $.ajax({
+            url: '@Url.Action("GetUser", "Target")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+
+            },
+            success: function (response) {
+                // get Sale
+                Sales = add_sale(response);
+                $('#sale_name').empty();
+                var selectsale = document.getElementById('sale_name');
+                selectsale.options.add(new Option("Please Select", "", null));
+                for (var i = 0, l = Sales.length; i < l; i++) {
+                     var option = Sales[i];
+                     selectsale.options.add(new Option(option.text, option.value, option.selected));
+                }
+                var index_sale = Sales.map(function (e) { return e.value; }).indexOf(name);
+
+                document.getElementById("sale_name").options[0].disabled = true;
+                document.getElementById('sale_name').selectedIndex = 0;
+
+            }
+    });
+    };
+    $('#sale_name').on('change',function(){
+        document.getElementById("btnAdd").disabled = false;
+        var name = document.getElementById("sale_name").value;
+        $.ajax({
+            url: '@Url.Action("GetDepartment", "Target")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                name
+            },
+            success: function (response) {
+                Departments = add_department(response);
+
+                $('#department').empty();
+                var selectdepartment = document.getElementById('department');
+                for (var i = 0, l = Departments.length; i < l; i++) {
+                     var option = Departments[i];
+                     selectdepartment.options.add(new Option(option.text, option.value, option.selected));
+                }
+                //var index_department = Departments.map(function (e) { return e.value; }).indexOf(name);
+
+                document.getElementById("department").options[0].disabled = true;
+                document.getElementById('department').selectedIndex = 0;
+            }
+        });
+    });
+
+    $('#btnAdd').on('click',function(){
+        var name = document.getElementById("sale_name").value;
+        var department = document.getElementById("department").value;
+        $.ajax({
+            url: '@Url.Action("Insert", "Target")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                department, name
+            },
+            success: function (response) {
+                if (response == "Insert Success") {
+                    fetch();
+                    toastr.success("Insert Success");
+                } else {
+                    toastr.error("Insert Failed");
+                }
+            }
+        });
+    });
+
+    $('#table').on('click', 'tbody td', function () {
+        var cell = tables.cell(this);
+        var column = cell[0][0].column;
+        var department = cell.data()[2];
+        var name = cell.data()[3];
+        var product = cell.data()[4];
+        var project = cell.data()[5];
+        var service = cell.data()[6];
+
+        if (column == "0") {
+            document.getElementById('edit_department').value = department;
+            document.getElementById('edit_sale_name').value = name;
+            document.getElementById("edit_product").value = product;
+            document.getElementById("edit_project").value = project;
+            document.getElementById("edit_service").value = service;
+            $('#EditModal').modal();
+        } else if ( column == "1") {
+            $.ajax({
+            url: '@Url.Action("Delete", "Target")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                name
+            },
+            success: function (response) {
+                if (response == "Delete Success") {
+                    fetch();
+                    toastr.success("Delete Success");
+                } else {
+                    toastr.error("Delete Failed");
+                }
+            }
+        });
+        }
+    });
+
+    $('#edit_Confirm').on('click',function(){
+        var name = document.getElementById("edit_sale_name").value;
+        var product = document.getElementById("edit_product").value;
+        var project = document.getElementById("edit_project").value;
+        var service = document.getElementById("edit_service").value;
+         $.ajax({
+            url: '@Url.Action("Update", "Target")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                name,product,project,service
+            },
+            success: function (response) {
+                if (response == "Update Success") {
+                    fetch();
+                    toastr.success("Update Success");
+                } else {
+                    toastr.error("Update Failed");
+                }
+            }
+         });
+         $('#EditModal').modal('hide');
+    });
+    function fetch() {
+        $.ajax({
+            url: '@Url.Action("GetData", "Target")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+            },
+            success: function (response) {
+                var datas = response;
+                var dataSet = [];
+                for (var i = 0; i < datas.length; i++) {
+                    var data = ["","",
+                        datas[i].department,
+                        datas[i].sale_name,
+                        datas[i].product,
+                        datas[i].project,
+                        datas[i].service];
+
+                    dataSet.push(data);
+                }
+                table(dataSet);
+            }
+        });
+    };
+    var tables;
+    function table(dataSet) {
+        if (tables !== undefined)
+            tables.destroy();
+        tables = $('#table').DataTable({
+            data: dataSet,
+            columns: [
+                { title: "", width: 10 },
+                { title: "", width: 10 },
+                { title: "Department" , width: 10 },
+                { title: "Sale Name" , width: 10 },
+                { title: "Product (MB)" , width: 10 },
+                { title: "Project (MB)" , width: 10 },
+                { title: "Service (MB)" , width: 10 },
+            ],
+            "columnDefs": [
+                {
+                    "targets": 0,
+                    "data": null,
+                    "defaultContent": "<i class=\"fas fa-pen\"></i>",
+                    "className": 'dt-body-center',
+                },
+                {
+                    "targets": 1,
+                    "data": null,
+                    "defaultContent": "<i class=\"fas fa-trash\"></i>",
+                    "className": 'dt-body-center',
+                },
+                {
+                    "targets": [2,3,4,5,6],
+                    "className": 'dt-body-center',
+                },
+            ],
+            "scrollX": true,
+        });
+        $(tables.table().body()).addClass('text-dark');
+    };
+    function add_sale(sales) {
+        var data_sales = [];
+        for (var i = 0; i < sales.length; i++) {
+            var data =
+            {
+                "text": sales[i].name,
+                "value": sales[i].name,
+            }
+            data_sales.push(data);
+        }
+        return data_sales;
+    };
+    function add_department(departments) {
+        var data_departments = [];
+        for (var i = 0; i < departments.length; i++) {
+            var data =
+            {
+                "text": departments[i].department,
+                "value": departments[i].department,
+            }
+            data_departments.push(data);
+        }
+        return data_departments;
+    };
+</script>
+}
