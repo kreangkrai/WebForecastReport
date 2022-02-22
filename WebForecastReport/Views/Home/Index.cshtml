@@ -28,6 +28,10 @@
             <div class="row pt-3">
                 <div class="col-md-6 col-xl-6">
                     <div class="row">
+                        <div class="col-md-3 col-xl-3 pb-3">
+                            <select id="years_dashboard" class="form-control">
+                            </select>
+                        </div>
                         <div class="col-md-4 col-xl-4 pb-3">
                             <select id="sale_name" class="form-control">
                             </select>
@@ -150,12 +154,50 @@
             <div class="row pt-3">
                 <div class="col-md-6 col-xl-6">
                     <div class="row">
+                        <div class="col-md-3 col-xl-3 pb-3">
+                            <select id="years_performance" class="form-control">
+                            </select>
+                        </div>
                         <div class="col-md-4 col-xl-4 pb-3">
                             <select id="departments" class="form-control">
                             </select>
                         </div>
                         <div class="col-md-3 col-xl-3 pb-4">
-                            <button type="button" id="btn_department_OK" class="btn btn-primary form-control">OK</button>
+                            <button type="button" id="btn_performance_OK" class="btn btn-primary form-control">OK</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-xl-12 pt-2">
+                    <div class="row">
+                        <div class="col-md-12 col-xl-12">
+                            <div class="card bg-dark" style="height:500px">
+                                <div class="card-header">
+                                    <span class="card-title">Performance</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 col-xl-6">
+                                            <div class="w-100">
+                                                <canvas id="performance_bar" style="height:350px"></canvas>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6">
+                                            <div style="overflow:auto; height:400px">
+                                                <table id="table_performance_stack" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">
+                                                    <thead class="text-center" style="background-color:#0F8DF6;color:black">
+                                                        <tr>
+                                                            <th style="text-align:center;">Sales Name</th>
+                                                            <th style="text-align:center;">Target (MB)</th>
+                                                            <th style="text-align:center;">Actual (MB)</th>
+                                                            <th style="text-align:center;">Actual (%)</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -165,7 +207,7 @@
                             <thead class="text-center" style="background-color:#0F8DF6;color:black">
                                 <tr>
                                     <th rowspan="2" style="text-align:center;vertical-align:middle">Department</th>
-                                    <th rowspan="2" style="text-align:center;vertical-align:middle">Sale Namet</th>
+                                    <th rowspan="2" style="text-align:center;vertical-align:middle">Sale Name</th>
                                     <th colspan="2" style="text-align:center;">Product(MB)</th>
                                     <th colspan="2" style="text-align:center;">Project(MB)</th>
                                     <th colspan="2" style="text-align:center;">Service(MB)</th>
@@ -192,6 +234,7 @@
 @section Scripts
     {
 <script type="text/javascript">
+    var Years = [];
     var Sales = [];
     var Departments = [];
     var Role = "";
@@ -242,6 +285,7 @@
     });
 
         function init(){
+             var year = '@DateTime.Now.ToString("yyyy")';
              var name = '@Model.name';
              var role = '@Model.role';
              var department = '@Model.department';
@@ -251,18 +295,19 @@
                 type: "post",
                 contentType: 'application/x-www-form-urlencoded',
                 data: {
-                    name,department, role
+                    year,name,department, role
                 },
                 success: function (response) {
-
+                    Years = add_year(response.years);
                     Sales = add_sale(response.sales);
                     Departments = add_department(response.departments);
 
                     initSale(role,Sales);
+                    initYearDashboard(Years);
 
                     //draw pie chart
                     var name = document.getElementById("sale_name").value;
-                    pie_chart_data(name);
+                    pie_chart_data(year,name);
 
                 }
              });
@@ -270,24 +315,31 @@
         $('#btn_OK').on('click', function () {
             $("#table_stages").empty();
              var name = document.getElementById("sale_name").value;
-             pie_chart_data(name);
+             var year = document.getElementById("years_dashboard").value;
+             pie_chart_data(year,name);
         });
 
         $('#tab_b').on('click',function(){
              initDepartment(Role,Departments);
+             initYearPerformance(Years);
         });
 
-        $('#btn_department_OK').on('click',function(){
+        $('#btn_performance_OK').on('click',function(){
+            var year = document.getElementById("years_performance").value;
             var department = document.getElementById("departments").value;
             $.ajax({
                 url: '@Url.Action("GetDataPerformance", "Home")',
                 type: "post",
                 contentType: 'application/x-www-form-urlencoded',
                 data: {
-                    department
+                    year,department
                 },
                 success: function (response) {
-                    var datas = response;
+
+                    UpdatePerformanceStack(response.performances_stack);
+                    initPerformanceStack(response.performances_stack);
+
+                    var datas = response.performances;
                     var dataSet = [];
                     for (var i = 0; i < datas.length; i++) {
                            var sum_target = (parseFloat(datas[i].product_target) + parseFloat(datas[i].project_target) +  parseFloat(datas[i].service_target)).toFixed(3);
@@ -310,7 +362,7 @@
                        }
                     tablePerformance(dataSet);
                 }
-           });
+            });
         });
         function initSale(role,Sales){
             $('#sale_name').empty();
@@ -340,14 +392,36 @@
             }else{
                 document.getElementById('departments').selectedIndex = index_department;
             }
-        }
-        function pie_chart_data(name){
+        };
+
+        function initYearDashboard(Years){
+            //Year
+            $('#years_dashboard').empty();
+            var selectyear = document.getElementById('years_dashboard');
+            for (var i = 0, l = Years.length; i < l; i++) {
+                 var option = Years[i];
+                 selectyear.options.add(new Option(option.text, option.value, option.selected));
+            }
+            document.getElementById('years_dashboard').selectedIndex = 0;
+        };
+        function initYearPerformance(Years){
+            //Year
+            $('#years_performance').empty();
+            var selectyear = document.getElementById('years_performance');
+            for (var i = 0, l = Years.length; i < l; i++) {
+                 var option = Years[i];
+                 selectyear.options.add(new Option(option.text, option.value, option.selected));
+            }
+            document.getElementById('years_performance').selectedIndex = 0;
+        };
+
+        function pie_chart_data(year,name){
              $.ajax({
                  url: '@Url.Action("GetData", "Home")',
                  type: "post",
                  contentType: 'application/x-www-form-urlencoded',
                  data: {
-                     name
+                     year,name
                  },
                  success: function (response) {
                      Datas = response.datas;
@@ -514,8 +588,8 @@
 
             var type = [ "Product", "Project", "Service"];
 
-            var bg_colors = ['#003F5CC8', '#2F4B7CC8', '#665191C8'];
-            var border_colors = ['#003F5CFF', '#2F4B7CFF', '#665191FF'];
+            var bg_colors = ['#41384D', '#725A7A', '#B8AAC3'];
+            var border_colors = ['#41384D', '#725A7A', '#B8AAC3'];
 
             pie_chart_type = new Chart("pie_chart_type", {
                 type: "pie",
@@ -575,8 +649,8 @@
 
             var type = [ "Product", "Project", "Service"];
 
-            var bg_colors = ['#3DE513', '#25930A', '#4D8340'];
-            var border_colors = ['#3DE513', '#25930A', '#4D8340'];
+            var bg_colors = ['#205D5E', '#3F7857', '#7EC384'];
+            var border_colors = ['#205D5E', '#3F7857', '#7EC384'];
 
             pie_chart_won = new Chart("pie_chart_won", {
                 type: "pie",
@@ -637,8 +711,8 @@
 
             var type = [ "Product", "Project", "Service"];
 
-            var bg_colors = ['#E38231', '#C28756', '#E85608'];
-            var border_colors = ['#E38231', '#C28756', '#E85608'];
+            var bg_colors = ['#7E0306', '#D53E0F', '#FA8744'];
+            var border_colors = ['#7E0306', '#D53E0F', '#FA8744'];
 
             pie_chart_lost = new Chart("pie_chart_lost", {
                 type: "pie",
@@ -698,8 +772,8 @@
 
             var type = [ "Product", "Project", "Service"];
 
-            var bg_colors = ['#40EFD7', '#7ABEBF', '#169294'];
-            var border_colors = ['#40EFD7', '#7ABEBF', '#169294'];
+            var bg_colors = ['#686868', '#A6A6A6', '#D3D3D3'];
+            var border_colors = ['#686868', '#A6A6A6', '#D3D3D3'];
 
             pie_chart_nogo = new Chart("pie_chart_nogo", {
                 type: "pie",
@@ -759,8 +833,8 @@
 
             var type = [ "Product", "Project", "Service"];
 
-            var bg_colors = ['#1D7DE8', '#6097D4', '#1059EA'];
-            var border_colors = ['#1D7DE8', '#6097D4', '#1059EA'];
+            var bg_colors = ['#C78B05', '#FFC000', '#F8E07E'];
+            var border_colors = ['#C78B05', '#FFC000', '#F8E07E'];
 
             pie_chart_pending = new Chart("pie_chart_pending", {
                 type: "pie",
@@ -820,8 +894,8 @@
 
             var type = ["Quote for Budget", "Negotiation/Review", "Proposal/Quote for Order","Prospecting ","Closed (Won)","Closed (Lost)","No go"];
 
-            var bg_colors = ['#8237EE', '#2F4B7CC8', '#DD2D8A','#003F5CC8', '#1AF30F', '#E3AC26','#2B94D3'];
-            var border_colors = ['#8237EE', '#2F4B7CC8', '#DD2D8A','#003F5CC8', '#1AF30F', '#E3AC26','#2B94D3'];
+            var bg_colors = ['#083470', '#1C4C97', '#2484C6','#84C2ED', '#D6D6D6', '#B0B0B0','#7D7D7D'];
+            var border_colors = ['#083470', '#1C4C97', '#2484C6','#84C2ED', '#D6D6D6', '#B0B0B0','#7D7D7D'];
 
             pie_chart_stages = new Chart("pie_chart_stages", {
                 type: "pie",
@@ -870,6 +944,101 @@
                     maintainAspectRatio: false,
                 }
             });
+        };
+
+        var performance_stack;
+        function UpdatePerformanceStack(datas){
+            if (performance_stack != null){
+                performance_stack.destroy();
+
+            }
+            var chartName = "performance_bar";
+            var ctx = document.getElementById(chartName).getContext('2d');
+
+            var names = [];
+            var products_target = [];
+            var products_actual = [];
+            var projects_target = [];
+            var projects_actual = [];
+            var services_target = [];
+            var services_actual = [];
+
+            //get datas
+            for (var i =0; i<datas.length;i++){
+                names.push(datas[i].sale_name);
+                products_target.push(datas[i].product_target);
+                products_actual.push(datas[i].product_actual);
+                projects_target.push(datas[i].project_target);
+                projects_actual.push(datas[i].project_actual);
+                services_target.push(datas[i].service_target);
+                services_actual.push(datas[i].service_actual);
+            }
+            var labels = names;
+            const data = {
+                              labels: labels,
+                              datasets: [
+                                {
+                                  label: 'Product Target',
+                                  data: products_target,
+                                  backgroundColor: '#73B2E7',
+                                  stack: 'Stack 0',
+                                },
+                                {
+                                  label: 'Product Actual',
+                                  data: products_actual,
+                                  backgroundColor: '#4786E0',
+                                  stack: 'Stack 1',
+                                },
+                                {
+                                  label: 'Project Target',
+                                  data: projects_target,
+                                  backgroundColor: '#79EE31',
+                                  stack: 'Stack 0',
+                                },
+                                {
+                                  label: 'Project Actual',
+                                  data: projects_actual,
+                                  backgroundColor: '#1EC819',
+                                  stack: 'Stack 1',
+                                },
+                                {
+                                  label: 'Service Target',
+                                  data: services_target,
+                                  backgroundColor: '#EA8A1E',
+                                  stack: 'Stack 0',
+                                },
+                                {
+                                  label: 'Service Actual',
+                                  data: services_actual,
+                                  backgroundColor: '#F04D15',
+                                  stack: 'Stack 1',
+                                },
+                              ],
+                        };
+
+                        const options = {
+                              plugins: {
+                                title: {
+                                  display: true,
+                                  text: 'Performance'
+                                },
+                              },
+                              interaction: {
+                                  intersect: false,
+                              },
+                              responsive: true,
+                              scales: {
+                                x: {
+                                  stacked: true,
+                                },
+                                y: {
+                                  stacked: true
+                                }
+                              }
+
+                        };
+                        performance_stack = new Chart(ctx, { type: 'bar', data: data, options: options });
+
         };
 
         function PopulateDataBarChart(datas) {
@@ -1006,25 +1175,12 @@
             });
             $(tables.table().body()).addClass('text-dark');
         }
-        function add_sale(sales) {
-                var data_sales = [];
-                for (var i = 0; i < sales.length; i++) {
-                    var data =
-                    {
-                        "text": sales[i].name,
-                        "value": sales[i].name,
-                    }
-                    data_sales.push(data);
-                }
-
-                return data_sales;
-        };
 
         var tables_performance;
         function tablePerformance(dataSet) {
             setTimeout(()=>{
                 if (tables_performance !== undefined)
-                tables_performance.destroy();
+                    tables_performance.destroy();
                 tables_performance = $('#table_performance').DataTable({
                 data: dataSet,
                 "columnDefs": [
@@ -1048,6 +1204,60 @@
             $(tables_performance.table().body()).addClass('text-dark');
             },100);
         };
+
+        function initPerformanceStack(datas){
+                    var dataSet = [];
+                    var total_target = 0;
+                    var total_actual = 0;
+                    for (var i = 0; i < datas.length; i++) {
+                           var sum_target = (parseFloat(datas[i].product_target) + parseFloat(datas[i].project_target) +  parseFloat(datas[i].service_target)).toFixed(3);
+                           var sum_actual = (parseFloat(datas[i].product_actual) + parseFloat(datas[i].project_actual) +  parseFloat(datas[i].service_actual)).toFixed(3);
+                           var percent = ((sum_actual / sum_target) * 100).toFixed(2);
+                           total_target += parseFloat(sum_target);
+                           total_actual += parseFloat(sum_actual);
+                           var data = [
+                               datas[i].sale_name,
+                               sum_target,
+                               sum_actual,
+                               percent
+                               ];
+
+                           dataSet.push(data);
+                       }
+                       var total_percent = ((total_actual / total_target) *100).toFixed(2);
+                       dataSet.push(["Total",total_target.toFixed(3),total_actual.toFixed(3),total_percent]);
+                    tablePerformanceStack(dataSet);
+        };
+        var tables_performance_stack;
+        function tablePerformanceStack(dataSet) {
+            setTimeout(()=>{
+                if (tables_performance_stack !== undefined)
+                    tables_performance_stack.destroy();
+
+                tables_performance_stack = $('#table_performance_stack').DataTable({
+                data: dataSet,
+                "columnDefs": [
+                    {
+                        "targets": [0, 1, 2, 3],
+                        "className": "text-center",
+                    },
+                ],
+                 "createdRow": function (row, data, index) {
+                    if (data[0] === "Total") {
+                        $('td', row).css('background-color', '#E3C871');
+                        $('td', row).addClass('highlight');
+                    }
+                },
+                "paging": false,
+                "searching": false,
+                "bInfo": false,
+                "scrollX": true,
+            });
+
+            $(tables_performance_stack.table().body()).addClass('text-dark');
+            },100);
+        };
+
         function add_department(departments) {
                 var data_departments = [];
                 for (var i = 0; i < departments.length; i++) {
@@ -1061,5 +1271,32 @@
 
                 return data_departments;
         };
+
+        function add_sale(sales) {
+                var data_sales = [];
+                for (var i = 0; i < sales.length; i++) {
+                    var data =
+                    {
+                        "text": sales[i].name,
+                        "value": sales[i].name,
+                    }
+                    data_sales.push(data);
+                }
+
+                return data_sales;
+        };
+        function add_year(years) {
+                var data_years = [];
+                for (var i = 0; i < years.length; i++) {
+                    var data =
+                    {
+                        "text": years[i],
+                        "value": years[i],
+                    }
+                    data_years.push(data);
+                }
+
+                return data_years;
+        };
 </script>
-}
+    }

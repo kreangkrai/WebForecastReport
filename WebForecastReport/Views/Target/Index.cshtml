@@ -19,6 +19,11 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-2 col-xl-2 pt-2">
+                            <select id="years" class="form-control">
+                                <option value="" disabled>Please Select</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 col-xl-2 pt-2">
                             <select id="sale_name" class="form-control">
                                 <option value="" disabled>Please Select</option>
                             </select>
@@ -52,6 +57,7 @@
 @section Scripts
 {
 <script type="text/javascript">
+    var Years = [];
     var Sales = [];
     var Departments = [];
 
@@ -70,8 +76,19 @@
 
             },
             success: function (response) {
+                //get Year
+                Years = add_year(response.years);
+
+                $('#years').empty();
+                var selectyear = document.getElementById('years');
+                for (var i = 0, l = Years.length; i < l; i++) {
+                     var option = Years[i];
+                     selectyear.options.add(new Option(option.text, option.value, option.selected));
+                }
+                document.getElementById('years').selectedIndex = 0;
+
                 // get Sale
-                Sales = add_sale(response);
+                Sales = add_sale(response.sales);
                 $('#sale_name').empty();
                 var selectsale = document.getElementById('sale_name');
                 selectsale.options.add(new Option("Please Select", "", null));
@@ -115,6 +132,7 @@
     });
 
     $('#btnAdd').on('click',function(){
+        var year = document.getElementById("years").value;
         var name = document.getElementById("sale_name").value;
         var department = document.getElementById("department").value;
         $.ajax({
@@ -122,7 +140,7 @@
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                department, name
+                year,department, name
             },
             success: function (response) {
                 if (response == "Insert Success") {
@@ -138,13 +156,15 @@
     $('#table').on('click', 'tbody td', function () {
         var cell = tables.cell(this);
         var column = cell[0][0].column;
-        var department = cell.data()[2];
-        var name = cell.data()[3];
-        var product = cell.data()[4];
-        var project = cell.data()[5];
-        var service = cell.data()[6];
+        var year = cell.data()[2];
+        var department = cell.data()[3];
+        var name = cell.data()[4];
+        var product = cell.data()[5];
+        var project = cell.data()[6];
+        var service = cell.data()[7];
 
         if (column == "0") {
+            document.getElementById('edit_year').value = year;
             document.getElementById('edit_department').value = department;
             document.getElementById('edit_sale_name').value = name;
             document.getElementById("edit_product").value = product;
@@ -157,7 +177,7 @@
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                name
+                year,name
             },
             success: function (response) {
                 if (response == "Delete Success") {
@@ -172,6 +192,7 @@
     });
 
     $('#edit_Confirm').on('click',function(){
+        var year = document.getElementById("edit_year").value;
         var name = document.getElementById("edit_sale_name").value;
         var product = document.getElementById("edit_product").value;
         var project = document.getElementById("edit_project").value;
@@ -181,7 +202,7 @@
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                name,product,project,service
+                year,name,product,project,service
             },
             success: function (response) {
                 if (response == "Update Success") {
@@ -206,6 +227,7 @@
                 var dataSet = [];
                 for (var i = 0; i < datas.length; i++) {
                     var data = ["","",
+                        datas[i].year,
                         datas[i].department,
                         datas[i].sale_name,
                         datas[i].product,
@@ -227,6 +249,7 @@
             columns: [
                 { title: "", width: 10 },
                 { title: "", width: 10 },
+                { title: "Year" , width: 10 },
                 { title: "Department" , width: 10 },
                 { title: "Sale Name" , width: 10 },
                 { title: "Product (MB)" , width: 10 },
@@ -247,7 +270,7 @@
                     "className": 'dt-body-center',
                 },
                 {
-                    "targets": [2,3,4,5,6],
+                    "targets": [2,3,4,5,6,7],
                     "className": 'dt-body-center',
                 },
             ],
@@ -266,6 +289,18 @@
             data_sales.push(data);
         }
         return data_sales;
+    };
+    function add_year(years) {
+        var data_years = [];
+        for (var i = 0; i < years.length; i++) {
+            var data =
+            {
+                "text": years[i],
+                "value": years[i],
+            }
+            data_years.push(data);
+        }
+        return data_years;
     };
     function add_department(departments) {
         var data_departments = [];

@@ -10,22 +10,22 @@ namespace WebForecastReport.Service
 {
     public class HomeService : IHome
     {
-        public List<Home_DataModel> getData(string name)
+        public List<Home_DataModel> getData(string year, string name)
         {
             try
             {
                 List<Home_DataModel> datas = new List<Home_DataModel>();
                 SqlCommand cmd = new SqlCommand(@"select 'Type' as [group],sale_name,product_type as [type], '' as stages, format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as mb
-                                                  from Quotation where sale_name='" + name + "' group by sale_name,product_type having product_type <>'' union all " +
+                                                  from Quotation where sale_name='" + name + "' and stages_update_date like '" + year + "%' group by sale_name,product_type having product_type <>'' union all " +
 
                                                   "select 'Stages' as [group],sale_name,product_type,stages,format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as mb " +
                                                   "from Quotation " +
-                                                  "where sale_name='" + name + "' " +
+                                                  "where sale_name='" + name + "' and stages_update_date like '" + year + "%' " +
                                                   "group by sale_name,stages,product_type having product_type <>'' and stages in('Closed(Won)','Closed(Lost)','No go') union all " +
 
                                                   "select s1.[group],s1.sale_name,s1.product_type,'Pending' as stages, sum(cast(s1.mb as float)) as mb " +
                                                   "from (select 'Stages' as [group],sale_name,product_type,stages,format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as mb " +
-                                                        "from Quotation where sale_name='" + name + "' " +
+                                                        "from Quotation where sale_name='" + name + "' and stages_update_date like '" + year + "%' " +
                                                         "group by sale_name,stages,product_type " +
                                                         "having product_type <>'' and stages not in('','Closed(Won)','Closed(Lost)','No go')) as s1 " +
                                                   "group by s1.[group],s1.sale_name,s1.product_type", ConnectSQL.OpenConnect());
@@ -57,7 +57,7 @@ namespace WebForecastReport.Service
             }
         }
 
-        public Home_DayModel getDataDay(string name)
+        public Home_DayModel getDataDay(string year, string name)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace WebForecastReport.Service
 		                                            stages,
 		                                            DATEDIFF(Day, stages_update_date,getDate()) as day
 	                                            from Quotation 
-	                                            where sale_name = '" + name + "' and stages not in ('','Closed(Won)','Closed(Lost)','No go')) as s1 " +
+	                                            where sale_name = '" + name + "' and stages_update_date like '" + year + "%' and stages not in ('','Closed(Won)','Closed(Lost)','No go')) as s1 " +
                                                "group by s1.sale_name", ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
@@ -104,7 +104,7 @@ namespace WebForecastReport.Service
             }
         }
 
-        public List<Home_Stages_DayModel> getDataQuotationMoreDay(string sale_name, string day)
+        public List<Home_Stages_DayModel> getDataQuotationMoreDay(string year, string sale_name, string day)
         {
             try
             {
@@ -114,7 +114,7 @@ namespace WebForecastReport.Service
                                                     stages,
                                                     stages_update_date 
                                                     from Quotation 
-                                                    where sale_name = '" + sale_name + "' and stages not in ('','Closed(Won)','Closed(Lost)','No go') and DATEDIFF(day,stages_update_date,getDate()) " + day + "order by quotation_no", ConnectSQL.OpenConnect());
+                                                    where sale_name = '" + sale_name + "' and stages_update_date like '" + year + "%' and stages not in ('','Closed(Won)','Closed(Lost)','No go') and DATEDIFF(day,stages_update_date,getDate()) " + day + "order by quotation_no", ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -142,7 +142,7 @@ namespace WebForecastReport.Service
             }
         }
 
-        public List<Home_StagesModel> getDataStages(string name)
+        public List<Home_StagesModel> getDataStages(string year, string name)
         {
             try
             {
@@ -151,7 +151,7 @@ namespace WebForecastReport.Service
                                                          stages,
                                                          format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as mb
                                                   from Quotation 
-                                                  where sale_name = '" + name + "' and stages <> ''" +
+                                                  where sale_name = '" + name + "' and stages_update_date like '" + year + "%' and stages <> ''" +
                                                  "group by sale_name,stages having stages <> ''", ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
@@ -179,7 +179,7 @@ namespace WebForecastReport.Service
             }
         }
 
-        public List<PerformanceModel> getPerformance(string department)
+        public List<PerformanceModel> getPerformance(string year, string department)
         {
             try
             {
@@ -196,9 +196,13 @@ namespace WebForecastReport.Service
                                                  format(sum(case when product_type='prject' then case when quoted_price is not null then cast(replace(quoted_price,',','') as float) else 0 end else 0 end) / 1000000,'N3') as project_actual,
                                                  format(sum(case when product_type='service' then case when quoted_price is not null then cast(replace(quoted_price,',','') as float) else 0 end else 0 end) / 1000000,'N3') as service_actual
                                                  from Quotation 
-                                                 where department = '" + department + "' and stages ='Closed(Won)' " +
+                                                 where department = '" + department + "' and stages_update_date like '" + year + "%' and stages ='Closed(Won)' " +
                                                  "group by department, sale_name) as s1 " +
-                                                 "left join Target as s2 ON s1.sale_name = s2.sale_name union all " +
+                                                 "left join (select department,sale_name, " +
+                                                 "sum(cast(product as float)) as product, " +
+                                                 "sum(cast(project as float)) as project, " +
+                                                 "sum(cast(service as float)) as service " +
+                                                 "from Target where [year] = '" + year + "' group by department, sale_name) as s2 ON s1.sale_name = s2.sale_name union all " +
 
                                                  "select 'Total' as department,'' as sale_name, " +
                                                  "s2.product as product_target, " +
@@ -212,15 +216,70 @@ namespace WebForecastReport.Service
                                                  "format(sum(case when product_type = 'prject' then case when quoted_price is not null then cast(replace(quoted_price, ',', '') as float) else 0 end else 0 end) / 1000000 ,'N3') as project_actual, " +
                                                  "format(sum(case when product_type = 'service' then case when quoted_price is not null then cast(replace(quoted_price, ',', '') as float) else 0 end else 0 end) / 1000000 ,'N3') as service_actual " +
                                                  "from Quotation " +
-                                                 "where department = '" + department + "' and stages ='Closed(Won)' " +
+                                                 "where department = '" + department + "' and stages_update_date like '" + year + "%' and stages ='Closed(Won)' " +
                                                  "group by department) as s1 " +
                                                  "left join  " +
                                                  "(select department, " +
                                                  "sum(cast(product as float)) as product, " +
                                                  "sum(cast(project as float)) as project, " +
                                                  "sum(cast(service as float)) as service " +
-                                                 "from [Target] group by department) as s2 ON s1.department = s2.department) " +
+                                                 "from [Target] where [year]='" + year + "' group by department) as s2 ON s1.department = s2.department) " +
                                                  "select * from s order by s.department,s.sale_name", ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        PerformanceModel p = new PerformanceModel()
+                        {
+                            department = dr["department"].ToString(),
+                            sale_name = dr["sale_name"].ToString(),
+                            product_target = dr["product_target"].ToString(),
+                            product_actual = dr["product_actual"].ToString(),
+                            project_target = dr["project_target"].ToString(),
+                            project_actual = dr["project_actual"].ToString(),
+                            service_target = dr["service_target"].ToString(),
+                            service_actual = dr["service_actual"].ToString()
+                        };
+                        targetPerformances.Add(p);
+                    }
+                    dr.Close();
+                }
+                return targetPerformances;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public List<PerformanceModel> getPerformanceStack(string year, string department)
+        {
+            try
+            {
+                List<PerformanceModel> targetPerformances = new List<PerformanceModel>();
+                SqlCommand cmd = new SqlCommand(@"select s1.department,s1.sale_name,
+                                                 s2.product as product_target,
+                                                 s1.product_actual,
+                                                 s2.project as project_target,
+                                                 s1.project_actual,
+                                                 s2.service as service_target,
+                                                 s1.service_actual
+                                                 from (select department,sale_name,
+                                                 format(sum(case when product_type='product' then case when quoted_price is not null then cast(replace(quoted_price,',','') as float) else 0 end else 0 end) / 1000000 ,'N3') as product_actual,
+                                                 format(sum(case when product_type='prject' then case when quoted_price is not null then cast(replace(quoted_price,',','') as float) else 0 end else 0 end) / 1000000,'N3') as project_actual,
+                                                 format(sum(case when product_type='service' then case when quoted_price is not null then cast(replace(quoted_price,',','') as float) else 0 end else 0 end) / 1000000,'N3') as service_actual
+                                                 from Quotation 
+                                                 where department = '" + department + "' and stages_update_date like '" + year + "%' and stages ='Closed(Won)' " +
+                                                 "group by department, sale_name) as s1 " +
+                                                 "left join (select department,sale_name, " +
+                                                 "sum(cast(product as float)) as product, " +
+                                                 "sum(cast(project as float)) as project, " +
+                                                 "sum(cast(service as float)) as service " +
+                                                 "from Target where [year] = '" + year + "' group by department, sale_name) as s2 ON s1.sale_name = s2.sale_name", ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {

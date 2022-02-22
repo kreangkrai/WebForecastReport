@@ -73,21 +73,27 @@ namespace WebForecastReport.Controllers
                 departments = Accessory.getDepartmentQuotation().Where(w => w.department == department).ToList();
             }
 
-            var list = new { sales = sales, departments = departments };
+            List<string> years = new List<string>();
+            for (int year = DateTime.Now.Year; year > DateTime.Now.Year - 3; year--)
+            {
+                years.Add(year.ToString());
+            }
+
+            var list = new { sales = sales, departments = departments, years = years };
             return Json(list);
         }
 
         [HttpPost]
-        public JsonResult GetData(string name)
+        public JsonResult GetData(string year, string name)
         {
             List<Home_DataModel> datas = new List<Home_DataModel>();
-            datas = Home.getData(name);
+            datas = Home.getData(year, name);
 
             List<Home_StagesModel> stages = new List<Home_StagesModel>();
-            stages = Home.getDataStages(name);
+            stages = Home.getDataStages(year, name);
 
             Home_DayModel day = new Home_DayModel();
-            day = Home.getDataDay(name);
+            day = Home.getDataDay(year, name);
 
             var list = new { datas = datas, stages = stages, day = day };
 
@@ -95,18 +101,23 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetDataPerformance(string department)
+        public JsonResult GetDataPerformance(string year, string department)
         {
             List<PerformanceModel> performances = new List<PerformanceModel>();
-            performances = Home.getPerformance(department);
-            return Json(performances);
+            performances = Home.getPerformance(year, department);
+
+            List<PerformanceModel> performances_stack = new List<PerformanceModel>();
+            performances_stack = Home.getPerformanceStack(year, department);
+
+            var list = new { performances = performances, performances_stack = performances_stack };
+            return Json(list);
         }
 
         [HttpPost]
-        public JsonResult GetStagesDay(string name, string day)
+        public JsonResult GetStagesDay(string year, string name, string day)
         {
             List<Home_Stages_DayModel> quotations = new List<Home_Stages_DayModel>();
-            quotations = Home.getDataQuotationMoreDay(name, day);
+            quotations = Home.getDataQuotationMoreDay(year, name, day);
             return Json(quotations);
         }
     }

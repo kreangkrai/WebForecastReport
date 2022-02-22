@@ -8,11 +8,13 @@ namespace WebForecastReport.Interface
 {
     interface IHome
     {
-        List<Home_DataModel> getData(string name);
-        List<Home_StagesModel> getDataStages(string name);
-        Home_DayModel getDataDay(string name);
-        List<Home_Stages_DayModel> getDataQuotationMoreDay(string sale_name, string day);
+        List<Home_DataModel> getData(string year, string name);
+        List<Home_StagesModel> getDataStages(string year, string name);
+        Home_DayModel getDataDay(string year, string name);
+        List<Home_Stages_DayModel> getDataQuotationMoreDay(string year, string sale_name, string day);
 
-        List<PerformanceModel> getPerformance(string department);
+        List<PerformanceModel> getPerformance(string year, string department);
+
+        List<PerformanceModel> getPerformanceStack(string year, string department);
     }
 }

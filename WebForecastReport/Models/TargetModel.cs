@@ -7,6 +7,7 @@ namespace WebForecastReport.Models
 {
     public class TargetModel
     {
+        public string year { get; set; }
         public string department { get; set; }
         public string sale_name { get; set; }
         public string product { get; set; }

@@ -9,9 +9,9 @@ namespace WebForecastReport.Interface
     interface ITarget
     {
         List<TargetModel> getData();
-        string Insert(string department, string name);
+        string Insert(string year, string department, string name);
         string Update(TargetModel model);
-        string Delete(string name);
+        string Delete(string year, string name);
 
 
     }

@@ -11,13 +11,13 @@ namespace WebForecastReport.Service
 {
     public class TargetService : ITarget
     {
-        public string Delete(string name)
+        public string Delete(string year, string name)
         {
             try
             {
                 string command = "";
 
-                command = "DELETE FROM Target WHERE sale_name='" + name + "'";
+                command = "DELETE FROM Target WHERE year='" + year + "' and sale_name='" + name + "'";
 
                 SqlCommand com = new SqlCommand(command, ConnectSQL.OpenConnect());
                 com.ExecuteNonQuery();
@@ -49,6 +49,7 @@ namespace WebForecastReport.Service
                     {
                         TargetModel p = new TargetModel()
                         {
+                            year = dr["year"].ToString(),
                             department = dr["department"].ToString(),
                             sale_name = dr["sale_name"].ToString(),
                             product = dr["product"].ToString(),
@@ -70,7 +71,7 @@ namespace WebForecastReport.Service
             }
         }
 
-        public string Insert(string department, string name)
+        public string Insert(string year, string department, string name)
         {
             try
             {
@@ -78,8 +79,8 @@ namespace WebForecastReport.Service
                 string commandchk = "";
                 string command = "";
 
-                commandchk = "select * from Target where sale_name = '" + name + "'";
-                command = @"INSERT INTO Target(department,sale_name,product,project,service) VALUES (@department,@sale_name,@product,@project,@service)";
+                commandchk = "select * from Target where year = '" + year + "' and sale_name = '" + name + "'";
+                command = @"INSERT INTO Target(year,department,sale_name,product,project,service) VALUES (@year,@department,@sale_name,@product,@project,@service)";
 
                 SqlCommand cmd1 = new SqlCommand(commandchk, ConnectSQL.OpenConnect());
                 SqlDataReader dr1 = cmd1.ExecuteReader();
@@ -93,6 +94,7 @@ namespace WebForecastReport.Service
                     {
                         cmd.CommandType = CommandType.Text;
                         cmd.Connection = ConnectSQL.OpenConnect();
+                        cmd.Parameters.AddWithValue("@year", year);
                         cmd.Parameters.AddWithValue("@department", department);
                         cmd.Parameters.AddWithValue("@sale_name", name);
                         cmd.Parameters.AddWithValue("@product", "0");
@@ -124,7 +126,7 @@ namespace WebForecastReport.Service
                 command = @"UPDATE Target SET product = '" + model.product + "'," +
                                              "project = '" + model.project + "'," +
                                              "service = '" + model.service + "' " +
-                                             "WHERE sale_name='" + model.sale_name + "'";
+                                             "WHERE year='" + model.year + "' and sale_name='" + model.sale_name + "'";
 
                 SqlDataReader reader;
                 SqlCommand cmd = new SqlCommand(command);

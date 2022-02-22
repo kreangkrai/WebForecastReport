@@ -45,7 +45,14 @@ namespace WebForecastReport.Controllers
         {
             List<SaleModel> sales = new List<SaleModel>();
             sales = Accessory.getUserQuotation();
-            return Json(sales);
+
+            List<string> years = new List<string>();
+            for (int year = DateTime.Now.Year; year > DateTime.Now.Year - 3; year--)
+            {
+                years.Add(year.ToString());
+            }
+            var list = new { sales = sales, years = years };
+            return Json(list);
         }
         [HttpPost]
         public JsonResult GetDepartment(string name)
@@ -63,24 +70,25 @@ namespace WebForecastReport.Controllers
             return Json(datas);
         }
         [HttpPost]
-        public JsonResult Insert(string department, string name)
+        public JsonResult Insert(string year, string department, string name)
         {
-            string message = Target.Insert(department, name);
+            string message = Target.Insert(year, department, name);
             return Json(message);
         }
 
         [HttpPost]
-        public JsonResult Delete(string name)
+        public JsonResult Delete(string year, string name)
         {
-            string message = Target.Delete(name);
+            string message = Target.Delete(year, name);
             return Json(message);
         }
 
         [HttpPost]
-        public JsonResult Update(string name, string product, string project, string service)
+        public JsonResult Update(string year, string name, string product, string project, string service)
         {
             TargetModel target = new TargetModel()
             {
+                year = year,
                 sale_name = name,
                 product = product,
                 project = project,
