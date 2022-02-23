@@ -1107,8 +1107,8 @@
 
                 var type = ["No Data","< 7 Day", "< 14 Day", "< 30 Day","< 60 Day","> 60 Day"];
 
-                var bg_colors = ['#F1F48F', '#E2D445', '#DEA824', '#DE8124', '#E35812'];
-                var border_colors = ['#F1F48F', '#E2D445', '#DEA824', '#DE8124', '#E35812'];
+                var bg_colors = ['#FF0000', '#F1F48F', '#E2D445', '#DEA824', '#DE8124', '#E35812'];
+                var border_colors = ['#FF0000','#F1F48F', '#E2D445', '#DEA824', '#DE8124', '#E35812'];
                 var data = {
                     datasets: [
                         {
@@ -1172,7 +1172,7 @@
                 var index = point[0].index;
                 var day = "";
                 if (index == 0){
-
+                    day = "no data";
                 }else if (index == 1) {
                     day = " < 7";
                 } else if (index == 2) {
@@ -1216,7 +1216,7 @@
                 data: dataSet,
                 columns: [
                     { title: "Quotation"},
-                    { title: "Stages"},
+                    { title: "Stages Name"},
                     { title: "Stages Date" },
                 ],
                 "columnDefs": [

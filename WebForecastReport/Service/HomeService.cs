@@ -63,7 +63,7 @@ namespace WebForecastReport.Service
             {
                 Home_DayModel day = new Home_DayModel();
                 SqlCommand cmd = new SqlCommand(string.Format($@" select s1.sale_name,
-                                                    (select count(case when stages is null or stages='' then 1 else 0 end) as no_data from Quotation where sale_name = '{name}') as no_data,
+                                                    (select sum(case when (stages is null or stages='') then 1 else 0 end) as no_data from Quotation where sale_name = '{name}') as no_data,
 		                                            sum(case when s1.day < 7 then 1 else 0 end) as day_0,
 		                                            sum(case when s1.day >= 7 and s1.day < 14 then 1 else 0 end) as day_7,
 		                                            sum(case when s1.day >= 14 and s1.day < 30 then 1 else 0 end) as day_14,
@@ -109,12 +109,25 @@ namespace WebForecastReport.Service
             try
             {
                 List<Home_Stages_DayModel> stages = new List<Home_Stages_DayModel>();
-                SqlCommand cmd = new SqlCommand(@"select quotation_no,
+                string command = "";
+                if (day == "no data")
+                {
+                    command = string.Format($@"select quotation_no, project_name,
+                                               stages,
+                                               stages_update_date
+                                               from Quotation 
+                                               where sale_name = '{sale_name}' and (stages is null or stages = '')");
+                }
+                else
+                {
+                    command = string.Format($@"select quotation_no,
                                                     project_name,
                                                     stages,
                                                     stages_update_date 
                                                     from Quotation 
-                                                    where sale_name = '" + sale_name + "' and stages_update_date like '" + year + "%' and stages not in ('','Closed(Won)','Closed(Lost)','No go') and DATEDIFF(day,stages_update_date,getDate()) " + day + "order by quotation_no", ConnectSQL.OpenConnect());
+                                                    where sale_name = '{sale_name}' and stages_update_date like '{year}%' and stages not in ('','Closed(Won)','Closed(Lost)','No go') and DATEDIFF(day,stages_update_date,getDate()) {day} order by quotation_no");
+                }
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
