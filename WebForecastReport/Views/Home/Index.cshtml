@@ -169,20 +169,31 @@
                 </div>
                 <div class="col-md-12 col-xl-12 pt-2">
                     <div class="row">
-                        <div class="col-md-12 col-xl-12">
-                            <div class="card bg-dark" style="height:500px">
+                        <div class="col-md-6 col-xl-6">
+                            <div class="card bg-dark text-light" style="height:500px">
                                 <div class="card-header">
                                     <span class="card-title">Performance</span>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-6 col-xl-6">
-                                            <div class="w-100">
-                                                <canvas id="performance_bar" style="height:350px"></canvas>
+                                        <div class="col-md-12 col-xl-12">
+                                            <div class="w-100 h-100">
+                                                <canvas id="performance_bar"></canvas>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 col-xl-6">
-                                            <div style="overflow:auto; height:400px">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-6">
+                            <div class="card bg-dark" style="height:500px">
+                                <div class="card-header">
+                                    <span class="card-title"></span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-xl-12">
+                                            <div class="W-100 h-100" style="overflow:auto;">
                                                 <table id="table_performance_stack" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">
                                                     <thead class="text-center" style="background-color:#0F8DF6;color:black">
                                                         <tr>
@@ -202,29 +213,36 @@
                     </div>
                 </div>
                 <div class="col-md-12 col-xl-12 pt-2">
-                    <div style="overflow:auto; height:400px">
-                        <table id="table_performance" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">
-                            <thead class="text-center" style="background-color:#0F8DF6;color:black">
-                                <tr>
-                                    <th rowspan="2" style="text-align:center;vertical-align:middle">Department</th>
-                                    <th rowspan="2" style="text-align:center;vertical-align:middle">Sale Name</th>
-                                    <th colspan="2" style="text-align:center;">Product(MB)</th>
-                                    <th colspan="2" style="text-align:center;">Project(MB)</th>
-                                    <th colspan="2" style="text-align:center;">Service(MB)</th>
-                                    <th colspan="3" style="text-align:center;">Sales Total(MB)</th>
-                                </tr>
-                                <tr>
-                                    <th style="text-align:center;">Target</th>
-                                    <th style="text-align:center;">Actual</th>
-                                    <th style="text-align:center;">Target</th>
-                                    <th style="text-align:center;">Actual</th>
-                                    <th style="text-align:center;">Target</th>
-                                    <th style="text-align:center;">Actual</th>
-                                    <th style="text-align:center;">Target</th>
-                                    <th style="text-align:center;">Actual</th>
-                                    <th style="text-align:center;">%</th>
-                                </tr>
-                        </table>
+                    <div class="card bg-dark" style="height:500px">
+                        <div class="card-header">
+                            <span class="card-title"></span>
+                        </div>
+                        <div class="card-body">
+                            <div style="overflow:auto; height:400px">
+                                <table id="table_performance" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">
+                                    <thead class="text-center" style="background-color:#0F8DF6;color:black">
+                                        <tr>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle">Department</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle">Sale Name</th>
+                                            <th colspan="2" style="text-align:center;">Product(MB)</th>
+                                            <th colspan="2" style="text-align:center;">Project(MB)</th>
+                                            <th colspan="2" style="text-align:center;">Service(MB)</th>
+                                            <th colspan="3" style="text-align:center;">Sales Total(MB)</th>
+                                        </tr>
+                                        <tr>
+                                            <th style="text-align:center;">Target</th>
+                                            <th style="text-align:center;">Actual</th>
+                                            <th style="text-align:center;">Target</th>
+                                            <th style="text-align:center;">Actual</th>
+                                            <th style="text-align:center;">Target</th>
+                                            <th style="text-align:center;">Actual</th>
+                                            <th style="text-align:center;">Target</th>
+                                            <th style="text-align:center;">Actual</th>
+                                            <th style="text-align:center;">%</th>
+                                        </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1019,9 +1037,35 @@
                         const options = {
                               plugins: {
                                 title: {
-                                  display: true,
-                                  text: 'Performance'
+                                  display: false,
+                                  text: 'Performance',
+                                  color: '#FFFFFFC8',
+                                  font: {
+                                        size: 16
+                                    }
                                 },
+                                tooltip: {
+                                       callbacks: {
+                                            label: function(context) {
+                                                var label = context.dataset.label || '';
+                                                if (label) {
+                                                    label += ' : ';
+                                                }
+                                                if (context.parsed.y !== null) {
+                                                    label += context.parsed.y + ' MB';
+                                                }
+                                                return label;
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    labels: {
+                                    color: '#FFFFFFC8',
+                                    font: {
+                                        size: 14
+                                    }
+                                },
+                                }
                               },
                               interaction: {
                                   intersect: false,
@@ -1030,9 +1074,21 @@
                               scales: {
                                 x: {
                                   stacked: true,
+                                  ticks: {
+                                    color: '#FFFFFFC8',
+                                    font: {
+                                        size: 14
+                                    },
+                                  },
                                 },
                                 y: {
-                                  stacked: true
+                                  stacked: true,
+                                  ticks: {
+                                    color: '#FFFFFFC8',
+                                    font: {
+                                        size: 14
+                                    },
+                                  },
                                 }
                               }
 
@@ -1047,9 +1103,9 @@
                     bar_chart_stages.destroy();
                 var chartName = "bar_chart_stages";
                 var ctx = document.getElementById(chartName).getContext('2d');
-                var _datas = [datas.day_0, datas.day_7, datas.day_14, datas.day_30, datas.day_60];
+                var _datas = [datas.no_data,datas.day_0, datas.day_7, datas.day_14, datas.day_30, datas.day_60];
 
-                var type = ["< 7 Day", "< 14 Day", "< 30 Day","< 60 Day","> 60 Day"];
+                var type = ["No Data","< 7 Day", "< 14 Day", "< 30 Day","< 60 Day","> 60 Day"];
 
                 var bg_colors = ['#F1F48F', '#E2D445', '#DEA824', '#DE8124', '#E35812'];
                 var border_colors = ['#F1F48F', '#E2D445', '#DEA824', '#DE8124', '#E35812'];
@@ -1111,18 +1167,21 @@
         function BarChartClick(evt, point) {
             $("#table_stages").empty();
             var name = document.getElementById("sale_name").value;
+            var year = document.getElementById("years_dashboard").value;
             if (point.length > 0) {
                 var index = point[0].index;
                 var day = "";
-                if (index == 0) {
+                if (index == 0){
+
+                }else if (index == 1) {
                     day = " < 7";
-                } else if (index == 1) {
-                    day = "between 7 and 13";
                 } else if (index == 2) {
-                    day = "between 14 and 29";
+                    day = "between 7 and 13";
                 } else if (index == 3) {
-                    day = "between 30 and 59";
+                    day = "between 14 and 29";
                 } else if (index == 4) {
+                    day = "between 30 and 59";
+                } else if (index == 5) {
                     day = " > 60";
                 }
 
@@ -1131,7 +1190,7 @@
                     type: "post",
                     contentType: 'application/x-www-form-urlencoded',
                     data: {
-                        name, day
+                        year,name, day
                     },
                     success: function (response) {
                         var datas = response;

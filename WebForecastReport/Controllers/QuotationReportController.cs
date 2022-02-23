@@ -71,6 +71,16 @@ namespace WebForecastReport.Controllers
             reports = Quotation_Report.GetReportDepartment(department, month);
             return Json(reports);
         }
+
+        [HttpPost]
+        public JsonResult GetSales(string department)
+        {
+            List<string> sales = new List<string>();
+            sales.Add("ALL");
+            sales.AddRange(Accessory.getUserQuotation().Where(w => w.department == department).Select(s => s.name).ToList());
+            return Json(sales);
+        }
+
         [HttpPost]
         public JsonResult GetReportQuarter(string department, string year)
         {
@@ -78,7 +88,20 @@ namespace WebForecastReport.Controllers
             reports = Quotation_Report.GetReportQuarter(department, year);
             return Json(reports);
         }
-
+        [HttpPost]
+        public JsonResult GetReportYear(string department, string year)
+        {
+            List<Quotation_Report_YearModel> reports = new List<Quotation_Report_YearModel>();
+            reports = Quotation_Report.GetReportYear(department, year);
+            return Json(reports);
+        }
+        [HttpPost]
+        public JsonResult GetReportStatus(string year, string department, string sale)
+        {
+            List<Quotation_Report_StatusModel> reports = new List<Quotation_Report_StatusModel>();
+            reports = Quotation_Report.GetReportStatus(year, department, sale);
+            return Json(reports);
+        }
         public IActionResult DownloadXlsxReportDepartment(string department, string month)
         {
             //Download Excel

@@ -33,8 +33,8 @@ namespace WebForecastReport.Service
                                                     sum(case when stages='Closed(Lost)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as loss_mb,
                                                     sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt,
                                                     sum(case when stages='No go' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as nogo_mb,
-                                                    sum(case when stages is null or stages not in('Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as pending_quo_cnt,
-                                                    sum(case when stages is null or stages not in('Closed(Won)','Closed(Lost)','No go') then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as pending_mb
+                                                    sum(case when stages is null or stages not in('','Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as pending_quo_cnt,
+                                                    sum(case when stages is null or stages not in('','Closed(Won)','Closed(Lost)','No go') then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as pending_mb
                                                     from Quotation where date like '" + month + "%' group by department,sale_name union all " +
 
                                                     "select (department + ' Total') as department, " +
@@ -53,8 +53,8 @@ namespace WebForecastReport.Service
                                                     "sum(case when stages='Closed(Lost)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as loss_mb," +
                                                     "sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt," +
                                                     "sum(case when stages='No go' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as nogo_mb, " +
-                                                    "sum(case when stages is null or stages not in ('Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as pending_quo_cnt, " +
-                                                    "sum(case when stages is null or stages not in ('Closed(Won)', 'Closed(Lost)', 'No go') then cast(cast(replace(quoted_price, ',', '') as float) / 1000000 as decimal(10, 2)) else 0 end) as pending_mb " +
+                                                    "sum(case when stages is null or stages not in ('','Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as pending_quo_cnt, " +
+                                                    "sum(case when stages is null or stages not in ('','Closed(Won)', 'Closed(Lost)', 'No go') then cast(cast(replace(quoted_price, ',', '') as float) / 1000000 as decimal(10, 2)) else 0 end) as pending_mb " +
                                                     "from Quotation where date like '" + month + "%' group by department union all " +
 
                                                     "select ('Total') as department," +
@@ -73,8 +73,8 @@ namespace WebForecastReport.Service
                                                     "sum(case when stages='Closed(Lost)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as loss_mb," +
                                                     "sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt," +
                                                     "sum(case when stages='No go' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as nogo_mb, " +
-                                                    "sum(case when stages is null or stages not in ('Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as pending_quo_cnt, " +
-                                                    "sum(case when stages is null or stages not in ('Closed(Won)', 'Closed(Lost)', 'No go') then cast(cast(replace(quoted_price, ',', '') as float) / 1000000 as decimal(10, 2)) else 0 end) as pending_mb " +
+                                                    "sum(case when stages is null or stages not in ('','Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as pending_quo_cnt, " +
+                                                    "sum(case when stages is null or stages not in ('','Closed(Won)', 'Closed(Lost)', 'No go') then cast(cast(replace(quoted_price, ',', '') as float) / 1000000 as decimal(10, 2)) else 0 end) as pending_mb " +
                                                     "from Quotation where date like '" + month + "%') " +
                                                     "select * from s1 order by s1.department,s1.sale";
                 }
@@ -95,8 +95,8 @@ namespace WebForecastReport.Service
                                                     sum(case when stages='Closed(Lost)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as loss_mb,
                                                     sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt,
                                                     sum(case when stages='No go' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as nogo_mb,
-                                                    sum(case when stages is null or stages not in('Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as pending_quo_cnt,
-                                                    sum(case when stages is null or stages not in('Closed(Won)','Closed(Lost)','No go') then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as pending_mb
+                                                    sum(case when stages is null or stages not in('','Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as pending_quo_cnt,
+                                                    sum(case when stages is null or stages not in('','Closed(Won)','Closed(Lost)','No go') then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as pending_mb
                                                     from Quotation where department='" + department + "' and date like '" + month + "%' group by department,sale_name union all " +
 
                                                     "select (department + ' Total') as department, " +
@@ -115,8 +115,8 @@ namespace WebForecastReport.Service
                                                     "sum(case when stages='Closed(Lost)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as loss_mb," +
                                                     "sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt," +
                                                     "sum(case when stages='No go' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as nogo_mb, " +
-                                                    "sum(case when stages is null or stages not in('Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as pending_quo_cnt, " +
-                                                    "sum(case when stages is null or stages not in ('Closed(Won)', 'Closed(Lost)', 'No go') then cast(cast(replace(quoted_price, ',', '') as float) / 1000000 as decimal(10, 2)) else 0 end) as pending_mb " +
+                                                    "sum(case when stages is null or stages not in('','Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as pending_quo_cnt, " +
+                                                    "sum(case when stages is null or stages not in ('','Closed(Won)', 'Closed(Lost)', 'No go') then cast(cast(replace(quoted_price, ',', '') as float) / 1000000 as decimal(10, 2)) else 0 end) as pending_mb " +
                                                     "from Quotation where department='" + department + "' and date like '" + month + "%' group by department) " +
                                                     "select * from s1 order by s1.department,s1.sale";
                 }
@@ -376,6 +376,217 @@ namespace WebForecastReport.Service
                             ((dr["oct_out"].ToString() != "" ? float.Parse(dr["oct_out"].ToString()) : 0) +
                              (dr["nov_out"].ToString() != "" ? float.Parse(dr["nov_out"].ToString()) : 0) +
                              (dr["dec_out"].ToString() != "" ? float.Parse(dr["dec_out"].ToString()) : 0)).ToString(),
+                        };
+                        reports.Add(r);
+                    }
+                    dr.Close();
+                }
+                return reports;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public List<Quotation_Report_StatusModel> GetReportStatus(string year, string department, string sale)
+        {
+            try
+            {
+                List<Quotation_Report_StatusModel> reports = new List<Quotation_Report_StatusModel>();
+
+                string command = "";
+
+                if (department == "ALL" && sale == "ALL")
+                {
+                    command = string.Format($@"with s1 As(
+                                 select  cast(ROW_NUMBER ( ) over (partition by sale_name order by sale_name) as varchar) as no,
+                                 sale_name,
+                                 enduser,
+                                 project_name,
+                                 format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
+                                 format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
+                                 from Quotation where status <>'' and date like '{year}%' group by sale_name,enduser,project_name
+                                 union all
+                                 select  '' as no,
+                                 sale_name + '_Total',
+                                 '',
+                                 '',
+                                 format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
+                                 format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
+                                 from Quotation where status <>'' and date like '{year}%' group by sale_name
+
+                                 union all
+
+                                 select  '' as no,
+                                 'รวม',
+                                 '',
+                                 '',
+                                 format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
+                                 format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
+                                 from Quotation where status <>'' and date like '{year}%')
+
+                                 select * from s1 order by s1.sale_name");
+                }
+                else if (department != "ALL" && sale == "ALL")
+                {
+                    command = string.Format($@"with s1 As(
+                                 select  cast(ROW_NUMBER ( ) over (partition by sale_name order by sale_name) as varchar) as no,
+                                 sale_name,
+                                 enduser,
+                                 project_name,
+                                 format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
+                                 format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
+                                 from Quotation where status <>'' and department='{department}' and date like '{year}%' group by sale_name,enduser,project_name
+                                 union all
+                                 select  '' as no,
+                                 sale_name + '_Total',
+                                 '',
+                                 '',
+                                 format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
+                                 format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
+                                 from Quotation where status <>'' and department='{department}' and date like '{year}%' group by sale_name
+
+                                 union all
+
+                                 select  '' as no,
+                                 'รวม',
+                                 '',
+                                 '',
+                                 format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
+                                 format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
+                                 from Quotation where status <>'' and department='{department}' and date like '{year}%')
+
+                                 select * from s1 order by s1.sale_name");
+                }
+                else if (department != "ALL" && sale != "ALL")
+                {
+                    command = string.Format($@"with s1 As(
+                                 select  cast(ROW_NUMBER ( ) over (partition by sale_name order by sale_name) as varchar) as no,
+                                 sale_name,
+                                 enduser,
+                                 project_name,
+                                 format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
+                                 format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
+                                 from Quotation where status <>'' and department='{department}' and sale_name='{sale}' and date like '{year}%' group by sale_name,enduser,project_name
+                                 union all
+                                 select  '' as no,
+                                 sale_name + '_Total',
+                                 '',
+                                 '',
+                                 format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
+                                 format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
+                                 from Quotation where status <>'' and department='{department}' and  sale_name='{sale}' and date like '{year}%' group by sale_name)
+
+                                 select * from s1 order by s1.sale_name");
+                }
+
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        Quotation_Report_StatusModel r = new Quotation_Report_StatusModel()
+                        {
+                            no = dr["no"].ToString(),
+                            sale_name = dr["sale_name"].ToString(),
+                            enduser = dr["enduser"].ToString(),
+                            project_name = dr["project_name"].ToString(),
+                            status_in = dr["status_in"].ToString(),
+                            status_out = dr["status_out"].ToString(),
+                        };
+                        reports.Add(r);
+                    }
+                    dr.Close();
+                }
+                return reports;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public List<Quotation_Report_YearModel> GetReportYear(string department, string year)
+        {
+            try
+            {
+                List<Quotation_Report_YearModel> reports = new List<Quotation_Report_YearModel>();
+
+                string command = @"with s1 as(
+                                select department, CAST(YEAR(date) AS VARCHAR(4)) + '-' + right('00' + CAST(MONTH(date) AS VARCHAR(2)), 2) as month,
+                                format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as quo_mb,
+                                count(quotation_no) as quo_cnt,
+                                sum(case when product_type ='product' then 1 else 0 end) as product_cnt,
+                                sum(case when product_type ='product' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as product_mb,
+                                sum(case when product_type ='project' then 1 else 0 end) as project_cnt,
+                                sum(case when product_type ='project' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as project_mb,
+                                sum(case when product_type ='service' then 1 else 0 end) as service_cnt,
+                                sum(case when product_type ='service' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as service_mb,
+                                sum(case when stages='Closed(Won)' then 1 else 0 end) as won_quo_cnt,
+                                sum(case when stages='Closed(Won)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as won_mb,
+                                sum(case when stages='Closed(Lost)' then 1 else 0 end) as loss_quo_cnt,
+                                sum(case when stages='Closed(Lost)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as loss_mb,
+                                sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt,
+                                sum(case when stages='No go' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as nogo_mb,
+                                sum(case when stages is null or stages not in('','Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as pending_quo_cnt,
+                                sum(case when stages is null or stages not in('','Closed(Won)','Closed(Lost)','No go') then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as pending_mb
+                                from Quotation where department='" + department + "' and date like '" + year + "%' group by department,DATEPART(YEAR,date) ,DATEPART(MONTH,date) " +
+                                "union all " +
+
+                                "select 'Total' as department, 'Total' as month, " +
+                                "format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as quo_mb, " +
+                                "count(quotation_no) as quo_cnt, " +
+                                "sum(case when product_type ='product' then 1 else 0 end) as product_cnt, " +
+                                "sum(case when product_type ='product' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as product_mb, " +
+                                "sum(case when product_type ='project' then 1 else 0 end) as project_cnt, " +
+                                "sum(case when product_type ='project' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as project_mb, " +
+                                "sum(case when product_type ='service' then 1 else 0 end) as service_cnt, " +
+                                "sum(case when product_type ='service' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as service_mb, " +
+                                "sum(case when stages='Closed(Won)' then 1 else 0 end) as won_quo_cnt, " +
+                                "sum(case when stages='Closed(Won)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as won_mb, " +
+                                "sum(case when stages='Closed(Lost)' then 1 else 0 end) as loss_quo_cnt, " +
+                                "sum(case when stages='Closed(Lost)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as loss_mb, " +
+                                "sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt, " +
+                                "sum(case when stages='No go' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as nogo_mb, " +
+                                "sum(case when stages is null or stages not in('','Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as pending_quo_cnt, " +
+                                "sum(case when stages is null or stages not in('','Closed(Won)','Closed(Lost)','No go') then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as pending_mb " +
+                                "from Quotation where department='" + department + "' and date like '" + year + "%'  group by department,DATEPART(YEAR,date)) " +
+                                "select * from s1 order by s1.department";
+
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        Quotation_Report_YearModel r = new Quotation_Report_YearModel()
+                        {
+                            department = dr["department"].ToString(),
+                            month = dr["month"].ToString(),
+                            quo_mb = dr["quo_mb"].ToString(),
+                            quo_cnt = dr["quo_cnt"].ToString(),
+                            product_cnt = dr["product_cnt"].ToString(),
+                            product_mb = dr["product_mb"].ToString(),
+                            project_cnt = dr["project_cnt"].ToString(),
+                            project_mb = dr["project_mb"].ToString(),
+                            service_cnt = dr["service_cnt"].ToString(),
+                            service_mb = dr["service_mb"].ToString(),
+                            won_quo_cnt = dr["won_quo_cnt"].ToString(),
+                            won_mb = dr["won_mb"].ToString(),
+                            loss_quo_cnt = dr["loss_quo_cnt"].ToString(),
+                            loss_mb = dr["loss_mb"].ToString(),
+                            nogo_quo_cnt = dr["nogo_quo_cnt"].ToString(),
+                            nogo_mb = dr["nogo_mb"].ToString(),
+                            pending_quo_cnt = dr["pending_quo_cnt"].ToString(),
+                            pending_mb = dr["pending_mb"].ToString(),
                         };
                         reports.Add(r);
                     }

@@ -21,6 +21,12 @@
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="report_quarter-tab" data-toggle="tab" href="#report_quarter" role="tab" aria-controls="report_quarter" aria-selected="false"><b>Report Quarter</b></a>
             </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="report_year-tab" data-toggle="tab" href="#report_year" role="tab" aria-controls="report_year" aria-selected="false"><b>Report Year</b></a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="report_status-tab" data-toggle="tab" href="#report_status" role="tab" aria-controls="report_status" aria-selected="false"><b>Report Status</b></a>
+            </li>
         </ul>
     </div>
     <div class="tab-content container-fluid" id="myTabContent">
@@ -224,6 +230,126 @@
                 </div>
             </div>
         </div>
+        <div class="tab-pane fade" id="report_year" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="col-md-12 col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title"><b>Quotations Report Year</b></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-md-12 col-xl-12">
+                            <div class="row d-flex justify-content-between">
+                                <div class="col-md-6 col-xl-6 pb-3">
+                                    <div class="row">
+                                        <div class="col-md-4 col-xl-4 pb-3">
+                                            <select id="year_department" class="form-control">
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 col-xl-4 pb-3">
+                                            <select id="year_year" class="form-control">
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 col-xl-3 pb-3">
+                                            <button type="button" id="btnyear_OK" class="btn btn-primary form-control">OK</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                @* <div class="col-md-2 col-xl-2 pb-3">
+                                    <button type="button" id="export_year" class="btn btn-success form-control">Export</button>
+                                    </div>*@
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-xl-12">
+                            <table id="table_year" class="table-xl cell-border  table-dark  table-bordered display responsive nowrap " style="width:100%">
+                                <thead style="color:black;background-color:#2F75B5">
+                                    <tr>
+                                        <th rowspan="3" style="text-align:center;vertical-align:middle;background-color:#E7E6E6">Area Sale</th>
+                                        <th colspan="2" rowspan="2" style="text-align:center;background-color:#CDCDCD">Quotation</th>
+                                        <th colspan="6" style="text-align:center;background-color:#75B9E7">Description</th>
+                                        <th colspan="8" style="text-align:center;background-color:#CBE5F7">Status Quotation</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#A8D4F2">Project</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#A8D4F2">Product</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#A8D4F2">Service</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#66FFFF">Won</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#66FFFF">Loss</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#66FFFF">NO GO</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#66FFFF">Pending</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#CDCDCD">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#CDCDCD">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#A8D4F2">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#A8D4F2">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#A8D4F2">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#A8D4F2">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#A8D4F2">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#A8D4F2">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EEF6FC">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EEF6FC">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EEF6FC">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EEF6FC">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EEF6FC">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EEF6FC">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EEF6FC">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#EEF6FC">MB</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="report_status" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="col-md-12 col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title"><b>Quotations Report Year</b></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-md-12 col-xl-12">
+                            <div class="row d-flex justify-content-between">
+                                <div class="col-md-10 col-xl-10 pb-3">
+                                    <div class="row">
+                                        <div class="col-md-2 col-xl-2 pb-3">
+                                            <select id="status_year" class="form-control">
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 col-xl-3 pb-3">
+                                            <select id="status_department" class="form-control">
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 col-xl-3 pb-3">
+                                            <select id="status_sale" class="form-control">
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 col-xl-3 pb-3">
+                                            <button type="button" id="btnstatus_OK" class="btn btn-primary form-control">OK</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-xl-12">
+                            <table id="table_status" class="table-xl cell-border  table-dark  table-bordered display responsive nowrap " style="width:100%">
+                                <thead style="color:black;background-color:#2F75B5">
+                                    <tr>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#E7E6E6">No.</th>
+                                        <th style="text-align:center;background-color:#CDCDCD">Sale Name</th>
+                                        <th style="text-align:center;background-color:#31A1C4">End User</th>
+                                        <th style="text-align:center;background-color:#31A1C4">Project Name</th>
+                                        <th style="text-align:center;background-color:#CBE5F7">IN (MB)</th>
+                                        <th style="text-align:center;background-color:#CBE5F7">OUT (MB)</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -232,6 +358,7 @@
 <script type="text/javascript">
     var Departments = [];
     var Years = [];
+    var Sales = [];
     var columnQ1 = [2,3,4,5,6,7];
     var columnQ2 = [10,11,12,13,14,15];
     var columnQ3 = [18,19,20,21,22,23];
@@ -370,6 +497,148 @@
             $('#chkQ4').on('change',function(){
                hide_column_quarter();
            });
+
+           $('#report_year-tab').on('click',function(){
+
+                $('#year_department').empty();
+                var selectQuarterDepartment = document.getElementById('year_department');
+                for (var i = 1, l = Departments.length; i < l; i++) {
+                    var option = Departments[i];
+                    selectQuarterDepartment.options.add(new Option(option.text, option.value, option.selected));
+                }
+                document.getElementById('year_department').selectedIndex = 0;
+
+                $('#year_year').empty();
+                var selectQuarterYear = document.getElementById('year_year');
+                for (var i = 0, l = Years.length; i < l; i++) {
+                    var option = Years[i];
+                    selectQuarterYear.options.add(new Option(option.text, option.value, option.selected));
+                }
+                document.getElementById('year_year').selectedIndex = 0;
+           });
+
+           $('#btnyear_OK').on('click',function(){
+               var department = document.getElementById("year_department").value;
+               var year = document.getElementById("year_year").value;
+               $.ajax({
+                   url: '@Url.Action("GetReportYear", "QuotationReport")',
+                   type: "post",
+                   contentType: 'application/x-www-form-urlencoded',
+                   data: {
+                       department, year
+                   },
+                   success: function (response) {
+                       var datas = response;
+                       var dataSet = [];
+                       var months = ["","January","February","March","April","May","June","July","August","September","October","November","December"];
+
+                       for (var i = 0; i < datas.length; i++) {
+                           var month = datas[i].month;
+                           if (i < datas.length-1){
+                                month = months[(parseInt(datas[i].month.split("-")[1]))];
+                           }
+                           var data = [
+                               month,
+                               datas[i].quo_cnt,
+                               datas[i].quo_mb,
+                               datas[i].project_cnt,
+                               datas[i].project_mb,
+                               datas[i].product_cnt,
+                               datas[i].product_mb,
+                               datas[i].service_cnt,
+                               datas[i].service_mb,
+                               datas[i].won_quo_cnt,
+                               datas[i].won_mb,
+                               datas[i].loss_quo_cnt,
+                               datas[i].loss_mb,
+                               datas[i].nogo_quo_cnt,
+                               datas[i].nogo_mb,
+                               datas[i].pending_quo_cnt,
+                               datas[i].pending_mb];
+
+                           dataSet.push(data);
+                       }
+                       tableYear(dataSet);
+                   }
+               });
+           });
+
+            $('#report_status-tab').on('click',function(){
+
+                $('#status_department').empty();
+                var selectQuarterDepartment = document.getElementById('status_department');
+                for (var i = 0, l = Departments.length; i < l; i++) {
+                    var option = Departments[i];
+                    selectQuarterDepartment.options.add(new Option(option.text, option.value, option.selected));
+                }
+                document.getElementById('status_department').selectedIndex = 0;
+
+                $('#status_year').empty();
+                var selectQuarterYear = document.getElementById('status_year');
+                for (var i = 0, l = Years.length; i < l; i++) {
+                    var option = Years[i];
+                    selectQuarterYear.options.add(new Option(option.text, option.value, option.selected));
+                }
+                document.getElementById('status_year').selectedIndex = 0;
+
+                $('#status_sale').empty();
+                var selectSale = document.getElementById('status_sale');
+                selectSale.options.add(new Option("ALL", "ALL", null));
+                document.getElementById('status_sale').selectedIndex = 0;
+           });
+
+            $('#status_department').on('change',function(){
+               var department = document.getElementById("status_department").value;
+               $.ajax({
+                   url: '@Url.Action("GetSales", "QuotationReport")',
+                   type: "post",
+                   contentType: 'application/x-www-form-urlencoded',
+                   data: {
+                       department
+                   },
+                   success: function (response) {
+                       Sales = add_sale(response);
+
+                       $('#status_sale').empty();
+                        var selectsale = document.getElementById('status_sale');
+                        for (var i = 0, l = Sales.length; i < l; i++) {
+                            var option = Sales[i];
+                            selectsale.options.add(new Option(option.text, option.value, option.selected));
+                        }
+                        document.getElementById('status_sale').selectedIndex = 0;
+                   }
+                });
+            });
+
+            $('#btnstatus_OK').on('click',function(){
+                var year = document.getElementById("status_year").value;
+                var department = document.getElementById("status_department").value;
+                var sale = document.getElementById("status_sale").value;
+               $.ajax({
+                   url: '@Url.Action("GetReportStatus", "QuotationReport")',
+                   type: "post",
+                   contentType: 'application/x-www-form-urlencoded',
+                   data: {
+                       year,department,sale
+                   },
+                   success: function (response) {
+                       var datas = response;
+                       var dataSet = [];
+                       for (var i = 0; i < datas.length; i++) {
+                           var data = [
+                               datas[i].no,
+                               datas[i].sale_name,
+                               datas[i].enduser,
+                               datas[i].project_name,
+                               datas[i].status_in,
+                               datas[i].status_out];
+
+                           dataSet.push(data);
+                       }
+                       tableStatus(dataSet);
+                   }
+               });
+            });
         function init() {
 
                $.ajax({
@@ -475,6 +744,68 @@
             $(tables_quarter.table().body()).addClass('text-dark');
             },100);
         };
+
+        var tables_year;
+        function tableYear(dataSet) {
+            setTimeout(()=>{
+                if (tables_year !== undefined)
+                tables_year.destroy();
+                tables_year = $('#table_year').DataTable({
+                data: dataSet,
+                "columnDefs": [
+                    {
+                        "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,14,15,16],
+                        "className": "text-center",
+                    },
+                ],
+                "createdRow": function (row, data, index) {
+                    if (data[0] == "Total") {
+                        $('td', row).css('background-color', '#AFA095');
+                        $('td', row).addClass('highlight');
+                    }
+                },
+                "paging": false,
+                "searching": false,
+                "bInfo": false,
+                "scrollX": true,
+                "ordering": false,
+            });
+            $(tables_year.table().body()).addClass('text-dark');
+            },100);
+        };
+
+        var tables_status;
+        function tableStatus(dataSet) {
+            setTimeout(()=>{
+                if (tables_status !== undefined)
+                tables_status.destroy();
+                tables_status = $('#table_status').DataTable({
+                data: dataSet,
+                "columnDefs": [
+                    {
+                        "targets": [0, 1, 2, 3, 4, 5],
+                        "className": "text-center",
+                    },
+                ],
+                "createdRow": function (row, data, index) {
+                    if (data[1] == "รวม") {
+                        $('td', row).css('background-color', '#AFA095');
+                        $('td', row).addClass('highlight');
+                    }else if (data[1] !== "Total" && data[1].includes("Total")) {
+                        $('td', row).css('background-color', '#EFE8E2');
+                        $('td', row).addClass('highlight');
+                    }
+                },
+                "paging": false,
+                "searching": false,
+                "bInfo": false,
+                "scrollX": true,
+                "ordering": false,
+            });
+            $(tables_status.table().body()).addClass('text-dark');
+            },100);
+        };
+
         function add_department(departments) {
             var data_departments = [];
             for (var i = 0; i < departments.length; i++) {
@@ -500,6 +831,20 @@
             }
 
             return data_years;
+        };
+
+        function add_sale(sales) {
+            var data_sales = [];
+            for (var i = 0; i < sales.length; i++) {
+                var data =
+                {
+                    "text": sales[i],
+                    "value": sales[i]
+                }
+                data_sales.push(data);
+            }
+
+            return data_sales;
         };
         function hide_column_quarter(){
                hide_column = [];

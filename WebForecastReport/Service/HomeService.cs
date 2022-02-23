@@ -62,7 +62,8 @@ namespace WebForecastReport.Service
             try
             {
                 Home_DayModel day = new Home_DayModel();
-                SqlCommand cmd = new SqlCommand(@" select s1.sale_name,
+                SqlCommand cmd = new SqlCommand(string.Format($@" select s1.sale_name,
+                                                    (select count(case when stages is null or stages='' then 1 else 0 end) as no_data from Quotation where sale_name = '{name}') as no_data,
 		                                            sum(case when s1.day < 7 then 1 else 0 end) as day_0,
 		                                            sum(case when s1.day >= 7 and s1.day < 14 then 1 else 0 end) as day_7,
 		                                            sum(case when s1.day >= 14 and s1.day < 30 then 1 else 0 end) as day_14,
@@ -74,22 +75,21 @@ namespace WebForecastReport.Service
 		                                            stages,
 		                                            DATEDIFF(Day, stages_update_date,getDate()) as day
 	                                            from Quotation 
-	                                            where sale_name = '" + name + "' and stages_update_date like '" + year + "%' and stages not in ('','Closed(Won)','Closed(Lost)','No go')) as s1 " +
-                                               "group by s1.sale_name", ConnectSQL.OpenConnect());
+	                                            where sale_name = '{name}' and stages_update_date like '{year}%' and stages not in ('Closed(Won)','Closed(Lost)','No go')) as s1 
+                                                group by s1.sale_name"), ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
                     while (dr.Read())
                     {
                         day.sale_name = dr["sale_name"].ToString();
+                        day.no_data = dr["no_data"].ToString();
                         day.day_0 = dr["day_0"].ToString();
                         day.day_7 = dr["day_7"].ToString();
                         day.day_14 = dr["day_14"].ToString();
                         day.day_30 = dr["day_30"].ToString();
                         day.day_60 = dr["day_60"].ToString();
                         day.day_90 = dr["day_90"].ToString();
-
-
                     }
                     dr.Close();
                 }
