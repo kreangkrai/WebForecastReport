@@ -26,6 +26,9 @@ namespace WebForecastReport.Models
         public string pending_quo_cnt { get; set; }
         public string pending_mb { get; set; }
 
+        public Quotation_Report_Sub_TypeModel quotation_sub_type { get; set; }
+        public Quotation_Report_Sub_StagesModel quotation_sub_stages { get; set; }
+        public Quotation_Report_Sub_PendingModel quotation_sub_pending { get; set; }
 
     }
 }

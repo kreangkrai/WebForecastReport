@@ -192,14 +192,14 @@ namespace WebForecastReport.Service
             return stream;
         }
 
-        public Stream ExportQuotation_Report_Department(FileInfo path, string department, string month)
+        public Stream ExportQuotation_Report_Department(FileInfo path, string department, string month_first, string month_last)
         {
             Stream stream = new MemoryStream();
             List<Quotation_Report_DepartmentModel> reports = new List<Quotation_Report_DepartmentModel>();
             if (path.Exists)
             {
 
-                reports = Quotation_Report.GetReportDepartment(department, month);
+                reports = Quotation_Report.GetReportDepartment(department, month_first, month_last);
                 using (ExcelPackage p = new ExcelPackage(path))
                 {
                     ExcelWorksheet worksheet = p.Workbook.Worksheets["Report"];
@@ -226,7 +226,7 @@ namespace WebForecastReport.Service
                         worksheet.Cells["Q" + (i + startRows)].Value = reports[i].pending_quo_cnt != null ? reports[i].pending_quo_cnt.ToString() : "";
                         worksheet.Cells["R" + (i + startRows)].Value = reports[i].pending_mb != null ? reports[i].pending_mb.ToString() : "";
                     }
-                    worksheet.Cells["B1"].Value = month;
+                    worksheet.Cells["B1"].Value = month_first + "-" + month_last;
                     p.SaveAs(stream);
                     stream.Position = 0;
                 }

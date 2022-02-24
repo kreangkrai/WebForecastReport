@@ -39,16 +39,19 @@
                     <div class="card-body">
                         <div class="col-md-12 col-xl-12">
                             <div class="row d-flex justify-content-between">
-                                <div class="col-md-6 col-xl-6 pb-3">
+                                <div class="col-md-8 col-xl-8 pb-3">
                                     <div class="row">
-                                        <div class="col-md-4 col-xl-4 pb-3">
+                                        <div class="col-md-2 col-xl-2 pb-3">
                                             <select id="department" class="form-control">
                                             </select>
                                         </div>
-                                        <div class="col-md-5 col-xl-5 pb-3">
-                                            <input type="month" id="month" class="form-control" />
+                                        <div class="col-md-4 col-xl-4 pb-3">
+                                            <input type="month" id="month_first" class="form-control" />
                                         </div>
-                                        <div class="col-md-3 col-xl-3 pb-3">
+                                        <div class="col-md-4 col-xl-4 pb-3">
+                                            <input type="month" id="month_last" class="form-control" />
+                                        </div>
+                                        <div class="col-md-2 col-xl-2 pb-3">
                                             <button type="button" id="btnOK" class="btn btn-primary form-control">OK</button>
                                         </div>
                                     </div>
@@ -58,17 +61,176 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-12" id="chkGroup_department" hidden>
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-md-2 col-xl-2">
+                                            <input type="checkbox" id="chkProject" />
+                                            <label>Project</label>
+                                        </div>
+                                        <div class="col-md-2 col-xl-2">
+                                            <input type="checkbox" id="chkProduct" />
+                                            <label>Product</label>
+                                        </div>
+                                        <div class="col-md-2 col-xl-2">
+                                            <input type="checkbox" id="chkService" />
+                                            <label>Service</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2 col-xl-2">
+                                            <input type="checkbox" id="chkWon" />
+                                            <label>Won</label>
+                                        </div>
+                                        <div class="col-md-2 col-xl-2">
+                                            <input type="checkbox" id="chkLoss" />
+                                            <label>Loss</label>
+                                        </div>
+                                        <div class="col-md-2 col-xl-2">
+                                            <input type="checkbox" id="chkNogo" />
+                                            <label>No go</label>
+                                        </div>
+                                        <div class="col-md-2 col-xl-2">
+                                            <input type="checkbox" id="chkPending" />
+                                            <label>Pending</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-12">
                             <table id="table_department" class="table table-xl cell-border table-dark  table-bordered display text-center responsive nowrap" style="width:100%">
                                 <thead style="color:black">
                                     <tr>
+                                        <th rowspan="4" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Department</th>
+                                        <th rowspan="4" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Sale Name</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quotation</th>
+                                        <th colspan="30" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Description</th>
+                                        <th colspan="32" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Status Quotation</th>
+                                    </tr>
+                                    <tr>
+                                        <th rowspan="3" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th rowspan="3" style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th colspan="10" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Project</th>
+                                        <th colspan="10" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Product</th>
+                                        <th colspan="10" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Service</th>
+                                        <th colspan="8" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Won</th>
+                                        <th colspan="8" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Loss</th>
+                                        <th colspan="8" style="text-align:center;vertical-align:middle;background-color:#2F75B5">No go</th>
+                                        <th colspan="8" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Pending</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Won</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Loss</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">No go</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Pending</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Won</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Loss</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">No go</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Pending</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Won</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Loss</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">No go</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Pending</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Project</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Product</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Service</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Project</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Product</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Service</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Project</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Product</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Service</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Project</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Product</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Service</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
+                                    </tr>
+
+                                    @* <tr>
                                         <th colspan="2" rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Sale</th>
                                         <th colspan="2" rowspan="2" style="text-align:center;vertical-align:middle;background-color:#D9D9D9">Quotation</th>
                                         <th colspan="6" style="text-align:center;background-color:#ACB9CA">Description</th>
                                         <th colspan="6" style="text-align:center;background-color:#D9D9D9">Status Quotation</th>
                                         <th colspan="2" rowspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Pending</th>
-                                    </tr>
-                                    <tr>
+                                        </tr>
+                                        <tr>
                                         <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ACB9CA">Project</th>
                                         <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ACB9CA">Product</th>
                                         <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ACB9CA">Service</th>
@@ -76,8 +238,8 @@
                                         <th colspan="2" style="text-align:center;background-color:#F4B084">Loss</th>
                                         <th colspan="2" style="text-align:center;background-color:#A9D08E">No go</th>
 
-                                    </tr>
-                                    <tr>
+                                        </tr>
+                                        <tr>
                                         <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Department</th>
                                         <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Sale Name</th>
                                         <th style="text-align:center;vertical-align:middle;background-color:#D9D9D9">Quo.</th>
@@ -97,7 +259,7 @@
                                         <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quo.</th>
                                         <th style="text-align:center;vertical-align:middle;background-color:#2F75B5">MB</th>
 
-                                    </tr>
+                                        </tr>*@
                                 </thead>
                             </table>
                         </div>
@@ -366,6 +528,22 @@
     var temp_dataset_quarter = [];
     var hide_column = columnQ1.concat(columnQ2).concat(columnQ3).concat(columnQ4);
 
+    var columnProject = [4,5,6,7,8,9,10,11];
+    var columnProduct = [14,15,16,17,18,19,20,21];
+    var columnService = [24,25,26,27,28,29,30,31];
+    var columnWon = [34,35,36,37,38,39];
+    var columnLoss = [42,43,44,45,46,47];
+    var columnNogo = [50,51,52,53,54,55];
+    var columnPending = [58,59,60,61,62,63];
+    var temp_dataset_department = [];
+    var hide_column_department = columnProject.
+                                    concat(columnProduct).
+                                    concat(columnService).
+                                    concat(columnWon).
+                                    concat(columnLoss).
+                                    concat(columnNogo).
+                                    concat(columnPending);
+
         $(document).ready(function () {
             init();
             document.getElementById("table_department").hidden = true;
@@ -374,14 +552,16 @@
 
     $('#btnOK').on('click', function () {
         document.getElementById("table_department").hidden = false;
+        document.getElementById("chkGroup_department").hidden = false;
             var department = document.getElementById("department").value;
-            var month = document.getElementById("month").value;
+            var month_first = document.getElementById("month_first").value;
+            var month_last = document.getElementById("month_last").value;
                $.ajax({
                    url: '@Url.Action("GetReportDepartment", "QuotationReport")',
                    type: "post",
                    contentType: 'application/x-www-form-urlencoded',
                    data: {
-                       department, month
+                       department, month_first,month_last
                    },
                    success: function (response) {
 
@@ -392,24 +572,25 @@
                                datas[i].department,
                                datas[i].sale,
                                datas[i].quo_cnt,
-                               datas[i].quo_mb,
+                               datas[i].quo_mb, "","","","","","","","",
                                datas[i].project_cnt,
-                               datas[i].project_mb,
+                               datas[i].project_mb,"","","","","","","","",
                                datas[i].product_cnt,
-                               datas[i].product_mb,
+                               datas[i].product_mb,"","","","","","","","",
                                datas[i].service_cnt,
-                               datas[i].service_mb,
+                               datas[i].service_mb,"","","","","","",
                                datas[i].won_quo_cnt,
-                               datas[i].won_mb,
+                               datas[i].won_mb,"","","","","","",
                                datas[i].loss_quo_cnt,
-                               datas[i].loss_mb,
+                               datas[i].loss_mb,"","","","","","",
                                datas[i].nogo_quo_cnt,
-                               datas[i].nogo_mb,
+                               datas[i].nogo_mb,"","","","","","",
                                datas[i].pending_quo_cnt,
                                datas[i].pending_mb];
 
                            dataSet.push(data);
                        }
+                       temp_dataset_department = dataSet;
                        tableDepartment(dataSet);
                    }
                });
@@ -477,8 +658,9 @@
            });
            $('#export_department').on('click',function(){
                var department = document.getElementById("department").value;
-               var month = document.getElementById("month").value;
-               location.href = '@Url.Action("DownloadXlsxReportDepartment", "QuotationReport")?department='+department+'&month='+month;
+               var month_first = document.getElementById("month_first").value;
+               var month_last = document.getElementById("month_last").value;
+               location.href = '@Url.Action("DownloadXlsxReportDepartment", "QuotationReport")?department='+department+'&month_first='+month_first+'&month_last='+month_last;
            });
            $('#export_quarter').on('click',function(){
                var department = document.getElementById("quarter_department").value;
@@ -497,6 +679,29 @@
             $('#chkQ4').on('change',function(){
                hide_column_quarter();
            });
+
+           $('#chkProject').on('change',function(){
+               hide_columnDepartment();
+           });
+            $('#chkProduct').on('change',function(){
+               hide_columnDepartment();
+           });
+            $('#chkService').on('change',function(){
+               hide_columnDepartment();
+           });
+            $('#chkWon').on('change',function(){
+               hide_columnDepartment();
+           });
+            $('#chkLoss').on('change',function(){
+               hide_columnDepartment();
+           });
+            $('#chkNogo').on('change',function(){
+               hide_columnDepartment();
+           });
+            $('#chkPending').on('change',function(){
+               hide_columnDepartment();
+           });
+
 
            $('#report_year-tab').on('click',function(){
 
@@ -690,6 +895,11 @@
                         "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16,17],
                         "className": "text-center",
                     },
+                    {
+                        "targets": hide_column_department,
+                        "visible": false,
+                        "searchable": false
+                    },
                 ],
                 "createdRow": function (row, data, index) {
                     if (data[0] == "Total") {
@@ -704,6 +914,7 @@
                 "searching": false,
                 "bInfo": false,
                 "scrollX": true,
+                "ordering":false,
             });
 
             $(tables_department.table().body()).addClass('text-dark');
@@ -869,6 +1080,43 @@
 
                // show column
                tableQuarter(temp_dataset_quarter);
+        };
+
+        function hide_columnDepartment(){
+
+            hide_column_department = [];
+               var chkProject = document.getElementById("chkProject").checked;
+               var chkProduct = document.getElementById("chkProduct").checked;
+               var chkService = document.getElementById("chkService").checked;
+               var chkWon = document.getElementById("chkWon").checked;
+               var chkLoss = document.getElementById("chkLoss").checked;
+               var chkNogo = document.getElementById("chkNogo").checked;
+               var chkPending = document.getElementById("chkPending").checked;
+
+               if(chkProject == false){
+                  hide_column_department =  hide_column_department.concat(columnProject);
+               }
+               if(chkProduct == false){
+                  hide_column_department =  hide_column_department.concat(columnProduct);
+               }
+                if(chkService == false){
+                  hide_column_department =  hide_column_department.concat(columnService);
+               }
+                if(chkWon == false){
+                  hide_column_department =  hide_column_department.concat(columnWon);
+               }
+                if(chkLoss == false){
+                  hide_column_department =  hide_column_department.concat(columnLoss);
+               }
+                if(chkNogo == false){
+                  hide_column_department =  hide_column_department.concat(columnNogo);
+               }
+                if(chkPending == false){
+                  hide_column_department =  hide_column_department.concat(columnPending);
+               }
+
+               // show column
+               tableDepartment(temp_dataset_department);
         };
 </script>
 }

@@ -65,10 +65,10 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetReportDepartment(string department, string month)
+        public JsonResult GetReportDepartment(string department, string month_first, string month_last)
         {
             List<Quotation_Report_DepartmentModel> reports = new List<Quotation_Report_DepartmentModel>();
-            reports = Quotation_Report.GetReportDepartment(department, month);
+            reports = Quotation_Report.GetReportDepartment(department, month_first, month_last);
             return Json(reports);
         }
 
@@ -102,11 +102,11 @@ namespace WebForecastReport.Controllers
             reports = Quotation_Report.GetReportStatus(year, department, sale);
             return Json(reports);
         }
-        public IActionResult DownloadXlsxReportDepartment(string department, string month)
+        public IActionResult DownloadXlsxReportDepartment(string department, string month_first, string month_last)
         {
             //Download Excel
             var templateFileInfo = new FileInfo(Path.Combine(_hostingEnvironment.ContentRootPath, "./wwwroot/template", "quotation_report_department.xlsx"));
-            var stream = Export.ExportQuotation_Report_Department(templateFileInfo, department, month);
+            var stream = Export.ExportQuotation_Report_Department(templateFileInfo, department, month_first, month_last);
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "quotation_report_department_" + DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss") + ".xlsx");
         }
 
