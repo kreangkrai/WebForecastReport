@@ -491,7 +491,6 @@ namespace WebForecastReport.Service
                             quotation_sub_type = sub_types.FirstOrDefault(),
                             quotation_sub_stages = sub_stages.FirstOrDefault(),
                             quotation_sub_pending = sub_pending.FirstOrDefault()
-
                         };
                         reports.Add(r);
                     }
