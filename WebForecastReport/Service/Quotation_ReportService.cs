@@ -16,450 +16,867 @@ namespace WebForecastReport.Service
             {
                 List<Quotation_Report_DepartmentModel> reports = new List<Quotation_Report_DepartmentModel>();
                 string command = "";
-                string command_sub_type = "";
-                string command_sub_stages = "";
-                string command_sub_pending = "";
 
                 if (department == "ALL")
                 {
-                    command = string.Format($@"with s1 as(select department,sale_name as sale,
-                                                    cast(sum(sum(cast(replace(quoted_price,',','') as float))/1000000) over (partition by sale_name) as decimal(10,2)) as quo_mb,
-                                                    count(quotation_no) as quo_cnt,
-                                                    sum(case when product_type ='product' then 1 else 0 end) as product_cnt,
-													sum(case when product_type ='product' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as product_mb,
-                                                    sum(case when product_type ='project' then 1 else 0 end) as project_cnt,
-													sum(case when product_type ='project' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as project_mb,
-                                                    sum(case when product_type ='service' then 1 else 0 end) as service_cnt,
-													sum(case when product_type ='service' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as service_mb,
-                                                    sum(case when stages='Closed(Won)' then 1 else 0 end) as won_quo_cnt,
-                                                    sum(case when stages='Closed(Won)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as won_mb,
-                                                    sum(case when stages='Closed(Lost)' then 1 else 0 end) as loss_quo_cnt,
-                                                    sum(case when stages='Closed(Lost)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as loss_mb,
-                                                    sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt,
-                                                    sum(case when stages='No go' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as nogo_mb,
-                                                    sum(case when stages is null or stages not in('','Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as pending_quo_cnt,
-                                                    sum(case when stages is null or stages not in('','Closed(Won)','Closed(Lost)','No go') then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as pending_mb
-                                                    from Quotation where left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' group by department,sale_name union all
+                    command = string.Format($@"		DECLARE @million as float
+													DECLARE @month_first as VARCHAR(10)
+													DECLARE @month_last as VARCHAR(10)
+													SET @million = 1000000		
+													SET @month_first = '{month_first}'
+													SET @month_last = '{month_last}'
+													select Quotation.department, Quotation.sale_name as sale,
+													count(quotation_no) as quo_cnt,
+													cast(sum(sum(cast(replace(quoted_price,',','') as float))/ @million) over(partition by Quotation.sale_name) as decimal(10, 2)) as quo_mb,                                                
+													sum(sub_sub_type.product_won_cnt) / count(sub_sub_type.product_won_cnt) as product_won_cnt ,
+													sum(sub_sub_type.product_won_mb) / count(sub_sub_type.product_won_mb) as product_won_mb,
+													sum(sub_sub_type.product_lost_cnt) / count(sub_sub_type.product_lost_cnt) as product_lost_cnt ,
+													sum(sub_sub_type.product_lost_mb) / count(sub_sub_type.product_lost_mb) as product_lost_mb,
+													sum(sub_sub_type.product_nogo_cnt) / count(sub_sub_type.product_nogo_cnt) as product_nogo_cnt ,
+													sum(sub_sub_type.product_nogo_mb) / count(sub_sub_type.product_nogo_mb) as product_nogo_mb,
+													sum(sub_sub_type.product_pending_cnt) / count(sub_sub_type.product_pending_cnt) as product_pending_cnt ,
+													sum(sub_sub_type.product_pending_mb) / count(sub_sub_type.product_pending_mb) as product_pending_mb,
+                                                    sum(case when Quotation.product_type = 'product' then 1 else 0 end) as product_cnt,
+													sum(case when Quotation.product_type = 'product' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as product_mb,
 
-                                                    select (department + ' Total') as department,
-                                                    '' as sale,
-                                                    cast(sum(sum(cast(replace(quoted_price,',','') as float))/1000000) over (partition by department) as decimal(10,2)) as quo_mb,
-                                                    count(quotation_no) as quo_cnt,
-                                                    sum(case when product_type ='product' then 1 else 0 end) as product_cnt,
-                                                    sum(case when product_type ='product' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as product_mb,
-                                                    sum(case when product_type ='project' then 1 else 0 end) as project_cnt,
-                                                    sum(case when product_type ='project' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as project_mb,
-                                                    sum(case when product_type ='service' then 1 else 0 end) as service_cnt,
-                                                    sum(case when product_type ='service' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as service_mb,
-                                                    sum(case when stages='Closed(Won)' then 1 else 0 end) as won_quo_cnt,
-                                                    sum(case when stages='Closed(Won)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as won_mb,
-                                                    sum(case when stages='Closed(Lost)' then 1 else 0 end) as loss_quo_cnt,
-                                                    sum(case when stages='Closed(Lost)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as loss_mb,
-                                                    sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt,
-                                                    sum(case when stages='No go' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as nogo_mb,
-                                                    sum(case when stages is null or stages not in ('','Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as pending_quo_cnt,
-                                                    sum(case when stages is null or stages not in ('','Closed(Won)', 'Closed(Lost)', 'No go') then cast(cast(replace(quoted_price, ',', '') as float) / 1000000 as decimal(10, 2)) else 0 end) as pending_mb
-                                                    from Quotation where left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' group by department union all
+													sum(sub_sub_type.project_won_cnt) / count(sub_sub_type.project_won_cnt) as project_won_cnt ,
+													sum(sub_sub_type.project_won_mb) / count(sub_sub_type.project_won_mb) as project_won_mb,
+													sum(sub_sub_type.project_lost_cnt) / count(sub_sub_type.project_lost_cnt) as project_lost_cnt ,
+													sum(sub_sub_type.project_lost_mb) / count(sub_sub_type.project_lost_mb) as project_lost_mb,
+													sum(sub_sub_type.project_nogo_cnt) / count(sub_sub_type.project_nogo_cnt) as project_nogo_cnt ,
+													sum(sub_sub_type.project_nogo_mb) / count(sub_sub_type.project_nogo_mb) as project_nogo_mb,
+													sum(sub_sub_type.project_pending_cnt) / count(sub_sub_type.project_pending_cnt) as project_pending_cnt ,
+													sum(sub_sub_type.project_pending_mb) / count(sub_sub_type.project_pending_mb) as project_pending_mb,
+                                                    sum(case when Quotation.product_type = 'project' then 1 else 0 end) as project_cnt,
+													sum(case when Quotation.product_type = 'project' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as project_mb,
 
-                                                    select ('Total') as department,
-                                                    '' as sale,
-                                                    cast(sum(cast(replace(quoted_price,',','') as float))/1000000 as decimal(10,2)) as quo_mb,
-                                                    count(quotation_no)as quo_cnt,
-                                                    sum(case when product_type ='product' then 1 else 0 end) as product_cnt,
-                                                    sum(case when product_type ='product' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as product_mb,
-                                                    sum(case when product_type ='project' then 1 else 0 end) as project_cnt,
-                                                    sum(case when product_type ='project' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as project_mb,
-                                                    sum(case when product_type ='service' then 1 else 0 end) as service_cnt,
-                                                    sum(case when product_type ='service' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as service_mb,
-                                                    sum(case when stages='Closed(Won)' then 1 else 0 end) as won_quo_cnt,
-                                                    sum(case when stages='Closed(Won)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as won_mb,
-                                                    sum(case when stages='Closed(Lost)' then 1 else 0 end) as loss_quo_cnt,
-                                                    sum(case when stages='Closed(Lost)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as loss_mb,
-                                                    sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt,
-                                                    sum(case when stages='No go' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as nogo_mb,
-                                                    sum(case when stages is null or stages not in ('','Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as pending_quo_cnt,
-                                                    sum(case when stages is null or stages not in ('','Closed(Won)', 'Closed(Lost)', 'No go') then cast(cast(replace(quoted_price, ',', '') as float) / 1000000 as decimal(10, 2)) else 0 end) as pending_mb
-                                                    from Quotation where left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}')
-                                                    select * from s1 order by s1.department,s1.sale");
+													sum(sub_sub_type.service_won_cnt) / count(sub_sub_type.service_won_cnt) as service_won_cnt ,
+													sum(sub_sub_type.service_won_mb) / count(sub_sub_type.service_won_mb) as service_won_mb,
+													sum(sub_sub_type.service_lost_cnt) / count(sub_sub_type.service_lost_cnt) as service_lost_cnt ,
+													sum(sub_sub_type.service_lost_mb) / count(sub_sub_type.service_lost_mb) as service_lost_mb,
+													sum(sub_sub_type.service_nogo_cnt) / count(sub_sub_type.service_nogo_cnt) as service_nogo_cnt ,
+													sum(sub_sub_type.service_nogo_mb) / count(sub_sub_type.service_nogo_mb) as service_nogo_mb,
+													sum(sub_sub_type.service_pending_cnt) / count(sub_sub_type.service_pending_cnt) as service_pending_cnt ,
+													sum(sub_sub_type.service_pending_mb) / count(sub_sub_type.service_pending_mb) as service_pending_mb,
+                                                    sum(case when Quotation.product_type = 'service' then 1 else 0 end) as service_cnt,
+													sum(case when Quotation.product_type = 'service' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as service_mb,
+                                                    
+													sum(sub_sub_stages.won_product_cnt) / count(sub_sub_stages.won_product_cnt) as won_product_cnt,
+													sum(sub_sub_stages.won_product_mb) / count(sub_sub_stages.won_product_mb) as won_product_mb,
+													sum(sub_sub_stages.won_project_cnt) / count(sub_sub_stages.won_project_cnt) as won_project_cnt,
+													sum(sub_sub_stages.won_project_mb) / count(sub_sub_stages.won_project_mb) as won_project_mb,
+													sum(sub_sub_stages.won_service_cnt) / count(sub_sub_stages.won_service_cnt) as won_service_cnt,
+													sum(sub_sub_stages.won_service_mb) / count(sub_sub_stages.won_service_mb) as won_service_mb,
+													sum(case when stages = 'Closed(Won)' then 1 else 0 end) as won_quo_cnt,
+                                                    sum(case when stages = 'Closed(Won)' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as won_mb,
+                                                    
+													sum(sub_sub_stages.lost_product_cnt) / count(sub_sub_stages.lost_product_cnt) as lost_product_cnt,
+													sum(sub_sub_stages.lost_product_mb) / count(sub_sub_stages.lost_product_mb) as lost_product_mb,
+													sum(sub_sub_stages.lost_project_cnt) / count(sub_sub_stages.lost_project_cnt) as lost_project_cnt,
+													sum(sub_sub_stages.lost_project_mb) / count(sub_sub_stages.lost_project_mb) as lost_project_mb,
+													sum(sub_sub_stages.lost_service_cnt) / count(sub_sub_stages.lost_service_cnt) as lost_service_cnt,
+													sum(sub_sub_stages.lost_service_mb) / count(sub_sub_stages.lost_service_mb) as lost_service_mb,
+													sum(case when stages = 'Closed(Lost)' then 1 else 0 end) as loss_quo_cnt,
+                                                    sum(case when stages = 'Closed(Lost)' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as loss_mb,
+                                                    
+													sum(sub_sub_stages.nogo_product_cnt) / count(sub_sub_stages.nogo_product_cnt) as nogo_product_cnt,
+													sum(sub_sub_stages.nogo_product_mb) / count(sub_sub_stages.nogo_product_mb) as nogo_product_mb,
+													sum(sub_sub_stages.nogo_project_cnt) / count(sub_sub_stages.nogo_project_cnt) as nogo_project_cnt,
+													sum(sub_sub_stages.nogo_project_mb) / count(sub_sub_stages.nogo_project_mb) as nogo_project_mb,
+													sum(sub_sub_stages.nogo_service_cnt) / count(sub_sub_stages.nogo_service_cnt) as nogo_service_cnt,
+													sum(sub_sub_stages.nogo_service_mb) / count(sub_sub_stages.nogo_service_mb) as nogo_service_mb,
+													sum(case when stages = 'No go' then 1 else 0 end) as nogo_quo_cnt,
+                                                    sum(case when stages = 'No go' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as nogo_mb,
+                                                    
+													sum(sub_sub_pending.pending_product_cnt) / count(sub_sub_pending.pending_product_cnt) as pending_product_cnt,
+													sum(sub_sub_pending.pending_product_mb) / count(sub_sub_pending.pending_product_mb) as pending_product_mb,
+													sum(sub_sub_pending.pending_project_cnt) / count(sub_sub_pending.pending_project_cnt) as pending_project_cnt,
+													sum(sub_sub_pending.pending_project_mb) / count(sub_sub_pending.pending_project_mb) as pending_project_mb,
+													sum(sub_sub_pending.pending_service_cnt) / count(sub_sub_pending.pending_service_cnt) as pending_service_cnt,
+													sum(sub_sub_pending.pending_service_mb) / count(sub_sub_pending.pending_service_mb) as pending_service_mb,
+													sum(case when stages is null or stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as pending_quo_cnt,
+                                                    sum(case when stages is null or stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as pending_mb
+                                                    from Quotation
+                                                    left join (
 
-                    command_sub_type = string.Format($@"with x As(select department,
-	                                                    sale_name,
-	                                                    product_type,
-	                                                    sum(case when stages ='Closed(Won)' then 1 else 0 end) as type_won_cnt,
-	                                                    format(sum(case when stages ='Closed(Won)' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_won_mb,
-	                                                    sum(case when stages ='Closed(Lost)' then 1 else 0 end) as type_lost_cnt,
-	                                                    format(sum(case when stages ='Closed(Lost)' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_lost_mb,
-	                                                    sum(case when stages ='No go' then 1 else 0 end) as type_nogo_cnt,
-	                                                    format(sum(case when stages ='No go' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_nogo_mb,
-	                                                    sum(case when stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as type_pending_cnt,
-	                                                    format(sum(case when stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go') then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_pending_mb
-                                                    from Quotation 
-                                                    where left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' and product_type <> ''
-                                                    group by department,sale_name,product_type
-                                                    union all
+                                                        select sub_type.department,sub_type.sale_name,
+															sum(case when sub_type.product_type = 'Product' then type_won_cnt else 0 end) as product_won_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_won_mb as float) else 0 end) as product_won_mb,
+															sum(case when sub_type.product_type = 'Product' then type_lost_cnt else 0 end) as product_lost_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_lost_mb as float) else 0 end) as product_lost_mb,
+															sum(case when sub_type.product_type = 'Product' then type_nogo_cnt else 0 end) as product_nogo_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_nogo_mb as float) else 0 end) as product_nogo_mb,
+															sum(case when sub_type.product_type = 'Product' then type_pending_cnt else 0 end) as product_pending_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_pending_mb as float) else 0 end) as product_pending_mb,
 
-                                                    select department,
-	                                                    sale_name + ' Total' as sale_name,
-	                                                    '' as product_type,
-	                                                    sum(case when stages ='Closed(Won)' then 1 else 0 end) as type_won_cnt,
-	                                                    format(sum(case when stages ='Closed(Won)' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_won_mb,
-	                                                    sum(case when stages ='Closed(Lost)' then 1 else 0 end) as type_lost_cnt,
-	                                                    format(sum(case when stages ='Closed(Lost)' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_lost_mb,
-	                                                    sum(case when stages ='No go' then 1 else 0 end) as type_nogo_cnt,
-	                                                    format(sum(case when stages ='No go' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_nogo_mb,
-	                                                    sum(case when stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as type_pending_cnt,
-	                                                    format(sum(case when stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go') then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_pending_mb
-                                                    from Quotation 
-                                                    where left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' and product_type <> ''
-                                                    group by department,sale_name
+															sum(case when sub_type.product_type = 'Project' then type_won_cnt else 0 end) as project_won_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_won_mb as float) else 0 end) as project_won_mb,
+															sum(case when sub_type.product_type = 'Project' then type_lost_cnt else 0 end) as project_lost_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_lost_mb as float) else 0 end) as project_lost_mb,
+															sum(case when sub_type.product_type = 'Project' then type_nogo_cnt else 0 end) as project_nogo_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_nogo_mb as float) else 0 end) as project_nogo_mb,
+															sum(case when sub_type.product_type = 'Project' then type_pending_cnt else 0 end) as project_pending_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_pending_mb as float) else 0 end) as project_pending_mb,
 
-                                                    union all
+															sum(case when sub_type.product_type = 'Service' then type_won_cnt else 0 end) as service_won_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_won_mb as float) else 0 end) as service_won_mb,
+															sum(case when sub_type.product_type = 'Service' then type_lost_cnt else 0 end) as service_lost_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_lost_mb as float) else 0 end) as service_lost_mb,
+															sum(case when sub_type.product_type = 'Service' then type_nogo_cnt else 0 end) as service_nogo_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_nogo_mb as float) else 0 end) as service_nogo_mb,
+															sum(case when sub_type.product_type = 'Service' then type_pending_cnt else 0 end) as service_pending_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_pending_mb as float) else 0 end) as service_pending_mb
 
-                                                    select department + ' Total' as department,
-	                                                    '' as sale_name,
-	                                                    '' as product_type,
-	                                                    sum(case when stages ='Closed(Won)' then 1 else 0 end) as type_won_cnt,
-	                                                    format(sum(case when stages ='Closed(Won)' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_won_mb,
-	                                                    sum(case when stages ='Closed(Lost)' then 1 else 0 end) as type_lost_cnt,
-	                                                    format(sum(case when stages ='Closed(Lost)' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_lost_mb,
-	                                                    sum(case when stages ='No go' then 1 else 0 end) as type_nogo_cnt,
-	                                                    format(sum(case when stages ='No go' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_nogo_mb,
-	                                                    sum(case when stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as type_pending_cnt,
-	                                                    format(sum(case when stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go') then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_pending_mb
-                                                    from Quotation 
-                                                    where left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' and product_type <> ''
-                                                    group by department)
-
-                                                    select * from x order by x.department,x.sale_name,x.product_type");
-                    command_sub_stages = string.Format($@"with x As(select department,
-                                                            sale_name,
-                                                            stages,
-                                                            sum(case when product_type ='Project' then 1 else 0 end) as stages_project_cnt,
-                                                            format(sum(case when product_type ='Project' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as stages_project_mb,
-                                                            sum(case when product_type ='Product' then 1 else 0 end) as stages_product_cnt,
-                                                            format(sum(case when product_type ='Product' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as stages_product_mb,
-                                                            sum(case when product_type ='Service' then 1 else 0 end) as stages_service_cnt,
-                                                            format(sum(case when product_type ='Service' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as stages_service_mb
-                                                            from Quotation
-
-                                                             where left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' and (stages <> '' and stages is not null) and stages in('Closed(Won)','Closed(Lost)','No go')
-                                                             group by department,sale_name,stages
-
-                                                             union all
-
+                                                        from(
                                                             select department,
-                                                            sale_name + '_Total' as sale_name,
-                                                            '' as stages,
-                                                            sum(case when product_type ='Project' then 1 else 0 end) as stages_project_cnt,
-                                                            format(sum(case when product_type ='Project' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as stages_project_mb,
-                                                            sum(case when product_type ='Product' then 1 else 0 end) as stages_product_cnt,
-                                                            format(sum(case when product_type ='Product' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as stages_product_mb,
-                                                            sum(case when product_type ='Service' then 1 else 0 end) as stages_service_cnt,
-                                                            format(sum(case when product_type ='Service' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as stages_service_mb
+                                                                sale_name,
+                                                                product_type,
+                                                                sum(case when stages = 'Closed(Won)' then 1 else 0 end) as type_won_cnt,
+																format(sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_won_mb,
+																sum(case when stages = 'Closed(Lost)' then 1 else 0 end) as type_lost_cnt,
+																format(sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_lost_mb,
+																sum(case when stages = 'No go' then 1 else 0 end) as type_nogo_cnt,
+																format(sum(case when stages = 'No go' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_nogo_mb,
+																sum(case when stages is not null and stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as type_pending_cnt,
+																format(sum(case when stages is not null and stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_pending_mb
+
                                                             from Quotation
 
-                                                             where left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' and (stages <> '' and stages is not null) and stages in('Closed(Won)','Closed(Lost)','No go')
-                                                             group by department,sale_name
+                                                            where left(Convert(varchar, date,23),7) between @month_first and @month_last and product_type<> ''
+															group by department, sale_name, product_type) as sub_type
 
-                                                             union all
+                                                        group by sub_type.department, sub_type.sale_name
+													) as sub_sub_type
 
-                                                             select department + '_Total' as department,
+                                                     ON sub_sub_type.sale_name = Quotation.sale_name
+
+                                                    left join (
+                                                        select sub_stages.department, sub_stages.sale_name,
+                                                            sum(case when stages = 'Closed(Won)' then sub_stages.stages_project_cnt else 0 end) as won_project_cnt,
+															sum(case when stages = 'Closed(Won)' then cast(sub_stages.stages_project_mb as float) else 0 end) as won_project_mb,
+															sum(case when stages = 'Closed(Won)' then sub_stages.stages_product_cnt else 0 end) as won_product_cnt,
+															sum(case when stages = 'Closed(Won)' then cast(sub_stages.stages_product_mb as float) else 0 end) as won_product_mb,
+															sum(case when stages = 'Closed(Won)' then sub_stages.stages_service_cnt else 0 end) as won_service_cnt,
+															sum(case when stages = 'Closed(Won)' then cast(sub_stages.stages_service_mb as float) else 0 end) as won_service_mb,
+
+															sum(case when stages = 'Closed(Lost)' then sub_stages.stages_project_cnt else 0 end) as lost_project_cnt,
+															sum(case when stages = 'Closed(Lost)' then cast(sub_stages.stages_project_mb as float) else 0 end) as lost_project_mb,
+															sum(case when stages = 'Closed(Lost)' then sub_stages.stages_product_cnt else 0 end) as lost_product_cnt,
+															sum(case when stages = 'Closed(Lost)' then cast(sub_stages.stages_product_mb as float) else 0 end) as lost_product_mb,
+															sum(case when stages = 'Closed(Lost)' then sub_stages.stages_service_cnt else 0 end) as lost_service_cnt,
+															sum(case when stages = 'Closed(Lost)' then cast(sub_stages.stages_service_mb as float) else 0 end) as lost_service_mb,
+
+															sum(case when stages = 'No go' then sub_stages.stages_project_cnt else 0 end) as nogo_project_cnt,
+															sum(case when stages = 'No go' then cast(sub_stages.stages_project_mb as float) else 0 end) as nogo_project_mb,
+															sum(case when stages = 'No go' then sub_stages.stages_product_cnt else 0 end) as nogo_product_cnt,
+															sum(case when stages = 'No go' then cast(sub_stages.stages_product_mb as float) else 0 end) as nogo_product_mb,
+															sum(case when stages = 'No go' then sub_stages.stages_service_cnt else 0 end) as nogo_service_cnt,
+															sum(case when stages = 'No go' then cast(sub_stages.stages_service_mb as float) else 0 end) as nogo_service_mb
+
+                                                        from(
+                                                            select department,
+                                                                sale_name,
+                                                                stages,
+                                                                sum(case when product_type = 'Project' then 1 else 0 end) as stages_project_cnt,
+																format(sum(case when product_type = 'Project' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_project_mb,
+																sum(case when product_type = 'Product' then 1 else 0 end) as stages_product_cnt,
+																format(sum(case when product_type = 'Product' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_product_mb,
+																sum(case when product_type = 'Service' then 1 else 0 end) as stages_service_cnt,
+																format(sum(case when product_type = 'Service' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_service_mb
+                                                             from Quotation
+                                                             where left(Convert(varchar, date,23),7) between @month_first and @month_last and stages in('Closed(Won)','Closed(Lost)','No go')
+                                                             group by department, sale_name, stages ) as sub_stages
+
+
+                                                        group by sub_stages.department, sub_stages.sale_name 
+													) as sub_sub_stages
+
+                                                    ON Quotation.sale_name = sub_sub_stages.sale_name
+
+                                                    left join (
+                                                    select sub_pending.department, sub_pending.sale_name,
+                                                            sum(case when product_type = 'Product' then stages_pending_cnt else 0 end ) as pending_product_cnt,
+															sum(case when product_type = 'Product' then cast(stages_pending_mb as float) else 0 end ) as pending_product_mb,
+															sum(case when product_type = 'Project' then stages_pending_cnt else 0 end ) as pending_project_cnt,
+															sum(case when product_type = 'Project' then cast(stages_pending_mb as float) else 0 end ) as pending_project_mb,
+															sum(case when product_type = 'Service' then stages_pending_cnt else 0 end ) as pending_service_cnt,
+															sum(case when product_type = 'Service' then cast(stages_pending_mb as float) else 0 end ) as pending_service_mb
+
+                                                             from(
+                                                            select sub_stages.department,
+                                                            sub_stages.sale_name,
+                                                            'pending' as stages,
+                                                            sub_stages.product_type,
+                                                            sum(cast(sub_stages.stages_pending_cnt as float)) as stages_pending_cnt,
+                                                            format(sum(cast(sub_stages.stages_pending_mb as float)), 'N2') as stages_pending_mb
+
+                                                            from(
+                                                                select department,
+                                                                sale_name,
+                                                                'Pending' as stages,
+                                                                product_type,
+                                                                sum(case when product_type is not null or product_type not in ('', 'Project', 'Product', 'Service') then 1 else 0 end) as stages_pending_cnt,
+		                                                        sum(case when product_type is not null or product_type not in ('', 'Project', 'Product', 'Service') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as stages_pending_mb
+
+                                                                from Quotation
+
+                                                                where left(Convert(varchar, date,23),7) between @month_first and @month_last and stages<> '' 
+		                                                        group by department, sale_name, product_type, stages having stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go')) as sub_stages
+                                                        group by sub_stages.department, sub_stages.sale_name, sub_stages.product_type) as sub_pending
+
+
+                                                        group by sub_pending.department, sub_pending.sale_name
+													) as sub_sub_pending
+
+
+                                                    ON Quotation.sale_name = sub_sub_pending.sale_name
+
+                                                    where left(Convert(varchar, Quotation.date,23),7) between @month_first and @month_last group by Quotation.department, Quotation.sale_name
+
+													union all
+
+													select Quotation.department + '_Total' as department, '' as sale,
+													count(quotation_no) as quo_cnt,
+													cast(sum(cast(replace(quoted_price,',','') as float)/ @million) as decimal(10, 2)) as quo_mb,                                                
+													sum(sub_sub_type.product_won_cnt) / count(sub_sub_type.product_won_cnt) as product_won_cnt ,
+													format(cast(sum(sub_sub_type.product_won_mb) / count(sub_sub_type.product_won_mb) as float),'N2') as product_won_mb,
+													sum(sub_sub_type.product_lost_cnt) / count(sub_sub_type.product_lost_cnt) as product_lost_cnt ,
+													format(cast(sum(sub_sub_type.product_lost_mb) / count(sub_sub_type.product_lost_mb) as float),'N2') as product_lost_mb,
+													sum(sub_sub_type.product_nogo_cnt) / count(sub_sub_type.product_nogo_cnt) as product_nogo_cnt ,
+													format(cast(sum(sub_sub_type.product_nogo_mb) / count(sub_sub_type.product_nogo_mb) as float),'N2') as product_nogo_mb,
+													sum(sub_sub_type.product_pending_cnt) / count(sub_sub_type.product_pending_cnt) as product_pending_cnt ,
+													format(cast(sum(sub_sub_type.product_pending_mb) / count(sub_sub_type.product_pending_mb) as float),'N2') as product_pending_mb,
+                                                    sum(case when Quotation.product_type = 'product' then 1 else 0 end) as product_cnt,
+													sum(case when Quotation.product_type = 'product' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as product_mb,
+
+													sum(sub_sub_type.project_won_cnt) / count(sub_sub_type.project_won_cnt) as project_won_cnt ,
+													format(cast(sum(sub_sub_type.project_won_mb) / count(sub_sub_type.project_won_mb) as float),'N2') as project_won_mb,
+													sum(sub_sub_type.project_lost_cnt) / count(sub_sub_type.project_lost_cnt) as project_lost_cnt ,
+													format(cast(sum(sub_sub_type.project_lost_mb) / count(sub_sub_type.project_lost_mb) as float),'N2') as project_lost_mb,
+													sum(sub_sub_type.project_nogo_cnt) / count(sub_sub_type.project_nogo_cnt) as project_nogo_cnt ,
+													format(cast(sum(sub_sub_type.project_nogo_mb) / count(sub_sub_type.project_nogo_mb) as float),'N2') as project_nogo_mb,
+													sum(sub_sub_type.project_pending_cnt) / count(sub_sub_type.project_pending_cnt) as project_pending_cnt ,
+													format(cast(sum(sub_sub_type.project_pending_mb) / count(sub_sub_type.project_pending_mb) as float),'N2') as project_pending_mb,
+                                                    sum(case when Quotation.product_type = 'project' then 1 else 0 end) as project_cnt,
+													sum(case when Quotation.product_type = 'project' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as project_mb,
+
+													sum(sub_sub_type.service_won_cnt) / count(sub_sub_type.service_won_cnt) as service_won_cnt ,
+													format(cast(sum(sub_sub_type.service_won_mb) / count(sub_sub_type.service_won_mb) as float),'N2') as service_won_mb,
+													sum(sub_sub_type.service_lost_cnt) / count(sub_sub_type.service_lost_cnt) as service_lost_cnt ,
+													format(cast(sum(sub_sub_type.service_lost_mb) / count(sub_sub_type.service_lost_mb) as float),'N2') as service_lost_mb,
+													sum(sub_sub_type.service_nogo_cnt) / count(sub_sub_type.service_nogo_cnt) as service_nogo_cnt ,
+													format(cast(sum(sub_sub_type.service_nogo_mb) / count(sub_sub_type.service_nogo_mb) as float),'N2') as service_nogo_mb,
+													sum(sub_sub_type.service_pending_cnt) / count(sub_sub_type.service_pending_cnt) as service_pending_cnt ,
+													format(cast(sum(sub_sub_type.service_pending_mb) / count(sub_sub_type.service_pending_mb) as float),'N2') as service_pending_mb,
+                                                    sum(case when Quotation.product_type = 'service' then 1 else 0 end) as service_cnt,
+													sum(case when Quotation.product_type = 'service' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as service_mb,
+                                                    
+													sum(sub_sub_stages.won_product_cnt) / count(sub_sub_stages.won_product_cnt) as won_product_cnt,
+													format(sum(sub_sub_stages.won_product_mb) / count(sub_sub_stages.won_product_mb),'N2')  as won_product_mb,
+													sum(sub_sub_stages.won_project_cnt) / count(sub_sub_stages.won_project_cnt) as won_project_cnt,
+													format(sum(sub_sub_stages.won_project_mb) / count(sub_sub_stages.won_project_mb),'N2')  as won_project_mb,
+													sum(sub_sub_stages.won_service_cnt) / count(sub_sub_stages.won_service_cnt) as won_service_cnt,
+													format(sum(sub_sub_stages.won_service_mb) / count(sub_sub_stages.won_service_mb),'N2')  as won_service_mb,
+													sum(case when stages = 'Closed(Won)' then 1 else 0 end) as won_quo_cnt,
+                                                    sum(case when stages = 'Closed(Won)' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as won_mb,
+                                                    
+													sum(sub_sub_stages.lost_product_cnt) / count(sub_sub_stages.lost_product_cnt) as lost_product_cnt,
+													format(sum(sub_sub_stages.lost_product_mb) / count(sub_sub_stages.lost_product_mb),'N2')  as lost_product_mb,
+													sum(sub_sub_stages.lost_project_cnt) / count(sub_sub_stages.lost_project_cnt) as lost_project_cnt,
+													format(sum(sub_sub_stages.lost_project_mb) / count(sub_sub_stages.lost_project_mb),'N2')  as lost_project_mb,
+													sum(sub_sub_stages.lost_service_cnt) / count(sub_sub_stages.lost_service_cnt) as lost_service_cnt,
+													format(sum(sub_sub_stages.lost_service_mb) / count(sub_sub_stages.lost_service_mb),'N2')  as lost_service_mb,
+													sum(case when stages = 'Closed(Lost)' then 1 else 0 end) as loss_quo_cnt,
+                                                    sum(case when stages = 'Closed(Lost)' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as loss_mb,
+                                                    
+													sum(sub_sub_stages.nogo_product_cnt) / count(sub_sub_stages.nogo_product_cnt) as nogo_product_cnt,
+													format(sum(sub_sub_stages.nogo_product_mb) / count(sub_sub_stages.nogo_product_mb),'N2') as nogo_product_mb,
+													sum(sub_sub_stages.nogo_project_cnt) / count(sub_sub_stages.nogo_project_cnt) as nogo_project_cnt,
+													format(sum(sub_sub_stages.nogo_project_mb) / count(sub_sub_stages.nogo_project_mb),'N2') as nogo_project_mb,
+													sum(sub_sub_stages.nogo_service_cnt) / count(sub_sub_stages.nogo_service_cnt) as nogo_service_cnt,
+													format(sum(sub_sub_stages.nogo_service_mb) / count(sub_sub_stages.nogo_service_mb),'N2') as nogo_service_mb,
+													sum(case when stages = 'No go' then 1 else 0 end) as nogo_quo_cnt,
+                                                    sum(case when stages = 'No go' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as nogo_mb,
+                                                    
+													sum(sub_sub_pending.pending_product_cnt) / count(sub_sub_pending.pending_product_cnt) as pending_product_cnt,
+													format(cast(sum(sub_sub_pending.pending_product_mb) / count(sub_sub_pending.pending_product_mb) as float),'N2') as pending_product_mb,
+													sum(sub_sub_pending.pending_project_cnt) / count(sub_sub_pending.pending_project_cnt) as pending_project_cnt,
+													format(cast(sum(sub_sub_pending.pending_project_mb) / count(sub_sub_pending.pending_project_mb) as float),'N2') as pending_project_mb,
+													sum(sub_sub_pending.pending_service_cnt) / count(sub_sub_pending.pending_service_cnt) as pending_service_cnt,
+													format(cast(sum(sub_sub_pending.pending_service_mb) / count(sub_sub_pending.pending_service_mb) as float),'N2') as pending_service_mb,
+													sum(case when stages is null or stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as pending_quo_cnt,
+                                                    sum(case when stages is null or stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as pending_mb
+                                                    from Quotation
+                                                    left join (
+
+                                                        select sub_type.department,'' as sale_name,
+															sum(case when sub_type.product_type = 'Product' then type_won_cnt else 0 end) as product_won_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_won_mb as float) else 0 end) as product_won_mb,
+															sum(case when sub_type.product_type = 'Product' then type_lost_cnt else 0 end) as product_lost_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_lost_mb as float) else 0 end) as product_lost_mb,
+															sum(case when sub_type.product_type = 'Product' then type_nogo_cnt else 0 end) as product_nogo_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_nogo_mb as float) else 0 end) as product_nogo_mb,
+															sum(case when sub_type.product_type = 'Product' then type_pending_cnt else 0 end) as product_pending_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_pending_mb as float) else 0 end) as product_pending_mb,
+
+															sum(case when sub_type.product_type = 'Project' then type_won_cnt else 0 end) as project_won_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_won_mb as float) else 0 end) as project_won_mb,
+															sum(case when sub_type.product_type = 'Project' then type_lost_cnt else 0 end) as project_lost_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_lost_mb as float) else 0 end) as project_lost_mb,
+															sum(case when sub_type.product_type = 'Project' then type_nogo_cnt else 0 end) as project_nogo_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_nogo_mb as float) else 0 end) as project_nogo_mb,
+															sum(case when sub_type.product_type = 'Project' then type_pending_cnt else 0 end) as project_pending_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_pending_mb as float) else 0 end) as project_pending_mb,
+
+															sum(case when sub_type.product_type = 'Service' then type_won_cnt else 0 end) as service_won_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_won_mb as float) else 0 end) as service_won_mb,
+															sum(case when sub_type.product_type = 'Service' then type_lost_cnt else 0 end) as service_lost_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_lost_mb as float) else 0 end) as service_lost_mb,
+															sum(case when sub_type.product_type = 'Service' then type_nogo_cnt else 0 end) as service_nogo_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_nogo_mb as float) else 0 end) as service_nogo_mb,
+															sum(case when sub_type.product_type = 'Service' then type_pending_cnt else 0 end) as service_pending_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_pending_mb as float) else 0 end) as service_pending_mb
+
+                                                        from(
+                                                            select department,
+                                                                '' as sale_name,
+                                                                product_type,
+                                                                sum(case when stages = 'Closed(Won)' then 1 else 0 end) as type_won_cnt,
+																format(sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_won_mb,
+																sum(case when stages = 'Closed(Lost)' then 1 else 0 end) as type_lost_cnt,
+																format(sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_lost_mb,
+																sum(case when stages = 'No go' then 1 else 0 end) as type_nogo_cnt,
+																format(sum(case when stages = 'No go' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_nogo_mb,
+																sum(case when stages is not null and stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as type_pending_cnt,
+																format(sum(case when stages is not null and stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_pending_mb
+
+                                                            from Quotation
+
+                                                            where left(Convert(varchar, date,23),7) between @month_first and @month_last and product_type<> ''
+															group by department, product_type) as sub_type
+
+                                                        group by sub_type.department, sub_type.sale_name
+													) as sub_sub_type
+
+                                                     ON sub_sub_type.department = Quotation.department
+
+                                                    left join (
+                                                        select sub_stages.department, '' as sale_name,
+                                                            sum(case when stages = 'Closed(Won)' then sub_stages.stages_project_cnt else 0 end) as won_project_cnt,
+															sum(case when stages = 'Closed(Won)' then cast(sub_stages.stages_project_mb as float) else 0 end) as won_project_mb,
+															sum(case when stages = 'Closed(Won)' then sub_stages.stages_product_cnt else 0 end) as won_product_cnt,
+															sum(case when stages = 'Closed(Won)' then cast(sub_stages.stages_product_mb as float) else 0 end) as won_product_mb,
+															sum(case when stages = 'Closed(Won)' then sub_stages.stages_service_cnt else 0 end) as won_service_cnt,
+															sum(case when stages = 'Closed(Won)' then cast(sub_stages.stages_service_mb as float) else 0 end) as won_service_mb,
+
+															sum(case when stages = 'Closed(Lost)' then sub_stages.stages_project_cnt else 0 end) as lost_project_cnt,
+															sum(case when stages = 'Closed(Lost)' then cast(sub_stages.stages_project_mb as float) else 0 end) as lost_project_mb,
+															sum(case when stages = 'Closed(Lost)' then sub_stages.stages_product_cnt else 0 end) as lost_product_cnt,
+															sum(case when stages = 'Closed(Lost)' then cast(sub_stages.stages_product_mb as float) else 0 end) as lost_product_mb,
+															sum(case when stages = 'Closed(Lost)' then sub_stages.stages_service_cnt else 0 end) as lost_service_cnt,
+															sum(case when stages = 'Closed(Lost)' then cast(sub_stages.stages_service_mb as float) else 0 end) as lost_service_mb,
+
+															sum(case when stages = 'No go' then sub_stages.stages_project_cnt else 0 end) as nogo_project_cnt,
+															sum(case when stages = 'No go' then cast(sub_stages.stages_project_mb as float) else 0 end) as nogo_project_mb,
+															sum(case when stages = 'No go' then sub_stages.stages_product_cnt else 0 end) as nogo_product_cnt,
+															sum(case when stages = 'No go' then cast(sub_stages.stages_product_mb as float) else 0 end) as nogo_product_mb,
+															sum(case when stages = 'No go' then sub_stages.stages_service_cnt else 0 end) as nogo_service_cnt,
+															sum(case when stages = 'No go' then cast(sub_stages.stages_service_mb as float) else 0 end) as nogo_service_mb
+
+                                                        from(
+                                                            select department,
+                                                                '' as sale_name,
+                                                                stages,
+                                                                sum(case when product_type = 'Project' then 1 else 0 end) as stages_project_cnt,
+																format(sum(case when product_type = 'Project' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_project_mb,
+																sum(case when product_type = 'Product' then 1 else 0 end) as stages_product_cnt,
+																format(sum(case when product_type = 'Product' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_product_mb,
+																sum(case when product_type = 'Service' then 1 else 0 end) as stages_service_cnt,
+																format(sum(case when product_type = 'Service' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_service_mb
+                                                             from Quotation
+                                                             where left(Convert(varchar, date,23),7) between @month_first and @month_last and stages in('Closed(Won)','Closed(Lost)','No go')
+                                                             group by department, sale_name, stages ) as sub_stages
+
+
+                                                        group by sub_stages.department, sub_stages.sale_name 
+													) as sub_sub_stages
+
+                                                    ON Quotation.department = sub_sub_stages.department
+
+                                                    left join (
+                                                    select sub_pending.department, '' as sale_name,
+                                                            sum(case when product_type = 'Product' then stages_pending_cnt else 0 end ) as pending_product_cnt,
+															sum(case when product_type = 'Product' then cast(stages_pending_mb as float) else 0 end ) as pending_product_mb,
+															sum(case when product_type = 'Project' then stages_pending_cnt else 0 end ) as pending_project_cnt,
+															sum(case when product_type = 'Project' then cast(stages_pending_mb as float) else 0 end ) as pending_project_mb,
+															sum(case when product_type = 'Service' then stages_pending_cnt else 0 end ) as pending_service_cnt,
+															sum(case when product_type = 'Service' then cast(stages_pending_mb as float) else 0 end ) as pending_service_mb
+
+                                                             from(
+                                                            select sub_stages.department,
                                                             '' as sale_name,
-                                                            '' as stages,
-                                                            sum(case when product_type ='Project' then 1 else 0 end) as stages_project_cnt,
-                                                            format(sum(case when product_type ='Project' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as stages_project_mb,
-                                                            sum(case when product_type ='Product' then 1 else 0 end) as stages_product_cnt,
-                                                            format(sum(case when product_type ='Product' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as stages_product_mb,
-                                                            sum(case when product_type ='Service' then 1 else 0 end) as stages_service_cnt,
-                                                            format(sum(case when product_type ='Service' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as stages_service_mb
-                                                            from Quotation
+                                                            'pending' as stages,
+                                                            sub_stages.product_type,
+                                                            sum(cast(sub_stages.stages_pending_cnt as float)) as stages_pending_cnt,
+                                                            format(sum(cast(sub_stages.stages_pending_mb as float)), 'N2') as stages_pending_mb
 
-                                                             where left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' and (stages <> '' and stages is not null) and stages in('Closed(Won)','Closed(Lost)','No go')
-                                                             group by department)
+                                                            from(
+                                                                select department,
+                                                                sale_name,
+                                                                'Pending' as stages,
+                                                                product_type,
+                                                                sum(case when product_type is not null or product_type not in ('', 'Project', 'Product', 'Service') then 1 else 0 end) as stages_pending_cnt,
+		                                                        sum(case when product_type is not null or product_type not in ('', 'Project', 'Product', 'Service') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as stages_pending_mb
 
-                                                             select * from x order by x.department,x.sale_name");
-                    command_sub_pending = string.Format($@"with x As(select sub_stages.department,
-	                                                        sub_stages.sale_name,
-	                                                        'pending' as stages,
-	                                                        sub_stages.product_type,
-	                                                        sum(cast(sub_stages.stages_pending_cnt as float)) as stages_pending_cnt,
-	                                                        format(sum(cast(sub_stages.stages_pending_mb as float)),'N2') as stages_pending_mb 
-	                                                        from (
-		                                                        select department,
-		                                                        sale_name,
-		                                                        'Pending' as stages,
-		                                                        product_type,
-		                                                        sum(case when product_type is not null or product_type not in ('','Project','Product','Service') then 1 else 0 end) as stages_pending_cnt,
-		                                                        sum(case when product_type is not null or product_type not in ('','Project','Product','Service') then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end) as stages_pending_mb
-		                                                        from Quotation 
-		                                                        where left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' and stages <> '' 
-		                                                        group by department,sale_name,product_type,stages having stages is not null and stages not in('','Closed(Won)','Closed(Lost)','No go')) as sub_stages
+                                                                from Quotation
 
-                                                        group by sub_stages.department,sub_stages.sale_name,sub_stages.product_type
+                                                                where left(Convert(varchar, date,23),7) between @month_first and @month_last and stages<> '' 
+		                                                        group by department, sale_name, product_type, stages having stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go')) as sub_stages
+                                                        group by sub_stages.department,sub_stages.product_type) as sub_pending
 
-                                                        union all
 
-                                                        select sub_stages.department,
-	                                                        sub_stages.sale_name,
-	                                                        'pending Total' as stages,
-	                                                        sub_stages.product_type,
-	                                                        sum(cast(sub_stages.stages_pending_cnt as float)) as stages_pending_cnt,
-	                                                        format(sum(cast(sub_stages.stages_pending_mb as float)),'N2') as stages_pending_mb 
-	                                                        from (
-		                                                        select department,
-		                                                        sale_name,
-		                                                        'Pending Total' as stages,
-		                                                        '' as product_type,
-		                                                        sum(case when product_type is not null or product_type not in ('','Project','Product','Service') then 1 else 0 end) as stages_pending_cnt,
-		                                                        sum(case when product_type is not null or product_type not in ('','Project','Product','Service') then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end) as stages_pending_mb
-		                                                        from Quotation 
-		                                                        where left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' and stages <> '' 
-		                                                        group by department,sale_name,stages having stages is not null and stages not in('','Closed(Won)','Closed(Lost)','No go')) as sub_stages
+                                                        group by sub_pending.department
+													) as sub_sub_pending
 
-                                                        group by sub_stages.department,sub_stages.sale_name,sub_stages.product_type
 
-                                                        union all
+                                                    ON Quotation.department = sub_sub_pending.department
 
-                                                        select sub_stages.department + ' Total' as department,
-	                                                        '' as sale_name,
-	                                                        '' as stages,
-	                                                        sub_stages.product_type,
-	                                                        sum(cast(sub_stages.stages_pending_cnt as float)) as stages_pending_cnt,
-	                                                        format(sum(cast(sub_stages.stages_pending_mb as float)),'N2') as stages_pending_mb 
-	                                                        from (
-		                                                        select department,
-		                                                        '' as sale_name,
-		                                                        '' as stages,
-		                                                        '' as product_type,
-		                                                        sum(case when product_type is not null or product_type not in ('','Project','Product','Service') then 1 else 0 end) as stages_pending_cnt,
-		                                                        sum(case when product_type is not null or product_type not in ('','Project','Product','Service') then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end) as stages_pending_mb
-		                                                        from Quotation 
-		                                                        where left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' and stages <> '' 
-		                                                        group by department,stages having stages is not null and stages not in('','Closed(Won)','Closed(Lost)','No go')) as sub_stages
+                                                    where left(Convert(varchar, Quotation.date,23),7) between @month_first and @month_last
+													group by Quotation.department
+													order by Quotation.department");
 
-                                                        group by sub_stages.department,sub_stages.sale_name,sub_stages.product_type)
 
-                                                        select * from x order by x.department,x.sale_name,x.stages");
                 }
                 else
                 {
-                    command = string.Format($@"with s1 as (select department, sale_name as sale,
-                                                    cast(sum(sum(cast(replace(quoted_price,',','') as float))/1000000) over (partition by sale_name) as decimal(10,2)) as quo_mb,
-                                                    count(quotation_no) as quo_cnt,
-                                                    sum(case when product_type ='product' then 1 else 0 end) as product_cnt,
-													sum(case when product_type ='product' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as product_mb,
-                                                    sum(case when product_type ='project' then 1 else 0 end) as project_cnt,
-													sum(case when product_type ='project' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as project_mb,
-                                                    sum(case when product_type ='service' then 1 else 0 end) as service_cnt,
-													sum(case when product_type ='service' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as service_mb,
-                                                    sum(case when stages='Closed(Won)' then 1 else 0 end) as won_quo_cnt,
-                                                    sum(case when stages='Closed(Won)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as won_mb,
-                                                    sum(case when stages='Closed(Lost)' then 1 else 0 end) as loss_quo_cnt,
-                                                    sum(case when stages='Closed(Lost)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as loss_mb,
-                                                    sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt,
-                                                    sum(case when stages='No go' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as nogo_mb,
-                                                    sum(case when stages is null or stages not in('','Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as pending_quo_cnt,
-                                                    sum(case when stages is null or stages not in('','Closed(Won)','Closed(Lost)','No go') then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as pending_mb
-                                                    from Quotation where department='{department} ' and left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' group by department,sale_name union all
+                    command = string.Format($@"     DECLARE @million as float
+													DECLARE @department as VARCHAR(10)
+													DECLARE @month_first as VARCHAR(10)
+													DECLARE @month_last as VARCHAR(10)
+													SET @million = 1000000		
+													SET @department = '{department}'
+													SET @month_first = '{month_first}'
+													SET @month_last = '{month_last}'
+																																					
+													select Quotation.department, Quotation.sale_name as sale,
+													count(quotation_no) as quo_cnt,
+													cast(sum(sum(cast(replace(quoted_price,',','') as float))/ @million) over(partition by Quotation.sale_name) as decimal(10, 2)) as quo_mb,                                                
+													sum(sub_sub_type.product_won_cnt) / count(sub_sub_type.product_won_cnt) as product_won_cnt ,
+													sum(sub_sub_type.product_won_mb) / count(sub_sub_type.product_won_mb) as product_won_mb,
+													sum(sub_sub_type.product_lost_cnt) / count(sub_sub_type.product_lost_cnt) as product_lost_cnt ,
+													sum(sub_sub_type.product_lost_mb) / count(sub_sub_type.product_lost_mb) as product_lost_mb,
+													sum(sub_sub_type.product_nogo_cnt) / count(sub_sub_type.product_nogo_cnt) as product_nogo_cnt ,
+													sum(sub_sub_type.product_nogo_mb) / count(sub_sub_type.product_nogo_mb) as product_nogo_mb,
+													sum(sub_sub_type.product_pending_cnt) / count(sub_sub_type.product_pending_cnt) as product_pending_cnt ,
+													sum(sub_sub_type.product_pending_mb) / count(sub_sub_type.product_pending_mb) as product_pending_mb,
+                                                    sum(case when Quotation.product_type = 'product' then 1 else 0 end) as product_cnt,
+													sum(case when Quotation.product_type = 'product' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as product_mb,
 
-                                                    select (department + ' Total') as department,
-                                                    '' as sale,
-                                                    cast(sum(sum(cast(replace(quoted_price,',','') as float))/1000000) over (partition by department) as decimal(10,2)) as quo_mb,
-                                                    count(quotation_no) as quo_cnt,
-                                                    sum(case when product_type ='product' then 1 else 0 end) as product_cnt,
-                                                    sum(case when product_type ='product' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as product_mb,
-                                                    sum(case when product_type ='project' then 1 else 0 end) as project_cnt,
-                                                    sum(case when product_type ='project' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as project_mb,
-                                                    sum(case when product_type ='service' then 1 else 0 end) as service_cnt,
-                                                    sum(case when product_type ='service' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as service_mb,
-                                                    sum(case when stages='Closed(Won)' then 1 else 0 end) as won_quo_cnt,
-                                                    sum(case when stages='Closed(Won)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as won_mb,
-                                                    sum(case when stages='Closed(Lost)' then 1 else 0 end) as loss_quo_cnt,
-                                                    sum(case when stages='Closed(Lost)' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as loss_mb,
-                                                    sum(case when stages='No go' then 1 else 0 end) as nogo_quo_cnt,
-                                                    sum(case when stages='No go' then cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) else 0 end) as nogo_mb,
-                                                    sum(case when stages is null or stages not in('','Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as pending_quo_cnt,
-                                                    sum(case when stages is null or stages not in ('','Closed(Won)', 'Closed(Lost)', 'No go') then cast(cast(replace(quoted_price, ',', '') as float) / 1000000 as decimal(10, 2)) else 0 end) as pending_mb
-                                                    from Quotation where department='{department}' and left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' group by department)
-                                                    select * from s1 order by s1.department,s1.sale");
+													sum(sub_sub_type.project_won_cnt) / count(sub_sub_type.project_won_cnt) as project_won_cnt ,
+													sum(sub_sub_type.project_won_mb) / count(sub_sub_type.project_won_mb) as project_won_mb,
+													sum(sub_sub_type.project_lost_cnt) / count(sub_sub_type.project_lost_cnt) as project_lost_cnt ,
+													sum(sub_sub_type.project_lost_mb) / count(sub_sub_type.project_lost_mb) as project_lost_mb,
+													sum(sub_sub_type.project_nogo_cnt) / count(sub_sub_type.project_nogo_cnt) as project_nogo_cnt ,
+													sum(sub_sub_type.project_nogo_mb) / count(sub_sub_type.project_nogo_mb) as project_nogo_mb,
+													sum(sub_sub_type.project_pending_cnt) / count(sub_sub_type.project_pending_cnt) as project_pending_cnt ,
+													sum(sub_sub_type.project_pending_mb) / count(sub_sub_type.project_pending_mb) as project_pending_mb,
+                                                    sum(case when Quotation.product_type = 'project' then 1 else 0 end) as project_cnt,
+													sum(case when Quotation.product_type = 'project' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as project_mb,
 
-                    command_sub_type = string.Format($@"with x As(select department,
-	                                                    sale_name,
-	                                                    product_type,
-	                                                    sum(case when stages ='Closed(Won)' then 1 else 0 end) as type_won_cnt,
-	                                                    format(sum(case when stages ='Closed(Won)' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_won_mb,
-	                                                    sum(case when stages ='Closed(Lost)' then 1 else 0 end) as type_lost_cnt,
-	                                                    format(sum(case when stages ='Closed(Lost)' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_lost_mb,
-	                                                    sum(case when stages ='No go' then 1 else 0 end) as type_nogo_cnt,
-	                                                    format(sum(case when stages ='No go' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_nogo_mb,
-	                                                    sum(case when stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as type_pending_cnt,
-	                                                    format(sum(case when stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go') then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_pending_mb
-                                                    from Quotation 
-                                                    where department='{department}' and left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' and product_type <> ''
-                                                    group by department,sale_name,product_type
-                                                    union all
+													sum(sub_sub_type.service_won_cnt) / count(sub_sub_type.service_won_cnt) as service_won_cnt ,
+													sum(sub_sub_type.service_won_mb) / count(sub_sub_type.service_won_mb) as service_won_mb,
+													sum(sub_sub_type.service_lost_cnt) / count(sub_sub_type.service_lost_cnt) as service_lost_cnt ,
+													sum(sub_sub_type.service_lost_mb) / count(sub_sub_type.service_lost_mb) as service_lost_mb,
+													sum(sub_sub_type.service_nogo_cnt) / count(sub_sub_type.service_nogo_cnt) as service_nogo_cnt ,
+													sum(sub_sub_type.service_nogo_mb) / count(sub_sub_type.service_nogo_mb) as service_nogo_mb,
+													sum(sub_sub_type.service_pending_cnt) / count(sub_sub_type.service_pending_cnt) as service_pending_cnt ,
+													sum(sub_sub_type.service_pending_mb) / count(sub_sub_type.service_pending_mb) as service_pending_mb,
+                                                    sum(case when Quotation.product_type = 'service' then 1 else 0 end) as service_cnt,
+													sum(case when Quotation.product_type = 'service' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as service_mb,
+                                                    
+													sum(sub_sub_stages.won_product_cnt) / count(sub_sub_stages.won_product_cnt) as won_product_cnt,
+													sum(sub_sub_stages.won_product_mb) / count(sub_sub_stages.won_product_mb) as won_product_mb,
+													sum(sub_sub_stages.won_project_cnt) / count(sub_sub_stages.won_project_cnt) as won_project_cnt,
+													sum(sub_sub_stages.won_project_mb) / count(sub_sub_stages.won_project_mb) as won_project_mb,
+													sum(sub_sub_stages.won_service_cnt) / count(sub_sub_stages.won_service_cnt) as won_service_cnt,
+													sum(sub_sub_stages.won_service_mb) / count(sub_sub_stages.won_service_mb) as won_service_mb,
+													sum(case when stages = 'Closed(Won)' then 1 else 0 end) as won_quo_cnt,
+                                                    sum(case when stages = 'Closed(Won)' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as won_mb,
+                                                    
+													sum(sub_sub_stages.lost_product_cnt) / count(sub_sub_stages.lost_product_cnt) as lost_product_cnt,
+													sum(sub_sub_stages.lost_product_mb) / count(sub_sub_stages.lost_product_mb) as lost_product_mb,
+													sum(sub_sub_stages.lost_project_cnt) / count(sub_sub_stages.lost_project_cnt) as lost_project_cnt,
+													sum(sub_sub_stages.lost_project_mb) / count(sub_sub_stages.lost_project_mb) as lost_project_mb,
+													sum(sub_sub_stages.lost_service_cnt) / count(sub_sub_stages.lost_service_cnt) as lost_service_cnt,
+													sum(sub_sub_stages.lost_service_mb) / count(sub_sub_stages.lost_service_mb) as lost_service_mb,
+													sum(case when stages = 'Closed(Lost)' then 1 else 0 end) as loss_quo_cnt,
+                                                    sum(case when stages = 'Closed(Lost)' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as loss_mb,
+                                                    
+													sum(sub_sub_stages.nogo_product_cnt) / count(sub_sub_stages.nogo_product_cnt) as nogo_product_cnt,
+													sum(sub_sub_stages.nogo_product_mb) / count(sub_sub_stages.nogo_product_mb) as nogo_product_mb,
+													sum(sub_sub_stages.nogo_project_cnt) / count(sub_sub_stages.nogo_project_cnt) as nogo_project_cnt,
+													sum(sub_sub_stages.nogo_project_mb) / count(sub_sub_stages.nogo_project_mb) as nogo_project_mb,
+													sum(sub_sub_stages.nogo_service_cnt) / count(sub_sub_stages.nogo_service_cnt) as nogo_service_cnt,
+													sum(sub_sub_stages.nogo_service_mb) / count(sub_sub_stages.nogo_service_mb) as nogo_service_mb,
+													sum(case when stages = 'No go' then 1 else 0 end) as nogo_quo_cnt,
+                                                    sum(case when stages = 'No go' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as nogo_mb,
+                                                    
+													sum(sub_sub_pending.pending_product_cnt) / count(sub_sub_pending.pending_product_cnt) as pending_product_cnt,
+													sum(sub_sub_pending.pending_product_mb) / count(sub_sub_pending.pending_product_mb) as pending_product_mb,
+													sum(sub_sub_pending.pending_project_cnt) / count(sub_sub_pending.pending_project_cnt) as pending_project_cnt,
+													sum(sub_sub_pending.pending_project_mb) / count(sub_sub_pending.pending_project_mb) as pending_project_mb,
+													sum(sub_sub_pending.pending_service_cnt) / count(sub_sub_pending.pending_service_cnt) as pending_service_cnt,
+													sum(sub_sub_pending.pending_service_mb) / count(sub_sub_pending.pending_service_mb) as pending_service_mb,
+													sum(case when stages is null or stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as pending_quo_cnt,
+                                                    sum(case when stages is null or stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as pending_mb
+                                                    from Quotation
+                                                    left join (
 
-                                                    select department,
-	                                                    sale_name + ' Total' as sale_name,
-	                                                    '' as product_type,
-	                                                    sum(case when stages ='Closed(Won)' then 1 else 0 end) as type_won_cnt,
-	                                                    format(sum(case when stages ='Closed(Won)' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_won_mb,
-	                                                    sum(case when stages ='Closed(Lost)' then 1 else 0 end) as type_lost_cnt,
-	                                                    format(sum(case when stages ='Closed(Lost)' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_lost_mb,
-	                                                    sum(case when stages ='No go' then 1 else 0 end) as type_nogo_cnt,
-	                                                    format(sum(case when stages ='No go' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_nogo_mb,
-	                                                    sum(case when stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go') then 1 else 0 end) as type_pending_cnt,
-	                                                    format(sum(case when stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go') then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as type_pending_mb
-                                                    from Quotation 
-                                                    where department='{department}' and left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' and product_type <> ''
-                                                    group by department,sale_name)
+                                                        select sub_type.department,sub_type.sale_name,
+															sum(case when sub_type.product_type = 'Product' then type_won_cnt else 0 end) as product_won_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_won_mb as float) else 0 end) as product_won_mb,
+															sum(case when sub_type.product_type = 'Product' then type_lost_cnt else 0 end) as product_lost_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_lost_mb as float) else 0 end) as product_lost_mb,
+															sum(case when sub_type.product_type = 'Product' then type_nogo_cnt else 0 end) as product_nogo_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_nogo_mb as float) else 0 end) as product_nogo_mb,
+															sum(case when sub_type.product_type = 'Product' then type_pending_cnt else 0 end) as product_pending_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_pending_mb as float) else 0 end) as product_pending_mb,
 
-                                                    select * from x order by x.department,x.sale_name,x.product_type");
+															sum(case when sub_type.product_type = 'Project' then type_won_cnt else 0 end) as project_won_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_won_mb as float) else 0 end) as project_won_mb,
+															sum(case when sub_type.product_type = 'Project' then type_lost_cnt else 0 end) as project_lost_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_lost_mb as float) else 0 end) as project_lost_mb,
+															sum(case when sub_type.product_type = 'Project' then type_nogo_cnt else 0 end) as project_nogo_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_nogo_mb as float) else 0 end) as project_nogo_mb,
+															sum(case when sub_type.product_type = 'Project' then type_pending_cnt else 0 end) as project_pending_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_pending_mb as float) else 0 end) as project_pending_mb,
 
-                    command_sub_stages = string.Format($@"with x As(select department,
-                                                            sale_name,
-                                                            stages,
-                                                            sum(case when product_type ='Project' then 1 else 0 end) as stages_project_cnt,
-                                                            format(sum(case when product_type ='Project' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as stages_project_mb,
-                                                            sum(case when product_type ='Product' then 1 else 0 end) as stages_product_cnt,
-                                                            format(sum(case when product_type ='Product' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as stages_product_mb,
-                                                            sum(case when product_type ='Service' then 1 else 0 end) as stages_service_cnt,
-                                                            format(sum(case when product_type ='Service' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as stages_service_mb
-                                                            from Quotation
+															sum(case when sub_type.product_type = 'Service' then type_won_cnt else 0 end) as service_won_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_won_mb as float) else 0 end) as service_won_mb,
+															sum(case when sub_type.product_type = 'Service' then type_lost_cnt else 0 end) as service_lost_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_lost_mb as float) else 0 end) as service_lost_mb,
+															sum(case when sub_type.product_type = 'Service' then type_nogo_cnt else 0 end) as service_nogo_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_nogo_mb as float) else 0 end) as service_nogo_mb,
+															sum(case when sub_type.product_type = 'Service' then type_pending_cnt else 0 end) as service_pending_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_pending_mb as float) else 0 end) as service_pending_mb
 
-                                                             where department='{department}' and left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' and (stages <> '' and stages is not null) and stages in('Closed(Won)','Closed(Lost)','No go')
-                                                             group by department,sale_name,stages
-
-                                                             union all
-
+                                                        from(
                                                             select department,
-                                                            sale_name + '_Total' as sale_name,
-                                                            '' as stages,
-                                                            sum(case when product_type ='Project' then 1 else 0 end) as stages_project_cnt,
-                                                            format(sum(case when product_type ='Project' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as stages_project_mb,
-                                                            sum(case when product_type ='Product' then 1 else 0 end) as stages_product_cnt,
-                                                            format(sum(case when product_type ='Product' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as stages_product_mb,
-                                                            sum(case when product_type ='Service' then 1 else 0 end) as stages_service_cnt,
-                                                            format(sum(case when product_type ='Service' then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end),'N2') as stages_service_mb
+                                                                sale_name,
+                                                                product_type,
+                                                                sum(case when stages = 'Closed(Won)' then 1 else 0 end) as type_won_cnt,
+																format(sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_won_mb,
+																sum(case when stages = 'Closed(Lost)' then 1 else 0 end) as type_lost_cnt,
+																format(sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_lost_mb,
+																sum(case when stages = 'No go' then 1 else 0 end) as type_nogo_cnt,
+																format(sum(case when stages = 'No go' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_nogo_mb,
+																sum(case when stages is not null and stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as type_pending_cnt,
+																format(sum(case when stages is not null and stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_pending_mb
+
                                                             from Quotation
 
-                                                             where department='{department}' and left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' and (stages <> '' and stages is not null) and stages in('Closed(Won)','Closed(Lost)','No go')
-                                                             group by department,sale_name)
-                                                          select* from x order by x.department,x.sale_name");
-                    command_sub_pending = string.Format($@"with x As(select sub_stages.department,
-	                                                        sub_stages.sale_name,
-	                                                        'pending' as stages,
-	                                                        sub_stages.product_type,
-	                                                        sum(cast(sub_stages.stages_pending_cnt as float)) as stages_pending_cnt,
-	                                                        format(sum(cast(sub_stages.stages_pending_mb as float)),'N2') as stages_pending_mb 
-	                                                        from (
-		                                                        select department,
-		                                                        sale_name,
-		                                                        'Pending' as stages,
-		                                                        product_type,
-		                                                        sum(case when product_type is not null or product_type not in ('','Project','Product','Service') then 1 else 0 end) as stages_pending_cnt,
-		                                                        sum(case when product_type is not null or product_type not in ('','Project','Product','Service') then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end) as stages_pending_mb
-		                                                        from Quotation 
-		                                                        where department='{department}' and left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' and stages <> '' 
-		                                                        group by department,sale_name,product_type,stages having stages is not null and stages not in('','Closed(Won)','Closed(Lost)','No go')) as sub_stages
+                                                            where department = @department and left(Convert(varchar, date,23),7) between @month_first and @month_last and product_type<> ''
+															group by department, sale_name, product_type) as sub_type
 
-                                                        group by sub_stages.department,sub_stages.sale_name,sub_stages.product_type
+                                                        group by sub_type.department, sub_type.sale_name
+													) as sub_sub_type
 
-                                                        union all
+                                                     ON sub_sub_type.sale_name = Quotation.sale_name
 
-                                                        select sub_stages.department,
-	                                                        sub_stages.sale_name,
-	                                                        'pending Total' as stages,
-	                                                        sub_stages.product_type,
-	                                                        sum(cast(sub_stages.stages_pending_cnt as float)) as stages_pending_cnt,
-	                                                        format(sum(cast(sub_stages.stages_pending_mb as float)),'N2') as stages_pending_mb 
-	                                                        from (
-		                                                        select department,
-		                                                        sale_name,
-		                                                        'Pending Total' as stages,
-		                                                        '' as product_type,
-		                                                        sum(case when product_type is not null or product_type not in ('','Project','Product','Service') then 1 else 0 end) as stages_pending_cnt,
-		                                                        sum(case when product_type is not null or product_type not in ('','Project','Product','Service') then cast(replace(quoted_price,',','') as float ) / 1000000 else 0 end) as stages_pending_mb
-		                                                        from Quotation 
-		                                                        where department='{department}' and left(Convert(varchar,date,23),7) between '{month_first}' and '{month_last}' and stages <> '' 
-		                                                        group by department,sale_name,stages having stages is not null and stages not in('','Closed(Won)','Closed(Lost)','No go')) as sub_stages
+                                                    left join (
+                                                        select sub_stages.department, sub_stages.sale_name,
+                                                            sum(case when stages = 'Closed(Won)' then sub_stages.stages_project_cnt else 0 end) as won_project_cnt,
+															sum(case when stages = 'Closed(Won)' then cast(sub_stages.stages_project_mb as float) else 0 end) as won_project_mb,
+															sum(case when stages = 'Closed(Won)' then sub_stages.stages_product_cnt else 0 end) as won_product_cnt,
+															sum(case when stages = 'Closed(Won)' then cast(sub_stages.stages_product_mb as float) else 0 end) as won_product_mb,
+															sum(case when stages = 'Closed(Won)' then sub_stages.stages_service_cnt else 0 end) as won_service_cnt,
+															sum(case when stages = 'Closed(Won)' then cast(sub_stages.stages_service_mb as float) else 0 end) as won_service_mb,
 
-                                                        group by sub_stages.department,sub_stages.sale_name,sub_stages.product_type)
+															sum(case when stages = 'Closed(Lost)' then sub_stages.stages_project_cnt else 0 end) as lost_project_cnt,
+															sum(case when stages = 'Closed(Lost)' then cast(sub_stages.stages_project_mb as float) else 0 end) as lost_project_mb,
+															sum(case when stages = 'Closed(Lost)' then sub_stages.stages_product_cnt else 0 end) as lost_product_cnt,
+															sum(case when stages = 'Closed(Lost)' then cast(sub_stages.stages_product_mb as float) else 0 end) as lost_product_mb,
+															sum(case when stages = 'Closed(Lost)' then sub_stages.stages_service_cnt else 0 end) as lost_service_cnt,
+															sum(case when stages = 'Closed(Lost)' then cast(sub_stages.stages_service_mb as float) else 0 end) as lost_service_mb,
 
-                                                        select * from x order by x.department,x.sale_name");
-                }
+															sum(case when stages = 'No go' then sub_stages.stages_project_cnt else 0 end) as nogo_project_cnt,
+															sum(case when stages = 'No go' then cast(sub_stages.stages_project_mb as float) else 0 end) as nogo_project_mb,
+															sum(case when stages = 'No go' then sub_stages.stages_product_cnt else 0 end) as nogo_product_cnt,
+															sum(case when stages = 'No go' then cast(sub_stages.stages_product_mb as float) else 0 end) as nogo_product_mb,
+															sum(case when stages = 'No go' then sub_stages.stages_service_cnt else 0 end) as nogo_service_cnt,
+															sum(case when stages = 'No go' then cast(sub_stages.stages_service_mb as float) else 0 end) as nogo_service_mb
 
-                List<Quotation_Report_Sub_TypeModel> sub_types = new List<Quotation_Report_Sub_TypeModel>();
-                SqlCommand cmd_sub_type = new SqlCommand(command_sub_type, ConnectSQL.OpenConnect());
-                SqlDataReader dr_sub_type = cmd_sub_type.ExecuteReader();
-                if (dr_sub_type.HasRows)
-                {
-                    while (dr_sub_type.Read())
-                    {
-                        Quotation_Report_Sub_TypeModel r = new Quotation_Report_Sub_TypeModel()
-                        {
-                            department = dr_sub_type["department"].ToString(),
-                            sale_name = dr_sub_type["sale_name"].ToString(),
-                            product_type = dr_sub_type["product_type"].ToString(),
-                            type_won_cnt = dr_sub_type["type_won_cnt"].ToString(),
-                            type_won_mb = dr_sub_type["type_won_mb"].ToString(),
-                            type_lost_cnt = dr_sub_type["type_lost_cnt"].ToString(),
-                            type_lost_mb = dr_sub_type["type_lost_mb"].ToString(),
-                            type_nogo_cnt = dr_sub_type["type_nogo_cnt"].ToString(),
-                            type_nogo_mb = dr_sub_type["type_nogo_mb"].ToString(),
-                            type_pending_cnt = dr_sub_type["type_pending_cnt"].ToString(),
-                            type_pending_mb = dr_sub_type["type_pending_mb"].ToString()
-                        };
-                        sub_types.Add(r);
-                    }
-                    dr_sub_type.Close();
-                }
-                ConnectSQL.CloseConnect();
+                                                        from(
+                                                            select department,
+                                                                sale_name,
+                                                                stages,
+                                                                sum(case when product_type = 'Project' then 1 else 0 end) as stages_project_cnt,
+																format(sum(case when product_type = 'Project' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_project_mb,
+																sum(case when product_type = 'Product' then 1 else 0 end) as stages_product_cnt,
+																format(sum(case when product_type = 'Product' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_product_mb,
+																sum(case when product_type = 'Service' then 1 else 0 end) as stages_service_cnt,
+																format(sum(case when product_type = 'Service' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_service_mb
+                                                             from Quotation
+                                                             where department = @department and left(Convert(varchar, date,23),7) between @month_first and @month_last and stages in('Closed(Won)','Closed(Lost)','No go')
+                                                             group by department, sale_name, stages ) as sub_stages
 
-                List<Quotation_Report_Sub_StagesModel> sub_stages = new List<Quotation_Report_Sub_StagesModel>();
-                SqlCommand cmd_sub_stages = new SqlCommand(command_sub_stages, ConnectSQL.OpenConnect());
-                SqlDataReader dr_sub_stages = cmd_sub_stages.ExecuteReader();
-                if (dr_sub_stages.HasRows)
-                {
-                    while (dr_sub_stages.Read())
-                    {
-                        Quotation_Report_Sub_StagesModel r = new Quotation_Report_Sub_StagesModel()
-                        {
-                            department = dr_sub_stages["department"].ToString(),
-                            sale_name = dr_sub_stages["sale_name"].ToString(),
-                            stages = dr_sub_stages["stages"].ToString(),
-                            stages_project_cnt = dr_sub_stages["stages_project_cnt"].ToString(),
-                            stages_project_mb = dr_sub_stages["stages_project_mb"].ToString(),
-                            stages_product_cnt = dr_sub_stages["stages_product_cnt"].ToString(),
-                            stages_product_mb = dr_sub_stages["stages_product_mb"].ToString(),
-                            stages_service_cnt = dr_sub_stages["stages_service_cnt"].ToString(),
-                            stages_service_mb = dr_sub_stages["stages_service_mb"].ToString()
-                        };
-                        sub_stages.Add(r);
-                    }
-                    dr_sub_stages.Close();
-                }
-                ConnectSQL.CloseConnect();
 
-                List<Quotation_Report_Sub_PendingModel> sub_pending = new List<Quotation_Report_Sub_PendingModel>();
-                SqlCommand cmd_sub_pending = new SqlCommand(command_sub_pending, ConnectSQL.OpenConnect());
-                SqlDataReader dr_sub_pending = cmd_sub_pending.ExecuteReader();
-                if (dr_sub_pending.HasRows)
-                {
-                    while (dr_sub_pending.Read())
-                    {
-                        Quotation_Report_Sub_PendingModel r = new Quotation_Report_Sub_PendingModel()
-                        {
-                            department = dr_sub_pending["department"].ToString(),
-                            sale_name = dr_sub_pending["sale_name"].ToString(),
-                            stages = dr_sub_pending["stages"].ToString(),
-                            product_type = dr_sub_pending["product_type"].ToString(),
-                            stages_pending_cnt = dr_sub_pending["stages_pending_cnt"].ToString(),
-                            stages_pending_mb = dr_sub_pending["stages_pending_mb"].ToString()
-                        };
-                        sub_pending.Add(r);
-                    }
-                    dr_sub_pending.Close();
+                                                        group by sub_stages.department, sub_stages.sale_name 
+													) as sub_sub_stages
+
+                                                    ON Quotation.sale_name = sub_sub_stages.sale_name
+
+                                                    left join (
+                                                    select sub_pending.department, sub_pending.sale_name,
+                                                            sum(case when product_type = 'Product' then stages_pending_cnt else 0 end ) as pending_product_cnt,
+															sum(case when product_type = 'Product' then cast(stages_pending_mb as float) else 0 end ) as pending_product_mb,
+															sum(case when product_type = 'Project' then stages_pending_cnt else 0 end ) as pending_project_cnt,
+															sum(case when product_type = 'Project' then cast(stages_pending_mb as float) else 0 end ) as pending_project_mb,
+															sum(case when product_type = 'Service' then stages_pending_cnt else 0 end ) as pending_service_cnt,
+															sum(case when product_type = 'Service' then cast(stages_pending_mb as float) else 0 end ) as pending_service_mb
+
+                                                             from(
+                                                            select sub_stages.department,
+                                                            sub_stages.sale_name,
+                                                            'pending' as stages,
+                                                            sub_stages.product_type,
+                                                            sum(cast(sub_stages.stages_pending_cnt as float)) as stages_pending_cnt,
+                                                            format(sum(cast(sub_stages.stages_pending_mb as float)), 'N2') as stages_pending_mb
+
+                                                            from(
+                                                                select department,
+                                                                sale_name,
+                                                                'Pending' as stages,
+                                                                product_type,
+                                                                sum(case when product_type is not null or product_type not in ('', 'Project', 'Product', 'Service') then 1 else 0 end) as stages_pending_cnt,
+		                                                        sum(case when product_type is not null or product_type not in ('', 'Project', 'Product', 'Service') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as stages_pending_mb
+
+                                                                from Quotation
+
+                                                                where department = @department and left(Convert(varchar, date,23),7) between @month_first and @month_last and stages<> '' 
+		                                                        group by department, sale_name, product_type, stages having stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go')) as sub_stages
+                                                        group by sub_stages.department, sub_stages.sale_name, sub_stages.product_type) as sub_pending
+
+
+                                                        group by sub_pending.department, sub_pending.sale_name
+													) as sub_sub_pending
+
+
+                                                    ON Quotation.sale_name = sub_sub_pending.sale_name
+
+                                                    where Quotation.department= @department and left(Convert(varchar, Quotation.date,23),7) between @month_first and @month_last group by Quotation.department, Quotation.sale_name
+
+													union all
+
+													select Quotation.department + '_Total' as department, '' as sale,
+													count(quotation_no) as quo_cnt,
+													cast(sum(cast(replace(quoted_price,',','') as float)/ @million) as decimal(10, 2)) as quo_mb,                                                
+													sum(sub_sub_type.product_won_cnt) / count(sub_sub_type.product_won_cnt) as product_won_cnt ,
+													format(cast(sum(sub_sub_type.product_won_mb) / count(sub_sub_type.product_won_mb) as float),'N2') as product_won_mb,
+													sum(sub_sub_type.product_lost_cnt) / count(sub_sub_type.product_lost_cnt) as product_lost_cnt ,
+													format(cast(sum(sub_sub_type.product_lost_mb) / count(sub_sub_type.product_lost_mb) as float),'N2') as product_lost_mb,
+													sum(sub_sub_type.product_nogo_cnt) / count(sub_sub_type.product_nogo_cnt) as product_nogo_cnt ,
+													format(cast(sum(sub_sub_type.product_nogo_mb) / count(sub_sub_type.product_nogo_mb) as float),'N2') as product_nogo_mb,
+													sum(sub_sub_type.product_pending_cnt) / count(sub_sub_type.product_pending_cnt) as product_pending_cnt ,
+													format(cast(sum(sub_sub_type.product_pending_mb) / count(sub_sub_type.product_pending_mb) as float),'N2') as product_pending_mb,
+                                                    sum(case when Quotation.product_type = 'product' then 1 else 0 end) as product_cnt,
+													sum(case when Quotation.product_type = 'product' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as product_mb,
+
+													sum(sub_sub_type.project_won_cnt) / count(sub_sub_type.project_won_cnt) as project_won_cnt ,
+													format(cast(sum(sub_sub_type.project_won_mb) / count(sub_sub_type.project_won_mb) as float),'N2') as project_won_mb,
+													sum(sub_sub_type.project_lost_cnt) / count(sub_sub_type.project_lost_cnt) as project_lost_cnt ,
+													format(cast(sum(sub_sub_type.project_lost_mb) / count(sub_sub_type.project_lost_mb) as float),'N2') as project_lost_mb,
+													sum(sub_sub_type.project_nogo_cnt) / count(sub_sub_type.project_nogo_cnt) as project_nogo_cnt ,
+													format(cast(sum(sub_sub_type.project_nogo_mb) / count(sub_sub_type.project_nogo_mb) as float),'N2') as project_nogo_mb,
+													sum(sub_sub_type.project_pending_cnt) / count(sub_sub_type.project_pending_cnt) as project_pending_cnt ,
+													format(cast(sum(sub_sub_type.project_pending_mb) / count(sub_sub_type.project_pending_mb) as float),'N2') as project_pending_mb,
+                                                    sum(case when Quotation.product_type = 'project' then 1 else 0 end) as project_cnt,
+													sum(case when Quotation.product_type = 'project' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as project_mb,
+
+													sum(sub_sub_type.service_won_cnt) / count(sub_sub_type.service_won_cnt) as service_won_cnt ,
+													format(cast(sum(sub_sub_type.service_won_mb) / count(sub_sub_type.service_won_mb) as float),'N2') as service_won_mb,
+													sum(sub_sub_type.service_lost_cnt) / count(sub_sub_type.service_lost_cnt) as service_lost_cnt ,
+													format(cast(sum(sub_sub_type.service_lost_mb) / count(sub_sub_type.service_lost_mb) as float),'N2') as service_lost_mb,
+													sum(sub_sub_type.service_nogo_cnt) / count(sub_sub_type.service_nogo_cnt) as service_nogo_cnt ,
+													format(cast(sum(sub_sub_type.service_nogo_mb) / count(sub_sub_type.service_nogo_mb) as float),'N2') as service_nogo_mb,
+													sum(sub_sub_type.service_pending_cnt) / count(sub_sub_type.service_pending_cnt) as service_pending_cnt ,
+													format(cast(sum(sub_sub_type.service_pending_mb) / count(sub_sub_type.service_pending_mb) as float),'N2') as service_pending_mb,
+                                                    sum(case when Quotation.product_type = 'service' then 1 else 0 end) as service_cnt,
+													sum(case when Quotation.product_type = 'service' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as service_mb,
+                                                    
+													sum(sub_sub_stages.won_product_cnt) / count(sub_sub_stages.won_product_cnt) as won_product_cnt,
+													format(sum(sub_sub_stages.won_product_mb) / count(sub_sub_stages.won_product_mb),'N2') as won_product_mb,
+													sum(sub_sub_stages.won_project_cnt) / count(sub_sub_stages.won_project_cnt) as won_project_cnt,
+													format(sum(sub_sub_stages.won_project_mb) / count(sub_sub_stages.won_project_mb),'N2') as won_project_mb,
+													sum(sub_sub_stages.won_service_cnt) / count(sub_sub_stages.won_service_cnt) as won_service_cnt,
+													format(sum(sub_sub_stages.won_service_mb) / count(sub_sub_stages.won_service_mb),'N2') as won_service_mb,
+													sum(case when stages = 'Closed(Won)' then 1 else 0 end) as won_quo_cnt,
+                                                    sum(case when stages = 'Closed(Won)' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as won_mb,
+                                                    
+													sum(sub_sub_stages.lost_product_cnt) / count(sub_sub_stages.lost_product_cnt) as lost_product_cnt,
+													format(sum(sub_sub_stages.lost_product_mb) / count(sub_sub_stages.lost_product_mb),'N2') as lost_product_mb,
+													sum(sub_sub_stages.lost_project_cnt) / count(sub_sub_stages.lost_project_cnt) as lost_project_cnt,
+													format(sum(sub_sub_stages.lost_project_mb) / count(sub_sub_stages.lost_project_mb),'N2') as lost_project_mb,
+													sum(sub_sub_stages.lost_service_cnt) / count(sub_sub_stages.lost_service_cnt) as lost_service_cnt,
+													format(sum(sub_sub_stages.lost_service_mb) / count(sub_sub_stages.lost_service_mb),'N2') as lost_service_mb,
+													sum(case when stages = 'Closed(Lost)' then 1 else 0 end) as loss_quo_cnt,
+                                                    sum(case when stages = 'Closed(Lost)' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as loss_mb,
+                                                    
+													sum(sub_sub_stages.nogo_product_cnt) / count(sub_sub_stages.nogo_product_cnt) as nogo_product_cnt,
+													format(sum(sub_sub_stages.nogo_product_mb) / count(sub_sub_stages.nogo_product_mb),'N2') as nogo_product_mb,
+													sum(sub_sub_stages.nogo_project_cnt) / count(sub_sub_stages.nogo_project_cnt) as nogo_project_cnt,
+													format(sum(sub_sub_stages.nogo_project_mb) / count(sub_sub_stages.nogo_project_mb),'N2') as nogo_project_mb,
+													sum(sub_sub_stages.nogo_service_cnt) / count(sub_sub_stages.nogo_service_cnt) as nogo_service_cnt,
+													format(sum(sub_sub_stages.nogo_service_mb) / count(sub_sub_stages.nogo_service_mb),'N2') as nogo_service_mb,
+													sum(case when stages = 'No go' then 1 else 0 end) as nogo_quo_cnt,
+                                                    sum(case when stages = 'No go' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as nogo_mb,
+                                                    
+													sum(sub_sub_pending.pending_product_cnt) / count(sub_sub_pending.pending_product_cnt) as pending_product_cnt,
+													format(cast(sum(sub_sub_pending.pending_product_mb) / count(sub_sub_pending.pending_product_mb) as float),'N2') as pending_product_mb,
+													sum(sub_sub_pending.pending_project_cnt) / count(sub_sub_pending.pending_project_cnt) as pending_project_cnt,
+													format(cast(sum(sub_sub_pending.pending_project_mb) / count(sub_sub_pending.pending_project_mb) as float),'N2') as pending_project_mb,
+													sum(sub_sub_pending.pending_service_cnt) / count(sub_sub_pending.pending_service_cnt) as pending_service_cnt,
+													format(cast(sum(sub_sub_pending.pending_service_mb) / count(sub_sub_pending.pending_service_mb) as float),'N2') as pending_service_mb,
+													sum(case when stages is null or stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as pending_quo_cnt,
+                                                    sum(case when stages is null or stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as pending_mb
+                                                    from Quotation
+                                                    left join (
+
+                                                        select sub_type.department,'' as sale_name,
+															sum(case when sub_type.product_type = 'Product' then type_won_cnt else 0 end) as product_won_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_won_mb as float) else 0 end) as product_won_mb,
+															sum(case when sub_type.product_type = 'Product' then type_lost_cnt else 0 end) as product_lost_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_lost_mb as float) else 0 end) as product_lost_mb,
+															sum(case when sub_type.product_type = 'Product' then type_nogo_cnt else 0 end) as product_nogo_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_nogo_mb as float) else 0 end) as product_nogo_mb,
+															sum(case when sub_type.product_type = 'Product' then type_pending_cnt else 0 end) as product_pending_cnt,
+															sum(case when sub_type.product_type = 'Product' then cast(type_pending_mb as float) else 0 end) as product_pending_mb,
+
+															sum(case when sub_type.product_type = 'Project' then type_won_cnt else 0 end) as project_won_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_won_mb as float) else 0 end) as project_won_mb,
+															sum(case when sub_type.product_type = 'Project' then type_lost_cnt else 0 end) as project_lost_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_lost_mb as float) else 0 end) as project_lost_mb,
+															sum(case when sub_type.product_type = 'Project' then type_nogo_cnt else 0 end) as project_nogo_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_nogo_mb as float) else 0 end) as project_nogo_mb,
+															sum(case when sub_type.product_type = 'Project' then type_pending_cnt else 0 end) as project_pending_cnt,
+															sum(case when sub_type.product_type = 'Project' then cast(type_pending_mb as float) else 0 end) as project_pending_mb,
+
+															sum(case when sub_type.product_type = 'Service' then type_won_cnt else 0 end) as service_won_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_won_mb as float) else 0 end) as service_won_mb,
+															sum(case when sub_type.product_type = 'Service' then type_lost_cnt else 0 end) as service_lost_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_lost_mb as float) else 0 end) as service_lost_mb,
+															sum(case when sub_type.product_type = 'Service' then type_nogo_cnt else 0 end) as service_nogo_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_nogo_mb as float) else 0 end) as service_nogo_mb,
+															sum(case when sub_type.product_type = 'Service' then type_pending_cnt else 0 end) as service_pending_cnt,
+															sum(case when sub_type.product_type = 'Service' then cast(type_pending_mb as float) else 0 end) as service_pending_mb
+
+                                                        from(
+                                                            select department,
+                                                                '' as sale_name,
+                                                                product_type,
+                                                                sum(case when stages = 'Closed(Won)' then 1 else 0 end) as type_won_cnt,
+																format(sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_won_mb,
+																sum(case when stages = 'Closed(Lost)' then 1 else 0 end) as type_lost_cnt,
+																format(sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_lost_mb,
+																sum(case when stages = 'No go' then 1 else 0 end) as type_nogo_cnt,
+																format(sum(case when stages = 'No go' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_nogo_mb,
+																sum(case when stages is not null and stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as type_pending_cnt,
+																format(sum(case when stages is not null and stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_pending_mb
+
+                                                            from Quotation
+
+                                                            where department = @department and left(Convert(varchar, date,23),7) between @month_first and @month_last and product_type<> ''
+															group by department, product_type) as sub_type
+
+                                                        group by sub_type.department, sub_type.sale_name
+													) as sub_sub_type
+
+                                                     ON sub_sub_type.department = Quotation.department
+
+                                                    left join (
+                                                        select sub_stages.department, '' as sale_name,
+                                                            sum(case when stages = 'Closed(Won)' then sub_stages.stages_project_cnt else 0 end) as won_project_cnt,
+															sum(case when stages = 'Closed(Won)' then cast(sub_stages.stages_project_mb as float) else 0 end) as won_project_mb,
+															sum(case when stages = 'Closed(Won)' then sub_stages.stages_product_cnt else 0 end) as won_product_cnt,
+															sum(case when stages = 'Closed(Won)' then cast(sub_stages.stages_product_mb as float) else 0 end) as won_product_mb,
+															sum(case when stages = 'Closed(Won)' then sub_stages.stages_service_cnt else 0 end) as won_service_cnt,
+															sum(case when stages = 'Closed(Won)' then cast(sub_stages.stages_service_mb as float) else 0 end) as won_service_mb,
+
+															sum(case when stages = 'Closed(Lost)' then sub_stages.stages_project_cnt else 0 end) as lost_project_cnt,
+															sum(case when stages = 'Closed(Lost)' then cast(sub_stages.stages_project_mb as float) else 0 end) as lost_project_mb,
+															sum(case when stages = 'Closed(Lost)' then sub_stages.stages_product_cnt else 0 end) as lost_product_cnt,
+															sum(case when stages = 'Closed(Lost)' then cast(sub_stages.stages_product_mb as float) else 0 end) as lost_product_mb,
+															sum(case when stages = 'Closed(Lost)' then sub_stages.stages_service_cnt else 0 end) as lost_service_cnt,
+															sum(case when stages = 'Closed(Lost)' then cast(sub_stages.stages_service_mb as float) else 0 end) as lost_service_mb,
+
+															sum(case when stages = 'No go' then sub_stages.stages_project_cnt else 0 end) as nogo_project_cnt,
+															sum(case when stages = 'No go' then cast(sub_stages.stages_project_mb as float) else 0 end) as nogo_project_mb,
+															sum(case when stages = 'No go' then sub_stages.stages_product_cnt else 0 end) as nogo_product_cnt,
+															sum(case when stages = 'No go' then cast(sub_stages.stages_product_mb as float) else 0 end) as nogo_product_mb,
+															sum(case when stages = 'No go' then sub_stages.stages_service_cnt else 0 end) as nogo_service_cnt,
+															sum(case when stages = 'No go' then cast(sub_stages.stages_service_mb as float) else 0 end) as nogo_service_mb
+
+                                                        from(
+                                                            select department,
+                                                                '' as sale_name,
+                                                                stages,
+                                                                sum(case when product_type = 'Project' then 1 else 0 end) as stages_project_cnt,
+																format(sum(case when product_type = 'Project' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_project_mb,
+																sum(case when product_type = 'Product' then 1 else 0 end) as stages_product_cnt,
+																format(sum(case when product_type = 'Product' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_product_mb,
+																sum(case when product_type = 'Service' then 1 else 0 end) as stages_service_cnt,
+																format(sum(case when product_type = 'Service' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_service_mb
+                                                             from Quotation
+                                                             where department = @department and left(Convert(varchar, date,23),7) between @month_first and @month_last and stages in('Closed(Won)','Closed(Lost)','No go')
+                                                             group by department, sale_name, stages ) as sub_stages
+
+
+                                                        group by sub_stages.department, sub_stages.sale_name 
+													) as sub_sub_stages
+
+                                                    ON Quotation.department = sub_sub_stages.department
+
+                                                    left join (
+                                                    select sub_pending.department, '' as sale_name,
+                                                            sum(case when product_type = 'Product' then stages_pending_cnt else 0 end ) as pending_product_cnt,
+															sum(case when product_type = 'Product' then cast(stages_pending_mb as float) else 0 end ) as pending_product_mb,
+															sum(case when product_type = 'Project' then stages_pending_cnt else 0 end ) as pending_project_cnt,
+															sum(case when product_type = 'Project' then cast(stages_pending_mb as float) else 0 end ) as pending_project_mb,
+															sum(case when product_type = 'Service' then stages_pending_cnt else 0 end ) as pending_service_cnt,
+															sum(case when product_type = 'Service' then cast(stages_pending_mb as float) else 0 end ) as pending_service_mb
+
+                                                             from(
+                                                            select sub_stages.department,
+                                                            '' as sale_name,
+                                                            'pending' as stages,
+                                                            sub_stages.product_type,
+                                                            sum(cast(sub_stages.stages_pending_cnt as float)) as stages_pending_cnt,
+                                                            format(sum(cast(sub_stages.stages_pending_mb as float)), 'N2') as stages_pending_mb
+
+                                                            from(
+                                                                select department,
+                                                                sale_name,
+                                                                'Pending' as stages,
+                                                                product_type,
+                                                                sum(case when product_type is not null or product_type not in ('', 'Project', 'Product', 'Service') then 1 else 0 end) as stages_pending_cnt,
+		                                                        sum(case when product_type is not null or product_type not in ('', 'Project', 'Product', 'Service') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as stages_pending_mb
+
+                                                                from Quotation
+
+                                                                where department = @department and left(Convert(varchar, date,23),7) between @month_first and @month_last and stages<> '' 
+		                                                        group by department, sale_name, product_type, stages having stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go')) as sub_stages
+                                                        group by sub_stages.department,sub_stages.product_type) as sub_pending
+
+
+                                                        group by sub_pending.department
+													) as sub_sub_pending
+
+
+                                                    ON Quotation.department = sub_sub_pending.department
+
+                                                    where Quotation.department= @department and left(Convert(varchar, Quotation.date,23),7) between @month_first and @month_last
+													group by Quotation.department");
+
                 }
 
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
@@ -474,23 +891,68 @@ namespace WebForecastReport.Service
                             sale = dr["sale"].ToString(),
                             quo_mb = dr["quo_mb"].ToString(),
                             quo_cnt = dr["quo_cnt"].ToString(),
+                            product_won_cnt = dr["product_won_cnt"].ToString(),
+                            product_won_mb = dr["product_won_mb"].ToString(),
+                            product_lost_cnt = dr["product_lost_cnt"].ToString(),
+                            product_lost_mb = dr["product_lost_mb"].ToString(),
+                            product_nogo_cnt = dr["product_nogo_cnt"].ToString(),
+                            product_nogo_mb = dr["product_nogo_mb"].ToString(),
+                            product_pending_cnt = dr["product_pending_cnt"].ToString(),
+                            product_pending_mb = dr["product_pending_mb"].ToString(),
                             product_cnt = dr["product_cnt"].ToString(),
                             product_mb = dr["product_mb"].ToString(),
+                            project_won_cnt = dr["project_won_cnt"].ToString(),
+                            project_won_mb = dr["project_won_mb"].ToString(),
+                            project_lost_cnt = dr["project_lost_cnt"].ToString(),
+                            project_lost_mb = dr["project_lost_mb"].ToString(),
+                            project_nogo_cnt = dr["project_nogo_cnt"].ToString(),
+                            project_nogo_mb = dr["project_nogo_mb"].ToString(),
+                            project_pending_cnt = dr["project_pending_cnt"].ToString(),
+                            project_pending_mb = dr["project_pending_mb"].ToString(),
                             project_cnt = dr["project_cnt"].ToString(),
                             project_mb = dr["project_mb"].ToString(),
+                            service_won_cnt = dr["service_won_cnt"].ToString(),
+                            service_won_mb = dr["service_won_mb"].ToString(),
+                            service_lost_cnt = dr["service_lost_cnt"].ToString(),
+                            service_lost_mb = dr["service_lost_mb"].ToString(),
+                            service_nogo_cnt = dr["service_nogo_cnt"].ToString(),
+                            service_nogo_mb = dr["service_nogo_mb"].ToString(),
+                            service_pending_cnt = dr["service_pending_cnt"].ToString(),
+                            service_pending_mb = dr["service_pending_mb"].ToString(),
                             service_cnt = dr["service_cnt"].ToString(),
                             service_mb = dr["service_mb"].ToString(),
+                            won_product_cnt = dr["won_product_cnt"].ToString(),
+                            won_product_mb = dr["won_product_mb"].ToString(),
+                            won_project_cnt = dr["won_project_cnt"].ToString(),
+                            won_project_mb = dr["won_project_mb"].ToString(),
+                            won_service_cnt = dr["won_service_cnt"].ToString(),
+                            won_service_mb = dr["won_service_mb"].ToString(),
                             won_quo_cnt = dr["won_quo_cnt"].ToString(),
                             won_mb = dr["won_mb"].ToString(),
+                            lost_product_cnt = dr["lost_product_cnt"].ToString(),
+                            lost_product_mb = dr["lost_product_mb"].ToString(),
+                            lost_project_cnt = dr["lost_project_cnt"].ToString(),
+                            lost_project_mb = dr["lost_project_mb"].ToString(),
+                            lost_service_cnt = dr["lost_service_cnt"].ToString(),
+                            lost_service_mb = dr["lost_service_mb"].ToString(),
                             loss_quo_cnt = dr["loss_quo_cnt"].ToString(),
                             loss_mb = dr["loss_mb"].ToString(),
+                            nogo_product_cnt = dr["nogo_product_cnt"].ToString(),
+                            nogo_product_mb = dr["nogo_product_mb"].ToString(),
+                            nogo_project_cnt = dr["nogo_project_cnt"].ToString(),
+                            nogo_project_mb = dr["nogo_project_mb"].ToString(),
+                            nogo_service_cnt = dr["nogo_service_cnt"].ToString(),
+                            nogo_service_mb = dr["nogo_service_mb"].ToString(),
                             nogo_quo_cnt = dr["nogo_quo_cnt"].ToString(),
                             nogo_mb = dr["nogo_mb"].ToString(),
+                            pending_product_cnt = dr["pending_product_cnt"].ToString(),
+                            pending_product_mb = dr["pending_product_mb"].ToString(),
+                            pending_project_cnt = dr["pending_project_cnt"].ToString(),
+                            pending_project_mb = dr["pending_project_mb"].ToString(),
+                            pending_service_cnt = dr["pending_service_cnt"].ToString(),
+                            pending_service_mb = dr["pending_service_mb"].ToString(),
                             pending_quo_cnt = dr["pending_quo_cnt"].ToString(),
-                            pending_mb = dr["pending_mb"].ToString(),
-                            quotation_sub_type = sub_types.FirstOrDefault(),
-                            quotation_sub_stages = sub_stages.FirstOrDefault(),
-                            quotation_sub_pending = sub_pending.FirstOrDefault()
+                            pending_mb = dr["pending_mb"].ToString()
                         };
                         reports.Add(r);
                     }
@@ -988,7 +1450,7 @@ namespace WebForecastReport.Service
 //													sum(sub_sub_type.service_pending_mb) / count(sub_sub_type.service_pending_mb) as service_pending_mb,
 //                                                    sum(case when Quotation.product_type = 'service' then 1 else 0 end) as service_cnt,
 //													sum(case when Quotation.product_type = 'service' then cast(cast(replace(quoted_price, ',', '') as float) / 1000000 as decimal(10, 2)) else 0 end) as service_mb,
-                                                    
+
 //													sum(sub_sub_stages.won_product_cnt) / count(sub_sub_stages.won_product_cnt) as won_product_cnt,
 //													sum(sub_sub_stages.won_product_mb) / count(sub_sub_stages.won_product_mb) as won_product_mb,
 //													sum(sub_sub_stages.won_project_cnt) / count(sub_sub_stages.won_project_cnt) as won_project_cnt,
@@ -997,7 +1459,7 @@ namespace WebForecastReport.Service
 //													sum(sub_sub_stages.won_service_mb) / count(sub_sub_stages.won_service_mb) as won_service_mb,
 //													sum(case when stages = 'Closed(Won)' then 1 else 0 end) as won_quo_cnt,
 //                                                    sum(case when stages = 'Closed(Won)' then cast(cast(replace(quoted_price, ',', '') as float) / 1000000 as decimal(10, 2)) else 0 end) as won_mb,
-                                                    
+
 //													sum(sub_sub_stages.lost_product_cnt) / count(sub_sub_stages.lost_product_cnt) as lost_product_cnt,
 //													sum(sub_sub_stages.lost_product_mb) / count(sub_sub_stages.lost_product_mb) as lost_product_mb,
 //													sum(sub_sub_stages.lost_project_cnt) / count(sub_sub_stages.lost_project_cnt) as lost_project_cnt,
@@ -1006,7 +1468,7 @@ namespace WebForecastReport.Service
 //													sum(sub_sub_stages.lost_service_mb) / count(sub_sub_stages.lost_service_mb) as lost_service_mb,
 //													sum(case when stages = 'Closed(Lost)' then 1 else 0 end) as loss_quo_cnt,
 //                                                    sum(case when stages = 'Closed(Lost)' then cast(cast(replace(quoted_price, ',', '') as float) / 1000000 as decimal(10, 2)) else 0 end) as loss_mb,
-                                                    
+
 //													sum(sub_sub_stages.nogo_product_cnt) / count(sub_sub_stages.nogo_product_cnt) as nogo_product_cnt,
 //													sum(sub_sub_stages.nogo_product_mb) / count(sub_sub_stages.nogo_product_mb) as nogo_product_mb,
 //													sum(sub_sub_stages.nogo_project_cnt) / count(sub_sub_stages.nogo_project_cnt) as nogo_project_cnt,
@@ -1015,7 +1477,7 @@ namespace WebForecastReport.Service
 //													sum(sub_sub_stages.nogo_service_mb) / count(sub_sub_stages.nogo_service_mb) as nogo_service_mb,
 //													sum(case when stages = 'No go' then 1 else 0 end) as nogo_quo_cnt,
 //                                                    sum(case when stages = 'No go' then cast(cast(replace(quoted_price, ',', '') as float) / 1000000 as decimal(10, 2)) else 0 end) as nogo_mb,
-                                                    
+
 //													sum(sub_sub_pending.product_pending_cnt) / count(sub_sub_pending.product_pending_cnt) as product_pending_cnt,
 //													sum(sub_sub_pending.product_pending_mb) / count(sub_sub_pending.product_pending_mb) as product_pending_mb,
 //													sum(sub_sub_pending.project_pending_cnt) / count(sub_sub_pending.project_pending_cnt) as project_pending_cnt,

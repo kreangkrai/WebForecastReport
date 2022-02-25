@@ -11,6 +11,13 @@
     .table {
         width: 100% !important;
     }
+
+
+    td.index {
+        background-color: #F4F5ED;
+        border-top: 1px solid white !important;
+        font-weight: 600;
+    }
 </style>
 <div class="row p-3">
     <div class="col-md-12 col-xl-12">
@@ -104,7 +111,7 @@
                                 <thead style="color:black">
                                     <tr>
                                         <th rowspan="4" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Department</th>
-                                        <th rowspan="4" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Sale Name</th>
+                                        <th rowspan="4" style="text-align:center;vertical-align:middle;background-color:#2F75B5;width:180px">Sales Name</th>
                                         <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Quotation</th>
                                         <th colspan="30" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Description</th>
                                         <th colspan="32" style="text-align:center;vertical-align:middle;background-color:#2F75B5">Status Quotation</th>
@@ -548,6 +555,9 @@
             init();
             document.getElementById("table_department").hidden = true;
             document.getElementById("table_quarter").hidden = true;
+            var today = new Date().toISOString().substring(0,7);
+            document.getElementById("month_first").value = today;
+            document.getElementById("month_last").value = today;
            });
 
     $('#btnOK').on('click', function () {
@@ -572,19 +582,67 @@
                                datas[i].department,
                                datas[i].sale,
                                datas[i].quo_cnt,
-                               datas[i].quo_mb, "","","","","","","","",
+                               datas[i].quo_mb,
+                               datas[i].project_won_cnt,
+                               datas[i].project_won_mb,
+                               datas[i].project_lost_cnt,
+                               datas[i].project_lost_mb,
+                               datas[i].project_nogo_cnt,
+                               datas[i].project_nogo_mb,
+                               datas[i].project_pending_cnt,
+                               datas[i].project_pending_mb,
                                datas[i].project_cnt,
-                               datas[i].project_mb,"","","","","","","","",
+                               datas[i].project_mb,
+                               datas[i].product_won_cnt,
+                               datas[i].product_won_mb,
+                               datas[i].product_lost_cnt,
+                               datas[i].product_lost_mb,
+                               datas[i].product_nogo_cnt,
+                               datas[i].product_nogo_mb,
+                               datas[i].product_pending_cnt,
+                               datas[i].product_pending_mb,
                                datas[i].product_cnt,
-                               datas[i].product_mb,"","","","","","","","",
+                               datas[i].product_mb,
+                               datas[i].service_won_cnt,
+                               datas[i].service_won_mb,
+                               datas[i].service_lost_cnt,
+                               datas[i].service_lost_mb,
+                               datas[i].service_nogo_cnt,
+                               datas[i].service_nogo_mb,
+                               datas[i].service_pending_cnt,
+                               datas[i].service_pending_mb,
                                datas[i].service_cnt,
-                               datas[i].service_mb,"","","","","","",
+                               datas[i].service_mb,
+                               datas[i].won_project_cnt,
+                               datas[i].won_project_mb,
+                               datas[i].won_product_cnt,
+                               datas[i].won_product_mb,
+                               datas[i].won_service_cnt,
+                               datas[i].won_service_mb,
                                datas[i].won_quo_cnt,
-                               datas[i].won_mb,"","","","","","",
+                               datas[i].won_mb,
+                               datas[i].lost_project_cnt,
+                               datas[i].lost_project_mb,
+                               datas[i].lost_product_cnt,
+                               datas[i].lost_product_mb,
+                               datas[i].lost_service_cnt,
+                               datas[i].lost_service_mb,
                                datas[i].loss_quo_cnt,
-                               datas[i].loss_mb,"","","","","","",
+                               datas[i].loss_mb,
+                               datas[i].nogo_project_cnt,
+                               datas[i].nogo_project_mb,
+                               datas[i].nogo_product_cnt,
+                               datas[i].nogo_product_mb,
+                               datas[i].nogo_service_cnt,
+                               datas[i].nogo_service_mb,
                                datas[i].nogo_quo_cnt,
-                               datas[i].nogo_mb,"","","","","","",
+                               datas[i].nogo_mb,
+                               datas[i].pending_project_cnt,
+                               datas[i].pending_project_mb,
+                               datas[i].pending_product_cnt,
+                               datas[i].pending_product_mb,
+                               datas[i].pending_service_cnt,
+                               datas[i].pending_service_mb,
                                datas[i].pending_quo_cnt,
                                datas[i].pending_mb];
 
@@ -891,17 +949,25 @@
             tables_department = $('#table_department').DataTable({
                 data: dataSet,
                 "columnDefs": [
+                     {
+                         "targets" : [2,3,12,13,22,23,32,33,40,41,48,49,56,57,64,65],
+                         "class": "index",
+                     },
+
                     {
-                        "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16,17],
+                        "targets": "_all",
                         "className": "text-center",
                     },
+
                     {
                         "targets": hide_column_department,
                         "visible": false,
                         "searchable": false
                     },
+
+
                 ],
-                "createdRow": function (row, data, index) {
+                "rowCallback": function (row, data, index) {
                     if (data[0] == "Total") {
                         $('td', row).css('background-color', '#AFA095');
                         $('td', row).addClass('highlight');
@@ -915,6 +981,7 @@
                 "bInfo": false,
                 "scrollX": true,
                 "ordering":false,
+                "fixedColumns": true
             });
 
             $(tables_department.table().body()).addClass('text-dark');
