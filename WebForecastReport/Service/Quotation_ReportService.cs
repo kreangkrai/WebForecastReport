@@ -1156,6 +1156,78 @@ namespace WebForecastReport.Service
 													SET @year = '{year}';
 								
 													with main As(
+													select sub_main.month,
+														sum(sub_main.quo_cnt) as quo_cnt,
+														sum(sub_main.quo_mb) as quo_mb,
+														sum(sub_main.product_won_cnt ) / count(sub_main.product_won_cnt ) as product_won_cnt,
+														cast(sum(sub_main.product_won_mb) / count(sub_main.product_won_mb)as decimal(10,2)) as product_won_mb,
+														sum(sub_main.product_lost_cnt ) / count(sub_main.product_lost_cnt ) as product_lost_cnt,
+														cast(sum(sub_main.product_lost_mb) / count(sub_main.product_lost_mb) as decimal(10,2)) as product_lost_mb,
+														sum(sub_main.product_nogo_cnt ) / count(sub_main.product_nogo_cnt ) as product_nogo_cnt,
+														cast(sum(sub_main.product_nogo_mb) / count(sub_main.product_nogo_mb) as decimal(10,2)) as product_nogo_mb,
+														sum(sub_main.product_pending_cnt ) / count(sub_main.product_pending_cnt ) as product_pending_cnt,
+														cast(sum(sub_main.product_pending_mb) / count(sub_main.product_pending_mb) as decimal(10,2)) as product_pending_mb,
+														sum(sub_main.product_cnt) as product_cnt,
+														cast(sum(sub_main.product_mb) as decimal(10,2)) as product_mb,
+
+														sum(sub_main.project_won_cnt ) / count(sub_main.project_won_cnt ) as project_won_cnt,
+														cast(sum(sub_main.project_won_mb) / count(sub_main.project_won_mb) as decimal(10,2)) as project_won_mb,
+														sum(sub_main.project_lost_cnt ) / count(sub_main.project_lost_cnt ) as project_lost_cnt,
+														cast(sum(sub_main.project_lost_mb) / count(sub_main.project_lost_mb) as decimal(10,2)) as project_lost_mb,
+														sum(sub_main.project_nogo_cnt ) / count(sub_main.project_nogo_cnt ) as project_nogo_cnt,
+														cast(sum(sub_main.project_nogo_mb) / count(sub_main.project_nogo_mb) as decimal(10,2)) as project_nogo_mb,
+														sum(sub_main.project_pending_cnt ) / count(sub_main.project_pending_cnt ) as project_pending_cnt,
+														cast(sum(sub_main.project_pending_mb) / count(sub_main.project_pending_mb) as decimal(10,2)) as project_pending_mb,
+														sum(sub_main.project_cnt) as project_cnt,
+														cast(sum(sub_main.project_mb) as decimal(10,2)) as project_mb,
+
+														sum(sub_main.service_won_cnt ) / count(sub_main.service_won_cnt ) as service_won_cnt,
+														cast(sum(sub_main.service_won_mb) / count(sub_main.service_won_mb) as decimal(10,2)) as service_won_mb,
+														sum(sub_main.service_lost_cnt ) / count(sub_main.service_lost_cnt )as service_lost_cnt,
+														cast(sum(sub_main.service_lost_mb) / count(sub_main.service_lost_mb) as decimal(10,2)) as service_lost_mb,
+														sum(sub_main.service_nogo_cnt ) / count(sub_main.service_nogo_cnt ) as service_nogo_cnt,
+														cast(sum(sub_main.service_nogo_mb) / count(sub_main.service_nogo_mb) as decimal(10,2)) as service_nogo_mb,
+														sum(sub_main.service_pending_cnt ) / count(sub_main.service_pending_cnt ) as service_pending_cnt,
+														cast(sum(sub_main.service_pending_mb) / count(sub_main.service_pending_mb) as decimal(10,2)) as service_pending_mb,
+														sum(sub_main.service_cnt) as service_cnt,
+														cast(sum(sub_main.service_mb) as decimal(10,2)) as service_mb,
+                                                    
+														sum(sub_main.won_product_cnt) / count(sub_main.won_product_cnt) as won_product_cnt,
+														cast(sum(sub_main.won_product_mb) / count(sub_main.won_product_mb) as decimal(10,2)) as won_product_mb,
+														sum(sub_main.won_project_cnt) / count(sub_main.won_project_cnt) as won_project_cnt,
+														cast(sum(sub_main.won_project_mb) / count(sub_main.won_project_mb) as decimal(10,2)) as won_project_mb,
+														sum(sub_main.won_service_cnt) / count(sub_main.won_service_cnt) as won_service_cnt,
+														cast(sum(sub_main.won_service_mb) / count(sub_main.won_service_mb) as decimal(10,2)) as won_service_mb,
+														sum(sub_main.won_quo_cnt) as won_quo_cnt,
+														cast(sum(sub_main.won_mb) as decimal(10,2)) as won_mb,
+                                                    
+														sum(sub_main.lost_product_cnt) / count(sub_main.lost_product_cnt) as lost_product_cnt,
+														cast(sum(sub_main.lost_product_mb) / count(sub_main.lost_product_mb) as decimal(10,2)) as lost_product_mb,
+														sum(sub_main.lost_project_cnt) / count(sub_main.lost_project_cnt) as lost_project_cnt,
+														cast(sum(sub_main.lost_project_mb) / count(sub_main.lost_project_mb) as decimal(10,2)) as lost_project_mb,
+														sum(sub_main.lost_service_cnt) / count(sub_main.lost_service_cnt) as lost_service_cnt,
+														cast(sum(sub_main.lost_service_mb) / count(sub_main.lost_service_mb) as decimal(10,2)) as lost_service_mb,
+														sum(sub_main.loss_quo_cnt) as loss_quo_cnt,
+														cast(sum(sub_main.loss_mb) as decimal(10,2)) as loss_mb,
+                                                    
+														sum(sub_main.nogo_product_cnt) / count(sub_main.nogo_product_cnt)as nogo_product_cnt,
+														cast(sum(sub_main.nogo_product_mb) / count(sub_main.nogo_product_mb)as decimal(10,2)) as nogo_product_mb,
+														sum(sub_main.nogo_project_cnt) / count(sub_main.nogo_project_cnt)as nogo_project_cnt,
+														cast(sum(sub_main.nogo_project_mb) / count(sub_main.nogo_project_mb) as decimal(10,2)) as nogo_project_mb,
+														sum(sub_main.nogo_service_cnt) / count(sub_main.nogo_service_cnt) as nogo_service_cnt,
+														cast(sum(sub_main.nogo_service_mb) / count(sub_main.nogo_service_mb) as decimal(10,2)) as nogo_service_mb,
+														sum(sub_main.nogo_quo_cnt) as nogo_quo_cnt,
+														cast(sum(sub_main.nogo_mb) as decimal(10,2)) as nogo_mb,
+                                                    
+														sum(sub_main.pending_product_cnt) / count(sub_main.pending_product_cnt) as pending_product_cnt,
+														cast(sum(sub_main.pending_product_mb) / count(sub_main.pending_product_mb) as decimal(10,2)) as pending_product_mb,
+														sum(sub_main.pending_project_cnt) / count(sub_main.pending_project_cnt) as pending_project_cnt,
+														cast(sum(sub_main.pending_project_mb) / count(sub_main.pending_project_mb) as decimal(10,2)) as pending_project_mb,
+														sum(sub_main.pending_service_cnt) / count(sub_main.pending_service_cnt) as pending_service_cnt,
+														cast(sum(sub_main.pending_service_mb) / count(sub_main.pending_service_mb) as decimal(10,2)) as pending_service_mb,
+														sum(sub_main.pending_quo_cnt) as pending_quo_cnt,
+														cast(sum(sub_main.pending_mb) as decimal(10,2)) as pending_mb
+													 from (
 														select
 														CAST(YEAR(date) AS VARCHAR(4)) + '-' + right('00' + CAST(MONTH(date) AS VARCHAR(2)), 2) as month,
 														count(quotation_no) as quo_cnt,													
@@ -1274,7 +1346,7 @@ namespace WebForecastReport.Service
 
                                                             from Quotation
                                                             where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year
-															group by DATEPART(YEAR,date),DATEPART(MONTH,date),product_type) as sub_type
+															group by date,product_type having date like '{year}%' ) as sub_type
 
                                                         group by sub_type.month
                                                         
@@ -1318,7 +1390,7 @@ namespace WebForecastReport.Service
 																cast(sum(case when product_type = 'Service' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as decimal(10, 2)) as stages_service_mb
                                                              from Quotation
                                                              where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year and stages in('Closed(Won)','Closed(Lost)','No go')
-                                                             group by DATEPART(YEAR,date),DATEPART(MONTH,date),stages) as sub_stages
+                                                             group by date,stages having date like '{year}%') as sub_stages
 
                                                         group by sub_stages.month
 													) as sub_sub_stages
@@ -1354,7 +1426,7 @@ namespace WebForecastReport.Service
 																	from Quotation
 
 																	where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year and stages<> '' 
-																	group by DATEPART(YEAR,date),DATEPART(MONTH,date), product_type, stages having stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go')) as sub_stages
+																	group by date, product_type, stages having date like '{year}%' and stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go')) as sub_stages
 																group by sub_stages.month, sub_stages.product_type) as sub_pending
                                                         group by sub_pending.month
 													) as sub_sub_pending
@@ -1362,7 +1434,10 @@ namespace WebForecastReport.Service
                                                     ON CAST(YEAR(date) AS VARCHAR(4)) + '-' + right('00' + CAST(MONTH(date) AS VARCHAR(2)), 2) = sub_sub_pending.month
 													
                                                     where Quotation.department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year
-													group by DATEPART(YEAR,date),DATEPART(MONTH,date))
+													group by date having date like '{year}%'
+													)as sub_main
+													  
+													group by sub_main.month )
                                                     
                                                     --name
 													select * from main

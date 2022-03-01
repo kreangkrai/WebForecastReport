@@ -250,65 +250,66 @@
     </div>
 </div>
 @section Scripts
-    {
-<script type="text/javascript">
-    var Years = [];
-    var Sales = [];
-    var Departments = [];
-    var Role = "";
-    var Datas = [];
-    var Data_Stages = [];
-    var Data_Stages_Day = [];
+{
+    <script type="text/javascript">
+        var Years = [];
+        var Sales = [];
+        var Departments = [];
+        var Role = "";
+        var Datas = [];
+        var Data_Stages = [];
+        var Data_Stages_Day = [];
 
-    var product = "0";
-    var project = "0";
-    var service = "0";
+        var product = "0";
+        var project = "0";
+        var service = "0";
 
-    var won_product = "0";
-    var won_project = "0";
-    var won_service = "0";
+        var won_product = "0";
+        var won_project = "0";
+        var won_service = "0";
 
-    var lost_product = "0";
-    var lost_project = "0";
-    var lost_service = "0";
+        var lost_product = "0";
+        var lost_project = "0";
+        var lost_service = "0";
 
-    var nogo_product = "0";
-    var nogo_project = "0";
-    var nogo_service = "0";
+        var nogo_product = "0";
+        var nogo_project = "0";
+        var nogo_service = "0";
 
-    var pending_product = "0";
-    var pending_project = "0";
-    var pending_service = "0";
+        var pending_product = "0";
+        var pending_project = "0";
+        var pending_service = "0";
 
-    var stages_won = "0";
-    var stages_lost = "0";
-    var stages_negotiation_review = "0";
-    var stages_nogo = "0";
-    var stages_quote_for_buddget = "0";
-    var stages_proposal = "0";
-    var stages_perspectng = "0";
+        var stages_won = "0";
+        var stages_lost = "0";
+        var stages_negotiation_review = "0";
+        var stages_nogo = "0";
+        var stages_quote_for_buddget = "0";
+        var stages_proposal = "0";
+        var stages_perspectng = "0";
 
-    var day_7 = "0";
-    var day_14 = "0";
-    var day_30 = "0";
-    var day_60 = "0";
-    var day_90 = "0";
+        var day_7 = "0";
+        var day_14 = "0";
+        var day_30 = "0";
+        var day_60 = "0";
+        var day_90 = "0";
 
-    var pie_chart_type;
-    var pie_chart_won;
-    var bar_chart_stages;
+        var pie_chart_type;
+        var pie_chart_won;
+        var bar_chart_stages;
 
-    $(document).ready(function () {
-        init();
-    });
+        $(document).ready(function () {
+
+            init();
+        });
 
         function init(){
-             var year = '@DateTime.Now.ToString("yyyy")';
-             var name = '@Model.name';
-             var role = '@Model.role';
-             var department = '@Model.department';
-             Role = role;
-             $.ajax({
+            var year = '@DateTime.Now.ToString("yyyy")';
+            var name = '@Model.name';
+            var role = '@Model.role';
+            var department = '@Model.department';
+            Role = role;
+            $.ajax({
                 url: '@Url.Action("GetUserDepartment", "Home")',
                 type: "post",
                 contentType: 'application/x-www-form-urlencoded',
@@ -328,8 +329,9 @@
                     pie_chart_data(year,name);
 
                 }
-             });
+            });
         };
+
         $('#btn_OK').on('click', function () {
             $("#table_stages").empty();
              var name = document.getElementById("sale_name").value;
@@ -385,19 +387,21 @@
         function initSale(role,Sales){
             $('#sale_name').empty();
             var name = '@Model.name';
-
-            if (role == "Admin"){
-                var selectsale = document.getElementById('sale_name');
+            var selectsale = document.getElementById('sale_name');
+            if (role == "Admin"){               
                 for (var i = 0, l = Sales.length; i < l; i++) {
                      var option = Sales[i];
                      selectsale.options.add(new Option(option.text, option.value, option.selected));
                 }
-                //var index_sale = Sales.map(function (e) { return e.value; }).indexOf(name);
-
                 document.getElementById('sale_name').selectedIndex = 0;
-
-            }else{
-                selectsale = document.getElementById('sale_name');
+            }else if (role != "Admin" && role != "" && role != null){     
+                for (var i = 0, l = Sales.length; i < l; i++) {
+                     var option = Sales[i];
+                     selectsale.options.add(new Option(option.text, option.value, option.selected));
+                }
+                var index_sale = Sales.map(function (e) { return e.value; }).indexOf(name);
+                document.getElementById('sale_name').selectedIndex = index_sale;         
+            }else{               
                 selectsale.options.add(new Option(name, name, null));
                 document.getElementById('sale_name').selectedIndex = 0;
             }
@@ -405,8 +409,6 @@
         };
         function initDepartment(role,Departments){
             //Department
-
-            console.log(Departments);
             $('#departments').empty();
             if(role == "Admin"){
                   var selectdepartment = document.getElementById('departments');
@@ -414,8 +416,6 @@
                  var option = Departments[i];
                  selectdepartment.options.add(new Option(option.text, option.value, option.selected));
                 }
-               // var index_department = Departments.map(function (e) { return e.value; }).indexOf(name);
-
                 document.getElementById('departments').selectedIndex = 0;
 
             }else{
@@ -447,7 +447,7 @@
         };
 
         function pie_chart_data(year,name){
-             $.ajax({
+            $.ajax({
                  url: '@Url.Action("GetData", "Home")',
                  type: "post",
                  contentType: 'application/x-www-form-urlencoded',
@@ -598,7 +598,6 @@
                          stages_perspectng = _stages_perspectng.mb;
                      }
 
-
                      UpdatePieChartType();
                      UpdatePieChartWon();
                      UpdatePieChartLost();
@@ -607,7 +606,7 @@
                      UpdatePieChartStages();
                      PopulateDataBarChart(Data_Stages_Day);
                  }
-             });
+             });           
         };
 
         function UpdatePieChartType() {
@@ -1405,5 +1404,5 @@
 
                 return data_years;
         };
-</script>
-    }
+    </script>
+}

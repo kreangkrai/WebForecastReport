@@ -25,6 +25,12 @@
         font-weight: 600;
         text-align: center;
     }
+    td.index_quarter {
+        background-color: #F5F4B6;
+        border-top: 1px solid white !important;
+        font-weight: 600;
+        text-align: center;
+    }
 </style>
 <div class="row p-3">
     <div class="col-md-12 col-xl-12">
@@ -669,24 +675,24 @@
     });
 
     $('#btnOK').on('click', function () {
-            document.getElementById("table_department").hidden = false;
-            document.getElementById("chkGroup_department").hidden = false;
-            var department = document.getElementById("department").value;
-            var month_first = document.getElementById("month_first").value;
-            var month_last = document.getElementById("month_last").value;
-               $.ajax({
-                   url: '@Url.Action("GetReportDepartment", "QuotationReport")',
-                   type: "post",
-                   contentType: 'application/x-www-form-urlencoded',
-                   data: {
-                       department, month_first,month_last
-                   },
-                   success: function (response) {
-
-                       var datas = response;
-                       var dataSet = [];
-                       for (var i = 0; i < datas.length; i++) {
-                           var data = [
+        document.getElementById("table_department").hidden = true;
+        document.getElementById("chkGroup_department").hidden = false;
+        var department = document.getElementById("department").value;
+        var month_first = document.getElementById("month_first").value;
+        var month_last = document.getElementById("month_last").value;
+            $.ajax({
+            url: '@Url.Action("GetReportDepartment", "QuotationReport")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                department, month_first,month_last
+            },
+            success: function (response) {
+                document.getElementById("table_department").hidden = false;
+                var datas = response;
+                var dataSet = [];
+                for (var i = 0; i < datas.length; i++) {
+                    var data = [
                                datas[i].department,
                                datas[i].sale,
                                datas[i].quo_cnt,
@@ -911,7 +917,7 @@
            });
 
            $('#btnyear_OK').on('click',function(){
-               document.getElementById("table_year").hidden = false;
+               document.getElementById("table_year").hidden = true;
                document.getElementById("chkGroup_year").hidden = false;
                var department = document.getElementById("year_department").value;
                var year = document.getElementById("year_year").value;
@@ -923,6 +929,7 @@
                        department, year
                    },
                    success: function (response) {
+                       document.getElementById("table_year").hidden = false;
                        var datas = response;
                        var dataSet = [];
                        var months = ["","January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -1128,7 +1135,7 @@
             setTimeout(()=>{
                 if (tables_department !== undefined)
                 tables_department.destroy();
-            tables_department = $('#table_department').DataTable({
+                tables_department = $('#table_department').DataTable({
                 data: dataSet,
                 "columnDefs": [
                      {
@@ -1178,7 +1185,11 @@
                 data: dataSet,
                 "columnDefs": [
                     {
-                        "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,30,31,32,33],
+                         "targets" : [8,9,16,17,24,25,32,33],
+                         "class": "index_quarter",
+                    },
+                    {
+                        "targets": "_all",
                         "className": "text-center",
                     },
                     {

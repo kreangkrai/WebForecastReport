@@ -51,7 +51,7 @@ namespace WebForecastReport.Controllers
             {
                 sales = Accessory.getUserQuotation();
             }
-            else if (role != "Admin" || role != "" || role != null) //Manager or admin department
+            else if (role != "Admin" && role != "" && role != null) //Manager or admin department
             {
                 sales = Accessory.getUserQuotation().Where(w => w.department == department).ToList();
             }
