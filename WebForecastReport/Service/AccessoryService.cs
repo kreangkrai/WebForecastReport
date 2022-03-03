@@ -28,7 +28,7 @@ namespace WebForecastReport.Service
                             name = dr["Login"].ToString(),
                             fullname = dr["Name"].ToString(),
                             department = dr["Department2"].ToString(),
-                            group = dr["Group"].ToString(),
+                            groups = dr["Group"].ToString(),
                             role = dr["Role"].ToString()
                         };
                         users.Add(u);

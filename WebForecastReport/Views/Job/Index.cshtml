@@ -1,0 +1,387 @@
+﻿@{ 
+    ViewData["Title"] = "Jobs";
+}
+<div class="row p-3">
+    <div class="col-xl-1 pb-3">
+        <button id="btn_create" type="button" class="btn btn-primary form-control elevation-1">
+            <i class="fas fa-plus"></i> Create Job
+        </button>
+    </div>
+    <div class="col-xl-1 pb-3">
+        <button id="btn_import" type="button" class="btn btn-primary form-control elevation-1">
+            <i class="fas fa-upload"></i> Import
+        </button>
+    </div>
+    <div class="col-xl-1 pb-3">
+        <button id="btn_export" type="button" class="btn btn-primary form-control elevation-1">
+            <i class="fas fa-download"></i> Export
+        </button>
+    </div>
+    <div class="col-xl-12">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Jobs</span>
+            </div>
+            <div class="card-body">
+                <table id="table_job" class="table table-sm compact border table-hover table-striped w-100">
+                    <thead class="text-center">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Sale Dep</th>
+                            <th>Sale</th>
+                            <th>Cost</th>
+                            <th>MD</th>
+                            <th>PD</th>
+                            <th>Factor</th>
+                            <th>Manpower</th>
+                            <th>Cost/Manpower</th>
+                            <th>OT Manpower</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot class="text-center">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Sale Dep</th>
+                            <th>Sale</th>
+                            <th>Cost</th>
+                            <th>MD</th>
+                            <th>PD</th>
+                            <th>Factor</th>
+                            <th>Manpower</th>
+                            <th>Cost/Manpower</th>
+                            <th>OT Manpower</th>
+                            <th>Status</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_job" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modal_title" class="modal-title">Create Job</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="job_id">Job Number</label>
+                        <input id="job_id" type="text" class="form-control" placeholder="JYYXXXX" />
+                    </div>
+                    <div class="form-group">
+                        <label for="job_name">Job Name</label>
+                        <input id="job_name" type="text" class="form-control" placeholder="Job Name" />
+                    </div>
+                    <div class="form-group">
+                        <label for="sale_department">Sale Department</label>
+                        <select id="sale_department" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sale">Sale</label>
+                        <select id="sale" class="form-control"></select>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xl-6">
+                            <div class="row">
+                                <div class="col-10">
+                                    <label for="cost">Cost</label>
+                                    <input id="cost" type="number" class="form-control text-right" placeholder="0" value="0" />
+                                </div>
+                                <div class="col-2 d-flex align-items-end justify-content-center">
+                                    <label class="col-form-label">THB</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <label for="md_rate">Market Develop</label>
+                            <div class="row">
+                                <div class="col-10">
+                                    <input id="md_rate" type="number" class="form-control text-right" placeholder="#.#" value="1.0" step="0.1" min="0" max="10" />
+                                </div>
+                                <div class="col-2 text-center">
+                                    <label class="col-form-label">X</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <label for="pd_rate">Product Develop</label>
+                            <div class="row">
+                                <div class="col-10">
+                                    <input id="pd_rate" type="number" class="form-control text-right" placeholder="#.#" value="1.0" step="0.1" min="0" max="10" />
+                                </div>
+                                <div class="col-2 text-center">
+                                    <label class="col-form-label">X</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <input id="status" type="text" class="form-control" placeholder="Job Status" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btn_save" type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        //Variable Declaration
+        var table;
+        var update = false;
+        var jobs = [];
+        var users = [];
+        var departments = [];
+
+        //Change these parameters to true to show result
+        var debug_jobs = false;
+        var debug_user = false;
+        var debug_department = false;
+        var debug_job_string = false;
+
+        $(document).ready(function () {
+            GetJobs();
+        });
+
+        async function GetJobs() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobs", "Job")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    jobs = response;
+                    if (debug_jobs)
+                        console.log(jobs);
+                    GenerateTable(response);
+                }
+            });
+        };
+
+        async function GetUsers() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetUsers", "User")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    users = response;
+                    if (debug_user)
+                        console.log(users);
+                }
+            });
+        }
+
+        async function GetDepartments() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetDepartments", "Department")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    departments = response;
+                    if (debug_department)
+                        console.log(departments);
+                }
+            });
+        }
+
+        function GenerateTable(jobs) {
+            var datas = [];
+
+            if (table !== null)
+                $('#table_job').DataTable().destroy();
+
+            for (var i = 0; i < jobs.length; i++) {
+                datas.push([
+                    jobs[i].job_id,
+                    jobs[i].job_name,
+                    jobs[i].sale_department,
+                    jobs[i].sale,
+                    jobs[i].cost,
+                    jobs[i].md_rate,
+                    jobs[i].pd_rate,
+                    jobs[i].factor,
+                    jobs[i].manpower,
+                    jobs[i].cost_per_manpower,
+                    jobs[i].ot_manpower,
+                    jobs[i].status,
+                ]);
+            }
+
+            table = $('#table_job').DataTable({
+                data: datas,
+                lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
+                fixedHeader: true,
+                columnDefs: [
+                    {
+                        targets: [1,2,3,4,5,6,7,8,9,10,11],
+                        className: "border-left"
+                    },
+                ],
+                rowCallback: function (row, data) {
+                    $('td:eq(0)', row).addClass("text-center");
+                    $('td:eq(2)', row).addClass("text-center");
+                    $('td:eq(3)', row).addClass("text-center");
+                    $('td:eq(4)', row).addClass("text-center");
+                    $('td:eq(5)', row).addClass("text-center");
+                    $('td:eq(6)', row).addClass("text-center");
+                    $('td:eq(7)', row).addClass("text-center");
+                    $('td:eq(8)', row).addClass("text-center");
+                    $('td:eq(9)', row).addClass("text-center");
+                    $('td:eq(10)', row).addClass("text-center");
+                    $('td:eq(11)', row).addClass("text-center");
+                }
+            });
+        };
+
+        $('#btn_create').on('click', function () {
+            GetDepartments().then(() => GenerateDepartmentsOption())
+                .then(() => GetUsers()).then(() => GenerateUsersOption())
+                .then(() => Prepmodal());
+        });
+
+        function GenerateDepartmentsOption() {
+            $('#sale_department').empty();
+            var sale_dep_string = '<option value="">Please Select Department</option>';
+            for (var i = 0; i < departments.length; i++) {
+                sale_dep_string += '<option value="' + departments[i].department_name + '">' + departments[i].department_name + '</option>';
+            }
+            $('#sale_department').append(sale_dep_string);
+        }
+
+        function GenerateUsersOption() {
+            $('#sale').empty();
+            var sale_str = '<option value="">Please Select Sale</option>';
+            for (var i = 0; i < users.length; i++) {
+                sale_str += '<option value="' + users[i].user_id + '">' + users[i].user_name + '</option>';
+            }
+            $('#sale').append(sale_str);
+        }
+
+        function Prepmodal() {
+            update = false;
+            $('#modal_job').modal();
+            $('#modal_title').text("Create Job");
+            $('#job_id').val(null);
+            $('#job_name').val(null);
+            $('#sale_department').val(null);
+            $('#sale').val(null);
+            $('#cost').val(null);
+            $('#md').val(null);
+            $('#pd').val(null);
+            $('#status').val(null);
+        };
+
+        $('#table_job tbody').on('click', 'tr', function () {
+            GetDepartments().then(() => GenerateDepartmentsOption())
+                .then(() => GetUsers()).then(() => GenerateUsersOption())
+                .then(() => EditJob(table.row(this).data()));
+        });
+
+        function EditJob(data) {
+            update = true;
+            $('#modal_job').modal();
+            $('#modal_title').text("Edit Job");
+
+            var job_id = data[0];
+            var job_name = data[1];
+            var sale_department = data[2];
+            var sale = data[3];
+            var cost = data[4];
+            var md = data[5];
+            var pd = data[6];
+            var status = data[11];
+
+            $('#job_id').val(job_id);
+            $('#job_name').val(job_name);
+            $('#sale_department').val(sale_department);
+            $('#sale').val(sale);
+            $('#cost').val(cost);
+            $('#md').val(md);
+            $('#pd').val(pd);
+            $('#status').val(status);
+        }
+
+        $('#btn_save').on('click', function () {
+            var job_id = $('#job_id').val();
+            var job_name = $('#job_name').val();
+            var sale_department = $('#sale_department').val();
+            var sale = $('#sale').val();
+            var cost = $('#cost').val();
+            var md_rate = $('#md_rate').val();
+            var pd_rate = $('#pd_rate').val();
+            var status = $('#status').val();
+
+            var job_string = JSON.stringify({
+                "job_id": job_id,
+                "job_name": job_name,
+                "sale_department": sale_department,
+                "sale": sale,
+                "cost": cost,
+                "md_rate": md_rate,
+                "pd_rate": pd_rate,
+                "status": status
+            });
+
+            if (debug_job_string)
+                console.log(job_string);
+
+            if(update)
+                UpdateJob(job_string);
+            else
+                AddJob(job_string);
+        });
+
+        async function AddJob(job_string) {
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddJob", "Job")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    job_string
+                },
+                success: function (response) {
+                    if (response === "Success")
+                        location.reload();
+                    else
+                        alert(response);
+                }
+            });
+        };
+
+        async function UpdateJob(job_string) {
+            await $.ajax({
+                type: "PATCH",
+                url: '@Url.Action("UpdateJob", "Job")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    job_string
+                },
+                success: function (response) {
+                    if (response === "Success")
+                        location.reload();
+                    else
+                        alert(response);
+                }
+            });
+        }
+
+    </script>
+}

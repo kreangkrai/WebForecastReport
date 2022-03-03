@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Main";
+    <partial name="Scripts" />
+}
+<div class="row p-3">
+    <div class="col-xl-6">
+        <button id="btn_sale" type="button" class="btn btn-primary">
+            Sale
+        </button>
+    </div>
+    <div class="col-xl-6">
+        <button id="btn_eng" type="button" class="btn btn-primary">
+            Engineer
+        </button>
+    </div>
+    <partial name="Scripts" />
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+
+        $('#btn_sale').on('click',function() {
+            var group = "Sale";
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Select", "Main")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    group
+                },
+                success: function (response) { }
+            });
+        });
+
+        $('#btn_eng').on('click',function() {
+            var group = "Eng";
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Select", "Main")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    group
+                },
+                success: function (response) { }
+            });
+        });
+
+    </script>
+}

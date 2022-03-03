@@ -49,7 +49,7 @@ namespace WebForecastReport.Controllers
                             HttpContext.Session.SetString("userId", user);
                             HttpContext.Session.Set("Image", image);
                             HttpContext.Session.SetString("Login", "1234");
-                            return RedirectToAction("Index", "Home");
+                            return RedirectToAction("Index", "Main");
                         }
                         else
                         {

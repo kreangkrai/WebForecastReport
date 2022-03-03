@@ -1,0 +1,327 @@
+﻿@{ 
+    ViewData["Title"] = "Working Hours";
+}
+<div class="row p-3">
+    <div class="col-xl-2 col-lg-3 col-md-3 pb-3">
+        <button id="btn_create" type="button" class="btn btn-primary form-control elevation-1">
+            <i class="fas fa-plus"></i> Add Working Hour(s)
+        </button>
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-3 pb-3">
+        <input id="month" type="month" class="form-control" />
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 pb-3">
+        <button id="btn_filter" type="button" class="btn btn-primary form-control elevation-1">
+            <i class="fas fa-sync"></i> Load
+        </button>
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 pb-3">
+        <button id="btn_print" type="button" class="btn btn-success form-control elevation-1">
+            <i class="fas fa-file-excel"></i> Excel
+        </button>
+    </div>
+    <div class="col-xl-12">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Working Hours</span>
+            </div>
+            <div class="card-body">
+                <table id="table_wh" class="table table-sm compact border table-hover table-striped w-100">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Date</th>
+                            <th>User ID</th>
+                            <th>Job</th>
+                            <th>Task</th>
+                            <th>Start Time</th>
+                            <th>Stop Time</th>
+                            <th>Lunch</th>
+                            <th>Dinner</th>
+                            <th>Hours</th>
+                            <th>OT 1.5</th>
+                            <th>OT 3.0</th>
+                        </tr>
+                    </thead>
+                    <tfoot class="text-center">
+                        <tr>
+                            <th>Date</th>
+                            <th>User ID</th>
+                            <th>Job</th>
+                            <th>Task</th>
+                            <th>Start Time</th>
+                            <th>Stop Time</th>
+                            <th>Lunch</th>
+                            <th>Dinner</th>
+                            <th>Hours</th>
+                            <th>OT 1.5</th>
+                            <th>OT 3.0</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_wh" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Working Hour(s)</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="user_id">User</label>
+                        <select id="user_id" class="form-control">
+                            <option value="">Please Select User</option>
+                            <option value="U0001">Korakod.P</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="working_date">Date</label>
+                        <input id="working_date" type="date" class="form-control" />
+                    </div>
+                    @*<div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="job_id">Job</label>
+                                <select id="job_id" class="form-control">
+                                    <option value="">Please Select Job</option>
+                                    <option value="J200001">Job 1</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="task_id">Task</label>
+                                <select id="task_id" class="form-control">
+                                    <option value="">Please Select Task</option>
+                                    <option value="T0001">Task 1</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>*@
+                    <div class="form-group">
+                        <label for="job_id">Job</label>
+                        <select id="job_id" class="form-control">
+                            <option value="">Please Select Job</option>
+                            <option value="J200001">Job 1</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task_id">Task</label>
+                        <select id="task_id" class="form-control">
+                            <option value="">Please Select Task</option>
+                            <option value="T0001">Task 1</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="start_time">Start Time</label>
+                                <input id="start_time" type="time" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="stop_time">Stop Time</label>
+                                <input id="stop_time" type="time" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Break</label>
+                    </div>
+                    <div class="form-group row d-flex align-items-baseline">
+                        <div class="col-2">
+                            <div class="form-check">
+                                <input id="lunch" type="checkbox" class="form-check-input" />
+                                <label for="lunch" class="form-check-label">Lunch</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row d-flex align-items-baseline">
+                        <div class="col-2">
+                            <div class="form-check">
+                                <input id="dinner" type="checkbox" class="form-check-input" />
+                                <label for="dinner" class="form-check-label">Dinner</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="note">Note</label>
+                        <input id="note" type="text" class="form-control" placeholder="Note"/>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btn_save" type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        var table;
+        $(document).ready(function () {
+            GetWorkingHours();
+        });
+
+        function GetWorkingHours() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetWorkingHours", "WorkingHours")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: {
+                },
+                success: function (response) {
+                    GenerateTable(response);
+                }
+            });
+        };
+
+        function GetTotalMinutes(start_time,stop_time) {
+            var start = 0
+            start += parseInt(start_time.split(":")[0]) * 60;
+            start += parseInt(start_time.split(":")[1]);
+            var stop = 0;
+            stop += parseInt(stop_time.split(":")[0]) * 60;
+            stop += parseInt(stop_time.split(":")[1]);
+            return stop - start;
+        }
+
+        function GenerateTable(whs) {
+            var datas = [];
+            for (var i = 0; i < whs.length; i++) {
+                datas.push([
+                    whs[i].working_date.split("T")[0],
+                    whs[i].user_id,
+                    whs[i].job_id,
+                    whs[i].task_id,
+                    whs[i].start_time.substring(0,5),
+                    whs[i].stop_time.substring(0, 5),
+                    whs[i].lunch,
+                    whs[i].dinner,
+                    whs[i].normal.substring(0,5),
+                    whs[i].ot1_5.substring(0,5),
+                    whs[i].ot3_0.substring(0,5)
+                ]);
+            }
+
+            if (table !== undefined)
+                table.DataTable().destroy();
+
+            table = $('#table_wh').DataTable({
+                lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
+                data: datas,
+                order: [[0, "desc"]],
+                columnDefs: [
+                    {
+                        targets: [1,2,3,4,5,6,7,8,9,10],
+                        className: "border-left"
+                    }
+                ],
+                rowCallback: function (row, data) {
+                    $('td:eq(0)', row).addClass("text-center");
+                    $('td:eq(1)', row).addClass("text-center");
+                    $('td:eq(2)', row).addClass("text-center");
+                    $('td:eq(3)', row).addClass("text-center");
+                    $('td:eq(4)', row).addClass("text-center");
+                    $('td:eq(5)', row).addClass("text-center");
+                    $('td:eq(6)', row).addClass("text-center");
+                    $('td:eq(7)', row).addClass("text-center");
+                    $('td:eq(9)', row).addClass("text-center");
+                    $('td:eq(10)', row).addClass("text-center");
+                    $('td:eq(11)', row).addClass("text-center");
+                    data[6] === true ? $('td:eq(6)', row).html("✓") : $('td:eq(6)', row).html("");
+                    data[7] === true ? $('td:eq(7)', row).html("✓") : $('td:eq(7)', row).html("");
+                    if (data[9] === "00:00")
+                        $('td:eq(9)', row).html("");
+                    if (data[10] === "00:00")
+                        $('td:eq(10)', row).html("");
+                    if (data[11] === "00:00")
+                        $('td:eq(11)', row).html("");
+                }
+            });
+        };
+
+        $('#btn_create').on('click', function () {
+            AddWorkingHours();
+        });
+
+        function AddWorkingHours() {
+            $('#modal_wh').modal();
+
+            $('#user_id').val();
+            var today = moment().format('YYYY-MM-DD');
+            $('#working_date').val(today);
+            $('#job_id').val();
+            $('#task_id').val();
+            $('#start_time').val("08:30");
+            $('#stop_time').val("17:30");
+            $('#lunch').prop('checked', true);
+            $('#dinner').prop('checked', true);
+            $('#note').val();
+        };
+
+        $('#btn_save').on('click', function () {
+
+            var user_id = $('#user_id').val();
+            var working_date = $('#working_date').val();
+            var job_id = $('#job_id').val();
+            var task_id = $('#task_id').val();
+            var start_time = $('#start_time').val();
+            var stop_time = $('#stop_time').val();
+            var lunch = $('#lunch').prop("checked") ? 1 : 0;
+            var dinner = $('#dinner').prop("checked") ? 1 : 0;
+            var note = $('#note').val();
+
+            var debug = true;
+            if (debug) {
+                console.log("User ID: " + user_id);
+                console.log("Working Date: " + working_date);
+                console.log("Job ID: " + job_id);
+                console.log("Task ID: " + task_id);
+                console.log("Start Time: " + start_time);
+                console.log("Stop Time: " + stop_time);
+                console.log("Lunch: " + lunch);
+                console.log("Dinner: " + dinner);
+                console.log("Note: " + note);
+            }
+
+            var wh_string = JSON.stringify({
+                "user_id": user_id,
+                "working_date": working_date,
+                "job_id": job_id,
+                "task_id": task_id,
+                "start_time": start_time,
+                "stop_time": stop_time,
+                "lunch": lunch,
+                "dinner": dinner,
+                "note": note,
+            });
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddWorkingHours", "WorkingHours")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    wh_string
+                },
+                success: function (response) {
+                    //console.log(response);
+                    location.reload();
+                }
+            });
+
+        });
+    </script>
+}

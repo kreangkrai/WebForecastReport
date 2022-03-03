@@ -1,5 +1,6 @@
 ﻿@model WebForecastReport.Models.UserModel;
 @using Microsoft.AspNetCore.Http
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -80,13 +81,19 @@
             </ul>
         </nav>
         @{
-            if (Model.role == "Admin")
+            if (Model.section == "Sale" && Model.role == "Admin") // Sale , Admin
             {
+
                 <partial name="AdminSideMenu.cshtml" />
             }
-            else
+            else if(Model.section == "Eng" && Model.role == "ENG"){  // Engineering 
+                <partial name="EngineeringSideMenu.cshtml" />
+            }
+            else if(Model.section == "Sale" && Model.role != "Admin")
             {
                 <partial name="UserSideMenu.cshtml" />
+            }  else{
+                 <partial name="AdminSideMenu.cshtml" />
             }
         }
 

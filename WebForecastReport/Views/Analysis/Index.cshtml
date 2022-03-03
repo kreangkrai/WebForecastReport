@@ -1,0 +1,368 @@
+﻿@{ 
+    ViewData["Title"] = "Analysis";
+}
+<div class="row pt-3 px-3">
+    <div class="col-xl-4 col-md-8 pb-3">
+        <select id="job_id" class="form-control">
+            <option value="">Please Select Job</option>
+        </select>
+    </div>
+    <div class="col-xl-2 col-md-4 pb-3">
+        <button id="btn_analysis" type="button" class="btn btn-primary form-control elevation-1">
+            <i class="fas fa-search"></i> Analysis
+        </button>
+    </div>
+</div>
+<div class="row px-3">
+    <div class="col-xl-6">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-chart-pie"></i> Manpower Ratio</span>
+            </div>
+            <div class="card-body">
+                <div>
+                    <canvas id="myChart1" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-chart-bar"></i> Tasks Working Hours</span>
+            </div>
+            <div class="card-body">
+                <div>
+                    <canvas id="myChart3" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-12" hidden>
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Table</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <table id="table_1" class="table table-sm table-bordered w-100">
+                            <thead>
+                                <tr>
+                                    <th>H1</th>
+                                    <th>H2</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>H1</th>
+                                    <th>H2</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row px-3">
+    <div class="col-xl-6">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Staff Involve Ratio</span>
+            </div>
+            <div class="card-body">
+                <div>
+                    <canvas id="myChart2" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Staff Hours Involve</span>
+            </div>
+            <div class="card-body">
+                <div>
+                    <canvas id="myChart4" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-12" hidden>
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Table</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <table id="table_2" class="table table-sm table-bordered w-100">
+                            <thead>
+                                <tr>
+                                    <th>H1</th>
+                                    <th>H2</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>H1</th>
+                                    <th>H2</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        //Variable Declaration
+        var whs_ratio = [];
+        var inv_ratio = [];
+        var jobs = [];
+
+        //Debug Parameters
+        var debug_whs_ratio = false;
+        var debug_inv_ratio = false;
+        var debug_job = false;
+
+        $(document).ready(function () {
+            GetTasksRatio("J220001");
+            GetPercentInvolve("J220001");
+            GetJobs().then(() => GenerateJobOptions());
+        });
+
+        async function GetJobs() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobs", "Job")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: {
+                },
+                success: function (response) {
+                    jobs = response;
+                    if (debug_job) {
+                        console.log("Jobs");
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
+        async function GetTasksRatio(job_id) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetTasksRatio", "Analysis")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    job_id
+                },
+                success: function (response) {
+                    whs_ratio = response;
+                    if (debug_whs_ratio) {
+                        console.log("Task Total Working Hours");
+                        console.log(whs_ratio);
+                    }
+                    GenerateWorkingHoursRatioChart();
+                }
+            });
+        }
+
+        async function GetPercentInvolve(job_id) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetPercentInvolve", "Analysis")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    job_id
+                },
+                success: function (response) {
+                    inv_ratio = response;
+                    if (debug_inv_ratio) {
+                        console.log("Task Total Working Hours");
+                        console.log(inv_ratio);
+                    }
+                    GenerateJobInvolvingChart();
+                }
+            });
+        }
+
+        function GenerateJobOptions() {
+            $('#job_id').empty();
+            var job_str = '<option value="" selected disabled>Please Select Job</option>';
+            for (var i = 0; i < jobs.length; i++) {
+                job_str += '<option value="' + jobs[i].job_id + '">' + jobs[i].job_name + '</option>';
+            }
+            $('#job_id').append(job_str);
+        }
+
+        function GenerateWorkingHoursRatioChart() {
+            var task_names = [];
+            var hours = [];
+
+            for (var i = 0; i < whs_ratio.length; i++) {
+                task_names.push(whs_ratio[i].task_name);
+                hours.push(whs_ratio[i].hours);
+            }
+
+            const ctx1 = document.getElementById('myChart1').getContext('2d');
+            const myChart1 = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: task_names,
+                    datasets: [{
+                        label: "Total Working Hours",
+                        data: hours,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'right'
+                        },
+                    },
+                }
+            });
+
+            const ctx3 = document.getElementById('myChart3').getContext('2d');
+            const myChart3 = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: task_names,
+                    datasets: [{
+                        label: "Total Working Hours",
+                        data: hours,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                }
+            });
+        }
+
+        function GenerateJobInvolvingChart() {
+            var user_names = [];
+            var hours = [];
+
+            for (var i = 0; i < inv_ratio.length; i++) {
+                user_names.push(inv_ratio[i].user_name);
+                hours.push(inv_ratio[i].hours);
+            }
+
+            const ctx2 = document.getElementById('myChart2').getContext('2d');
+            const myChart2 = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: user_names,
+                    datasets: [{
+                        label: 'Percent Involve',
+                        data: hours,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'right'
+                        },
+                    }
+                }
+            });
+
+            const ctx4 = document.getElementById('myChart4').getContext('2d');
+            const myChart4 = new Chart(ctx4, {
+                type: 'bar',
+                data: {
+                    labels: user_names,
+                    datasets: [{
+                        label: 'Total Hours Involve',
+                        data: hours,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                }
+            });
+        }
+
+        $('#table_1').DataTable();
+        $('#table_2').DataTable();
+    </script>
+}

@@ -1,0 +1,303 @@
+﻿@{ 
+    ViewData["Title"] = "Monthly Working Hours";
+}
+<div class="row px-3 pt-3">
+    <div class="col-xl-2 col-lg-3 col-md-3 pb-3">
+        <select id="user_id" class="form-control"></select>
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-3 pb-3">
+        <input id="whs_month" type="month" class="form-control"/>
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 pb-3">
+        <button id="btn_load" type="button" class="btn btn-primary form-control elevation-1" disabled>
+            <i class="fas fa-sync"></i> Load
+        </button>
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 pb-3">
+        <button id="btn_export" type="button" class="btn btn-success form-control elevation-1" disabled>
+            <i class="fas fa-file-excel"></i> Export
+        </button>
+    </div>
+</div>
+<div class="row px-3">
+    <div class="col-xl-12">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span id="report_title" class="card-title"></span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <table id="table_whs" class="table table-sm nowrap compact table-hover border-bottom text-center w-100">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Job</th>
+                                    <th>Task</th>
+                                    <th>Start</th>
+                                    <th>Stop</th>
+                                    <th>Lunch</th>
+                                    <th>Break</th>
+                                    <th>Normal</th>
+                                    <th>OT1.5</th>
+                                    <th>OT3.0</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Job</th>
+                                    <th>Task</th>
+                                    <th>Start</th>
+                                    <th>Stop</th>
+                                    <th>Lunch</th>
+                                    <th>Break</th>
+                                    <th>Normal</th>
+                                    <th>OT1.5</th>
+                                    <th>OT3.0</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-12">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Summary</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <span>Summary of Working Hours by Jobs</span>
+                    </div>
+                    <div class="form-group">
+                        <table id="table_summary" class="table table-sm compact table-striped table-hover text-center w-100">
+                            <thead>
+                                <tr>
+                                    <th>Job ID</th>
+                                    <th>Job Name</th>
+                                    <th>Normal</th>
+                                    <th>OT 1.5</th>
+                                    <th>OT 3.0</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Job ID</th>
+                                    <th>Job Name</th>
+                                    <th>Normal</th>
+                                    <th>OT 1.5</th>
+                                    <th>OT 3.0</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="form-group">
+                        <span>Total working hours</span>
+                    </div>
+                    <dl class="form-group row">
+                        <dt class="col-6 text-left pl-3">1. Normal</dt>
+                        <dd class="col-6 text-right pr-3">0 Hours</dd>
+                        <dt class="col-6 text-left pl-3">2. OT 1.5</dt>
+                        <dd class="col-6 text-right pr-3">0 Hours</dd>
+                        <dt class="col-6 text-left pl-3">3. OT 3.0</dt>
+                        <dd class="col-6 text-right pr-3">0 Hours</dd>
+                        <dt class="col-6 text-left pl-3">4. Total</dt>
+                        <dd class="col-6 text-right pr-3">0 Hours</dd>
+                    </dl>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        //Variable Declaration
+        var table;
+        var table_sum;
+        var users = [];
+        var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+        //Debug parameters
+        var debug_user = false;
+        var debug_whs = false;
+        var debug_summary = false;
+
+        $(document).ready(function () {
+            var today = new Date();
+            GetUsers().then(() => GenerateUsersOption())
+                .then(() => GetWorkingHours("Korakod.P", today.toISOString().substring(0, 7)))
+                .then(() => GetWorkingHoursSummary());
+        });
+
+        async function GetUsers() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetUsers", "User")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    users = response;
+                    if (debug_user)
+                        console.log(users);
+                }
+            });
+        }
+
+        function GenerateUsersOption() {
+            $('#user_id').empty();
+            var user_str = '<option value="">Please Select User</option>';
+            for (var i = 0; i < users.length; i++) {
+                user_str += '<option value="' + users[i].user_id + '">' + users[i].user_name + '</option>';
+            }
+            $('#user_id').append(user_str);
+        }
+
+        $('#user_id').on('change', function () {
+            var user_id = $('#user_id').val();
+            var month = $('#whs_month').val();
+            var enable_btn = 1;
+            enable_btn *= user_id !== "" ? 1 : 0;
+            enable_btn *= month !== "" ? 1 : 0;
+            $('#btn_load').attr('disabled', !enable_btn);
+            $('#btn_export').attr('disabled', !enable_btn);
+        });
+
+        $('#whs_month').on('change', function () {
+            var user_id = $('#user_id').val();
+            var month = $('#whs_month').val();
+            var enable_btn = 1;
+            enable_btn *= user_id !== "" ? 1 : 0;
+            enable_btn *= month !== "" ? 1 : 0;
+            $('#btn_load').attr('disabled', !enable_btn);
+            $('#btn_export').attr('disabled', !enable_btn);
+        });
+
+        $('#btn_load').on('click', function () {
+            var load_enable = 1;
+            var user_id = $('#user_id').val();
+            var month = $('#whs_month').val();
+            load_enable *= user_id !== "" ? 1 : 0;
+            load_enable *= month !== "" ? 1 : 0;
+            if(load_enable)
+                GetWorkingHours(user_id, month).then(() => GetWorkingHoursSummary());
+        });
+
+        async function GetWorkingHours(user_id,month) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetWorkingHours", "MonthlyWorkingHours")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    user_id, month
+                },
+                success: function (response) {
+                    if (debug_whs) {
+                        console.log("Working Hours Data");
+                        console.log(response);
+                    }
+                    GenerateTable(response);
+                }
+            });
+        }
+
+        function GenerateTable(whs) {
+            var report_month = new Date(whs[0].working_date.split("T")[0]);
+            var report_name = report_month.getFullYear() + " " + months[report_month.getUTCMonth()] + " - Working Hours Report";
+            $('#report_title').text(report_name);
+            var datas = [];
+            for (var i = 0; i < whs.length; i++) {
+                datas.push([
+                    whs[i].working_date.split("T")[0],
+                    whs[i].job_name,
+                    whs[i].task_name,
+                    whs[i].start_time.substring(0, 5),
+                    whs[i].stop_time.substring(0, 5),
+                    whs[i].lunch,
+                    whs[i].dinner,
+                    whs[i].normal.substring(0, 5),
+                    whs[i].ot1_5.substring(0, 5),
+                    whs[i].ot3_0.substring(0, 5),
+                ]);
+            }
+
+            if (table !== undefined)
+                table.destroy();
+
+            table = $('#table_whs').DataTable({
+                iDisplayLength: -1,
+                info: false,
+                paging: false,
+                searching: false,
+                ordering: false,
+                data: datas,
+                rowCallback: function (row, data) {
+                    var date = new Date(data[0].split("-")[0], data[0].split("-")[1] - 1, data[0].split("-")[2]);
+                    if (date.toString().split(" ")[0] == "Sat" || date.toString().split(" ")[0] == "Sun")
+                        $('td', row).addClass("bg-gray disable");
+                    if (data[3] === "00:00")
+                        $('td:eq(3)', row).html("");
+                    if (data[4] === "00:00")
+                        $('td:eq(4)', row).html("");
+                    data[5] === true ? $('td:eq(5)', row).html("✓") : $('td:eq(5)', row).html("");
+                    data[6] === true ? $('td:eq(6)', row).html("✓") : $('td:eq(6)', row).html("");
+                    if (data[7] === "00:00")
+                        $('td:eq(7)', row).html("");
+                    if (data[8] === "00:00")
+                        $('td:eq(8)', row).html("");
+                    if (data[9] === "00:00")
+                        $('td:eq(9)', row).html("");
+                }
+            });
+        }
+
+        async function GetWorkingHoursSummary() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetMonthlySummary", "MonthlyWorkingHours")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    if(debug_summary)
+                        console.log(response);
+                    GenerateSummaryTable(response);
+                }
+            });
+        }
+
+        function GenerateSummaryTable(data) {
+            var datas = [];
+            for (var i = 0; i < data.length; i++) {
+                var normal_string = data[i].normal_hours + " Hours " + data[i].normal_min + " Min";
+                var ot1_5_string = data[i].ot1_5_hours + " Hours " + data[i].ot1_5_min + " Min";
+                var ot3_0_string = data[i].ot3_0_hours + " Hours " + data[i].ot3_0_min + " Min";
+                if (data[i].job_id !== "Total" && data[i].job_id !== "") {
+                    datas.push([
+                        data[i].job_id,
+                        data[i].job_name,
+                        normal_string,
+                        ot1_5_string,
+                        ot3_0_string,
+                    ]);
+                }
+            }
+
+            if (table_sum !== undefined)
+                table_sum.destroy();
+
+            table_sum = $('#table_summary').DataTable({
+                iDisplayLength: -1,
+                info: false,
+                paging: false,
+                searching: false,
+                ordering: false,
+                data: datas,
+            });
+        }
+
+    </script>
+}

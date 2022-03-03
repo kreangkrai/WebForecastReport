@@ -1,0 +1,276 @@
+﻿@{ 
+    ViewData["Title"] = "Users";
+}
+<div class="row p-3">
+    <div class="col-xl-2 col-lg-4 col-md-4 pb-3">
+        <button id="btn_add" type="button" class="btn btn-primary form-control elevation-1">
+            <i class="fas fa-plus"></i> Create User
+        </button>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-md-4 pb-3">
+        <button id="btn_import" type="button" class="btn btn-primary form-control elevation-1">
+            <i class="fas fa-upload"></i> Import
+        </button>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-md-4 pb-3">
+        <button id="btn_export" type="button" class="btn btn-primary form-control elevation-1">
+            <i class="fas fa-download"></i> Export
+        </button>
+    </div>
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <span class="card-title">Users</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <table id="table_user" class="table table-sm compact border text-center table-striped table-hover w-100">
+                            <thead class="text-center">
+                                <tr>
+                                    <th>No</th>
+                                    <th>User ID</th>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th>No</th>
+                                    <th>User ID</th>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_user" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modal_title" class="modal-title">Create User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group" hidden>
+                        <label for="user_no">User No</label>
+                        <input id="user_no" type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="user_id">User ID</label>
+                        <input id="user_id" type="text" class="form-control" placeholder="Firstname.L" />
+                    </div>
+                    <div class="form-group">
+                        <label for="user_name">User Name</label>
+                        <input id="user_name" type="text" class="form-control" placeholder="Firstname Lastname" />
+                    </div>
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <select id="department" class="form-control"></select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button id="btn_save" type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        //Variable Declaration
+        var table;
+        var users = [];
+        var departments = [];
+        var update = false;
+
+        //Change these variables to true to show response
+        var debug_user = false;
+        var debug_department = false;
+        var debug_user_string = false;
+
+        $(document).ready(function () {
+            GetDepartments();
+            GetUsers();
+        });
+
+        async function GetUsers() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetUsers", "User")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    users = response;
+                    if (debug_user)
+                        console.log(users);
+                    GenerateTable(response);
+                }
+            });
+        }
+
+        async function GetDepartments() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetDepartments", "Department")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    departments = response;
+                    if (debug_department)
+                        console.log(departments);
+                    GenarateDepartmentsOption();
+                }
+            });
+        }
+
+        function GenerateTable(users) {
+            var datas = [];
+
+            if (table !== undefined)
+                table.DataTable().destroy();
+
+            for (var i = 0; i < users.length; i++) {
+                datas.push([
+                    users[i].user_no,
+                    users[i].user_id,
+                    users[i].user_name,
+                    users[i].department,
+                ]);
+            }
+
+            table = $('#table_user').DataTable({
+                lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
+                data: datas,
+                columnDefs: [
+                    {
+                        targets: [0],
+                        visible: false
+                    },
+                    {
+                        targets: [1, 2, 3],
+                        className: "border-left"
+                    }
+                ],
+            });
+        }
+
+        $('#btn_add').on('click', function () {
+            GetDepartments().then(() => Prepmodal());
+        });
+
+        function GenarateDepartmentsOption() {
+            $('#department').empty();
+            var dep_str = '<option value="" selected disabled>Please Select Department</option>';
+            for (var i = 0; i < departments.length; i++) {
+                dep_str += '<option value="' + departments[i].department_name + '">' + departments[i].department_name + '</option>'
+            }
+            $('#department').append(dep_str);
+        }
+
+        function Prepmodal() {
+            update = false;
+            $('#modal_user').modal();
+            $('#modal_title').text("Create User");
+            $('#user_id').val(null);
+            $('#user_name').val(null);
+            $('#department').val();
+        }
+
+        $('#btn_import').on('click', function () {
+            alert("Button Import Click");
+        });
+
+        $('#btn_export').on('click', function () {
+            alert("Button Export Click");
+        });
+
+        $('#table_user tbody').on('click', 'tr', function () {
+            GetDepartments().then(() => GenarateDepartmentsOption()).then(() => EditUser(table.row(this).data()));
+        });
+
+        function EditUser(data) {
+            update = true;
+            $('#modal_user').modal();
+            $('#modal_title').text("Edit User");
+            $('#user_no').val(data[0]);
+            $('#user_id').val(data[1]);
+            $('#user_name').val(data[2]);
+            $('#department').val(data[3]);
+        }
+
+        $('#btn_save').on('click', function () {
+            var user_no = $('#user_no').val();
+            var user_id = $('#user_id').val();
+            var user_name = $('#user_name').val();
+            var department = $('#department').val();
+            if (update) {
+                var user_string = JSON.stringify({
+                    "user_no": user_no,
+                    "user_id": user_id,
+                    "user_name": user_name,
+                    "department": department,
+                });
+                if (debug_user_string)
+                    console.log(user_string);
+                UpdateUser(user_string);
+            }
+            else {
+                var user_string = JSON.stringify({
+                    "user_id": user_id,
+                    "user_name": user_name,
+                    "department": department,
+                });
+                if (debug_user_string)
+                    console.log(user_string);
+                CreateUser(user_string);
+            }
+        });
+
+        async function CreateUser(user_string) {
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("CreateUser", "User")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { user_string },
+                success: function (response) {
+                    if (response === "Success")
+                        location.reload();
+                    else
+                        alert(response);
+                }
+            });
+        }
+
+        async function UpdateUser(user_string) {
+            await $.ajax({
+                type: "PATCH",
+                url: '@Url.Action("UpdateUser", "User")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { user_string },
+                success: function (response) {
+                    if (response === "Success")
+                        location.reload();
+                    else
+                        alert(response);
+                }
+            });
+        }
+
+    </script>
+}

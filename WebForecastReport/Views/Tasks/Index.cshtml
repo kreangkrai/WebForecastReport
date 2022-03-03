@@ -1,0 +1,278 @@
+﻿@{ 
+    ViewData["Title"] = "Tasks";
+}
+<div class="row p-3">
+    <div class="col-xl-1 pb-3">
+        <button id="btn_add" type="button" class="btn btn-primary form-control elevation-1">
+            <i class="fas fa-plus"></i> Create Task
+        </button>
+    </div>
+    <div class="col-xl-1 pb-3">
+        <button id="btn_import" type="button" class="btn btn-primary form-control elevation-1">
+            <i class="fas fa-upload"></i> Import
+        </button>
+    </div>
+    <div class="col-xl-1 pb-3">
+        <button id="btn_export" type="button" class="btn btn-primary form-control elevation-1">
+            <i class="fas fa-download"></i> Export
+        </button>
+    </div>
+    <div class="col-xl-12">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Tasks</span>
+            </div>
+            <div class="card-body">
+                <table id="table_tasks" class="table table-sm compact border table-striped table-hover w-100">
+                    <thead class="text-center">
+                        <tr>
+                            <th>ID</th>
+                            <th>Job ID</th>
+                            <th>Job Name</th>
+                            <th>Task Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot class="text-center">
+                        <tr>
+                            <th>ID</th>
+                            <th>Job ID</th>
+                            <th>Job Name</th>
+                            <th>Task Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_task" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modal_title" class="modal-title">Add Task</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group" hidden>
+                        <label for="task_id">Task ID</label>
+                        <input id="task_id" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="job_id">Job ID</label>
+                        <select id="job_id" class="form-control">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task_name">Task Name</label>
+                        <input id="task_name" type="text" class="form-control" placeholder="Task Name" />
+                    </div>
+                    <div id="group_status" class="form-group" hidden>
+                        <label for="status">Status</label>
+                        <input id="status" type="text" class="form-control" placeholder="Status" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btn_save" type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{ 
+    <script type="text/javascript">
+        //Variable Declaration
+        var update = false;
+        var table;
+        var tasks = [];
+        var jobs = [];
+
+        //Change these variable to true for log response
+        var debug_jobs = false;
+        var debug_tasks = false;
+        var debug_create = false;
+
+        $(document).ready(function () {
+            GetTasks();
+        });
+
+        async function GetJobs() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobs", "Job")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    if (debug_jobs)
+                        console.log(response);
+                    jobs = response;
+                }
+            });
+        };
+
+        async function GetTasks() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetTasks", "Tasks")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    if (debug_tasks)
+                        console.log(response);
+                    tasks = response;
+                    GenerateTable(response);
+                }
+            });
+        };
+
+        function GenerateTable(tasks) {
+            var datas = [];
+
+            if (table !== null)
+                $('#table_tasks').DataTable().destroy();
+
+            for (var i = 0; i < tasks.length; i++) {
+                datas.push([
+                    tasks[i].task_id,
+                    tasks[i].job_id,
+                    tasks[i].job_name,
+                    tasks[i].task_name,
+                    tasks[i].status,
+                ]);
+            }
+
+            table = $('#table_tasks').DataTable({
+                lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
+                data: datas,
+                columnDefs: [
+                    {
+                        targets: [1,2,3],
+                        className: "border-left"
+                    },
+                    {
+                        targets: [0,4],
+                        visible: false
+                    }
+                ],
+                rowCallback: function (row, data) {
+                    $('td:eq(0)', row).addClass("text-center");
+                }
+            });
+        };
+
+        $('#btn_add').on('click', function () {
+            GetJobs().then(() => GenerateJobOption()).then(() => Prepmodal());
+        });
+
+        function Prepmodal() {
+            update = false;
+            $('#modal_task').modal();
+            $('#modal_title').text("Add Task");
+            $('#task_name').val();
+            $('#job_id').attr('disabled', false);
+            //$('#status').val();
+        }
+
+        $('#table_tasks tbody').on('click', 'tr', function () {
+            GetJobs().then(() => GenerateJobOption()).then(() => EditTask(table.row(this).data()));
+        });
+
+        function GenerateJobOption() {
+            $('#job_id').empty();
+            var job_str = '<option value="" selected disabled>Please select job</option>';
+            for (var i = 0; i < jobs.length; i++) {
+                job_str += '<option value="' + jobs[i].job_id + '">' + jobs[i].job_name + '</option>';
+            }
+            $('#job_id').append(job_str);
+        }
+
+        function EditTask(data) {
+            update = true;
+            var task_id = data[0];
+            var job_id = data[1];
+            //var job_name = data[2];
+            var task_name = data[3];
+            //var status = data[4];
+            $('#modal_task').modal();
+            $('#modal_title').text("Edit Task");
+            $('#task_id').val(task_id);
+            $('#job_id').attr('disabled', true);
+            $('#job_id').val(job_id);
+            $('#task_name').val(task_name);
+            //$('#status').val(status);
+        }
+
+        $('#btn_save').on('click', function () {
+            var task_id = $('#task_id').val();
+            var job_id = $('#job_id').val();
+            var task_name = $('#task_name').val();
+            //var status = $('#status').val();
+            job_id = job_id !== null ? job_id : "";
+            status = (status === null) ? "" : status;
+
+            if (debug_create) {
+                console.log("Job ID: " + job_id);
+                console.log("Task ID: " + task_id);
+                console.log("Task Name: " + task_name);
+                //console.log("Status: " + status);
+            }
+
+            var task_string = JSON.stringify({
+                "task_id": task_id,
+                "job_id": job_id,
+                "task_name": task_name,
+            });
+
+            if (update) {
+                UpdateTask(task_string);
+            }
+            else {
+                CreateTask(task_string);
+            }
+        });
+
+        async function CreateTask(task_string) {
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddTask", "Tasks")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    task_string
+                },
+                success: function (response) {
+                    if (response == "Success")
+                        location.reload();
+                    else
+                        alert(response);
+                }
+            });
+        };
+
+        async function UpdateTask(task_string) {
+            await $.ajax({
+                type: "PATCH",
+                url: '@Url.Action("UpdateTask", "Tasks")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    task_string
+                },
+                success: function (response) {
+                    if (response == "Success")
+                        location.reload();
+                    else
+                        alert(response);
+                }
+            });
+        };
+
+    </script>
+}

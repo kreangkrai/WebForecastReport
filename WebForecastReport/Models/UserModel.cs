@@ -10,7 +10,8 @@ namespace WebForecastReport.Models
         public string name { get; set; }
         public string fullname { get; set; }
         public string department { get; set; }
-        public string group { get; set; }
+        public string groups { get; set; }
         public string role { get; set; }
+        public string section { get; set; }
     }
 }
