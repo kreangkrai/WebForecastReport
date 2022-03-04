@@ -17,12 +17,12 @@ namespace WebForecastReport.Controllers
 {
     public class CalendarController : Controller
     {
-        IWorkingHours WorkingHoursService;
+        readonly IWorkingHours WorkingHoursService;
         readonly IAccessory Accessory;
 
         public CalendarController()
         {
-            this.WorkingHoursService = new WorkingHoursService();
+            WorkingHoursService = new WorkingHoursService();
             Accessory = new AccessoryService();
         }
 

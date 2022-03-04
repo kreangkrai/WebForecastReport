@@ -15,12 +15,12 @@ namespace WebForecastReport.Controllers
 {
     public class HolidayController : Controller
     {
-        IHoliday HolidayService;
+        readonly IHoliday HolidayService;
         readonly IAccessory Accessory;
 
         public HolidayController()
         {
-            this.HolidayService = new HolidayService();
+            HolidayService = new HolidayService();
             Accessory = new AccessoryService();
         }
 

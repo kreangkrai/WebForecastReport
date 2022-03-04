@@ -17,22 +17,22 @@ namespace WebForecastReport.Services.MPR
             {
                 List<UserModel2> users = new List<UserModel2>();
                 string string_command = string.Format($@"SELECT * FROM [Sale_User]");
-                SqlCommand command = new SqlCommand(string_command, ConnectSQL.Open_db_gps_Connect());
-                SqlDataReader data_reader = command.ExecuteReader();
-                if (data_reader.HasRows)
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.Open_db_gps_Connect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
                 {
-                    while (data_reader.Read())
+                    while (dr.Read())
                     {
                         UserModel2 user = new UserModel2()
                         {
-                            //user_no = data_reader["user_no"] != DBNull.Value ? Convert.ToInt32(data_reader["user_no"]) : default(Int32),
-                            user_id = data_reader["Login"] != DBNull.Value ? data_reader["Login"].ToString() : "",
-                            user_name = data_reader["Name"] != DBNull.Value ? data_reader["Name"].ToString() : "",
-                            department = data_reader["Department2"] != DBNull.Value ? data_reader["Department2"].ToString() : "",
+                            //user_no = dr["user_no"] != DBNull.Value ? Convert.ToInt32(dr["user_no"]) : default(Int32),
+                            user_id = dr["Login"] != DBNull.Value ? dr["Login"].ToString() : "",
+                            user_name = dr["Name"] != DBNull.Value ? dr["Name"].ToString() : "",
+                            department = dr["Department2"] != DBNull.Value ? dr["Department2"].ToString() : "",
                         };
                         users.Add(user);
                     }
-                    data_reader.Close();
+                    dr.Close();
                 }
                 return users;
             }

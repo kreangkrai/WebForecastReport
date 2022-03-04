@@ -15,12 +15,12 @@ namespace WebForecastReport.Controllers
 {
     public class AnalysisController : Controller
     {
-        IAnalysis AnalysisService;
+        readonly IAnalysis AnalysisService;
         readonly IAccessory Accessory;
 
         public AnalysisController()
         {
-            this.AnalysisService = new AnalysisService();
+            AnalysisService = new AnalysisService();
             Accessory = new AccessoryService();
         }
 

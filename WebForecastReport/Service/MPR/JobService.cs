@@ -27,31 +27,31 @@ namespace WebForecastReport.Services.MPR
                     Jobs.pd_rate,
                     Jobs.status
                 FROM Jobs");
-                SqlCommand command = new SqlCommand(string_command, ConnectSQL.OpenConnect());
-                SqlDataReader data_reader = command.ExecuteReader();
-                if (data_reader.HasRows)
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
                 {
-                    while (data_reader.Read())
+                    while (dr.Read())
                     {
                         JobModel job = new JobModel()
                         {
-                            job_id = data_reader["job_id"] != DBNull.Value ? data_reader["job_id"].ToString() : "",
-                            job_name = data_reader["job_name"] != DBNull.Value ? data_reader["job_name"].ToString() : "",
-                            sale_department = data_reader["sale_department"] != DBNull.Value ? data_reader["sale_department"].ToString() : "",
-                            sale = data_reader["sale"] != DBNull.Value ? data_reader["sale"].ToString() : "",
-                            cost = data_reader["cost"] != DBNull.Value ? Convert.ToInt32(data_reader["cost"]) : 0,
-                            md_rate = data_reader["md_rate"] != DBNull.Value ? Convert.ToDouble(data_reader["md_rate"]) : 1,
-                            pd_rate = data_reader["pd_rate"] != DBNull.Value ? Convert.ToDouble(data_reader["pd_rate"]) : 1,
+                            job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
+                            job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
+                            sale_department = dr["sale_department"] != DBNull.Value ? dr["sale_department"].ToString() : "",
+                            sale = dr["sale"] != DBNull.Value ? dr["sale"].ToString() : "",
+                            cost = dr["cost"] != DBNull.Value ? Convert.ToInt32(dr["cost"]) : 0,
+                            md_rate = dr["md_rate"] != DBNull.Value ? Convert.ToDouble(dr["md_rate"]) : 1,
+                            pd_rate = dr["pd_rate"] != DBNull.Value ? Convert.ToDouble(dr["pd_rate"]) : 1,
                             factor = 0,
                             manpower = 0,
                             cost_per_manpower = 0,
                             ot_manpower = 0,
-                            status = data_reader["status"] != DBNull.Value ? data_reader["status"].ToString() : "",
+                            status = dr["status"] != DBNull.Value ? dr["status"].ToString() : "",
                         };
                         job.factor = job.md_rate + job.pd_rate;
                         jobs.Add(job);
                     }
-                    data_reader.Close();
+                    dr.Close();
                 }
                 return jobs;
             }

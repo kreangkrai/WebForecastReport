@@ -16,13 +16,13 @@ namespace WebForecastReport.Controllers
 {
     public class User2Controller : Controller
     {
-        IUser2 UserService2;
         readonly IAccessory Accessory;
+        readonly IUser2 UserService2;
 
         public User2Controller()
         {
-            this.UserService2 = new User2Service();
             Accessory = new AccessoryService();
+            UserService2 = new User2Service();
         }
 
         public IActionResult Index()

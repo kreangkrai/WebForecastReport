@@ -16,15 +16,15 @@ namespace WebForecastReport.Controllers
 {
     public class WorkingHoursController : Controller
     {
-        IWorkingHours WorkingHoursService;
-        ICalculateWorkingHours CalculateOTService;
         readonly IAccessory Accessory;
+        readonly ICalculateWorkingHours CalculateOTService;
+        readonly IWorkingHours WorkingHoursService;
 
         public WorkingHoursController()
         {
-            this.WorkingHoursService = new WorkingHoursService();
-            this.CalculateOTService = new CalculateOvertimeService();
             Accessory = new AccessoryService();
+            CalculateOTService = new CalculateOvertimeService();
+            WorkingHoursService = new WorkingHoursService();
         }
 
         public IActionResult Index()

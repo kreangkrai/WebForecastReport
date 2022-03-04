@@ -17,21 +17,21 @@ namespace WebForecastReport.Services.MPR
             {
                 List<HolidayModel> holidays = new List<HolidayModel>();
                 string string_command = string.Format($@"SELECT * FROM Holidays");
-                SqlCommand command = new SqlCommand(string_command, ConnectSQL.OpenConnect());
-                SqlDataReader data_reader = command.ExecuteReader();
-                if (data_reader.HasRows)
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
                 {
-                    while (data_reader.Read())
+                    while (dr.Read())
                     {
                         HolidayModel holiday = new HolidayModel()
                         {
-                            no = data_reader["no"] != DBNull.Value ? Convert.ToInt32(data_reader["no"]) : default(Int32),
-                            date = data_reader["date"] != DBNull.Value ? Convert.ToDateTime(data_reader["date"]) : default(DateTime),
-                            name = data_reader["name"] != DBNull.Value ? data_reader["name"].ToString() : ""
+                            no = dr["no"] != DBNull.Value ? Convert.ToInt32(dr["no"]) : default(Int32),
+                            date = dr["date"] != DBNull.Value ? Convert.ToDateTime(dr["date"]) : default(DateTime),
+                            name = dr["name"] != DBNull.Value ? dr["name"].ToString() : ""
                         };
                         holidays.Add(holiday);
                     }
-                    data_reader.Close();
+                    dr.Close();
                 }
                 return holidays.OrderBy(o => o.date).ToList();
             }

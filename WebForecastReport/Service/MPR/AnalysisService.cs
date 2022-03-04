@@ -28,23 +28,23 @@ namespace WebForecastReport.Services.MPR
                         LEFT JOIN [Tasks] ON [WorkingHours].task_id = [Tasks].task_id
                     WHERE [WorkingHours].job_id = '{job_id}'
                     Group by [WorkingHours].job_id, [Jobs].job_name, [WorkingHours].task_id, [Tasks].task_name");
-                SqlCommand command = new SqlCommand(string_command, ConnectSQL.OpenConnect());
-                SqlDataReader data_reader = command.ExecuteReader();
-                if (data_reader.HasRows)
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
                 {
-                    while (data_reader.Read())
+                    while (dr.Read())
                     {
                         TaskTotalHoursModel task = new TaskTotalHoursModel()
                         {
-                            job_id = data_reader["job_id"] != DBNull.Value ? data_reader["job_id"].ToString() : "",
-                            job_name = data_reader["job_name"] != DBNull.Value ? data_reader["job_name"].ToString() : "",
-                            task_id = data_reader["task_id"] != DBNull.Value ? data_reader["task_id"].ToString() : "",
-                            task_name = data_reader["task_name"] != DBNull.Value ? data_reader["task_name"].ToString() : "",
-                            hours = data_reader["total_hours"] != DBNull.Value ? Convert.ToInt32(data_reader["total_hours"].ToString()) : 0,
+                            job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
+                            job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
+                            task_id = dr["task_id"] != DBNull.Value ? dr["task_id"].ToString() : "",
+                            task_name = dr["task_name"] != DBNull.Value ? dr["task_name"].ToString() : "",
+                            hours = dr["total_hours"] != DBNull.Value ? Convert.ToInt32(dr["total_hours"].ToString()) : 0,
                         };
                         tasks.Add(task);
                     }
-                    data_reader.Close();
+                    dr.Close();
                 }
                 return tasks;
             }
@@ -74,23 +74,23 @@ namespace WebForecastReport.Services.MPR
                         LEFT JOIN [gps_sale_tracking].[dbo].[Sale_User] Users ON WorkingHours.user_id = Users.Login 
                     WHERE [WorkingHours].job_id = '{job_id}'
                     Group by [WorkingHours].job_id, [Jobs].job_name, [WorkingHours].user_id, [Users].Name");
-                SqlCommand command = new SqlCommand(string_command, ConnectSQL.OpenConnect());
-                SqlDataReader data_reader = command.ExecuteReader();
-                if (data_reader.HasRows)
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
                 {
-                    while (data_reader.Read())
+                    while (dr.Read())
                     {
                         JobInvolveModel inv = new JobInvolveModel()
                         {
-                            job_id = data_reader["job_id"] != DBNull.Value ? data_reader["job_id"].ToString() : "",
-                            job_name = data_reader["job_name"] != DBNull.Value ? data_reader["job_name"].ToString() : "",
-                            user_id = data_reader["user_id"] != DBNull.Value ? data_reader["user_id"].ToString() : "",
-                            user_name = data_reader["Name"] != DBNull.Value ? data_reader["Name"].ToString() : "",
-                            hours = data_reader["total_hours"] != DBNull.Value ? Convert.ToInt32(data_reader["total_hours"].ToString()) : 0,
+                            job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
+                            job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
+                            user_id = dr["user_id"] != DBNull.Value ? dr["user_id"].ToString() : "",
+                            user_name = dr["Name"] != DBNull.Value ? dr["Name"].ToString() : "",
+                            hours = dr["total_hours"] != DBNull.Value ? Convert.ToInt32(dr["total_hours"].ToString()) : 0,
                         };
                         invs.Add(inv);
                     }
-                    data_reader.Close();
+                    dr.Close();
                 }
                 return invs;
             }

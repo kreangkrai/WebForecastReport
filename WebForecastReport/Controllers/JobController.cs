@@ -16,12 +16,12 @@ namespace WebForecastReport.Controllers
 {
     public class JobController : Controller
     {
-        IJob JobService;
+        readonly IJob JobService;
         readonly IAccessory Accessory;
 
         public JobController()
         {
-            this.JobService = new JobService();
+            JobService = new JobService();
             Accessory = new AccessoryService();
         }
 

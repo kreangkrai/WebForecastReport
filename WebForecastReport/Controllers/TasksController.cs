@@ -16,13 +16,13 @@ namespace WebForecastReport.Controllers
 {
     public class TasksController : Controller
     {
-        ITask TaskService;
         readonly IAccessory Accessory;
+        readonly ITask TaskService;
 
         public TasksController()
         {
-            this.TaskService = new TaskService();
             Accessory = new AccessoryService();
+            TaskService = new TaskService();
         }
 
         public IActionResult Index()

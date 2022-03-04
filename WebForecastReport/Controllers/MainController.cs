@@ -13,10 +13,12 @@ namespace WebForecastReport.Controllers
     public class MainController : Controller
     {
         readonly IAccessory Accessory;
+
         public MainController()
         {
             Accessory = new AccessoryService();
         }
+
         public IActionResult Index()
         {
             if (HttpContext.Session.GetString("Login") != null)
