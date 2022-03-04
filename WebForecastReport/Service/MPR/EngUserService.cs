@@ -46,7 +46,7 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.Close_db_gps_Connect();
                 }
             }
-            return users;
+            return users.GroupBy(g => g.user_id).Select(s => s.FirstOrDefault()).ToList();
         }
     }
 }

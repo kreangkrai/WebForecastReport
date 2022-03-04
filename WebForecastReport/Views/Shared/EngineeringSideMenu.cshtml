@@ -73,17 +73,7 @@
                 @if (Model.role == "Admin")
                 {
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Department2" asp-action="Index">
-                            <i class="nav-icon fas fa-project-diagram"></i>
-                            <p class="text-bold">DEPARTMENT</p>
-                        </a>
-                    </li>
-                }
-
-                @if (Model.role == "Admin")
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="User2" asp-action="Index">
+                        <a class="nav-link" asp-controller="EngUser" asp-action="Index">
                             <i class="nav-icon fas fa-user"></i>
                             <p class="text-bold">USER</p>
                         </a>

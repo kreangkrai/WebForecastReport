@@ -1,18 +1,25 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http
+@model WebForecastReport.Models.UserModel;
+@{
     ViewData["Title"] = "Calendar";
 }
 <div class="row p-3">
-    <div class="col-xl-3 col-lg-3 col-md-4 pb-3">
+    @if(Model.role == "Admin"){ 
+        <div class="col-xl-2 col-lg-3 col-md-3 pb-3" hidden>
+            <select id="filter_user" class="form-control"></select>
+        </div>
+    }
+    <div class="col-xl-2 col-lg-3 col-md-3 pb-3" hidden>
         <select id="filter_job" class="form-control">
             <option>Please Select Job</option>
         </select>
     </div>
-    <div class="col-xl-3 col-lg-3 col-md-4 pb-3">
+    <div class="col-xl-2 col-lg-3 col-md-3 pb-3" hidden>
         <select id="filter_task" class="form-control">
             <option>Please Select Task</option>
         </select>
     </div>
-    <div class="col-xl-2 col-lg-2 col-md-4 pb-3">
+    <div class="col-xl-2 col-lg-3 col-md-3 pb-3" hidden>
         <button id="btn_filter" class="btn btn-primary form-control" disabled>
             <i class="fas fa-filter"></i> Filter
         </button>
@@ -47,7 +54,7 @@
                     </div>
                     <div class="form-group">
                         <label for="user_id">User</label>
-                        <select id="user_id" class="form-control"></select>
+                        <select id="user_id" class="form-control" disabled></select>
                     </div>
                     <div class="form-group">
                         <label for="working_date">Date</label>
@@ -66,7 +73,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-
                             </tbody>
                         </table>
                     </div>
@@ -142,15 +148,16 @@
         var debug_edit = false;
 
         $(document).ready(function () {
-            GetHolidays().then(() => GetWorkingHours())
-                .then(GetJobs()).then(() => GenerateJobFilterOptions())
+            GetHolidays().then(() => GetWorkingHours("@Model.name"))
+                .then(() => GetUsers()).then(() => GenerateUserFilterOptions())
+                .then(() => GetJobs()).then(() => GenerateJobFilterOptions())
                 .then(() => GetTasks()).then(() => GenerateTasksFilterOptions());
         });
 
         async function GetUsers() {
             await $.ajax({
                 type: "GET",
-                url: '@Url.Action("GetUsers", "User2")',
+                url: '@Url.Action("GetUsers", "EngUser")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: { },
                 success: function (response) {
@@ -212,12 +219,13 @@
             });
         };
 
-        async function GetWorkingHours() {
+        async function GetWorkingHours(user_id) {
             await $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetWorkingHours", "Calendar")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: {
+                    user_id
                 },
                 success: function (response) {
                     if (debug_whs) {
@@ -246,6 +254,19 @@
                 }
             });
         }
+
+        function GenerateUserFilterOptions() {
+            $('#filter_user').empty();
+            var user_str = '<option value="" selected disabled>Please Select User</option>';
+            for (var i = 0; i < users.length; i++) {
+                user_str += '<option value="' + users[i].user_id + '">' + users[i].user_name + '</option>';
+            }
+            $('#filter_user').append(user_str);
+        }
+
+        $('#filter_user').on('change', function () {
+            GetWorkingHours($('#filter_user').val());
+        });
 
         function GenerateJobFilterOptions() {
             $('#filter_job').empty();
@@ -393,7 +414,7 @@
                 wh_day = [];
             GetUsers()
                 .then(() => GenerateUsersOption())
-                .then(() => GetWorkingHoursByDate("Korakod.P", date_start))
+                .then(() => GetWorkingHoursByDate("@Model.name", date_start))
                 .then(() => Prepmodal(date_start));
         }
 

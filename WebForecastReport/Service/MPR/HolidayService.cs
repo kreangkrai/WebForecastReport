@@ -20,7 +20,7 @@ namespace WebForecastReport.Services.MPR
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if(ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
-                    ConnectSQL.Close_db_gps_Connect();
+                    ConnectSQL.CloseConnect();
                     ConnectSQL.OpenConnect();
                 }
                 SqlDataReader dr = cmd.ExecuteReader();

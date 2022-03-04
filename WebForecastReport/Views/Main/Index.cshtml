@@ -1,49 +1,119 @@
-﻿@{
+﻿@model WebForecastReport.Models.UserModel;
+@using Microsoft.AspNetCore.Http
+@{
     ViewData["Title"] = "Main";
-    <partial name="Scripts" />
+    Layout = null;
 }
-<div class="row p-3">
-    <div class="col-xl-6">
-        <button id="btn_sale" type="button" class="btn btn-primary">
-            Sale
-        </button>
-    </div>
-    <div class="col-xl-6">
-        <button id="btn_eng" type="button" class="btn btn-primary">
-            Engineer
-        </button>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <partial name="Style" />
+</head>
+<body class="layout-top-nav">
+    <div class="wrapper">
+        <nav class="main-header navbar navbar-dark navbar-expand" style="background-color:#034694">
+            <ul class="navbar-nav d-flex justify-content-between w-100">
+                <li class="nav-item">
+                    
+                </li>
+                <li class="nav-item mt-2">
+                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                        <span class="sr-only">Toggle navigation</span>
+                    </a>
+                    @{
+                        var userId = Context.Session.GetString("userId");
+                        byte[] image = Context.Session.Get("Image");
+                        //byte[] image = new byte[128];
+                        if (userId == null)
+                        {
+                            //Context.Response.Redirect("/Account");
+                        }
+                    }
+                    <div class="navbar-custom-menu">
+                        <ul class="nav navbar-nav">
+                            <!-- User Account Menu -->
+                            <li class="dropdown user user-menu">
+                                <!-- Menu Toggle Button -->
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <!-- The user image in the navbar-->
+                                    @{
+                                        var base64 = Convert.ToBase64String(image);
+                                        var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                                        if (@imgSrc != null)
+                                        {
+                                            // <img src="~/images/user.png" class="user-image" alt="User Image">
+                                            <img src="@imgSrc" class="user-image" alt="User Image">
+                                        }
+                                        <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                                        @if (@userId != null)
+                                        {
+                                            <span class="hidden-xs" style="color:white">@userId</span>
+                                        }
+                                    }
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="user-header" style="background-color:#034694;color:white">
+                                        @{
+                                            if (imgSrc != null)
+                                            {
+                                                <img src="@imgSrc" class="img-circle" alt="User Image">
+                                            }
+                                        }
+
+                                        <p>
+                                            @userId
+                                        </p>
+                                    </li>
+                                    <li class="user-footer">
+                                        <div class="pull-left">
+                                            <a class="btn btn-secondary" style="color:white;" asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <div class="container">
+            <div class="row p-3">
+                <div class="col-xl-12">
+                    <div class="info-box">
+                        <div class="info-box-content text-center">
+                            <h3 class="text-bold">Select Module</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <div class="card">
+                        <img class="card-img-top p-3" src="/images/MES_Logo.png" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="text-bold">Sale Module</h5>
+                            <p class="card-text">Go to sale module</p>
+                            <a id="btn_sale" asp-action="Index" asp-controller="Home" class="btn btn-primary form-control">
+                                Select Sale Module
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <div class="card">
+                        <img class="card-img-top p-3" src="/images/MES_Logo.png" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="text-bold">Engineer Module</h5>
+                            <p class="card-text">Go to engineer module</p>
+                            <a id="btn_eng" asp-action="Index" asp-controller="Calendar" class="btn btn-primary form-control">
+                                Select Engineer Module
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <partial name="Scripts" />
-</div>
-@section Scripts
-{
-    <script type="text/javascript">
-
-        $('#btn_sale').on('click',function() {
-            var group = "Sale";
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("Select", "Main")',
-	            contentType: 'application/x-www-form-urlencoded',
-                data: {
-                    group
-                },
-                success: function (response) { }
-            });
-        });
-
-        $('#btn_eng').on('click',function() {
-            var group = "Eng";
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("Select", "Main")',
-	            contentType: 'application/x-www-form-urlencoded',
-                data: {
-                    group
-                },
-                success: function (response) { }
-            });
-        });
-
-    </script>
-}
+</body>
+</html>

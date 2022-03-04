@@ -47,9 +47,9 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetWorkingHours()
+        public JsonResult GetWorkingHours(string user_id)
         {
-            List<WorkingHoursModel> whs = WorkingHoursService.GetWorkingHours();
+            List<WorkingHoursModel> whs = WorkingHoursService.GetWorkingHours(user_id);
             whs = whs.OrderByDescending(w => w.working_date).ToList();
             return Json(whs);
         }
