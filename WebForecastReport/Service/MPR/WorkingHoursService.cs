@@ -13,28 +13,33 @@ namespace WebForecastReport.Services.MPR
     {
         public List<WorkingHoursModel> GetWorkingHours()
         {
+            List<WorkingHoursModel> whs = new List<WorkingHoursModel>();
             try
             {
-                List<WorkingHoursModel> whs = new List<WorkingHoursModel>();
                 string string_command = string.Format($@"SELECT 
-                                                            [WorkingHours].ind, 
-                                                            [WorkingHours].user_id, 
+                                                            WorkingHours.ind, 
+                                                            WorkingHours.user_id, 
                                                             Users.Name, 
-                                                            [WorkingHours].working_date, 
-                                                            [WorkingHours].job_id,
-                                                            [Jobs].job_name,
-                                                            [WorkingHours].task_id,
-                                                            [Tasks].task_name,
-                                                            [WorkingHours].start_time,
-                                                            [WorkingHours].stop_time,
-                                                            [WorkingHours].lunch,
-                                                            [WorkingHours].dinner,
-                                                            [WorkingHours].note
+                                                            WorkingHours.working_date, 
+                                                            WorkingHours.job_id,
+                                                            Jobs.job_name,
+                                                            WorkingHours.task_id,
+                                                            Tasks.task_name,
+                                                            WorkingHours.start_time,
+                                                            WorkingHours.stop_time,
+                                                            WorkingHours.lunch,
+                                                            WorkingHours.dinner,
+                                                            WorkingHours.note
                                                         FROM WorkingHours 
-                                                            LEFT JOIN [gps_sale_tracking].[dbo].[Sale_User] Users ON WorkingHours.user_id = Users.Login 
-                                                            LEFT JOIN [Jobs] ON WorkingHours.job_id = [Jobs].job_id 
-                                                            LEFT JOIN [Tasks] ON WorkingHours.task_id = [Tasks].task_id");
+                                                            LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
+                                                            LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id 
+                                                            LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -60,7 +65,6 @@ namespace WebForecastReport.Services.MPR
                     }
                     dr.Close();
                 }
-                return whs;
             }
             finally
             {
@@ -69,34 +73,40 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.CloseConnect();
                 }
             }
+            return whs;
         }
 
         public List<WorkingHoursModel> GetWorkingHours(string user_id)
         {
+            List<WorkingHoursModel> whs = new List<WorkingHoursModel>();
             try
             {
-                List<WorkingHoursModel> whs = new List<WorkingHoursModel>();
                 string string_command = string.Format($@"
                 SELECT 
-                    [WorkingHours].ind,
-                    [WorkingHours].user_id,
-                    [Users].Name,
-                    [WorkingHours].working_date,
-                    [WorkingHours[.job_id,
-                    [Jobs].job_name,
-                    [WorkingHours].task_id,
-                    [Tasks].task_name,
-                    [WorkingHours].start_time,
-                    [WorkingHours].stop_time,
-                    [WorkingHours].lunch,
-                    [WorkingHours].dinner,
-                    [WorkingHours].note
+                    WorkingHours.ind,
+                    WorkingHours.user_id,
+                    Users.Name,
+                    WorkingHours.working_date,
+                    WorkingHours.job_id,
+                    Jobs.job_name,
+                    WorkingHours.task_id,
+                    Tasks.task_name,
+                    WorkingHours.start_time,
+                    WorkingHours.stop_time,
+                    WorkingHours.lunch,
+                    WorkingHours.dinner,
+                    WorkingHours.note
                 FROM WorkingHours
-                    LEFT JOIN [gps_sale_tracking].[dbo].[Sale_User] Users ON WorkingHours.user_id = Users.Login 
-                    LEFT JOIN [Jobs] ON [WorkingHours].job_id = [Jobs].job_id
-                    LEFT JOIN [Tasks] ON [WorkingHours].task_id = [Tasks].task_id
-                WHERE [WorkingHours].user_id = '{user_id}'");
+                    LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
+                    LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
+                    LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
+                WHERE WorkingHours.user_id = '{user_id}'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -122,7 +132,6 @@ namespace WebForecastReport.Services.MPR
                     }
                     dr.Close();
                 }
-                return whs;
             }
             finally
             {
@@ -131,35 +140,41 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.CloseConnect();
                 }
             }
+            return whs;
         }
 
         public List<WorkingHoursModel> GetWorkingHours(string year, string month, string user)
         {
+            List<WorkingHoursModel> whs = new List<WorkingHoursModel>();
             try
             {
-                List<WorkingHoursModel> whs = new List<WorkingHoursModel>();
                 string string_command = string.Format($@"
                 SELECT
-                    [WorkingHours].ind,
-                    [WorkingHours].user_id,
-                    [Users].Name,
-                    [WorkingHours].working_date,
-                    [WorkingHours].job_id,
-                    [Jobs].job_name,
-                    [WorkingHours].task_id,
-                    [Tasks].task_name,
-                    [WorkingHours].start_time,
-                    [WorkingHours].stop_time,
-                    [WorkingHours].lunch,
-                    [WorkingHours].dinner,
-                    [WorkingHours].note
+                    WorkingHours.ind,
+                    WorkingHours.user_id,
+                    Users.Name,
+                    WorkingHours.working_date,
+                    WorkingHours.job_id,
+                    Jobs.job_name,
+                    WorkingHours.task_id,
+                    Tasks.task_name,
+                    WorkingHours.start_time,
+                    WorkingHours.stop_time,
+                    WorkingHours.lunch,
+                    WorkingHours.dinner,
+                    WorkingHours.note
                 FROM WorkingHours
-                     LEFT JOIN [gps_sale_tracking].[dbo].[Sale_User] Users ON WorkingHours.user_id = Users.Login 
-                    LEFT JOIN [Jobs] ON [WorkingHours].job_id = [Jobs].job_id
-                    LEFT JOIN [Tasks] ON [WorkingHours].task_id = [Tasks].task_id
-                WHERE [WorkingHours].working_date like '{year}-{month}%' 
-                AND [WorkingHours].user_id ='{user}'");
+                    LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
+                    LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
+                    LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
+                WHERE WorkingHours.working_date like '{year}-{month}%' 
+                AND WorkingHours.user_id ='{user}'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -185,7 +200,6 @@ namespace WebForecastReport.Services.MPR
                     }
                     dr.Close();
                 }
-                return whs;
             }
             finally
             {
@@ -194,35 +208,41 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.CloseConnect();
                 }
             }
+            return whs;
         }
 
         public List<WorkingHoursModel> GetWorkingHours(string user, DateTime working_date)
         {
+            List<WorkingHoursModel> whs = new List<WorkingHoursModel>();
             try
             {
-                List<WorkingHoursModel> whs = new List<WorkingHoursModel>();
                 string string_command = string.Format($@"
                 SELECT
                     ind,
-                    [WorkingHours].user_id,
-                    [Users].Name,
-                    [WorkingHours].working_date,
-                    [WorkingHours].job_id,
-                    [Jobs].job_name,
-                    [WorkingHours].task_id,
-                    [Tasks].task_name,
-                    [WorkingHours].start_time,
-                    [WorkingHours].stop_time,
-                    [WorkingHours].lunch,
-                    [WorkingHours].dinner,
-                    [WorkingHours].note
+                    WorkingHours.user_id,
+                    Users.Name,
+                    WorkingHours.working_date,
+                    WorkingHours.job_id,
+                    Jobs.job_name,
+                    WorkingHours.task_id,
+                    Tasks.task_name,
+                    WorkingHours.start_time,
+                    WorkingHours.stop_time,
+                    WorkingHours.lunch,
+                    WorkingHours.dinner,
+                    WorkingHours.note
                 FROM WorkingHours
-                    LEFT JOIN [gps_sale_tracking].[dbo].[Sale_User] Users ON WorkingHours.user_id = Users.Login 
-                    LEFT JOIN [Jobs] ON [WorkingHours].job_id = [Jobs].job_id
-                    LEFT JOIN [Tasks] ON [WorkingHours].task_id = [Tasks].task_id
-                WHERE [WorkingHours].user_id = '{user}'
-                AND [WorkingHours].working_date LIKE '{working_date.ToString("yyyy-MM-dd")}'");
+                    LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
+                    LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
+                    LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
+                WHERE WorkingHours.user_id = '{user}'
+                AND WorkingHours.working_date LIKE '{working_date.ToString("yyyy-MM-dd")}'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -248,7 +268,6 @@ namespace WebForecastReport.Services.MPR
                     }
                     dr.Close();
                 }
-                return whs;
             }
             finally
             {
@@ -257,6 +276,7 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.CloseConnect();
                 }
             }
+            return whs;
         }
 
         public string AddWorkingHours(WorkingHoursModel wh)
@@ -282,7 +302,6 @@ namespace WebForecastReport.Services.MPR
                     cmd.Parameters.AddWithValue("@note", wh.note);
                     cmd.ExecuteNonQuery();
                 }
-                return "Success";
             }
             finally
             {
@@ -291,6 +310,7 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.CloseConnect();
                 }
             }
+            return "Success";
         }
 
         public string UpdateWorkingHours(WorkingHoursModel wh)
@@ -298,19 +318,19 @@ namespace WebForecastReport.Services.MPR
             try
             {
                 string string_command = string.Format($@"
-                UPDATE WorkingHours 
-                SET
-                    user_id = @user_id,
-                    working_date = @working_date,
-                    job_id = @job_id,
-                    task_id = @task_id,
-                    start_time = @start_time,
-                    stop_time = @stop_time,
-                    lunch = @lunch,
-                    dinner = @dinner,
-                    note = @note
-                WHERE ind = @ind");
-                using (SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect()))
+                    UPDATE WorkingHours 
+                    SET
+                        user_id = @user_id,
+                        working_date = @working_date,
+                        job_id = @job_id,
+                        task_id = @task_id,
+                        start_time = @start_time,
+                        stop_time = @stop_time,
+                        lunch = @lunch,
+                        dinner = @dinner,
+                        note = @note
+                    WHERE ind = @ind");
+                using (SqlCommand cmd = new SqlCommand(string_command,ConnectSQL.OpenConnect()))
                 {
                     cmd.CommandType = System.Data.CommandType.Text;
                     cmd.Parameters.AddWithValue("@user_id", wh.user_id);
@@ -323,9 +343,13 @@ namespace WebForecastReport.Services.MPR
                     cmd.Parameters.AddWithValue("@dinner", wh.dinner);
                     cmd.Parameters.AddWithValue("@note", wh.note);
                     cmd.Parameters.AddWithValue("@ind", wh.index);
+                    if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                    {
+                        ConnectSQL.CloseConnect();
+                        ConnectSQL.OpenConnect();
+                    }
                     cmd.ExecuteNonQuery();
                 }
-                return "Success";
             }
             finally
             {
@@ -334,6 +358,7 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.CloseConnect();
                 }
             }
+            return "Success";
         }
     }
 }

@@ -13,11 +13,16 @@ namespace WebForecastReport.Services.MPR
     {
         public List<UserModel2> GetUsers()
         {
+            List<UserModel2> users = new List<UserModel2>();
             try
             {
-                List<UserModel2> users = new List<UserModel2>();
-                string string_command = string.Format($@"SELECT * FROM [Sale_User]");
-                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.Open_db_gps_Connect());
+                string string_command = string.Format($@"SELECT * FROM Sale_User");
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -34,7 +39,6 @@ namespace WebForecastReport.Services.MPR
                     }
                     dr.Close();
                 }
-                return users;
             }
             finally
             {
@@ -43,6 +47,7 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.Close_db_gps_Connect();
                 }
             }
+            return users;
         }
 
         //public string CreateUser(UserModel2 user)

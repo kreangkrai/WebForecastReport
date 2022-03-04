@@ -13,11 +13,16 @@ namespace WebForecastReport.Services.MPR
     {
         public List<TaskModel> GetTasks()
         {
+            List<TaskModel> tasks = new List<TaskModel>();
             try
             {
-                List<TaskModel> tasks = new List<TaskModel>();
-                string string_command = string.Format($@"SELECT * FROM Tasks LEFT JOIN Jobs ON Tasks.job_id = Jobs.job_id");
+                string string_command = string.Format($"SELECT * FROM Tasks LEFT JOIN Jobs ON Tasks.job_id = Jobs.job_id");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -36,7 +41,6 @@ namespace WebForecastReport.Services.MPR
                     }
                     dr.Close();
                 }
-                return tasks;
             }
             finally
             {
@@ -45,6 +49,7 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.CloseConnect();
                 }
             }
+            return tasks;
         }
 
         public string CreateTask(TaskModel task)
@@ -57,9 +62,13 @@ namespace WebForecastReport.Services.MPR
                     cmd.CommandType = System.Data.CommandType.Text;
                     cmd.Parameters.AddWithValue("@task_name", task.task_name);
                     cmd.Parameters.AddWithValue("@job_id", task.job_id);
+                    if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                    {
+                        ConnectSQL.CloseConnect();
+                        ConnectSQL.OpenConnect();
+                    }
                     cmd.ExecuteNonQuery();
                 }
-                return "Success";
             }
             finally
             {
@@ -68,6 +77,7 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.CloseConnect();
                 }
             }
+            return "Success";
         }
 
         public string UpdateTask(TaskModel task)
@@ -80,15 +90,19 @@ namespace WebForecastReport.Services.MPR
                     task_name = @task_name,
                     job_id = @job_id,
                 WHERE task_id = @task_id");
-                using (SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect()))
+                using (SqlCommand cmd = new SqlCommand(string_command,ConnectSQL.OpenConnect()))
                 {
                     cmd.CommandType = System.Data.CommandType.Text;
                     cmd.Parameters.AddWithValue("@task_id", task.task_id);
                     cmd.Parameters.AddWithValue("@task_name", task.task_name);
                     cmd.Parameters.AddWithValue("@job_id", task.job_id);
+                    if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                    {
+                        ConnectSQL.CloseConnect();
+                        ConnectSQL.OpenConnect();
+                    }
                     cmd.ExecuteNonQuery();
                 }
-                return "Success";
             }
             finally
             {
@@ -97,6 +111,7 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.CloseConnect();
                 }
             }
+            return "Success";
         }
     }
 }

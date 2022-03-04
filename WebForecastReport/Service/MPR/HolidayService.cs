@@ -13,11 +13,16 @@ namespace WebForecastReport.Services.MPR
     {
         public List<HolidayModel> GetHolidays()
         {
+            List<HolidayModel> holidays = new List<HolidayModel>();
             try
             {
-                List<HolidayModel> holidays = new List<HolidayModel>();
                 string string_command = string.Format($@"SELECT * FROM Holidays");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -33,7 +38,6 @@ namespace WebForecastReport.Services.MPR
                     }
                     dr.Close();
                 }
-                return holidays.OrderBy(o => o.date).ToList();
             }
             finally
             {
@@ -42,6 +46,7 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.CloseConnect();
                 }
             }
+            return holidays.OrderBy(o => o.date).ToList();
         }
     }
 }

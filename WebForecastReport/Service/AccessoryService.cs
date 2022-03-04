@@ -13,9 +13,9 @@ namespace WebForecastReport.Service
     {
         public List<UserModel> getAllUser()
         {
+            List<UserModel> users = new List<UserModel>();
             try
             {
-                List<UserModel> users = new List<UserModel>();
                 SqlCommand cmd = new SqlCommand(@"select DISTINCT t1.Login,t1.Department2,t1.[Group],t1.Name,case when t2.Role ='Admin' then 'Admin' else t2.Role end as Role from [gps_sale_tracking].[dbo].[Sale_User] as t1
                                                   left join[MES].[dbo].[User] as t2 ON t1.Login = t2.Name order by t1.Login", ConnectSQL.Open_db_gps_Connect());
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -35,7 +35,6 @@ namespace WebForecastReport.Service
                     }
                     dr.Close();
                 }
-                return users;
             }
             finally
             {
@@ -44,6 +43,7 @@ namespace WebForecastReport.Service
                     ConnectSQL.Close_db_gps_Connect();
                 }
             }
+            return users;
         }
 
         public List<CustomerModel> getCustomers()

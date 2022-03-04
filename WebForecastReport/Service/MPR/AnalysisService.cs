@@ -13,22 +13,27 @@ namespace WebForecastReport.Services.MPR
     {
         public List<TaskTotalHoursModel> GetTasksWorkingHours(string job_id)
         {
+            List<TaskTotalHoursModel> tasks = new List<TaskTotalHoursModel>();
             try
             {
-                List<TaskTotalHoursModel> tasks = new List<TaskTotalHoursModel>();
                 string string_command = string.Format($@"
                     SELECT
-                        [WorkingHours].job_id,
-                        [Jobs].job_name,
-                        [WorkingHours].task_id,
-                        [Tasks].task_name,
-                        SUM(DATEDIFF(HOUR, [WorkingHours].start_time, [WorkingHours].stop_time)) as total_hours
-                    FROM [WorkingHours]
-                        LEFT JOIN [Jobs] ON [WorkingHours].job_id = [Jobs].job_id
-                        LEFT JOIN [Tasks] ON [WorkingHours].task_id = [Tasks].task_id
-                    WHERE [WorkingHours].job_id = '{job_id}'
-                    Group by [WorkingHours].job_id, [Jobs].job_name, [WorkingHours].task_id, [Tasks].task_name");
+                        WorkingHours.job_id,
+                        Jobs.job_name,
+                        WorkingHours.task_id,
+                        Tasks.task_name,
+                        SUM(DATEDIFF(HOUR, WorkingHours.start_time, WorkingHours.stop_time)) as total_hours
+                    FROM WorkingHours
+                        LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
+                        LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
+                    WHERE WorkingHours.job_id = '{job_id}'
+                    GROUP BY WorkingHours.job_id, Jobs.job_name, WorkingHours.task_id, Tasks.task_name");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if(ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -46,7 +51,6 @@ namespace WebForecastReport.Services.MPR
                     }
                     dr.Close();
                 }
-                return tasks;
             }
             finally
             {
@@ -55,26 +59,32 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.CloseConnect();
                 }
             }
+            return tasks;
         }
 
         public List<JobInvolveModel> GetPercentsInvolve(string job_id)
         {
+            List<JobInvolveModel> invs = new List<JobInvolveModel>();
             try
             {
-                List<JobInvolveModel> invs = new List<JobInvolveModel>();
                 string string_command = string.Format($@"
                     SELECT
-                        [WorkingHours].job_id,
-                        [Jobs].job_name,
-                        [WorkingHours].user_id,
-                        [Users].Name,
-                        SUM(DATEDIFF(HOUR, [WorkingHours].start_time, [WorkingHours].stop_time)) as total_hours
-                    FROM [WorkingHours]
-                        LEFT JOIN [Jobs] ON [WorkingHours].job_id = [Jobs].job_id
-                        LEFT JOIN [gps_sale_tracking].[dbo].[Sale_User] Users ON WorkingHours.user_id = Users.Login 
-                    WHERE [WorkingHours].job_id = '{job_id}'
-                    Group by [WorkingHours].job_id, [Jobs].job_name, [WorkingHours].user_id, [Users].Name");
+                        WorkingHours.job_id,
+                        Jobs.job_name,
+                        WorkingHours.user_id,
+                        Users.Name,
+                        SUM(DATEDIFF(HOUR, WorkingHours.start_time, WorkingHours.stop_time)) as total_hours
+                    FROM WorkingHours
+                        LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
+                        LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
+                    WHERE WorkingHours.job_id = '{job_id}'
+                    GROUP BY WorkingHours.job_id, Jobs.job_name, WorkingHours.user_id, Users.Name");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -92,7 +102,6 @@ namespace WebForecastReport.Services.MPR
                     }
                     dr.Close();
                 }
-                return invs;
             }
             finally
             {
@@ -101,6 +110,7 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.CloseConnect();
                 }
             }
+            return invs;
         }
     }
 }
