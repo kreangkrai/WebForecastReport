@@ -37,7 +37,7 @@ namespace WebForecastReport.Services.MPR
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
-                    ConnectSQL.CloseConnect();
+                    ConnectSQL.Close_db_gps_Connect();
                     ConnectSQL.OpenConnect();
                 }
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -104,7 +104,7 @@ namespace WebForecastReport.Services.MPR
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
-                    ConnectSQL.CloseConnect();
+                    ConnectSQL.Close_db_gps_Connect();
                     ConnectSQL.OpenConnect();
                 }
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -172,7 +172,7 @@ namespace WebForecastReport.Services.MPR
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
-                    ConnectSQL.CloseConnect();
+                    ConnectSQL.Close_db_gps_Connect();
                     ConnectSQL.OpenConnect();
                 }
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -240,7 +240,7 @@ namespace WebForecastReport.Services.MPR
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
-                    ConnectSQL.CloseConnect();
+                    ConnectSQL.Close_db_gps_Connect();
                     ConnectSQL.OpenConnect();
                 }
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -300,6 +300,11 @@ namespace WebForecastReport.Services.MPR
                     cmd.Parameters.AddWithValue("@lunch", wh.lunch);
                     cmd.Parameters.AddWithValue("@dinner", wh.dinner);
                     cmd.Parameters.AddWithValue("@note", wh.note);
+                    if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                    {
+                        ConnectSQL.Close_db_gps_Connect();
+                        ConnectSQL.OpenConnect();
+                    }
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -345,7 +350,7 @@ namespace WebForecastReport.Services.MPR
                     cmd.Parameters.AddWithValue("@ind", wh.index);
                     if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                     {
-                        ConnectSQL.CloseConnect();
+                        ConnectSQL.Close_db_gps_Connect();
                         ConnectSQL.OpenConnect();
                     }
                     cmd.ExecuteNonQuery();

@@ -18,9 +18,9 @@ namespace WebForecastReport.Services.MPR
             {
                 string string_command = string.Format($@"SELECT * FROM Holidays");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
-                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                if(ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
-                    ConnectSQL.CloseConnect();
+                    ConnectSQL.Close_db_gps_Connect();
                     ConnectSQL.OpenConnect();
                 }
                 SqlDataReader dr = cmd.ExecuteReader();

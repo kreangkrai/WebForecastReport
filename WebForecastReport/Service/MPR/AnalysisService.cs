@@ -29,9 +29,9 @@ namespace WebForecastReport.Services.MPR
                     WHERE WorkingHours.job_id = '{job_id}'
                     GROUP BY WorkingHours.job_id, Jobs.job_name, WorkingHours.task_id, Tasks.task_name");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
-                if(ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
-                    ConnectSQL.CloseConnect();
+                    ConnectSQL.Close_db_gps_Connect();
                     ConnectSQL.OpenConnect();
                 }
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -82,7 +82,7 @@ namespace WebForecastReport.Services.MPR
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
-                    ConnectSQL.CloseConnect();
+                    ConnectSQL.Close_db_gps_Connect();
                     ConnectSQL.OpenConnect();
                 }
                 SqlDataReader dr = cmd.ExecuteReader();
