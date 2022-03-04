@@ -14,15 +14,15 @@ using WebForecastReport.Models;
 
 namespace WebForecastReport.Controllers
 {
-    public class User2Controller : Controller
+    public class EngUserController : Controller
     {
         readonly IAccessory Accessory;
-        readonly IUser2 UserService2;
+        readonly IEngUser EngUserService;
 
-        public User2Controller()
+        public EngUserController()
         {
             Accessory = new AccessoryService();
-            UserService2 = new User2Service();
+            EngUserService = new EngUserService();
         }
 
         public IActionResult Index()
@@ -48,24 +48,8 @@ namespace WebForecastReport.Controllers
         [HttpGet]
         public JsonResult GetUsers()
         {
-            List<UserModel2> users = UserService2.GetUsers().OrderBy(o => o.user_id).ToList();
+            List<EngUserModel> users = EngUserService.GetUsers().OrderBy(o => o.user_id).ToList();
             return Json(users);
         }
-
-        //[HttpPost]
-        //public JsonResult CreateUser(string user_string)
-        //{
-        //    UserModel2 user = JsonConvert.DeserializeObject<UserModel2>(user_string);
-        //    var result = UserService2.CreateUser(user);
-        //    return Json(result);
-        //}
-
-        //[HttpPatch]
-        //public JsonResult UpdateUser(string user_string)
-        //{
-        //    UserModel2 user = JsonConvert.DeserializeObject<UserModel2>(user_string);
-        //    var result = UserService2.UpdateUser(user);
-        //    return Json(result);
-        //}
     }
 }

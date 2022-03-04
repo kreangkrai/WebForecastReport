@@ -96,23 +96,20 @@
         //Variable Declaration
         var table;
         var users = [];
-        var departments = [];
         var update = false;
 
         //Change these variables to true to show response
         var debug_user = false;
-        var debug_department = false;
         var debug_user_string = false;
 
         $(document).ready(function () {
-            GetDepartments();
             GetUsers();
         });
 
         async function GetUsers() {
             await $.ajax({
                 type: "GET",
-                url: '@Url.Action("GetUsers", "User2")',
+                url: '@Url.Action("GetUsers", "EngUser")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: { },
                 success: function (response) {
@@ -230,7 +227,7 @@
         async function CreateUser(user_string) {
             await $.ajax({
                 type: "POST",
-                url: '@Url.Action("CreateUser", "User2")',
+                url: '@Url.Action("CreateUser", "EngUser")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: { user_string },
                 success: function (response) {
@@ -245,7 +242,7 @@
         async function UpdateUser(user_string) {
             await $.ajax({
                 type: "PATCH",
-                url: '@Url.Action("UpdateUser", "User2")',
+                url: '@Url.Action("UpdateUser", "EngUser")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: { user_string },
                 success: function (response) {
