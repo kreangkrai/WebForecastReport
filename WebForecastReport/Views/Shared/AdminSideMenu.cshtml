@@ -13,15 +13,15 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 @* <li class="nav-item">
-                    <a class="nav-link" asp-controller="Opportunity" asp-action="Index">
-                    <i class="nav-icon fas fa-file-invoice"></i>
-                    <p>Opportunity</p>
-                    </a>
-                    </li>*@
+        <a class="nav-link" asp-controller="Opportunity" asp-action="Index">
+        <i class="nav-icon fas fa-file-invoice"></i>
+        <p>Opportunity</p>
+        </a>
+        </li>*@
                 <li class="nav-item pt-2">
                     <a class="nav-link" asp-controller="Home" asp-action="index">
                         <i class="nav-icon fas fa-home"></i>
-                        <p><b>HOME</b></p>
+                        <p class="text-bold">HOME</p>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -42,12 +42,18 @@
                                 <p>Report</p>
                             </a>
                         </li>
-                        @*<li class="nav-item">
-                            <a class="nav-link pl-4" asp-controller="QuotationDashboard" asp-action="Index">
-                            <i class="nav-icon fas fa-chart-line"></i>
-                            <p>Dashboard</p>
+                        <li class="nav-item">
+                            <a class="nav-link pl-4" asp-controller="Main" asp-action="Index">
+                                <i class="nav-icon fas fa-project-diagram"></i>
+                                <p>Select Module</p>
                             </a>
-                            </li>*@
+                        </li>
+                        @*<li class="nav-item">
+                <a class="nav-link pl-4" asp-controller="QuotationDashboard" asp-action="Index">
+                <i class="nav-icon fas fa-chart-line"></i>
+                <p>Dashboard</p>
+                </a>
+                </li>*@
                     </ul>
                 </li>
 
@@ -66,11 +72,11 @@
                     </ul>
                 </li>
                 @* <li class="nav-item">
-                    <a class="nav-link" asp-controller="OpportunityProposal" asp-action="Index">
-                    <i class="nav-icon fas fa-file-invoice"></i>
-                    <p>OpportunityProposal</p>
-                    </a>
-                    </li>*@
+        <a class="nav-link" asp-controller="OpportunityProposal" asp-action="Index">
+        <i class="nav-icon fas fa-file-invoice"></i>
+        <p>OpportunityProposal</p>
+        </a>
+        </li>*@
 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
@@ -112,10 +118,19 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item pt-2">
+                @if (Model.role == "Admin")
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Main" asp-action="Index">
+                            <i class="nav-icon fas fa-project-diagram"></i>
+                            <p><b>SELECT MODULE</b></p>
+                        </a>
+                    </li>
+                }
+                <li class="nav-item">
                     <a class="nav-link" asp-controller="Account" asp-action="Logout">
                         <i class="nav-icon fas fa-power-off"></i>
-                        <p><b>Log Out</b></p>
+                        <p><b>LOG OUT</b></p>
                     </a>
                 </li>
 

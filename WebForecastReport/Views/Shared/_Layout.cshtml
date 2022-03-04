@@ -71,7 +71,6 @@
                                             <a class="btn btn-secondary" style="color:white;" asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a>
                                         </div>
 
-
                                     </li>
                                 </ul>
                             </li>
@@ -83,20 +82,19 @@
         @{
             if (Model.section == "Sale" && Model.role == "Admin") // Sale , Admin
             {
-
                 <partial name="AdminSideMenu.cshtml" />
             }
-            else if(Model.section == "Eng" && Model.role == "ENG"){  // Engineering 
+            else if(Model.section == "Eng" && Model.role == "Admin"){  // Engineering 
                 <partial name="EngineeringSideMenu.cshtml" />
             }
             else if(Model.section == "Sale" && Model.role != "Admin")
             {
                 <partial name="UserSideMenu.cshtml" />
-            }  else{
-                 <partial name="AdminSideMenu.cshtml" />
+            } 
+            else{
+                 <partial name="EngineeringSideMenu.cshtml" />
             }
         }
-
         <div class="content-wrapper" style="background-color:#ECF0F5">
             <div class="container-fluid">
                 @RenderBody()
