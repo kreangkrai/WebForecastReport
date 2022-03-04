@@ -112,7 +112,7 @@
         async function GetUsers() {
             await $.ajax({
                 type: "GET",
-                url: '@Url.Action("GetUsers", "User")',
+                url: '@Url.Action("GetUsers", "User2")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: { },
                 success: function (response) {
@@ -120,21 +120,6 @@
                     if (debug_user)
                         console.log(users);
                     GenerateTable(response);
-                }
-            });
-        }
-
-        async function GetDepartments() {
-            await $.ajax({
-                type: "GET",
-                url: '@Url.Action("GetDepartments", "Department")',
-	            contentType: 'application/x-www-form-urlencoded',
-                data: { },
-                success: function (response) {
-                    departments = response;
-                    if (debug_department)
-                        console.log(departments);
-                    GenarateDepartmentsOption();
                 }
             });
         }
@@ -245,7 +230,7 @@
         async function CreateUser(user_string) {
             await $.ajax({
                 type: "POST",
-                url: '@Url.Action("CreateUser", "User")',
+                url: '@Url.Action("CreateUser", "User2")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: { user_string },
                 success: function (response) {
@@ -260,7 +245,7 @@
         async function UpdateUser(user_string) {
             await $.ajax({
                 type: "PATCH",
-                url: '@Url.Action("UpdateUser", "User")',
+                url: '@Url.Action("UpdateUser", "User2")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: { user_string },
                 success: function (response) {

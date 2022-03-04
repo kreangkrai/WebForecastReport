@@ -147,12 +147,10 @@
         var update = false;
         var jobs = [];
         var users = [];
-        var departments = [];
 
         //Change these parameters to true to show result
         var debug_jobs = false;
         var debug_user = false;
-        var debug_department = false;
         var debug_job_string = false;
 
         $(document).ready(function () {
@@ -177,27 +175,13 @@
         async function GetUsers() {
             await $.ajax({
                 type: "GET",
-                url: '@Url.Action("GetUsers", "User")',
+                url: '@Url.Action("GetUsers", "User2")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: { },
                 success: function (response) {
                     users = response;
                     if (debug_user)
                         console.log(users);
-                }
-            });
-        }
-
-        async function GetDepartments() {
-            await $.ajax({
-                type: "GET",
-                url: '@Url.Action("GetDepartments", "Department")',
-	            contentType: 'application/x-www-form-urlencoded',
-                data: { },
-                success: function (response) {
-                    departments = response;
-                    if (debug_department)
-                        console.log(departments);
                 }
             });
         }
@@ -252,8 +236,7 @@
         };
 
         $('#btn_create').on('click', function () {
-            GetDepartments().then(() => GenerateDepartmentsOption())
-                .then(() => GetUsers()).then(() => GenerateUsersOption())
+                GetUsers().then(() => GenerateUsersOption())
                 .then(() => Prepmodal());
         });
 
@@ -290,9 +273,8 @@
         };
 
         $('#table_job tbody').on('click', 'tr', function () {
-            GetDepartments().then(() => GenerateDepartmentsOption())
-                .then(() => GetUsers()).then(() => GenerateUsersOption())
-                .then(() => EditJob(table.row(this).data()));
+            GetUsers().then(() => GenerateUsersOption())
+            .then(() => EditJob(table.row(this).data()));
         });
 
         function EditJob(data) {
