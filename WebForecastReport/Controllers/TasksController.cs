@@ -46,9 +46,23 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetTasks()
+        public JsonResult GetAllTasks()
         {
-            List<TaskModel> tasks = TaskService.GetTasks();
+            List<TaskModel> tasks = TaskService.GetAllTasks();
+            return Json(tasks);
+        }
+
+        [HttpGet]
+        public JsonResult GetOfficeTasks()
+        {
+            List<TaskModel> tasks = TaskService.GetOfficeTasks();
+            return Json(tasks);
+        }
+
+        [HttpGet]
+        public JsonResult GetSiteTasks()
+        {
+            List<TaskModel> tasks = TaskService.GetSiteTasks();
             return Json(tasks);
         }
 
