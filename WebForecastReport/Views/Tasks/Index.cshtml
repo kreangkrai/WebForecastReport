@@ -2,48 +2,80 @@
     ViewData["Title"] = "Tasks";
 }
 <div class="row p-3">
-    <div class="col-xl-1 pb-3">
+    <div class="col-xl-1 col-lg-2 col-md-4 col-sm-4 pb-3">
         <button id="btn_add" type="button" class="btn btn-primary form-control elevation-1">
             <i class="fas fa-plus"></i> Create Task
         </button>
     </div>
-    <div class="col-xl-1 pb-3">
+    <div class="col-xl-1 col-lg-2 col-md-4 col-sm-4 pb-3">
         <button id="btn_import" type="button" class="btn btn-primary form-control elevation-1">
             <i class="fas fa-upload"></i> Import
         </button>
     </div>
-    <div class="col-xl-1 pb-3">
+    <div class="col-xl-1 col-lg-2 col-md-4 col-sm-4 pb-3">
         <button id="btn_export" type="button" class="btn btn-primary form-control elevation-1">
             <i class="fas fa-download"></i> Export
         </button>
     </div>
-    <div class="col-xl-12">
+    <div class="col-xl-9">
+        
+    </div>
+    <!-- Office Tasks Table -->
+    <div class="col-xl-6">
         <div class="card card-dark">
             <div class="card-header">
-                <span class="card-title">Tasks</span>
+                <span class="card-title">Office Tasks</span>
             </div>
             <div class="card-body">
-                <table id="table_tasks" class="table table-sm compact border table-striped table-hover w-100">
-                    <thead class="text-center">
-                        <tr>
-                            <th>ID</th>
-                            <th>Job ID</th>
-                            <th>Job Name</th>
-                            <th>Task Name</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tfoot class="text-center">
-                        <tr>
-                            <th>ID</th>
-                            <th>Job ID</th>
-                            <th>Job Name</th>
-                            <th>Task Name</th>
-                            <th>Status</th>
-                        </tr>
-                    </tfoot>
-                </table>
+                <form>
+                    <div class="form-group">
+                        <table id="table_office" class="table table-sm compact border table-striped table-hover w-100">
+                            <thead class="text-center">
+                                <tr>
+                                    <th style="width:20%">Task ID</th>
+                                    <th style="width:auto">Task Name</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th>Task ID</th>
+                                    <th>Task Name</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Site Tasks Table -->
+    <div class="col-xl-6">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Site Tasks</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <table id="table_site" class="table table-sm compact border table-striped table-hover w-100">
+                            <thead class="text-center">
+                                <tr>
+                                    <th style="width:20%">Task ID</th>
+                                    <th style="width:auto">Task Name</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th>Task ID</th>
+                                    <th>Task Name</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -60,22 +92,17 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <div class="form-group" hidden>
+                    <div id="location_group" class="form-group">
+                        <label for="task_location">Location</label>
+                        <select id="task_location" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
                         <label for="task_id">Task ID</label>
                         <input id="task_id" class="form-control" />
                     </div>
                     <div class="form-group">
-                        <label for="job_id">Job ID</label>
-                        <select id="job_id" class="form-control">
-                        </select>
-                    </div>
-                    <div class="form-group">
                         <label for="task_name">Task Name</label>
                         <input id="task_name" type="text" class="form-control" placeholder="Task Name" />
-                    </div>
-                    <div id="group_status" class="form-group" hidden>
-                        <label for="status">Status</label>
-                        <input id="status" type="text" class="form-control" placeholder="Status" />
                     </div>
                 </form>
             </div>
@@ -91,144 +118,190 @@
 { 
     <script type="text/javascript">
         //Variable Declaration
-        var update = false;
-        var table;
         var tasks = [];
-        var jobs = [];
+        var office_tasks = [];
+        var site_tasks = [];
+        var table_office;
+        var table_site;
+        var update = false;
 
         //Change these variable to true for log response
-        var debug_jobs = false;
         var debug_tasks = false;
+        var debug_office_tasks = false;
+        var debug_site_tasks = false;
         var debug_create = false;
 
-        $(document).ready(function () {
-            GetTasks();
+        $(document).ready(async function () {
+            await GetAllTasks();
+            await GetOfficeTasks();
+            await GetSiteTasks();
         });
 
-        async function GetJobs() {
+        async function GetAllTasks() {
             await $.ajax({
                 type: "GET",
-                url: '@Url.Action("GetJobs", "Job")',
+                url: '@Url.Action("GetAllTasks", "Tasks")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: { },
                 success: function (response) {
-                    if (debug_jobs)
-                        console.log(response);
-                    jobs = response;
-                }
-            });
-        };
-
-        async function GetTasks() {
-            await $.ajax({
-                type: "GET",
-                url: '@Url.Action("GetTasks", "Tasks")',
-	            contentType: 'application/x-www-form-urlencoded',
-                data: { },
-                success: function (response) {
-                    if (debug_tasks)
-                        console.log(response);
                     tasks = response;
-                    GenerateTable(response);
+                    if (debug_tasks) {
+                        console.log("All Tasks");
+                        console.log(tasks);
+                    }
                 }
             });
         };
 
-        function GenerateTable(tasks) {
+        async function GetOfficeTasks() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetOfficeTasks", "Tasks")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    office_tasks = response;
+                    if (debug_office_tasks) {
+                        console.log("Office Tasks");
+                        console.log(office_tasks);
+                    }
+                    GenerateOfficeTable(office_tasks);
+                }
+            });
+        };
+
+        async function GetSiteTasks() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetSiteTasks", "Tasks")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    site_tasks = response;
+                    if (debug_site_tasks) {
+                        console.log("Site Tasks");
+                        console.log(site_tasks);
+                    }
+                    GenerateSiteTable(site_tasks);
+                }
+            });
+        };
+
+        function GenerateOfficeTable(tasks) {
             var datas = [];
 
-            if (table !== null)
-                $('#table_tasks').DataTable().destroy();
+            if (table_office != null) {
+                table_office.destroy();
+            }
 
             for (var i = 0; i < tasks.length; i++) {
                 datas.push([
                     tasks[i].task_id,
-                    tasks[i].job_id,
-                    tasks[i].job_name,
                     tasks[i].task_name,
-                    tasks[i].status,
                 ]);
             }
 
-            table = $('#table_tasks').DataTable({
+            table_office = $('#table_office').DataTable({
                 lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
                 data: datas,
                 columnDefs: [
                     {
-                        targets: [1,2,3],
-                        className: "border-left"
-                    },
-                    {
-                        targets: [0,4],
-                        visible: false
+                        targets: [0],
+                        className: "text-center"
                     }
-                ],
-                rowCallback: function (row, data) {
-                    $('td:eq(0)', row).addClass("text-center");
-                }
+                ]
+            });
+        };
+
+        function GenerateSiteTable(tasks) {
+            var datas = [];
+
+            if (table_site != null) {
+                table_site.destroy();
+            }
+                
+            for (var i = 0; i < tasks.length; i++) {
+                datas.push([
+                    tasks[i].task_id,
+                    tasks[i].task_name,
+                ]);
+            }
+
+            table_site = $('#table_site').DataTable({
+                lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
+                data: datas,
+                columnDefs: [
+                    {
+                        targets: [0],
+                        className: "text-center"
+                    }
+                ]
             });
         };
 
         $('#btn_add').on('click', function () {
-            GetJobs().then(() => GenerateJobOption()).then(() => Prepmodal());
-        });
-
-        function Prepmodal() {
             update = false;
             $('#modal_task').modal();
-            $('#modal_title').text("Add Task");
-            $('#task_name').val();
-            $('#job_id').attr('disabled', false);
-            //$('#status').val();
-        }
-
-        $('#table_tasks tbody').on('click', 'tr', function () {
-            GetJobs().then(() => GenerateJobOption()).then(() => EditTask(table.row(this).data()));
+            $('#modal_title').text("Create Task");
+            $('#location_group').show();
+            $('#task_location').empty();
+            var loc_str = '<option value="" selected disabled>Please Select Location</option>';
+            loc_str += '<option value="O">Office</option>';
+            loc_str += '<option value="S">Site</option>';
+            $('#task_location').append(loc_str);
+            $('#task_id').attr('disabled', true);
+            $('#task_id').val(null);
+            $('#task_name').val(null);
+            $('#btn_save').attr('disabled', true);
         });
 
-        function GenerateJobOption() {
-            $('#job_id').empty();
-            var job_str = '<option value="" selected disabled>Please select job</option>';
-            for (var i = 0; i < jobs.length; i++) {
-                job_str += '<option value="' + jobs[i].job_id + '">' + jobs[i].job_name + '</option>';
-            }
-            $('#job_id').append(job_str);
-        }
+        $('#task_location').on('change', function () {
+            var prefix = $('#task_location').val();
+            var arr = tasks.filter(f => (f.task_id.substring(0, 1) === prefix) && (f.task_id.substring(1) !== "999"));
+            var task_index = parseInt(arr[arr.length - 1].task_id.substring(1)) + 1;
+            var task_id = prefix + task_index.toString().padStart(3,0);
+            $('#task_id').val(task_id);
+        });
+
+        $('#task_name').on('change', function () {
+            var task_id = $('#task_id').val();
+            var task_name = $('#task_name').val();
+            var enable_save = 1;
+            enable_save *= (task_id !== "") ? 1 : 0;
+            enable_save *= (task_name !== "") ? 1 : 0;
+            $('#btn_save').attr('disabled', !enable_save);
+        });
+            
+        $('#table_office tbody').on('click', 'tr', function () {
+            EditTask(table_office.row(this).data());
+        });
+
+        $('#table_site tbody').on('click', 'tr', function () {
+            EditTask(table_site.row(this).data());
+        });
 
         function EditTask(data) {
             update = true;
             var task_id = data[0];
-            var job_id = data[1];
-            //var job_name = data[2];
-            var task_name = data[3];
-            //var status = data[4];
+            var task_name = data[1];
             $('#modal_task').modal();
             $('#modal_title').text("Edit Task");
+            $('#location_group').hide();
             $('#task_id').val(task_id);
-            $('#job_id').attr('disabled', true);
-            $('#job_id').val(job_id);
             $('#task_name').val(task_name);
-            //$('#status').val(status);
         }
 
         $('#btn_save').on('click', function () {
             var task_id = $('#task_id').val();
-            var job_id = $('#job_id').val();
             var task_name = $('#task_name').val();
-            //var status = $('#status').val();
-            job_id = job_id !== null ? job_id : "";
-            status = (status === null) ? "" : status;
 
             if (debug_create) {
-                console.log("Job ID: " + job_id);
                 console.log("Task ID: " + task_id);
                 console.log("Task Name: " + task_name);
-                //console.log("Status: " + status);
             }
 
             var task_string = JSON.stringify({
                 "task_id": task_id,
-                "job_id": job_id,
                 "task_name": task_name,
             });
 
