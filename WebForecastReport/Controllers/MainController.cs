@@ -27,18 +27,8 @@ namespace WebForecastReport.Controllers
                 List<UserModel> users = new List<UserModel>();
                 users = Accessory.getAllUser();
                 UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name, department = s.department, role = s.role }).FirstOrDefault();
-                if(u.role == "Admin")
-                {
-                    return View(u);
-                }
-                else if(u.role == "ENG")
-                {
-                    return RedirectToAction("Index", "Calendar");
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Home");
-                }
+                
+                return View(u);
             }
             else
             {

@@ -1,9 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Http
 @model WebForecastReport.Models.UserModel;
 <aside class="main-sidebar sidebar-dark-primary elevation-2">
-    <a class="brand-link" asp-controller="Home" asp-action="Index">
-        <img src="/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
-             style="opacity: .8">
+    <a class="brand-link text-center" asp-controller="Calendar" asp-action="Index">
         <span class="brand-text text-bold">MPR</span>
     </a>
 
@@ -80,17 +78,16 @@
                     </li>
                 }
 
-                @if (Model.role == "Admin")
-                {
-                    <li class="nav-item">
+                
+                <li class="nav-item pt-2">
                         <a class="nav-link" asp-controller="Main" asp-action="Index">
                             <i class="nav-icon fas fa-project-diagram"></i>
                             <p class="text-bold">SELECT MODULE</p>
                         </a>
-                    </li>
-                }
+                </li>
+                
 
-                <li class="nav-item">
+                <li class="nav-item pt-2">
                     <a class="nav-link" asp-controller="Account" asp-action="Index">
                         <i class="nav-icon fas fa-power-off"></i>
                         <p class="text-bold">LOG OUT</p>

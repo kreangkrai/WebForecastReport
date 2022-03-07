@@ -28,7 +28,6 @@
                         <table id="table_user" class="table table-sm compact border text-center table-striped table-hover w-100">
                             <thead class="text-center">
                                 <tr>
-                                    <th>No</th>
                                     <th>User ID</th>
                                     <th>Name</th>
                                     <th>Department</th>
@@ -39,7 +38,6 @@
                             </tbody>
                             <tfoot class="text-center">
                                 <tr>
-                                    <th>No</th>
                                     <th>User ID</th>
                                     <th>Name</th>
                                     <th>Department</th>
@@ -64,10 +62,6 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <div class="form-group" hidden>
-                        <label for="user_no">User No</label>
-                        <input id="user_no" type="text" class="form-control" />
-                    </div>
                     <div class="form-group">
                         <label for="user_id">User ID</label>
                         <input id="user_id" type="text" class="form-control" placeholder="Firstname.L" />
@@ -129,8 +123,7 @@
 
             for (var i = 0; i < users.length; i++) {
                 datas.push([
-                    users[i].user_no,
-                    users[i].user_id,
+                    users[i].user_id
                     users[i].user_name,
                     users[i].department,
                 ]);
