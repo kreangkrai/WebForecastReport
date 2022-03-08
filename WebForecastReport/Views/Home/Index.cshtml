@@ -268,9 +268,9 @@
         var stages_lost = "0";
         var stages_negotiation_review = "0";
         var stages_nogo = "0";
-        var stages_quote_for_buddget = "0";
+        var stages_quote_for_budget = "0";
         var stages_proposal = "0";
-        var stages_perspectng = "0";
+        var stages_prospectng = "0";
 
         var day_7 = "0";
         var day_14 = "0";
@@ -547,17 +547,17 @@
                      stages_lost = "0";
                      stages_negotiation_review = "0";
                      stages_nogo = "0";
-                     stages_quote_for_buddget = "0";
+                     stages_quote_for_budget = "0";
                      stages_proposal = "0";
-                     stages_perspectng = "0";
+                     stages_prospectng = "0";
 
                      var _stages_won = Data_Stages.find(x => x.stages === "Closed(Won)");
                      var _stages_lost = Data_Stages.find(x => x.stages === "Closed(Lost)");
                      var _stages_negotiation_review = Data_Stages.find(x => x.stages === "Negotiation/Review");
                      var _stages_nogo = Data_Stages.find(x => x.stages === "No go");
-                     var _stages_quote_for_buddget = Data_Stages.find(x => x.stages === "Quote for Budget");
+                     var _stages_quote_for_budget = Data_Stages.find(x => x.stages === "Quote for Budget");
                      var _stages_proposal = Data_Stages.find(x => x.stages === "Proposal/Quote for Order");
-                     var _stages_perspectng = Data_Stages.find(x => x.stages === "Prospecting");
+                     var _stages_prospectng = Data_Stages.find(x => x.stages === "Prospecting");
 
                      if (typeof _stages_won !== 'undefined') {
                          stages_won = _stages_won.mb;
@@ -571,14 +571,14 @@
                      if (typeof _stages_nogo !== 'undefined') {
                          stages_nogo = _stages_nogo.mb;
                      }
-                     if (typeof _stages_quote_for_buddget !== 'undefined') {
-                         stages_quote_for_buddget = _stages_quote_for_buddget.mb;
+                     if (typeof _stages_quote_for_budget !== 'undefined') {
+                         stages_quote_for_budget = _stages_quote_for_budget.mb;
                      }
                      if (typeof _stages_proposal !== 'undefined') {
                          stages_proposal = _stages_proposal.mb;
                      }
-                     if (typeof _stages_perspectng !== 'undefined') {
-                         stages_perspectng = _stages_perspectng.mb;
+                     if (typeof _stages_prospectng !== 'undefined') {
+                         stages_prospectng = _stages_prospectng.mb;
                      }
                                          
                      UpdatePieChartType();
@@ -602,6 +602,10 @@
 			        {y: project,percent:percent_project, label: "Project", legendText: "Project", color:"#725A7A"},
 			        {y: service,percent:percent_service, label: "Service", legendText: "Service", color:"#B8AAC3"},
 		            ];
+
+            // filter value more than 0
+            datas = datas.filter(x => x.y > 0);
+
             var pie_chart_type = new CanvasJS.Chart("pie_chart_type", {
 	        animationEnabled: true,
             backgroundColor: "transparent",
@@ -705,6 +709,9 @@
 			        {y: won_project,percent:percent_won_project, label: "Project", legendText: "Project", color:"#3F7857"},
 			        {y: won_service,percent:percent_won_service, label: "Service", legendText: "Service", color:"#7EC384"},
 		            ];
+            // filter value more than 0
+            datas = datas.filter(x => x.y > 0);
+
             var pie_chart = new CanvasJS.Chart("pie_chart_won", {
 	        animationEnabled: true,
             backgroundColor: "transparent",
@@ -807,6 +814,9 @@
 			        {y: lost_project,percent:percent_lost_project, label: "Project", legendText: "Project", color:"#D53E0F"},
 			        {y: lost_service,percent:percent_lost_service, label: "Service", legendText: "Service", color:"#FA8744"},
 		            ];
+            // filter value more than 0
+            datas = datas.filter(x => x.y > 0);
+
             var pie_chart = new CanvasJS.Chart("pie_chart_lost", {
 	        animationEnabled: true,
             backgroundColor: "transparent",
@@ -911,6 +921,10 @@
 			        {y: nogo_project,percent:percent_nogo_project, label: "Project", legendText: "Project", color:"#A6A6A6"},
 			        {y: nogo_service,percent:percent_nogo_service, label: "Service", legendText: "Service", color:"#D3D3D3"},
 		            ];
+
+            // filter value more than 0
+            datas = datas.filter(x => x.y > 0);
+
             var pie_chart = new CanvasJS.Chart("pie_chart_nogo", {
 	        animationEnabled: true,
             backgroundColor: "transparent",
@@ -1014,6 +1028,10 @@
 			        {y: pending_project,percent:percent_pending_project, label: "Project", legendText: "Project", color:"#FFC000"},
 			        {y: pending_service,percent:percent_pending_service, label: "Service", legendText: "Service", color:"#F8E07E"},
 		            ];
+
+            // filter value more than 0
+            datas = datas.filter(x => x.y > 0);
+
             var pie_chart = new CanvasJS.Chart("pie_chart_pending", {
 	        animationEnabled: true,
             backgroundColor: "transparent",
@@ -1108,25 +1126,28 @@
         };*@
 
         function UpdatePieChartStages() {
-           var sum = parseFloat(stages_quote_for_buddget) + parseFloat(stages_negotiation_review) + parseFloat(stages_proposal)
-           + parseFloat(stages_perspectng) + parseFloat(stages_won) + parseFloat(stages_lost) + parseFloat(stages_nogo);
+           var sum = parseFloat(stages_quote_for_budget) + parseFloat(stages_negotiation_review) + parseFloat(stages_proposal)
+           + parseFloat(stages_prospectng) + parseFloat(stages_won) + parseFloat(stages_lost) + parseFloat(stages_nogo);
 
-           var percent_stages_quote_for_buddget = (parseFloat(stages_quote_for_buddget) / sum  * 100).toFixed(2);
+           var percent_stages_quote_for_budget = (parseFloat(stages_quote_for_budget) / sum  * 100).toFixed(2);
            var percent_stages_negotiation_review = (parseFloat(stages_negotiation_review) / sum  * 100).toFixed(2);
            var percent_stages_proposal = (parseFloat(stages_proposal) / sum  * 100).toFixed(2);
-           var percent_stages_perspectng = (parseFloat(stages_perspectng) / sum  * 100).toFixed(2);
+           var percent_stages_prospectng = (parseFloat(stages_prospectng) / sum  * 100).toFixed(2);
            var percent_stages_won = (parseFloat(stages_won) / sum  * 100).toFixed(2);
            var percent_stages_lost = (parseFloat(stages_lost) / sum  * 100).toFixed(2);
            var percent_stages_nogo = (parseFloat(stages_nogo) / sum  * 100).toFixed(2);
            var datas = [			       
-			        {y: stages_won,percent:percent_stages_won, label: "Closed (Won)", legendText: "Closed (Won)", color:"#D6D6D6"},
-                    {y: stages_lost,percent:percent_stages_lost, label: "Closed (Lost)", legendText: "Closed (Lost)", color:"#B0B0B0"},
-			        {y: stages_nogo,percent:percent_stages_nogo, label: "No go", legendText: "No go", color:"#7D7D7D"},
-                    {y: stages_quote_for_buddget, percent:percent_stages_quote_for_buddget, label: "Quote for Buddget", legendText: "Quote for Buddget", color:"#083470"},
-			        {y: stages_negotiation_review,percent:percent_stages_negotiation_review, label: "Negotiation Review", legendText: "Negotiation Review", color:"#1C4C97"},
-			        {y: stages_proposal,percent:percent_stages_proposal, label: "Proposal Qoute for Order", legendText: "Proposal Qoute for Order", color:"#2484C6"},
-                    {y: stages_perspectng,percent:percent_stages_perspectng, label: "Prospecting", legendText: "Prospecting", color:"#84C2ED"},
+			        {y: parseFloat(stages_won),percent:percent_stages_won, label: "Closed (Won)", legendText: "Closed (Won)", color:"#D6D6D6"},
+                    {y: parseFloat(stages_lost),percent:percent_stages_lost, label: "Closed (Lost)", legendText: "Closed (Lost)", color:"#B0B0B0"},
+			        {y: parseFloat(stages_nogo),percent:percent_stages_nogo, label: "No go", legendText: "No go", color:"#7D7D7D"},
+                    {y: parseFloat(stages_quote_for_budget), percent:percent_stages_quote_for_budget, label: "Quote for Budget", legendText: "Quote for Budget", color:"#083470"},
+			        {y: parseFloat(stages_negotiation_review),percent:percent_stages_negotiation_review, label: "Negotiation Review", legendText: "Negotiation Review", color:"#1C4C97"},
+			        {y: parseFloat(stages_proposal),percent:percent_stages_proposal, label: "Proposal Qoute for Order", legendText: "Proposal Qoute for Order", color:"#2484C6"},
+                    {y: parseFloat(stages_prospectng),percent:percent_stages_prospectng, label: "Prospecting", legendText: "Prospecting", color:"#84C2ED"},
 		            ];
+            // filter value more than 0
+            datas = datas.filter(x => x.y > 0);
+
             var pie_chart = new CanvasJS.Chart("pie_chart_stages", {
 	        animationEnabled: true,
             backgroundColor: "transparent",
@@ -1164,7 +1185,7 @@
             if (pie_chart_stages != null)
                 pie_chart_stages.destroy();
 
-            var datas = [stages_quote_for_buddget,stages_negotiation_review,stages_proposal,stages_perspectng,stages_won,stages_lost,stages_nogo];
+            var datas = [stages_quote_for_budget,stages_negotiation_review,stages_proposal,stages_prospectng,stages_won,stages_lost,stages_nogo];
 
             var type = ["Quote for Budget", "Negotiation/Review", "Proposal/Quote for Order","Prospecting ","Closed (Won)","Closed (Lost)","No go"];
 
@@ -1207,8 +1228,8 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    var sum = parseFloat(stages_quote_for_buddget) + parseFloat(stages_negotiation_review) + parseFloat(stages_proposal) +
-                                              parseFloat(stages_perspectng) + parseFloat(stages_won) + parseFloat(stages_lost) + parseFloat(stages_nogo);
+                                    var sum = parseFloat(stages_quote_for_budget) + parseFloat(stages_negotiation_review) + parseFloat(stages_proposal) +
+                                              parseFloat(stages_prospectng) + parseFloat(stages_won) + parseFloat(stages_lost) + parseFloat(stages_nogo);
                                     var percent = ((context.parsed / sum) * 100).toFixed(2);
                                     let label = context.dataset.label || context.label;
                                     if (label) {
@@ -1529,6 +1550,7 @@
                 "searching": false,
                 "bInfo": false,
                 "scrollX": true,
+                "ordering":false,
             });
 
             $(tables_performance.table().body()).addClass('text-dark');
@@ -1582,6 +1604,7 @@
                 "searching": false,
                 "bInfo": false,
                 "scrollX": true,
+                "ordering":false,
             });
 
             $(tables_performance_stack.table().body()).addClass('text-dark');
