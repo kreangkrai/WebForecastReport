@@ -70,6 +70,19 @@ namespace WebForecastReport.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult AddWorkingHoursDays(string[] wh_strings)
+        {
+            List<WorkingHoursModel> whs = new List<WorkingHoursModel>();
+            for(int i = 0;i< wh_strings.Count(); i++)
+            {
+                WorkingHoursModel wh = JsonConvert.DeserializeObject<WorkingHoursModel>(wh_strings[i]);
+                var result = WorkingHoursService.AddWorkingHours(wh);
+                //whs.Add(wh);
+            }
+            return Json("Success");
+        }
+
         [HttpPatch]
         public JsonResult EditWorkingHours(string wh_string)
         {
