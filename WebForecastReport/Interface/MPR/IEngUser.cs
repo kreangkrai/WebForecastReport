@@ -9,5 +9,8 @@ namespace WebForecastReport.Interfaces.MPR
     interface IEngUser
     {
         List<EngUserModel> GetUsers();
+        List<EngUserModel> GetEngineerUsers();
+        string CreateEngineerUser(EngUserModel engineer);
+        string UpdateEngineerUser(EngUserModel engineer);
     }
 }

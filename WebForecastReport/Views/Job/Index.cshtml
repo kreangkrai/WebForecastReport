@@ -83,12 +83,12 @@
                         <input id="job_name" type="text" class="form-control" placeholder="Job Name" />
                     </div>
                     <div class="form-group">
-                        <label for="sale_department">Sale Department</label>
-                        <select id="sale_department" class="form-control"></select>
-                    </div>
-                    <div class="form-group">
                         <label for="sale">Sale</label>
                         <select id="sale" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sale_department">Sale Department</label>
+                        <input id="sale_department" type="text" class="form-control" placeholder="Department" disabled/>
                     </div>
                     <div class="form-group row">
                         <div class="col-xl-6">
@@ -125,7 +125,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" hidden>
                         <label for="status">Status</label>
                         <input id="status" type="text" class="form-control" placeholder="Job Status" />
                     </div>
@@ -150,7 +150,7 @@
 
         //Change these parameters to true to show result
         var debug_jobs = false;
-        var debug_user = false;
+        var debug_user = true;
         var debug_job_string = false;
 
         $(document).ready(function () {
@@ -167,7 +167,7 @@
                     jobs = response;
                     if (debug_jobs)
                         console.log(jobs);
-                    GenerateTable(response);
+                    GenerateTable(jobs);
                 }
             });
         };
@@ -175,7 +175,7 @@
         async function GetUsers() {
             await $.ajax({
                 type: "GET",
-                url: '@Url.Action("GetUsers", "User2")',
+                url: '@Url.Action("GetUsers", "EngUser")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: { },
                 success: function (response) {
@@ -235,23 +235,15 @@
             });
         };
 
-        $('#btn_create').on('click', function () {
-                GetUsers().then(() => GenerateUsersOption())
-                .then(() => Prepmodal());
+        $('#btn_create').on('click', async function () {
+            await GetUsers();
+            await GenerateUsersOption();
+            await Prepmodal();
         });
-
-        function GenerateDepartmentsOption() {
-            $('#sale_department').empty();
-            var sale_dep_string = '<option value="">Please Select Department</option>';
-            for (var i = 0; i < departments.length; i++) {
-                sale_dep_string += '<option value="' + departments[i].department_name + '">' + departments[i].department_name + '</option>';
-            }
-            $('#sale_department').append(sale_dep_string);
-        }
 
         function GenerateUsersOption() {
             $('#sale').empty();
-            var sale_str = '<option value="">Please Select Sale</option>';
+            var sale_str = '<option value="" selected disabled>Please Select Sale</option>';
             for (var i = 0; i < users.length; i++) {
                 sale_str += '<option value="' + users[i].user_id + '">' + users[i].user_name + '</option>';
             }
@@ -264,17 +256,18 @@
             $('#modal_title').text("Create Job");
             $('#job_id').val(null);
             $('#job_name').val(null);
-            $('#sale_department').val(null);
             $('#sale').val(null);
+            $('#sale_department').val(null);
             $('#cost').val(null);
             $('#md').val(null);
             $('#pd').val(null);
             $('#status').val(null);
         };
 
-        $('#table_job tbody').on('click', 'tr', function () {
-            GetUsers().then(() => GenerateUsersOption())
-            .then(() => EditJob(table.row(this).data()));
+        $('#table_job tbody').on('click', 'tr', async function () {
+            await GetUsers();
+            await GenerateUsersOption();
+            await EditJob(table.row(this).data());
         });
 
         function EditJob(data) {
@@ -300,6 +293,12 @@
             $('#pd').val(pd);
             $('#status').val(status);
         }
+
+        $('#sale').on('change', function () {
+            var user_id = $('#sale').val();
+            var user = users.filter(f => f.user_id === user_id);
+            $('#sale_department').val(user[0].department);
+        });
 
         $('#btn_save').on('click', function () {
             var job_id = $('#job_id').val();

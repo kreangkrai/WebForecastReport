@@ -15,31 +15,32 @@
 </div>
 <div class="row px-3">
     <div class="col-xl-6">
-        <div class="card card-dark">
+        <div class="card bg-dark" style="height:600px">
             <div class="card-header">
                 <span class="card-title"><i class="fas fa-chart-pie"></i> Manpower Ratio</span>
             </div>
-            <div class="card-body">
-                <div>
+            <div class="card-body p-1">
+                <div id="whr_chart" class="h-100 w-100"></div>
+                @*<div>
                     <canvas id="myChart1" height="400"></canvas>
-                </div>
+                </div>*@
             </div>
         </div>
     </div>
     <div class="col-xl-6">
-        <div class="card card-dark">
+        <div class="card bg-dark" style="height:600px">
             <div class="card-header">
                 <span class="card-title"><i class="fas fa-chart-bar"></i> Tasks Working Hours</span>
             </div>
             <div class="card-body">
-                <div>
-                    <canvas id="myChart3" height="400"></canvas>
+                <div class="h-100 w-100">
+                    <canvas id="myChart3"></canvas>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-xl-12" hidden>
-        <div class="card card-dark">
+        <div class="card bg-dark">
             <div class="card-header">
                 <span class="card-title">Table</span>
             </div>
@@ -68,25 +69,26 @@
 </div>
 <div class="row px-3">
     <div class="col-xl-6">
-        <div class="card card-dark">
+        <div class="card bg-dark" style="height:600px">
             <div class="card-header">
                 <span class="card-title">Staff Involve Ratio</span>
             </div>
             <div class="card-body">
-                <div>
-                    <canvas id="myChart2" height="400"></canvas>
-                </div>
+                <div id="inv_chart" class="h-100 w-100"></div>
+                @*<div class="w-100 h-100">
+                    <canvas id="myChart2"></canvas>
+                </div>*@
             </div>
         </div>
     </div>
     <div class="col-xl-6">
-        <div class="card card-dark">
+        <div class="card bg-dark" style="height:600px">
             <div class="card-header">
                 <span class="card-title">Staff Hours Involve</span>
             </div>
             <div class="card-body">
-                <div>
-                    <canvas id="myChart4" height="400"></canvas>
+                <div class="w-100 h-100">
+                    <canvas id="myChart4"></canvas>
                 </div>
             </div>
         </div>
@@ -211,7 +213,49 @@
                 hours.push(whs_ratio[i].hours);
             }
 
-            const ctx1 = document.getElementById('myChart1').getContext('2d');
+            var whr_data = [];
+            for (var i = 0; i < whs_ratio.length; i++) {
+                whr_data.push(
+                    {
+                        y: whs_ratio[i].hours,
+                        indexLabel: whs_ratio[i].hours + " Hours - " + whs_ratio[i].task_name,
+                        indexLabelFontSize: 14,
+                        indexLabelFontFamily: "san-seriff",
+                        indexLabelFontColor: "white",
+                        legendText: whs_ratio[i].task_name,
+                    }
+                );
+            }
+
+            var whr_chart = new CanvasJS.Chart("whr_chart",
+                {
+                    title: {
+                        text: "Total Working Hour",
+                        fontSize: 18,
+                        fontFamily: "san-seriff",
+                        fontWeight: "bold",
+                        fontColor: "white",
+                    },
+                    legend: {
+                        fontSize: 14,
+                        fontFamily: "san-seriff",
+                        fontColor: "white",
+                        fontWeight: "normal",
+                    },
+                    backgroundColor: "transparent",
+                    data: [{
+                        type: "doughnut",
+                        radius: "50%",
+                        showInLegend: true,
+                        toolTipContent: "{y} Hours - {legendText}",
+                        legendText: "{legendText}",
+                        dataPoints: whr_data,
+                    }],
+                }
+            );
+            whr_chart.render();
+
+            @*const ctx1 = document.getElementById('myChart1').getContext('2d');
             const myChart1 = new Chart(ctx1, {
                 type: 'doughnut',
                 data: {
@@ -245,7 +289,7 @@
                         },
                     },
                 }
-            });
+            });*@
 
             const ctx3 = document.getElementById('myChart3').getContext('2d');
             const myChart3 = new Chart(ctx3, {
@@ -256,12 +300,12 @@
                         label: "Total Working Hours",
                         data: hours,
                         backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)',
+                            'rgba(255, 159, 64, 0.8)'
                         ],
                         borderColor: [
                             'rgba(255, 99, 132, 1)',
@@ -290,7 +334,49 @@
                 hours.push(inv_ratio[i].hours);
             }
 
-            const ctx2 = document.getElementById('myChart2').getContext('2d');
+            var inv_data = [];
+            for (var i = 0; i < inv_ratio.length; i++) {
+                inv_data.push(
+                    {
+                        y: inv_ratio[i].hours,
+                        indexLabel: inv_ratio[i].hours + " Hours - " + inv_ratio[i].user_name,
+                        indexLabelFontSize: 14,
+                        indexLabelFontFamily: "san-seriff",
+                        indexLabelFontColor: "white",
+                        legendText: inv_ratio[i].user_name,
+                    }
+                );
+            }
+
+            var inv_chart = new CanvasJS.Chart("inv_chart",
+                {
+                    title: {
+                        text: "Total Working Hour",
+                        fontSize: 18,
+                        fontFamily: "san-seriff",
+                        fontWeight: "bold",
+                        fontColor: "white",
+                    },
+                    legend: {
+                        fontSize: 14,
+                        fontFamily: "san-seriff",
+                        fontColor: "white",
+                        fontWeight: "normal",
+                    },
+                    backgroundColor: "transparent",
+                    data: [{
+                        type: "doughnut",
+                        radius: "50%",
+                        showInLegend: true,
+                        toolTipContent: "{y} Hours - {legendText}",
+                        legendText: "{legendText}",
+                        dataPoints: inv_data,
+                    }],
+                }
+            );
+            inv_chart.render();
+
+            @*const ctx2 = document.getElementById('myChart2').getContext('2d');
             const myChart2 = new Chart(ctx2, {
                 type: 'doughnut',
                 data: {
@@ -326,7 +412,7 @@
                         },
                     }
                 }
-            });
+            });*@
 
             const ctx4 = document.getElementById('myChart4').getContext('2d');
             const myChart4 = new Chart(ctx4, {
@@ -337,12 +423,12 @@
                         label: 'Total Hours Involve',
                         data: hours,
                         backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)',
+                            'rgba(255, 159, 64, 0.8)'
                         ],
                         borderColor: [
                             'rgba(255, 99, 132, 1)',
