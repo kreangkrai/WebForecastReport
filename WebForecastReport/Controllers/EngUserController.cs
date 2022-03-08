@@ -51,5 +51,28 @@ namespace WebForecastReport.Controllers
             List<EngUserModel> users = EngUserService.GetUsers().OrderBy(o => o.user_id).ToList();
             return Json(users);
         }
+
+        [HttpGet]
+        public JsonResult GetEngineerUsers()
+        {
+            List<EngUserModel> engineers = EngUserService.GetEngineerUsers().OrderBy(o => o.user_id).ToList();
+            return Json(engineers);
+        }
+
+        [HttpPost]
+        public JsonResult CreateEngineerUser(string user_string)
+        {
+            EngUserModel eng = JsonConvert.DeserializeObject<EngUserModel>(user_string);
+            var result = EngUserService.CreateEngineerUser(eng);
+            return Json(result);
+        }
+
+        [HttpPatch]
+        public JsonResult UpdateEngineerUser(string user_string)
+        {
+            EngUserModel eng = JsonConvert.DeserializeObject<EngUserModel>(user_string);
+            var result = EngUserService.UpdateEngineerUser(eng);
+            return Json(result);
+        }
     }
 }
