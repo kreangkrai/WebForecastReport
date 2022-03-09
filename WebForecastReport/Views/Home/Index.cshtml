@@ -623,6 +623,7 @@
 		        yValueFormatString: "##0.00\"\"",
 		        indexLabel: "{label} : {y} MB , {percent} %",
                 indexLabelFontColor: "white",
+                toolTipContent: "{label} : {y} MB , {percent} %",
 		        dataPoints: datas,
 	        }],
             legend: {
@@ -729,6 +730,7 @@
 		        yValueFormatString: "##0.00\"\"",
 		        indexLabel: "{label} : {y} MB , {percent} %",
                 indexLabelFontColor: "white",
+                toolTipContent: "{label} : {y} MB , {percent} %",
 		        dataPoints: datas,
 	        }],
             legend: {
@@ -834,6 +836,7 @@
 		        yValueFormatString: "##0.00\"\"",
 		        indexLabel: "{label} : {y} MB , {percent} %",
                 indexLabelFontColor: "white",
+                toolTipContent: "{label} : {y} MB , {percent} %",
 		        dataPoints: datas,
 	        }],
             legend: {
@@ -942,6 +945,7 @@
 		        yValueFormatString: "##0.00\"\"",
 		        indexLabel: "{label} : {y} MB , {percent} %",
                 indexLabelFontColor: "white",
+                toolTipContent: "{label} : {y} MB , {percent} %",
 		        dataPoints: datas,
 	        }],
             legend: {
@@ -1049,6 +1053,7 @@
 		        yValueFormatString: "##0.00\"\"",
 		        indexLabel: "{label} : {y} MB , {percent} %",
                 indexLabelFontColor: "white",
+                toolTipContent: "{label} : {y} MB , {percent} %",
 		        dataPoints: datas,
 	        }],
             legend: {
@@ -1136,14 +1141,14 @@
            var percent_stages_won = (parseFloat(stages_won) / sum  * 100).toFixed(2);
            var percent_stages_lost = (parseFloat(stages_lost) / sum  * 100).toFixed(2);
            var percent_stages_nogo = (parseFloat(stages_nogo) / sum  * 100).toFixed(2);
-           var datas = [			       
-			        {y: parseFloat(stages_won),percent:percent_stages_won, label: "Closed (Won)", legendText: "Closed (Won)", color:"#D6D6D6"},
-                    {y: parseFloat(stages_lost),percent:percent_stages_lost, label: "Closed (Lost)", legendText: "Closed (Lost)", color:"#B0B0B0"},
-			        {y: parseFloat(stages_nogo),percent:percent_stages_nogo, label: "No go", legendText: "No go", color:"#7D7D7D"},
+           var datas = [			       			        
                     {y: parseFloat(stages_quote_for_budget), percent:percent_stages_quote_for_budget, label: "Quote for Budget", legendText: "Quote for Budget", color:"#083470"},
 			        {y: parseFloat(stages_negotiation_review),percent:percent_stages_negotiation_review, label: "Negotiation Review", legendText: "Negotiation Review", color:"#1C4C97"},
 			        {y: parseFloat(stages_proposal),percent:percent_stages_proposal, label: "Proposal Qoute for Order", legendText: "Proposal Qoute for Order", color:"#2484C6"},
                     {y: parseFloat(stages_prospectng),percent:percent_stages_prospectng, label: "Prospecting", legendText: "Prospecting", color:"#84C2ED"},
+                    {y: parseFloat(stages_won),percent:percent_stages_won, label: "Closed (Won)", legendText: "Closed (Won)", color:"#D6D6D6"},
+                    {y: parseFloat(stages_lost),percent:percent_stages_lost, label: "Closed (Lost)", legendText: "Closed (Lost)", color:"#B0B0B0"},
+			        {y: parseFloat(stages_nogo),percent:percent_stages_nogo, label: "No go", legendText: "No go", color:"#7D7D7D"},
 		            ];
             // filter value more than 0
             datas = datas.filter(x => x.y > 0);
@@ -1161,10 +1166,12 @@
 	        data: [{
 		        type: "pie",
                 showInLegend: true,
-		        startAngle: 240,
+		        startAngle: 0,
+                radius: "75%",
 		        yValueFormatString: "##0.00\"\"",
 		        indexLabel: "{label} : {y} MB , {percent} %",
                 indexLabelFontColor: "white",
+                toolTipContent: "{label} : {y} MB , {percent} %",
 		        dataPoints: datas,
 	        }],
             legend: {
