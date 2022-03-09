@@ -228,7 +228,7 @@ namespace WebForecastReport.Service
             try
             {
                 List<SaleModel> sales = new List<SaleModel>();
-                SqlCommand cmd = new SqlCommand("select Distinct sale_name,department from Quotation order by sale_name", ConnectSQL.OpenConnect());
+                SqlCommand cmd = new SqlCommand("select Distinct sale_name,department from Quotation where sale_name <> '' order by sale_name", ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {

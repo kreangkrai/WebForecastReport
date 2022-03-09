@@ -160,12 +160,19 @@ namespace WebForecastReport.Service
             try
             {
                 List<Home_StagesModel> stages = new List<Home_StagesModel>();
-                SqlCommand cmd = new SqlCommand(@"select sale_name,
-                                                         stages,
-                                                         format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as mb
-                                                  from Quotation 
-                                                  where sale_name = '" + name + "' and stages_update_date like '" + year + "%' and stages <> ''" +
-                                                 "group by sale_name,stages having stages <> ''", ConnectSQL.OpenConnect());
+                string command = string.Format($@"declare @sale nvarchar(30)
+                                                declare @year nvarchar(10)
+                                                declare @million as float
+                                                set @sale = '{name}';
+                                                set @year = '{year}';
+                                                set @million = 1000000;
+                                                select sale_name,
+                                                stages,
+                                                format(sum(cast(replace(quoted_price,',','') as float))/ @million,'N2') as mb
+                                                from Quotation 
+                                                where sale_name = @sale and CAST(YEAR(stages_update_date) AS VARCHAR(4)) = @year and ( stages <> '' and stages is not null)
+                                                group by sale_name,stages");
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
