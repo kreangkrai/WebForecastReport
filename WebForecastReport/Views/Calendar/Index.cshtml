@@ -269,6 +269,7 @@
                     if (debug_wh_day)
                         console.log(response);
                     wh_day = response;
+
                 }
             });
         }
@@ -511,7 +512,7 @@
         function PrepmodalTask(date_start) {
             $('#modal_task').modal();
             $('#modal_task_title').text("Add Task");
-            $('#user_id').val("Korakod.P");
+            $('#user_id').val('@Model.name');
             $('#working_date_group').show();
             $('#working_date').attr('disabled', true);
             $('#working_date').val(date_start);
@@ -560,7 +561,7 @@
         function PrepmodalTasks(date_start, date_end) {
             $('#modal_task').modal();
             $('#modal_task_title').text("Add Tasks");
-            $('#user_id').val("Korakod.P");
+            $('#user_id').val('@Model.name');
             $('#working_date_group').hide();
             $('#working_date').attr('disabled', true);
             $('#working_date').val(null);
