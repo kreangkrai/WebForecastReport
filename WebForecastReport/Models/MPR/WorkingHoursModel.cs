@@ -17,6 +17,7 @@ namespace WebForecastReport.Models.MPR
         public string task_name { get; set; }
         public TimeSpan start_time { get; set; }
         public TimeSpan stop_time { get; set; }
+        public string wh_type { get; set; }
         public bool lunch { get; set; }
         public bool dinner { get; set; }
         public string note { get; set; }

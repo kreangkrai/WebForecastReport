@@ -86,7 +86,6 @@ namespace WebForecastReport.Controllers
             {
                 WorkingHoursModel wh = JsonConvert.DeserializeObject<WorkingHoursModel>(wh_strings[i]);
                 var result = WorkingHoursService.AddWorkingHours(wh);
-                //whs.Add(wh);
             }
             return Json("Success");
         }
