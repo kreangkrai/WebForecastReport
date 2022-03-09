@@ -19,11 +19,13 @@ namespace WebForecastReport.Controllers
     {
         readonly IWorkingHours WorkingHoursService;
         readonly IAccessory Accessory;
+        readonly IEngUser EngineerService;
 
         public CalendarController()
         {
             WorkingHoursService = new WorkingHoursService();
             Accessory = new AccessoryService();
+            EngineerService = new EngUserService();
         }
 
         public IActionResult Index()
@@ -44,6 +46,12 @@ namespace WebForecastReport.Controllers
             {
                 return RedirectToAction("Index", "Account");
             }
+        }
+
+        [HttpGet]
+        public bool CheckAllowEditable(string user_id)
+        {
+            return EngineerService.CheckAllowEditable(user_id);
         }
 
         [HttpGet]

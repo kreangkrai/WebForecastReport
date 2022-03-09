@@ -11,6 +11,38 @@ namespace WebForecastReport.Services.MPR
 {
     public class EngUserService : IEngUser
     {
+        public bool CheckAllowEditable(string user_id)
+        {
+            bool allow = false;
+            try
+            {
+                string string_command = string.Format($@"SELECT allow_edit FROM EngineerUsers Where user_id = '{user_id}'");
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (cmd.Connection.State != System.Data.ConnectionState.Open)
+                {
+                    cmd.Connection.Close();
+                    cmd.Connection.Open();
+                }
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        allow = dr["allow_edit"] != DBNull.Value ? Convert.ToBoolean(dr["allow_edit"]) : false;
+                    }
+                    dr.Close();
+                }
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+            return allow;
+        }
+
         public List<EngUserModel> GetUsers()
         {
             List<EngUserModel> users = new List<EngUserModel>();
