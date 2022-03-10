@@ -137,6 +137,7 @@
         var calendar;
         var calendarEl;
         var update = false;
+        var drag = false;
 
         //Change these variable to true for show data response
         var debug_user = false;
@@ -348,8 +349,24 @@
                 events: datas,
                 height: 750,
                 editable: true,
-                eventDrop: function (info) {
-                    DropTask(info.event);
+                eventDrop: async function (info) {
+                    var enable = false;
+                    var drop_date = new Date(info.event.startStr.split("T")[0]);
+                    var today = new Date();
+                    var date_diff = Math.floor((today - drop_date) / (1000 * 60 * 60 * 24));
+                    if (date_diff < 15) {
+                        enable = true;
+                    }
+                    else {
+                        enable = await CheckAllowEditable();
+                    }
+
+                    if (enable === true) {
+                        DropTask(info.event);
+                    }
+                    else {
+                        info.revert();
+                    }
                 },
                 selectable: true,
                 select: function (info) {
@@ -706,6 +723,7 @@
         }
 
         function DropTask(event) {
+            drag = true;
             var task = event.extendedProps;
             var wh_string = JSON.stringify({
                 "index": task.index,
@@ -823,7 +841,13 @@
                     wh_string
                 },
                 success: function (response) {
-                    
+                    if (response == "Success") {
+                        if (!drag)
+                            location.reload();
+                    }
+                    else {
+                        alert(response);
+                    }
                 }
             });
         }
