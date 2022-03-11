@@ -90,9 +90,9 @@
                             <label for="wh_type">WH Type</label>
                             <select id="wh_type" class="form-control">
                                 <option value="" selected disabled>Please Select Type</option>
-                                <option value="REG">Regular</option>
-                                <option value="OT1_5">OT 1.5</option>
-                                <option value="OT3">OT 3.0</option>
+                                <option id="wh_option1" value="REG">Regular</option>
+                                <option id="wh_option2" value="OT1_5">OT 1.5</option>
+                                <option id="wh_option3" value="OT3">OT 3.0</option>
                             </select>
                         </div>
                     </div>
@@ -129,8 +129,8 @@
 <div class="modal fade" id="modal_alert" tabindex="-1" role="dialog" data-backdrop="static">
     <div class="modal-lg modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal_task_title">Alert</h5>
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="modal_alert_title">Alert</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -160,6 +160,7 @@
         var calendarEl;
         var update = false;
         var drag = false;
+        var overlap = false;
 
         //Change these variable to true for show data response
         var debug_user = false;
@@ -384,7 +385,12 @@
                 height: 750,
                 editable: true,
                 eventOverlap: function (stillEvent, movingEvent) {
-                    return false;
+                    if (stillEvent.overlap === true) {
+                        overlap = false;
+                    } else {
+                        overlap = true;
+                    }
+                    return true;
                 },
                 eventDrop: async function (info) {
                     var enable = false;
@@ -392,6 +398,14 @@
                     var today = new Date();
                     var date_diff = Math.floor((today - drop_date) / (1000 * 60 * 60 * 24));
 
+                    if (overlap === true) {
+                        $('#modal_alert_title').text('Alert Task Overlap');
+                        $('#alert_content').html('<p>Task Overlap</p>');
+                        $('#modal_alert').modal();
+                        info.revert();
+                        return;
+                    }
+                        
                     if (date_diff < 15) {
                         enable = true;
                     }
@@ -403,6 +417,7 @@
                         DropTask(info.event);
                     }
                     else {
+                        $('#modal_alert_title').text('Alert Edit Task');
                         $('#alert_content').html('<p>You are not allow to edit task in beyond past 2 weeks</p>');
                         $('#modal_alert').modal();
                         info.revert();
@@ -447,6 +462,7 @@
                         display: 'background',
                         color: "#FF9999",
                         allDay: true,
+                        overlap: true,
                         resourceEditable: false
                     }
                 );
@@ -592,7 +608,17 @@
             $('#task_id').attr('disabled', true);
             $('#start_time').val(null);
             $('#stop_time').val(null);
-            $('#wh_type').val("REG");
+
+            var date = new Date(date_start);
+            if (date.getDay() == 0 || date.getDay() == 6) {
+                $('#wh_option1').hide();
+                $('#wh_type').val("OT1_5");
+            }
+            else {
+                $('#wh_option1').show();
+                $('#wh_type').val("REG");
+            }
+
             $('#lunch').prop('checked', true);
             $('#dinner').prop('checked', false);
             $('#note').val(null);

@@ -26,10 +26,72 @@
                 @if (Model.role == "Admin")
                 {
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Analysis" asp-action="Index">
+                        <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-info-circle"></i>
-                            <p class="text-bold">ANALYSIS</p>
+                            <p class="text-bold">ANALYSIS<i class="right fas fa-angle-left"></i></p>
                         </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Analysis" asp-action="Index">
+                                    <i class="nav-icon fas fa-info-circle"></i>
+                                    <p>Analysis</p>
+                                </a>
+                            </li>
+                            <li class="nav-item" hidden>
+                                <a class="nav-link" asp-controller="Analysis" asp-action="OverallWorkload">
+                                    <i class="nav-icon fas fa-info-circle"></i>
+                                    <p>Overall Workload</p>
+                                </a>
+                            </li>
+                            <li class="nav-item" hidden>
+                                <a class="nav-link" asp-controller="Analysis" asp-action="OverallWorkload">
+                                    <i class="nav-icon fas fa-info-circle"></i>
+                                    <p>Manpower</p>
+                                </a>
+                            </li>
+                            <li class="nav-item" hidden>
+                                <a class="nav-link" asp-controller="Analysis" asp-action="OverallWorkload">
+                                    <i class="nav-icon fas fa-info-circle"></i>
+                                    <p>Manpower Acc.</p>
+                                </a>
+                            </li>
+                            <li class="nav-item" hidden>
+                                <a class="nav-link" asp-controller="Analysis" asp-action="OverallWorkload">
+                                    <i class="nav-icon fas fa-info-circle"></i>
+                                    <p>Manpower Ratio</p>
+                                </a>
+                            </li>
+                            <li class="nav-item" hidden>
+                                <a class="nav-link" asp-controller="Analysis" asp-action="OverallWorkload">
+                                    <i class="nav-icon fas fa-info-circle"></i>
+                                    <p>Project Acc. Manpower</p>
+                                </a>
+                            </li>
+                            <li class="nav-item" hidden>
+                                <a class="nav-link" asp-controller="Analysis" asp-action="OverallWorkload">
+                                    <i class="nav-icon fas fa-info-circle"></i>
+                                    <p>Task Manpower</p>
+                                </a>
+                            </li>
+                            <li class="nav-item" hidden>
+                                <a class="nav-link" asp-controller="Analysis" asp-action="OverallWorkload">
+                                    <i class="nav-icon fas fa-info-circle"></i>
+                                    <p>Task Manpower Acc.</p>
+                                </a>
+                            </li>
+                            <li class="nav-item" hidden>
+                                <a class="nav-link" asp-controller="Analysis" asp-action="OverallWorkload">
+                                    <i class="nav-icon fas fa-info-circle"></i>
+                                    <p>Project Task Distribution</p>
+                                </a>
+                            </li>
+                            <li class="nav-item" hidden>
+                                <a class="nav-link" asp-controller="Analysis" asp-action="OverallWorkload">
+                                    <i class="nav-icon fas fa-info-circle"></i>
+                                    <p>Task Ratio</p>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 }
 
@@ -71,14 +133,14 @@
                     </li>
                 }
 
-                
+
                 <li class="nav-item pt-2">
-                        <a class="nav-link" asp-controller="Main" asp-action="Index">
-                            <i class="nav-icon fas fa-project-diagram"></i>
-                            <p class="text-bold">SELECT MODULE</p>
-                        </a>
+                    <a class="nav-link" asp-controller="Main" asp-action="Index">
+                        <i class="nav-icon fas fa-project-diagram"></i>
+                        <p class="text-bold">SELECT MODULE</p>
+                    </a>
                 </li>
-                
+
 
                 <li class="nav-item pt-2">
                     <a class="nav-link" asp-controller="Account" asp-action="Index">
