@@ -125,6 +125,28 @@
     </div>
 </div>
 
+<!-- Modal Alert -->
+<div class="modal fade" id="modal_alert" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-lg modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_task_title">Alert</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="alert_content" class="form-group">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts
 {
     <script type="text/javascript">
@@ -314,20 +336,20 @@
                         allDay: false,
                         editable: true,
                         extendedProps: {
-                            index: whs[i].index,
-                            user_id: whs[i].user_id,
-                            user_name: whs[i].user_name,
-                            working_date: whs[i].working_date,
-                            job_id: whs[i].job_id,
-                            job_name: whs[i].job_name,
-                            task_id: whs[i].task_id,
-                            task_name: whs[i].task_name,
-                            start_time: whs[i].start_time,
-                            stop_time: whs[i].stop_time,
-                            wh_type: whs[i].wh_type,
-                            lunch: whs[i].lunch,
-                            dinner: whs[i].dinner,
-                            note: whs[i].note,
+                            "index": whs[i].index,
+                            "user_id": whs[i].user_id,
+                            "user_name": whs[i].user_name,
+                            "working_date": whs[i].working_date,
+                            "job_id": whs[i].job_id,
+                            "job_name": whs[i].job_name,
+                            "task_id": whs[i].task_id,
+                            "task_name": whs[i].task_name,
+                            "start_time": whs[i].start_time,
+                            "stop_time": whs[i].stop_time,
+                            "wh_type": whs[i].wh_type,
+                            "lunch": whs[i].lunch,
+                            "dinner": whs[i].dinner,
+                            "note": whs[i].note,
                         }
                     }
                 );
@@ -341,6 +363,18 @@
             calendarEl = document.getElementById('calendar');
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
+                views: {
+                    dayGridMonth: {
+                        displayEventTime: true,
+                        displayEventEnd: true,
+                        eventTimeFormat: {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: false,
+                            meridiem: false
+                        }
+                    }
+                },
                 headerToolbar: {
                     left: 'dayGridMonth,listMonth,timeGridWeek,timeGridDay',
                     center: 'title',
@@ -369,6 +403,8 @@
                         DropTask(info.event);
                     }
                     else {
+                        $('#alert_content').html('<p>You are not allow to edit task in beyond past 2 weeks</p>');
+                        $('#modal_alert').modal();
                         info.revert();
                     }
                 },
@@ -395,6 +431,7 @@
                     display: 'background',
                     color: "#CCCCCC",
                     allDay: true,
+                    overlap: true,
                     resourceEditable: false
                 }
             ];
@@ -729,6 +766,7 @@
         function DropTask(event) {
             drag = true;
             var task = event.extendedProps;
+            task.working_date = event.startStr.split("T")[0];
             var wh_string = JSON.stringify({
                 "index": task.index,
                 "user_id": task.user_id,
@@ -743,6 +781,7 @@
                 "note": task.note,
             });
             UpdateWorkingHours(wh_string);
+            event.setExtendedProp("working_date", event.startStr.split("T")[0]);
         }
 
         async function PrepmodalEditTask(task) {
