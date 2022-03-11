@@ -686,6 +686,14 @@
             document.getElementById("stop_time").min = start_time;
             $('#stop_time').attr('disabled', false);
             $('#stop_time').val(start_time);
+            var date = new Date($('#working_date').val());
+            date.setHours($('#start_time').val().split(":")[0]);
+            date.setMinutes($('#start_time').val().split(":")[1]);
+            if (date.getDay() == 0 || date.getDay() == 7) {
+                $('#wh_type').val("OT1_5");
+            } else if (date.getHours() >= 17 && date.getMinutes() >= 30) {
+                $('#wh_type').val("OT1_5");
+            }
         });
 
         $('#btn_accept').on('click', function () {
