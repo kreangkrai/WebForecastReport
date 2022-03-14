@@ -117,9 +117,16 @@
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="btn_accept" type="button" class="btn btn-primary">Accept</button>
+            <div class="modal-footer d-flex">
+                <button id="btn_delete" type="button" class="btn btn-danger mr-auto elevation-1">
+                    <i class="fas fa-trash-alt"></i> Delete
+                </button>
+                <button type="button" class="btn btn-secondary elevation-1" data-dismiss="modal">
+                    <i class="fas fa-times"></i> Close
+                </button>
+                <button id="btn_accept" type="button" class="btn btn-primary elevation-1">
+                    <i class="fas fa-check"></i> Accept
+                </button>                
             </div>
         </div>
     </div>
@@ -127,7 +134,7 @@
 
 <!-- Modal Alert -->
 <div class="modal fade" id="modal_alert" tabindex="-1" role="dialog" data-backdrop="static">
-    <div class="modal-lg modal-dialog modal-dialog-centered" role="document">
+    <div class="modal modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header bg-warning">
                 <h5 class="modal-title" id="modal_alert_title">Alert</h5>
@@ -147,6 +154,35 @@
     </div>
 </div>
 
+<!-- Modal Delete -->
+<div id="modal_delete" class="modal fade">
+    <div class="modal modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title" id="modal_alert_title">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <span>Are you sure you want to delete this ?</span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer d-flex">
+                <button id="btn_confirm_delete" type="button" class="btn btn-danger elevation-1 mr-auto">
+                    <i class="fas fa-trash-alt"></i> Confirm Delete
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts
 {
     <script type="text/javascript">
@@ -160,7 +196,7 @@
         var calendarEl;
         var update = false;
         var drag = false;
-        var overlap = false;
+        var overlap = true;
 
         //Change these variable to true for show data response
         var debug_user = false;
@@ -280,7 +316,6 @@
                     if (debug_wh_day)
                         console.log(response);
                     wh_day = response;
-
                 }
             });
         }
@@ -325,6 +360,39 @@
             $('#filter_task').append(task_str);
         }
 
+        async function CheckDropOverlap(task, date) {
+            var start_time = new Date();
+            start_time.setHours(task.start_time.split(":")[0]);
+            start_time.setMinutes(task.start_time.split(":")[1]);
+            start_time.setSeconds(0);
+            start_time.setMilliseconds(0);
+            var stop_time = new Date();
+            stop_time.setHours(task.stop_time.split(":")[0]);
+            stop_time.setMinutes(task.stop_time.split(":")[1]);
+            stop_time.setSeconds(0);
+            stop_time.setMilliseconds(0);
+            await GetWorkingHoursByDate("@Model.name", date);
+            for (var i = 0; i < wh_day.length; i++) {
+                var task_start = new Date();
+                task_start.setHours(wh_day[i].start_time.split(":")[0]);
+                task_start.setMinutes(wh_day[i].start_time.split(":")[1]);
+                task_start.setSeconds(0);
+                task_start.setMilliseconds(0);
+                var task_stop = new Date();
+                task_stop.setHours(wh_day[i].stop_time.split(":")[0]);
+                task_stop.setMinutes(wh_day[i].stop_time.split(":")[1]);
+                task_stop.setSeconds(0);
+                task_stop.setMilliseconds(0);
+                if (start_time >= task_start && start_time < task_stop) {
+                    return true;
+                }
+                if (stop_time >= task_start && stop_time < task_stop) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         function GenerateCalendar(whs) {
             var datas = [];
             for (var i = 0; i < whs.length; i++) {
@@ -336,6 +404,7 @@
                         end: start_date.setHours(whs[i].stop_time.split(":")[0], whs[i].stop_time.split(":")[1]),
                         allDay: false,
                         editable: true,
+                        overlap: true,
                         extendedProps: {
                             "index": whs[i].index,
                             "user_id": whs[i].user_id,
@@ -384,28 +453,21 @@
                 events: datas,
                 height: 750,
                 editable: true,
-                eventOverlap: function (stillEvent, movingEvent) {
-                    if (stillEvent.overlap === true) {
-                        overlap = false;
-                    } else {
-                        overlap = true;
-                    }
-                    return true;
-                },
                 eventDrop: async function (info) {
                     var enable = false;
                     var drop_date = new Date(info.event.startStr.split("T")[0]);
                     var today = new Date();
                     var date_diff = Math.floor((today - drop_date) / (1000 * 60 * 60 * 24));
-
-                    if (overlap === true) {
+                    var drop_overlap = await CheckDropOverlap(info.event.extendedProps, drop_date.toISOString().split("T")[0]);
+                    console.log("Drop Overlap: " + drop_overlap);
+                    if (drop_overlap === true) {
                         $('#modal_alert_title').text('Alert Task Overlap');
                         $('#alert_content').html('<p>Task Overlap</p>');
                         $('#modal_alert').modal();
                         info.revert();
                         return;
                     }
-                        
+
                     if (date_diff < 15) {
                         enable = true;
                     }
@@ -529,7 +591,7 @@
                 update = false;
                 if (wh_day !== null) {
                     wh_day = [];
-                }   
+                }
                 await GetUsers();
                 await GenerateUsersOption();
                 await GetWorkingHoursByDate("@Model.name", date_start);
@@ -622,6 +684,7 @@
             $('#lunch').prop('checked', true);
             $('#dinner').prop('checked', false);
             $('#note').val(null);
+            $('#btn_delete').hide();
         }
 
         function PrepmodalTasks(date_start, date_end) {
@@ -643,6 +706,7 @@
             $('#lunch').prop('checked', true);
             $('#dinner').prop('checked', false);
             $('#note').val(null);
+            $('#btn_delete').hide();
         }
 
         $('#job_id').on('change', function () {
@@ -696,7 +760,7 @@
             }
         });
 
-        $('#btn_accept').on('click', function () {
+        $('#btn_accept').on('click', async function () {
             var user_id = $('#user_id').val();
             var working_date = $('#working_date').val();
 
@@ -741,7 +805,7 @@
                     "dinner": dinner,
                     "note": note,
                 });
-                UpdateWorkingHours(wh_string);
+                await UpdateWorkingHours(wh_string);
             }
             else {
                 if (working_date !== "") {
@@ -757,13 +821,14 @@
                         "dinner": dinner,
                         "note": note,
                     });
-                    AddWorkingHours(wh_string);
+                    await AddWorkingHours(wh_string);
                 }
                 else {
                     var wh_strings = [];
                     var date_start = new Date(start_date);
                     var date_stop = new Date(stop_date);
                     for (var cur_date = date_start; cur_date <= date_stop; cur_date.setDate(cur_date.getDate() + 1)){
+                        var task_overlap = false;
                         var wh_string = JSON.stringify({
                             "user_id": user_id,
                             "working_date": cur_date,
@@ -776,12 +841,85 @@
                             "dinner": dinner,
                             "note": note,
                         });
-                        wh_strings.push(wh_string);
+                        var task_overlap = false;
+                        task_overlap = await CheckAddTasksOverlap(wh_string);
+                        if (task_overlap === false) {
+                            wh_strings.push(wh_string);
+                        }
                     }
-                    AddWorkingHoursDays(wh_strings);
+                    await AddWorkingHoursDays(wh_strings);
                 }
             }
         });
+
+        $('#btn_delete').on('click', function () {
+            $('#modal_delete').modal();
+        });
+
+        $('#btn_confirm_delete').on('click', async function () {
+            var user_id = $('#user_id').val();
+            var working_date = $('#working_date').val();
+
+            var job_id = $('#job_id').val();
+            var task_id = $('#task_id').val();
+            var start_time = $('#start_time').val();
+            var stop_time = $('#stop_time').val();
+            var wh_type = ($('#wh_type').val() === "") ? "REG" : $('#wh_type').val();
+
+            var lunch = $('#lunch').prop('checked');
+            var dinner = $('#dinner').prop('checked');
+            var note = $('#note').val();
+
+            var wh_string = JSON.stringify({
+                "index": wh_index,
+                "user_id": user_id,
+                "working_date": working_date,
+                "job_id": job_id,
+                "task_id": task_id,
+                "start_time": start_time,
+                "stop_time": stop_time,
+                "wh_type": wh_type,
+                "lunch": lunch,
+                "dinner": dinner,
+                "note": note,
+            });
+            await DeleteWorkingHours(wh_string);
+        })
+
+        async function CheckAddTasksOverlap(wh_string) {
+            var task = JSON.parse(wh_string);
+            var date = task.working_date;
+            var start_time = new Date();
+            start_time.setHours(task.start_time.split(":")[0]);
+            start_time.setMinutes(task.start_time.split(":")[1]);
+            start_time.setSeconds(0);
+            start_time.setMilliseconds(0);
+            var stop_time = new Date();
+            stop_time.setHours(task.stop_time.split(":")[0]);
+            stop_time.setMinutes(task.stop_time.split(":")[1]);
+            stop_time.setSeconds(0);
+            stop_time.setMilliseconds(0);
+            await GetWorkingHoursByDate("@Model.name", date);
+            for (var i = 0; i < wh_day.length; i++) {
+                var task_start = new Date();
+                var task_stop = new Date();
+                task_start.setHours(wh_day[i].start_time.split(":")[0]);
+                task_start.setMinutes(wh_day[i].start_time.split(":")[1]);
+                task_start.setSeconds(0);
+                task_start.setMilliseconds(0);
+                task_stop.setHours(wh_day[i].stop_time.split(":")[0]);
+                task_stop.setMinutes(wh_day[i].stop_time.split(":")[1]);
+                task_stop.setSeconds(0);
+                task_stop.setMilliseconds(0);
+                if (start_time >= task_start && start_time < task_stop) {
+                    return true;
+                }
+                if (stop_time >= task_start && stop_time < task_stop) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         var wh_index;
         async function EditTask(event) {
@@ -826,9 +964,14 @@
                 $('#table_tasks tbody').empty();
                 var table_str = '';
                 for (var i = 0; i < wh_day.length; i++) {
-                    table_str += '<tr>';
+                    if ((task.job_name === wh_day[i].job_name) && (task.task_name === wh_day[i].task_name) && (task.start_time === wh_day[i].start_time) && (task.stop_time === wh_day[i].stop_time)) {
+                        table_str += '<tr class="table-primary">';
+                    }
+                    else {
+                        table_str += '<tr>';
+                    }
                     table_str += '<td>' + (i + 1) + '</td>';
-                    table_str += '<td>' + wh_day[i].job_id + '</td>';
+                    table_str += '<td>' + wh_day[i].job_name + '</td>';
                     table_str += '<td>' + wh_day[i].task_name + '</td>';
                     table_str += '<td>' + wh_day[i].start_time + '</td>';
                     table_str += '<td>' + wh_day[i].stop_time + '</td>';
@@ -873,23 +1016,66 @@
                 $('#dinner').prop('checked', false);
             }
             $('#note').val(task.note);
+            $('#btn_delete').show();
+        }
+
+        async function CheckAddOverlap(wh_string) {
+            var task = JSON.parse(wh_string);
+            var date = task.working_date;
+            var start_time = new Date();
+            start_time.setHours(task.start_time.split(":")[0]);
+            start_time.setMinutes(task.start_time.split(":")[1]);
+            start_time.setSeconds(0);
+            start_time.setMilliseconds(0);
+            var stop_time = new Date();
+            stop_time.setHours(task.stop_time.split(":")[0]);
+            stop_time.setMinutes(task.stop_time.split(":")[1]);
+            stop_time.setSeconds(0);
+            stop_time.setMilliseconds(0);
+            await GetWorkingHoursByDate("@Model.name", date);
+            for (var i = 0; i < wh_day.length; i++) {
+                var task_start = new Date();
+                var task_stop = new Date();
+                task_start.setHours(wh_day[i].start_time.split(":")[0]);
+                task_start.setMinutes(wh_day[i].start_time.split(":")[1]);
+                task_start.setSeconds(0);
+                task_start.setMilliseconds(0);
+                task_stop.setHours(wh_day[i].stop_time.split(":")[0]);
+                task_stop.setMinutes(wh_day[i].stop_time.split(":")[1]);
+                task_stop.setSeconds(0);
+                task_stop.setMilliseconds(0);
+                if (start_time >= task_start && start_time < task_stop) {
+                    return true;
+                }
+                if (stop_time >= task_start && stop_time < task_stop) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         async function AddWorkingHours(wh_string) {
-            await $.ajax({
-                type: "POST",
-                url: '@Url.Action("AddWorkingHours", "Calendar")',
-	            contentType: 'application/x-www-form-urlencoded',
-                data: {
-                    wh_string
-                },
-                success: function (response) {
-                    if (response == "Success")
-                        location.reload();
-                    else
-                        alert(response);
-                }
-            });
+            var add_overlap = await CheckAddOverlap(wh_string);
+            if (add_overlap === false) {
+                await $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AddWorkingHours", "Calendar")',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: {
+                        wh_string
+                    },
+                    success: function (response) {
+                        if (response == "Success")
+                            location.reload();
+                        else
+                            alert(response);
+                    }
+                });
+            } else {
+                $('#modal_alert_title').text('Alert Task Overlap');
+                $('#alert_content').html('<p>Task Overlap</p>');
+                $('#modal_alert').modal();
+            }
         }
 
         async function AddWorkingHoursDays(wh_strings) {
@@ -910,21 +1096,43 @@
         }
 
         async function UpdateWorkingHours(wh_string) {
+            var edit_overlap = await CheckAddOverlap(wh_string);
+            if (edit_overlap === false) {
+                await $.ajax({
+                    type: "PATCH",
+                    url: '@Url.Action("EditWorkingHours", "Calendar")',
+	                contentType: 'application/x-www-form-urlencoded',
+                    data: {
+                        wh_string
+                    },
+                    success: function (response) {
+                        if (response == "Success") {
+                            location.reload();
+                        }
+                        else {
+                            alert(response);
+                        }
+                    }
+                });
+            }
+            else {
+                $('#modal_alert_title').text('Alert Task Overlap');
+                $('#alert_content').html('<p>Task Overlap</p>');
+                $('#modal_alert').modal();
+            }
+        }
+
+        async function DeleteWorkingHours(wh_string) {
             await $.ajax({
-                type: "PATCH",
-                url: '@Url.Action("EditWorkingHours", "Calendar")',
+                type: "DELETE",
+                url: '@Url.Action("DeleteWorkingHours", "Calendar")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: {
                     wh_string
                 },
                 success: function (response) {
-                    if (response == "Success") {
-                        if (!drag)
-                            location.reload();
-                    }
-                    else {
-                        alert(response);
-                    }
+                    if (response == "Success")
+                        location.reload();
                 }
             });
         }
