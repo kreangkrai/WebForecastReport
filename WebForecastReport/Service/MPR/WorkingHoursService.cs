@@ -376,5 +376,44 @@ namespace WebForecastReport.Services.MPR
             }
             return "Success";
         }
+
+        public string DeleteWorkingHours(WorkingHoursModel wh)
+        {
+            try
+            {
+                string string_command = string.Format($@"
+                    DELETE FROM WorkingHours
+                    WHERE user_id = @user_id
+                        AND working_date = @working_date
+                        AND job_id = @job_id
+                        AND task_id = @task_id
+                        AND start_time = @start_time
+                        AND stop_time = @stop_time");
+                using (SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect()))
+                {
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.Parameters.AddWithValue("@user_id", wh.user_id);
+                    cmd.Parameters.AddWithValue("@working_date", wh.working_date);
+                    cmd.Parameters.AddWithValue("@job_id", wh.job_id);
+                    cmd.Parameters.AddWithValue("@task_id", wh.task_id);
+                    cmd.Parameters.AddWithValue("@start_time", wh.start_time);
+                    cmd.Parameters.AddWithValue("@stop_time", wh.stop_time);
+                    if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                    {
+                        ConnectSQL.CloseConnect();
+                        ConnectSQL.OpenConnect();
+                    }
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+            return "Success";
+        }
     }
 }

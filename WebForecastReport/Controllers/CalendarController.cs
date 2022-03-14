@@ -97,5 +97,13 @@ namespace WebForecastReport.Controllers
             var result = WorkingHoursService.UpdateWorkingHours(wh);
             return Json(result);
         }
+
+        [HttpDelete]
+        public JsonResult DeleteWorkingHours(string wh_string)
+        {
+            WorkingHoursModel wh = JsonConvert.DeserializeObject<WorkingHoursModel>(wh_string);
+            var result = WorkingHoursService.DeleteWorkingHours(wh);
+            return Json(result);
+        }
     }
 }
