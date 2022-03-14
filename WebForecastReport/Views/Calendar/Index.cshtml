@@ -389,6 +389,12 @@
                 if (stop_time >= task_start && stop_time < task_stop) {
                     return true;
                 }
+                if (task_start > start_time && task_start <= stop_time) {
+                    return true;
+                }
+                if (task_stop > start_time && task_stop <= stop_time) {
+                    return true;
+                }
             }
             return false;
         }
@@ -917,6 +923,12 @@
                 if (stop_time >= task_start && stop_time < task_stop) {
                     return true;
                 }
+                if (task_start > start_time && task_start <= stop_time) {
+                    return true;
+                }
+                if (task_stop > start_time && task_stop <= stop_time) {
+                    return true;
+                }
             }
             return false;
         }
@@ -1050,6 +1062,12 @@
                 if (stop_time >= task_start && stop_time < task_stop) {
                     return true;
                 }
+                if (task_start > start_time && task_start <= stop_time) {
+                    return true;
+                }
+                if (task_stop > start_time && task_stop <= stop_time) {
+                    return true;
+                }
             }
             return false;
         }
@@ -1107,7 +1125,8 @@
                     },
                     success: function (response) {
                         if (response == "Success") {
-                            location.reload();
+                            if(!drag)
+                                location.reload();
                         }
                         else {
                             alert(response);
