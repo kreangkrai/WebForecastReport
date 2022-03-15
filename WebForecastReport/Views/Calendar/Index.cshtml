@@ -383,16 +383,16 @@
                 task_stop.setMinutes(wh_day[i].stop_time.split(":")[1]);
                 task_stop.setSeconds(0);
                 task_stop.setMilliseconds(0);
-                if (start_time >= task_start && start_time < task_stop) {
+                if (start_time > task_start && start_time < task_stop) {
                     return true;
                 }
-                if (stop_time >= task_start && stop_time < task_stop) {
+                if (stop_time > task_start && stop_time < task_stop) {
                     return true;
                 }
-                if (task_start > start_time && task_start <= stop_time) {
+                if (task_start > start_time && task_start < stop_time) {
                     return true;
                 }
-                if (task_stop > start_time && task_stop <= stop_time) {
+                if (task_stop > start_time && task_stop < stop_time) {
                     return true;
                 }
             }
@@ -465,7 +465,6 @@
                     var today = new Date();
                     var date_diff = Math.floor((today - drop_date) / (1000 * 60 * 60 * 24));
                     var drop_overlap = await CheckDropOverlap(info.event.extendedProps, drop_date.toISOString().split("T")[0]);
-                    console.log("Drop Overlap: " + drop_overlap);
                     if (drop_overlap === true) {
                         $('#modal_alert_title').text('Alert Task Overlap');
                         $('#alert_content').html('<p>Task Overlap</p>');
@@ -917,16 +916,16 @@
                 task_stop.setMinutes(wh_day[i].stop_time.split(":")[1]);
                 task_stop.setSeconds(0);
                 task_stop.setMilliseconds(0);
-                if (start_time >= task_start && start_time < task_stop) {
+                if (start_time > task_start && start_time < task_stop) {
                     return true;
                 }
-                if (stop_time >= task_start && stop_time < task_stop) {
+                if (stop_time > task_start && stop_time < task_stop) {
                     return true;
                 }
-                if (task_start > start_time && task_start <= stop_time) {
+                if (task_start > start_time && task_start < stop_time) {
                     return true;
                 }
-                if (task_stop > start_time && task_stop <= stop_time) {
+                if (task_stop > start_time && task_stop < stop_time) {
                     return true;
                 }
             }
@@ -1059,16 +1058,16 @@
                 task_stop.setMinutes(wh_day[i].stop_time.split(":")[1]);
                 task_stop.setSeconds(0);
                 task_stop.setMilliseconds(0);
-                if (start_time >= task_start && start_time < task_stop) {
+                if (start_time > task_start && start_time < task_stop) {
                     return true;
                 }
-                if (stop_time >= task_start && stop_time < task_stop) {
+                if (stop_time > task_start && stop_time < task_stop) {
                     return true;
                 }
-                if (task_start > start_time && task_start <= stop_time) {
+                if (task_start > start_time && task_start < stop_time) {
                     return true;
                 }
-                if (task_stop > start_time && task_stop <= stop_time) {
+                if (task_stop > start_time && task_stop < stop_time) {
                     return true;
                 }
             }
