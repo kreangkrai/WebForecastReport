@@ -1,0 +1,340 @@
+﻿@using Microsoft.AspNetCore.Http
+@model WebForecastReport.Models.UserModel;
+@{
+    ViewData["Title"] = "Assign Job";
+}
+<div class="row p-3">
+    <div class="col-xl-2">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Engineer</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <label for="select_department">Department</label>
+                        <select id="select_department" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="select_engineer">Engineer</label>
+                        <select id="select_engineer" class="form-control"></select>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer">
+                <button id="btn_load" type="button" class="btn btn-primary form-control elevation-1">
+                    <i class="fas fa-sync"></i> Load
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-10">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Jobs</span>
+                <div class="card-tools">
+                    <button id="BtnAddJob" type="button" class="btn btn-primary btn-sm" disabled>
+                        <i class="fas fa-plus"></i> Add Job
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group row">
+                        <div class="col-xl-3">
+                            <label for="user_id">User ID</label>
+                            <input id="user_id" type="text" class="form-control" disabled />
+                        </div>
+                        <div class="col-xl-7">
+                            <label for="user_name">Name</label>
+                            <input id="user_name" type="text" class="form-control" disabled />
+                        </div>
+                        <div class="col-xl-2">
+                            <label for="department">Department</label>
+                            <input id="department" type="text" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span>Jobs</span>
+                    </div>
+                    <div class="form-group">
+                        <table id="table_jobs" class="table table-sm compact text-center">
+                            <thead>
+                                <tr>
+                                    <th>Job ID</th>
+                                    <th>Job Name</th>
+                                    <th>Role</th>
+                                    <th>Assign by</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Assign Job -->
+<div class="modal fade" id="modal_job" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-lg modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_task_title">Assign Job</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="year">Year</label>
+                        <select id="year" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="job_id">Job</label>
+                        <select id="job_id" class="form-control"></select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btn_accept" type="button" class="btn btn-primary">Accept</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        //Variable Declaration
+        var departments = [];
+        var engineers = [];
+        var jobs = [];
+        var jrs = [];
+        var table;
+
+        //Change these parameters to true to view result
+        var debug_department = false;
+        var debug_engineer = false;
+        var debug_job = true;
+        var debug_jrs = true;
+
+        $(document).ready(async function () {
+            await GetDepartments();
+            await GenerateDepartmentOptions();
+            await GetEngineers();
+            await GenerateEngineerOptions();
+            //await GetJobResponsible('@Model.name');
+            //GenerateTable();
+        });
+
+        async function GetDepartments() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetDepartments", "AssignJob")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    departments = response;
+                    if (debug_department) {
+                        console.log(departments);
+                    }
+                }
+            });
+        }
+
+        async function GetEngineers() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetEngineers", "AssignJob")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    engineers = response;
+                    if (debug_engineer) {
+                        console.log(engineers);
+                    }
+                }
+            });
+        }
+
+        async function GetJobs() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobs", "AssignJob")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    jobs = response;
+                    if (debug_job) {
+                        console.log(jobs);
+                    }
+                }
+            });
+        }
+
+        async function GetJobResponsible(user_id) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobResponsibles", "AssignJob")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { user_id },
+                success: function (response) {
+                    jrs = response;
+                    if (debug_jrs) {
+                        console.log(jrs);
+                    }
+                }
+            });
+        }
+
+        async function GenerateDepartmentOptions() {
+            var department_str = '<option value="" selected>ALL</option>';
+            for (var i = 0; i < departments.length; i++) {
+                department_str += '<option value="' + departments[i] + '">' + departments[i] + '</option>';
+            }
+            $('#select_department').empty();
+            $('#select_department').append(department_str);
+        }
+
+        async function GenerateEngineerOptions() {
+            var engineer_str = '<option value="" selected disabled>Please Select Engineer</option>';
+            var department = $('#select_department').val();
+            for (var i = 0; i < engineers.length; i++) {
+                if (department === "" || department === engineers[i].department)
+                    engineer_str += '<option value="' + engineers[i].user_id + '">' + engineers[i].user_name + '</option>';
+            }
+            $('#select_engineer').empty();
+            $('#select_engineer').append(engineer_str);
+        }
+
+        async function GenerateYearOptions() {
+            var year_str = '<option value="">ALL</option>';
+            var date = new Date();
+            var year = date.getFullYear();
+            for (var i = 0; i < 10; i++) {
+                year_str += '<option value="' + (year - i) + '">' + (year - i) + '</option>';
+            }
+            $('#year').empty();
+            $('#year').append(year_str);
+        }
+
+        async function GenerateJobOptions() {
+            var job_str = '<option value="" selected disabled>Please Select Job</option>';
+            for (var i = 0; i < jobs.length; i++) {
+                job_str += '<option value="' + jobs[i].job_id + '">' + jobs[i].job_id + ": " + jobs[i].job_name + '</option>';
+            }
+            $('#job_id').empty();
+            $('#job_id').append(job_str);
+        }
+
+        function GenerateTable() {
+
+            var datas = [];
+            var selected_engineer = $('#select_engineer').val();
+            console.log(engineers);
+            var eng = engineers.filter(f => f.user_id == selected_engineer);
+            console.log(eng);
+
+            if (eng.length > 0) {
+                var user_id = eng[0].user_id;
+                var user_name = eng[0].user_name;
+                var department = eng[0].department;
+                $('#user_id').val(user_id);
+                $('#user_name').val(user_name);
+                $('#department').val(department);
+            }
+
+            if ($('#user_id').val() === "") {
+                $('#BtnAddJob').attr('disabled', true);
+            }
+            else {
+                $('#BtnAddJob').attr('disabled', false);
+            }
+                
+            for (var i = 0; i < jrs.length; i++) {
+                datas.push([
+                    jrs[i].job_id,
+                    jrs[i].job_name,
+                    jrs[i].role,
+                    jrs[i].assign_by
+                ]);
+            }
+
+            if (table !== undefined) {
+                table.destroy();
+            }
+
+            table = $('#table_jobs').DataTable({
+                data: datas,
+            });
+        }
+
+        $('#select_department').on('change', async function () {
+            await GenerateEngineerOptions();
+        });
+
+        $('#btn_load').on('click', async function () {
+            var user_id = $('#select_engineer').val();
+            await GetEngineers();
+            await GetJobResponsible(user_id);
+            await GenerateTable();
+        });
+
+        $('#BtnAddJob').on('click', async function () {
+            await GenerateYearOptions();
+            await GetJobs();
+            await GenerateJobOptions();
+            $('#modal_job').modal();
+            $('#btn_accept').attr('disabled', true);
+        });
+
+        $('#job_id').on('change', function () {
+            var job_id = $('#job_id').val();
+            if (job_id !== "") {
+                $('#btn_accept').attr('disabled', false);
+            }
+            else {
+                $('#btn_accept').attr('disabled', true);
+            }
+        });
+
+        $('#btn_accept').on('click', async function () {
+            var job_id = $('#job_id').val();
+            var user_id = $('#user_id').val();
+            var assign_by = '@Model.name';
+            var assign_date = new Date();
+            var jr_string = JSON.stringify({
+                "user_id": user_id,
+                "job_id": job_id,
+                "role": "Engineer",
+                "assign_by": assign_by,
+                "assign_date": assign_date
+            });
+            await AddJobResponsible(jr_string);
+        });
+
+        async function AddJobResponsible(jr_string) {
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddJobResponsible", "AssignJob")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    jr_string
+                },
+                success: function (response) {
+                    if (response == "Success") {
+                        location.reload();
+                    }
+                    else {
+                        alert(response);
+                    }
+                }
+            });
+        }
+
+    </script>
+}
