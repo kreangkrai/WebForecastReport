@@ -1045,6 +1045,9 @@
             stop_time.setSeconds(0);
             stop_time.setMilliseconds(0);
             await GetWorkingHoursByDate("@Model.name", date);
+            if (update) {
+                wh_day = wh_day.filter(f => f.index !== task.index);
+            }
             for (var i = 0; i < wh_day.length; i++) {
                 var task_start = new Date();
                 var task_stop = new Date();
