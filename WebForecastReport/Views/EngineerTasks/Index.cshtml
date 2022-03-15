@@ -200,8 +200,7 @@
                         start: start_date.setHours(whs[i].start_time.split(":")[0], whs[i].start_time.split(":")[1]),
                         end: start_date.setHours(whs[i].stop_time.split(":")[0], whs[i].stop_time.split(":")[1]),
                         allDay: false,
-                        editable: true,
-                        overlap: true,
+                        editable: false,
                         extendedProps: {
                             "index": whs[i].index,
                             "user_id": whs[i].user_id,
@@ -247,7 +246,6 @@
                     right: 'prev,next'
                 },
                 height: 700,
-                editable: false,
             });
             calendar.render();
         }
