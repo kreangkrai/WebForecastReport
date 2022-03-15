@@ -1,0 +1,318 @@
+﻿@{
+    ViewData["Title"] = "Engineer Tasks";
+}
+<div class="row p-3">
+    <div class="col-xl-2">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Engineers</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <select id="department" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="user_id">Engineer</label>
+                        <select id="user_id" class="form-control"></select>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer">
+                <button id="btn_load" class="btn btn-primary form-control">
+                    <i class="fas fa-sync"></i> Load
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-10">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Engineer Tasks</span>
+            </div>
+            <div class="card-body">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Task Modal -->
+<div class="modal fade" id="modal_task" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-lg modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_task_title">Task Detail</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="user_name">User</label>
+                        <input id="user_name" type="text" class="form-control" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label for="working_date">Date</label>
+                        <input id="working_date" type="date" class="form-control" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label for="job_id">Job</label>
+                        <input id="job_id" type="text" class="form-control" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label for="job_name">Job Name</label>
+                        <input id="job_name" type="text" class="form-control" readonly />
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-6">
+                            <label for="location">Location</label>
+                            <input id="location" type="text" class="form-control" readonly/>
+                        </div>
+                        <div class="col-6">
+                            <label for="task_name">Task</label>
+                            <input id="task_name" type="text" class="form-control" readonly/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label for="start_time">From</label>
+                            <input id="start_time" type="time" class="form-control" readonly/>
+                        </div>
+                        <div class="col-4">
+                            <label for="stop_time">To</label>
+                            <input id="stop_time" type="time" class="form-control" readonly/>
+                        </div>
+                        <div class="col-4">
+                            <label for="wh_type">WH Type</label>
+                            <input id="wh_type" type="text" class="form-control" readonly/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Break</label>
+                    </div>
+                    <div class="form-group d-flex align-items-baseline">
+                        <div class="form-check">
+                            <input id="lunch" type="checkbox" class="form-check-input" readonly/>
+                            <label for="lunch" class="form-check-label">Lunch</label>
+                        </div>
+                    </div>
+                    <div class="form-group d-flex align-items-baseline">
+                        <div class="form-check">
+                            <input id="dinner" type="checkbox" class="form-check-input" readonly/>
+                            <label for="dinner" class="form-check-label">Break</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary elevation-1" data-dismiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        //Variable Declaration
+        var departments = [];
+        var users = [];
+        var whs = [];
+
+        //Change These Parameters to true to view Response
+        var debug_department = false;
+        var debug_user = false;
+        var debug_whs = false;
+
+        $(document).ready(async function () {
+            await GetDepartments();
+            await GenerateDepartmentOptions()
+            await GetEngineers();
+            await GenerateUserOptions()
+            await GetWorkingHours('@Model.name');
+        });
+
+        async function GetDepartments() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetDepartments", "EngineerTasks")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    departments = response;
+                    if (debug_department)
+                        console.log(departments);
+                }
+            });
+        }
+
+        async function GetEngineers() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetUsers", "EngineerTasks")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    users = response;
+                    if (debug_user)
+                        console.log(users);
+                }
+            });
+        }
+
+        async function GenerateDepartmentOptions() {
+            var department_str = '<option value="" selected>ALL</option>';
+            for (var i = 0; i < departments.length; i++) {
+                department_str += '<option value="' + departments[i] + '">' + departments[i] + '</option>';
+            }
+            $('#department').empty();
+            $('#department').append(department_str);
+        }
+
+        async function GenerateUserOptions() {
+            var user_str = '<option value="" selected disabled>Please Select Engineer</option>';
+            var department = $('#department').val();
+            for (var i = 0; i < users.length; i++) {
+                if(department === "" || department === users[i].department)
+                    user_str += '<option value="' + users[i].user_id + '">' + users[i].user_name + '</option>';
+            }
+            $('#user_id').empty();
+            $('#user_id').append(user_str);
+        }
+
+        $('#department').on('change', async function () {
+            await GenerateUserOptions();
+        });
+
+        function GenerateCalendar() {
+            var datas = [];
+            for (var i = 0; i < whs.length; i++) {
+                var start_date = new Date(whs[i].working_date);
+                datas.push(
+                    {
+                        title: whs[i].job_name + ": " + whs[i].task_name,
+                        start: start_date.setHours(whs[i].start_time.split(":")[0], whs[i].start_time.split(":")[1]),
+                        end: start_date.setHours(whs[i].stop_time.split(":")[0], whs[i].stop_time.split(":")[1]),
+                        allDay: false,
+                        editable: true,
+                        overlap: true,
+                        extendedProps: {
+                            "index": whs[i].index,
+                            "user_id": whs[i].user_id,
+                            "user_name": whs[i].user_name,
+                            "working_date": whs[i].working_date,
+                            "job_id": whs[i].job_id,
+                            "job_name": whs[i].job_name,
+                            "task_id": whs[i].task_id,
+                            "task_name": whs[i].task_name,
+                            "start_time": whs[i].start_time,
+                            "stop_time": whs[i].stop_time,
+                            "wh_type": whs[i].wh_type,
+                            "lunch": whs[i].lunch,
+                            "dinner": whs[i].dinner,
+                            "note": whs[i].note,
+                        }
+                    }
+                );
+            }
+
+            calendarEl = document.getElementById('calendar');
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                views: {
+                    dayGridMonth: {
+                        displayEventTime: true,
+                        displayEventEnd: true,
+                        eventTimeFormat: {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: false,
+                            meridiem: false
+                        }
+                    }
+                },
+                events: datas,
+                eventClick: function (info) {
+                    ViewTask(info.event.extendedProps);
+                },
+                headerToolbar: {
+                    left: 'dayGridMonth,listMonth,timeGridWeek,timeGridDay',
+                    center: 'title',
+                    right: 'prev,next'
+                },
+                height: 700,
+                editable: false,
+            });
+            calendar.render();
+        }
+
+        $('#btn_load').on('click', async function () {
+            var user_id = $('#user_id').val();
+            await GetWorkingHours(user_id);
+        });
+
+        async function GetWorkingHours(user_id) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetWorkingHours", "Calendar")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    user_id
+                },
+                success: function (response) {
+                    whs = response;
+                    if (debug_whs) {
+                        console.log("Working Hours Data");
+                        console.log(whs);
+                    }
+                    GenerateCalendar();
+                }
+            });
+        }
+
+        function ViewTask(task) {
+            var user_name = task.user_name;
+            var working_date = task.working_date.split("T")[0];
+            var job_id = task.job_id;
+            var job_name = task.job_name;
+            var location = (task.task_id.substring(0, 1) === "O") ? "Office" : "Site";
+            var task_name = task.task_name;
+            var start_time = task.start_time;
+            var stop_time = task.stop_time;
+            var wh_type = task.wh_type;
+            var lunch = task.lunch;
+            var dinner = task.dinner;
+            $('#modal_task').modal();
+            $('#user_name').val(user_name);
+            $('#working_date').val(working_date);
+            $('#job_id').val(job_id);
+            $('#job_name').val(job_name);
+            $('#location').val(location);
+            $('#task_name').val(task_name);
+            $('#start_time').val(start_time);
+            $('#stop_time').val(stop_time);
+            $('#wh_type').val(wh_type);
+
+            if (lunch === true) {
+                $('#lunch').prop('checked', true);
+            }
+            else {
+                $('#lunch').prop('checked', false);
+            }
+
+            if (dinner === true) {
+                $('#dinner').prop('checked', true);
+            }
+            else {
+                $('#dinner').prop('checked', false);
+            }
+        }
+
+    </script>
+}
