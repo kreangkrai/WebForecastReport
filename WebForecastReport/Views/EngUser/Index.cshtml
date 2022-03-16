@@ -130,7 +130,7 @@
             }
             var user_str = '<option value="" selected disabled>Please Select User to Add</option>';
             for (var i = 0; i < users.length; i++) {
-                if (added_users.indexOf(users[i].user_name) === -1)
+                if (added_users.indexOf(users[i].user_id) === -1)
                     user_str += '<option value="' + users[i].user_name + '">' + users[i].user_name + '</option>';
             }
             $('#user_name').empty();
