@@ -7,12 +7,12 @@
             <i class="fas fa-plus"></i> Create Task
         </button>
     </div>
-    <div class="col-xl-1 col-lg-2 col-md-4 col-sm-4 pb-3">
+    <div class="col-xl-1 col-lg-2 col-md-4 col-sm-4 pb-3" hidden>
         <button id="btn_import" type="button" class="btn btn-primary form-control elevation-1">
             <i class="fas fa-upload"></i> Import
         </button>
     </div>
-    <div class="col-xl-1 col-lg-2 col-md-4 col-sm-4 pb-3">
+    <div class="col-xl-1 col-lg-2 col-md-4 col-sm-4 pb-3" hidden>
         <button id="btn_export" type="button" class="btn btn-primary form-control elevation-1">
             <i class="fas fa-download"></i> Export
         </button>
@@ -288,6 +288,7 @@
             $('#modal_title').text("Edit Task");
             $('#location_group').hide();
             $('#task_id').val(task_id);
+            $('#task_id').attr('disabled', true);
             $('#task_name').val(task_name);
         }
 
