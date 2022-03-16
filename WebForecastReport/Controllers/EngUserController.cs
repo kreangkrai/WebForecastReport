@@ -48,7 +48,9 @@ namespace WebForecastReport.Controllers
         [HttpGet]
         public JsonResult GetUsers()
         {
+            string[] engineers = EngUserService.GetEngineerUsers().Select(s => s.user_id).ToArray();
             List<EngUserModel> users = EngUserService.GetUsers().OrderBy(o => o.user_id).ToList();
+            users = users.Where(w => !engineers.Contains(w.user_id)).ToList();
             return Json(users);
         }
 
