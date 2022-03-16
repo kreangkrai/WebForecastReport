@@ -1106,10 +1106,12 @@
                         wh_string
                     },
                     success: function (response) {
-                        if (response == "Success")
+                        if (response == "Success") {
                             location.reload();
-                        else
-                            alert(response);
+                        }
+                        else {
+                            toastr.error(response);
+                        }
                     }
                 });
             } else {
@@ -1128,10 +1130,12 @@
                     wh_strings
                 },
                 success: function (response) {
-                    if (response == "Success")
+                    if (response == "Success") {
                         location.reload();
-                    else
-                        alert(response);
+                    }
+                    else {
+                        toastr.error(response);
+                    }
                 }
             });
         }

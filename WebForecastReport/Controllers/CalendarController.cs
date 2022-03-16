@@ -98,16 +98,23 @@ namespace WebForecastReport.Controllers
         [HttpPost]
         public JsonResult AddWorkingHours(string wh_string)
         {
-            WorkingHoursModel wh = JsonConvert.DeserializeObject<WorkingHoursModel>(wh_string);
-            var result = WorkingHoursService.AddWorkingHours(wh);
-            return Json(result);
+            try
+            {
+                WorkingHoursModel wh = JsonConvert.DeserializeObject<WorkingHoursModel>(wh_string);
+                var result = WorkingHoursService.AddWorkingHours(wh);
+                return Json(result);
+            }
+            catch(Exception exception)
+            {
+                return Json(exception.Message);
+            }
         }
 
         [HttpPost]
         public JsonResult AddWorkingHoursDays(string[] wh_strings)
         {
             List<WorkingHoursModel> whs = new List<WorkingHoursModel>();
-            for(int i = 0;i< wh_strings.Count(); i++)
+            for (int i = 0; i < wh_strings.Count(); i++)
             {
                 WorkingHoursModel wh = JsonConvert.DeserializeObject<WorkingHoursModel>(wh_strings[i]);
                 var result = WorkingHoursService.AddWorkingHours(wh);
@@ -118,17 +125,31 @@ namespace WebForecastReport.Controllers
         [HttpPatch]
         public JsonResult EditWorkingHours(string wh_string)
         {
-            WorkingHoursModel wh = JsonConvert.DeserializeObject<WorkingHoursModel>(wh_string);
-            var result = WorkingHoursService.UpdateWorkingHours(wh);
-            return Json(result);
+            try
+            {
+                WorkingHoursModel wh = JsonConvert.DeserializeObject<WorkingHoursModel>(wh_string);
+                var result = WorkingHoursService.UpdateWorkingHours(wh);
+                return Json(result);
+            }
+            catch(Exception exception)
+            {
+                return Json(exception.Message);
+            }
         }
 
         [HttpDelete]
         public JsonResult DeleteWorkingHours(string wh_string)
         {
-            WorkingHoursModel wh = JsonConvert.DeserializeObject<WorkingHoursModel>(wh_string);
-            var result = WorkingHoursService.DeleteWorkingHours(wh);
-            return Json(result);
+            try
+            {
+                WorkingHoursModel wh = JsonConvert.DeserializeObject<WorkingHoursModel>(wh_string);
+                var result = WorkingHoursService.DeleteWorkingHours(wh);
+                return Json(result);
+            }
+            catch(Exception exception)
+            {
+                return Json(exception.Message);
+            }
         }
     }
 }

@@ -317,6 +317,10 @@ namespace WebForecastReport.Services.MPR
                     cmd.ExecuteNonQuery();
                 }
             }
+            catch(Exception ex)
+            {
+                return ex.Message;
+            }
             finally
             {
                 if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
@@ -367,6 +371,10 @@ namespace WebForecastReport.Services.MPR
                     cmd.ExecuteNonQuery();
                 }
             }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
             finally
             {
                 if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
@@ -405,6 +413,10 @@ namespace WebForecastReport.Services.MPR
                     }
                     cmd.ExecuteNonQuery();
                 }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
             }
             finally
             {
