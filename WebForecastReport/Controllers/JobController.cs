@@ -66,6 +66,8 @@ namespace WebForecastReport.Controllers
         public JsonResult UpdateJob(string job_string)
         {
             JobModel job = JsonConvert.DeserializeObject<JobModel>(job_string);
+            job.sale = job.sale == null ? "" : job.sale;
+            job.sale_department = job.sale_department == null ? "" : job.sale_department;
             var result = JobService.UpdateJob(job);
             return Json(result);
         }
