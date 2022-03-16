@@ -29,7 +29,7 @@
                         <label for="ind">Index</label>
                         <input id="ind" type="text" class="form-control" />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" hidden>
                         <label for="user_id">User</label>
                         <select id="user_id" class="form-control" disabled></select>
                     </div>
@@ -216,11 +216,8 @@
             await GetEngineerUser("@Model.name");
             await GetWorkingHours("@Model.name");
             await GetUsers();
-            await GenerateUserFilterOptions();
             await GetJobs();
-            await GenerateJobFilterOptions();
             await GetTasks();
-            await GenerateTasksFilterOptions();
         });
 
         async function GetUsers() {
@@ -231,19 +228,20 @@
                 data: { },
                 success: function (response) {
                     users = response;
-                    if (debug_user)
+                    if (debug_user) {
                         console.log(users);
+                    }
                 }
             });
         }
 
         async function GetJobs() {
+            var user_id = '@Model.name';
             await $.ajax({
                 type: "GET",
-                url: '@Url.Action("GetJobs", "Job")',
+                url: '@Url.Action("GetJobs", "Calendar")',
 	            contentType: 'application/x-www-form-urlencoded',
-                data: {
-                },
+                data: { user_id },
                 success: function (response) {
                     jobs = response;
                     if (debug_jobs) {
@@ -259,8 +257,7 @@
                 type: "GET",
                 url: '@Url.Action("GetAllTasks", "Tasks")',
 	            contentType: 'application/x-www-form-urlencoded',
-                data: {
-                },
+                data: { },
                 success: function (response) {
                     tasks = response;
                     if (debug_tasks) {
@@ -276,8 +273,7 @@
                 type: "GET",
                 url: '@Url.Action("GetHolidays", "Holiday")',
 	            contentType: 'application/x-www-form-urlencoded',
-                data: {
-                },
+                data: { },
                 success: function (response) {
                     holidays = response;
                     if (debug_holiday) {
@@ -293,9 +289,7 @@
                 type: "GET",
                 url: '@Url.Action("GetWorkingHours", "Calendar")',
 	            contentType: 'application/x-www-form-urlencoded',
-                data: {
-                    user_id
-                },
+                data: { user_id },
                 success: function (response) {
                     if (debug_whs) {
                         console.log("Working Hours Data");
@@ -315,51 +309,12 @@
                     user_id, working_date
                 },
                 success: function (response) {
-                    if (debug_wh_day)
-                        console.log(response);
                     wh_day = response;
+                    if (debug_wh_day) {
+                        console.log(wh_day);
+                    }
                 }
             });
-        }
-
-        function GenerateUserFilterOptions() {
-            $('#filter_user').empty();
-            var user_str = '<option value="" selected disabled>Please Select User</option>';
-            for (var i = 0; i < users.length; i++) {
-                user_str += '<option value="' + users[i].user_id + '">' + users[i].user_name + '</option>';
-            }
-            $('#filter_user').append(user_str);
-        }
-
-        $('#filter_user').on('change', function () {
-            GetWorkingHours($('#filter_user').val());
-        });
-
-        function GenerateJobFilterOptions() {
-            $('#filter_job').empty();
-            var job_str = '<option value="" selected disabled>Please Select Job</option>';
-            for (var i = 0; i < jobs.length; i++) {
-                job_str += '<option value="' + jobs[i].job_id + '">' + jobs[i].job_name + '</option>';
-            }
-            $('#filter_job').append(job_str);
-        }
-
-        $('#filter_job').on('change', function () {
-            var job = $('#filter_job').val();
-            var enable_filter = 1;
-            enable_filter *= (job !== null) ? 1 : 0;
-            $('#btn_filter').attr('disabled', !enable_filter);
-            GenerateTasksFilterOptions();
-        });
-
-        function GenerateTasksFilterOptions() {
-            $('#filter_task').empty();
-            var task_str = '<option value="" selected disabled>Please Select Task</option>';
-            for (var i = 0; i < tasks.length; i++) {
-                if(tasks[i].job_id == $('#filter_job').val())
-                    task_str += '<option value="' + tasks[i].task_id + '">' + tasks[i].task_name + '</option>';
-            }
-            $('#filter_task').append(task_str);
         }
 
         async function CheckDropOverlap(task, date) {
@@ -426,7 +381,7 @@
                     var date_diff = Math.floor((today - start_date) / (1000 * 60 * 60 * 24));
                     enable_edit = date_diff < 15 ? true : false;
                 }
-                
+
                 datas.push(
                     {
                         title: whs[i].job_name + ": " + whs[i].task_name,
@@ -565,26 +520,26 @@
 
         function GenerateUsersOption() {
             $('#user_id').empty();
-            var user_string = '<option value="" selected disabled>Please Select User</option>';
+            var user_string = `<option value="" selected disabled>Please Select User</option>`;
             for (var i = 0; i < users.length; i++) {
-                user_string += '<option value="' + users[i].user_id + '">' + users[i].user_name + '</option>';
+                user_string += `<option value="${users[i].user_id}">${users[i].user_name}</option>`;
             }
             $('#user_id').append(user_string);
         }
 
         function GenerateJobsOption() {
-            var jobs_str = '<option value="" selected disabled>Please Select Job</option>';
+            var jobs_str = `<option value="" selected disabled>Please Select Job</option>`;
             for (var i = 0; i < jobs.length; i++) {
-                jobs_str += '<option value="' + jobs[i].job_id + '">' + jobs[i].job_name + '</option>';
+                jobs_str += `<option value="${jobs[i].job_id}">${jobs[i].job_id}: ${jobs[i].job_name}</option>`;
             }
             $('#job_id').empty();
             $('#job_id').append(jobs_str);
         }
 
         function GenerateTasksOption() {
-            var tasks_str = '<option value="" selected disabled>Please Select Task</option>';
+            var tasks_str = `<option value="" selected disabled>Please Select Task</option>`;
             for (var i = 0; i < tasks.length; i++) {
-                tasks_str += '<option value="' + tasks[i].task_id + '">' + tasks[i].task_name + '</option>';
+                tasks_str += `<option value="${tasks[i].task_id}">${tasks[i].task_name}</option>`;
             }
             $('#task_id').empty();
             $('#task_id').append(tasks_str);

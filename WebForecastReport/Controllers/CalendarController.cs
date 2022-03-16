@@ -7,10 +7,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using WebForecastReport.Interface;
+using WebForecastReport.Interface.MPR;
 using WebForecastReport.Interfaces.MPR;
 using WebForecastReport.Models;
 using WebForecastReport.Models.MPR;
 using WebForecastReport.Service;
+using WebForecastReport.Service.MPR;
 using WebForecastReport.Services.MPR;
 
 namespace WebForecastReport.Controllers
@@ -20,12 +22,14 @@ namespace WebForecastReport.Controllers
         readonly IWorkingHours WorkingHoursService;
         readonly IAccessory Accessory;
         readonly IEngUser EngineerService;
+        readonly IJobResponsible JobResponsibleService;
 
         public CalendarController()
         {
             WorkingHoursService = new WorkingHoursService();
             Accessory = new AccessoryService();
             EngineerService = new EngUserService();
+            JobResponsibleService = new JobResponsibleService();
         }
 
         public IActionResult Index()
@@ -46,6 +50,13 @@ namespace WebForecastReport.Controllers
             {
                 return RedirectToAction("Index", "Account");
             }
+        }
+
+        [HttpGet]
+        public List<JobResponsibleModel> GetJobs(string user_id)
+        {
+            List<JobResponsibleModel> jrs = JobResponsibleService.GetJobResponsible(user_id);
+            return jrs;
         }
 
         [HttpGet]
