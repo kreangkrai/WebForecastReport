@@ -196,6 +196,10 @@ namespace WebForecastReport.Service.MPR
                     cmd.ExecuteNonQuery();
                 }
             }
+            catch(Exception exception)
+            {
+                return exception.Message;
+            }
             finally
             {
                 if (ConnectSQL.con.State == System.Data.ConnectionState.Open)

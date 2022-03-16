@@ -84,9 +84,16 @@ namespace WebForecastReport.Controllers
         [HttpPost]
         public JsonResult AddJobResponsible(string jr_string)
         {
-            JobResponsibleModel jr = JsonConvert.DeserializeObject<JobResponsibleModel>(jr_string);
-            var result = JobResponsibleService.AddJobResponsible(jr);
-            return Json(result);
+            try
+            {
+                JobResponsibleModel jr = JsonConvert.DeserializeObject<JobResponsibleModel>(jr_string);
+                var result = JobResponsibleService.AddJobResponsible(jr);
+                return Json(result);
+            }
+            catch(Exception exception)
+            {
+                return Json(exception.Message);
+            }
         }
     }
 }
