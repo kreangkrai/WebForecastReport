@@ -1,0 +1,329 @@
+﻿@{
+    ViewData["Title"] = "Assign Engineer";
+}
+<div class="row p-3">
+    <div class="col-xl-2">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Jobs</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <label for="year">Year</label>
+                        <select id="year" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="select_job">Job</label>
+                        <select id="select_job" class="form-control"></select>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer">
+                <button id="btn_load" class="btn btn-primary form-control elevation-1" disabled>
+                    <i class="fas fa-sync"></i> Load
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-10">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Engineer Assign</span>
+                <div class="card-tools">
+                    <button id="BtnAddEngineer" class="btn btn-primary elevation-1 btn-sm" disabled>
+                        <i class="fas fa-plus"></i> Add Engineer
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group row">
+                        <div class="col-xl-4">
+                            <label for="job_id">Job ID</label>
+                            <input id="job_id" type="text" class="form-control" disabled />
+                        </div>
+                        <div class="col-xl-8">
+                            <label for="job_name">Job Name</label>
+                            <input id="job_name" type="text" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <table id="table_staffs" class="table table-sm compact table-bordered text-center">
+                            <thead>
+                                <tr>
+                                    <th>Staff ID</th>
+                                    <th>Staff Name</th>
+                                    <th>Role</th>
+                                    <th>Assign By</th>
+                                    <th>Assign Date</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Assign Engineer -->
+<div class="modal fade" id="modal_engineer" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-lg modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_task_title">Assign Engineer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <select id="department" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="user_id">Engineer</label>
+                        <select id="user_id" class="form-control"></select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btn_accept" type="button" class="btn btn-primary" disabled>Accept</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        //Variable Declaration
+        var jobs = [];
+        var engineers = [];
+        var departments = [];
+        var jrs = [];
+        var assign_engs = [];
+        var table;
+
+        //Change These Parameters to true to show result
+        var debug_jobs = false;
+        var debug_department = false;
+        var debug_engineer = false;
+        var debug_assign_engineer = false;
+
+        $(document).ready(async function () {
+            await GenerateYearOption();
+            await GetJobs();
+            await GenerateJobOption();
+        });
+
+        async function GetJobs() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobs", "AssignEngineer")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    jobs = response;
+                    if (debug_jobs) {
+                        console.log(jobs);
+                    }
+                }
+            });
+        };
+
+        async function GetDepartments() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetDepartments", "AssignEngineer")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    departments = response;
+                    if (debug_department) {
+                        console.log(departments);
+                    }
+                }
+            });
+        }
+
+        async function GetEngineers() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetUsers", "AssignEngineer")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    engineers = response;
+                    if (debug_engineer) {
+                        console.log(engineers);
+                    }
+                }
+            });
+        }
+
+        async function GetAssignEngineers(job_id) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetAssignEngineers", "AssignEngineer")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { job_id },
+                success: function (response) {
+                    assign_engs = response;
+                    if (debug_assign_engineer) {
+                        console.log(engineers);
+                    }
+                }
+            });
+        }
+
+        async function GenerateTable() {
+            var datas = [];
+
+            for (var i = 0; i < assign_engs.length; i++) {
+                datas.push([
+                    assign_engs[i].user_id,
+                    assign_engs[i].user_name,
+                    assign_engs[i].role,
+                    assign_engs[i].assign_by,
+                    assign_engs[i].assign_date.split("T")[0]
+                ]);
+            }
+
+            if (table !== undefined) {
+                table.destroy();
+            }
+
+            $('#table_staffs').DataTable({
+                data: datas,
+            });
+        }
+
+        async function GenerateJobOption() {
+            var job_str = '<option value="" selected disabled>Please Select Job</option>';
+            var year = $('#year').val();
+            for (var i = 0; i < jobs.length; i++) {
+                if(year === "" || (jobs[i].job_id.substring(1,3) === year.slice(-2)))
+                    job_str += '<option value="' + jobs[i].job_id +'">' + jobs[i].job_id + ": " + jobs[i].job_name + '</option>';
+            }
+            $('#select_job').empty();
+            $('#select_job').append(job_str);
+        }
+
+        async function GenerateYearOption() {
+            var year_str = '<option value="">ALL</option>';
+            var date = new Date();
+            var year = date.getFullYear();
+            for (var i = 0; i < 9; i++) {
+                year_str += '<option value="' + (year - i) + '">' + (year - i) + '</option>';
+            }
+            $('#year').empty();
+            $('#year').append(year_str);
+        }
+
+        async function GenerateDepartmentOption() {
+            var department_str = '<option value="">ALL</option>';
+            for (var i = 0; i < departments.length; i++) {
+                department_str += '<option value="' + departments[i] + '">' + departments[i] + '</option>';
+            }
+            $('#department').empty();
+            $('#department').append(department_str);
+        }
+
+        async function GenerateEngineerOption() {
+            var department = $('#department').val();
+            var engineer_str = '<option value="" selected disabled>Please Select Engineer</option>';
+            for (var i = 0; i < engineers.length; i++) {
+                if (department === "" || (engineers[i].department === department))
+                    engineer_str += '<option value="' + engineers[i].user_id + '">' + engineers[i].user_name + '</option>';
+            }
+            $('#user_id').empty();
+            $('#user_id').append(engineer_str);
+        }
+
+        $('#year').on('change', function () {
+            GenerateJobOption();
+        });
+
+        $('#select_job').on('change', function () {
+            var select_job = $('#select_job').val();
+            if (select_job === "") {
+                $('#btn_load').attr('disabled', true);
+                $('#BtnAddEngineer').attr('disabled', true);
+            }
+            else {
+                $('#btn_load').attr('disabled', false);
+                $('#BtnAddEngineer').attr('disabled', false);
+            }
+        });
+
+        $('#btn_load').on('click', async function () {
+            var select_job = $('#select_job').val();
+            var job = jobs.filter(f => f.job_id == select_job);
+            $('#job_id').val(job[0].job_id);
+            $('#job_name').val(job[0].job_name);
+            await GetAssignEngineers(select_job);
+            await GenerateTable();
+        });
+
+        $('#BtnAddEngineer').on('click', async function () {
+            await GetDepartments();
+            await GenerateDepartmentOption();
+            await GetEngineers();
+            await GenerateEngineerOption();
+            $('#modal_engineer').modal();
+        });
+
+        $('#department').on('change', async function () {
+            await GenerateEngineerOption();
+        })
+
+        $('#user_id').on('change', function () {
+            var user_id = $('#user_id').val();
+            if (user_id === "") {
+                $('#btn_accept').attr('disabled', true);
+            }
+            else {
+                $('#btn_accept').attr('disabled', false);
+            }
+        });
+
+        $('#btn_accept').on('click', async function () {
+            var user_id = $('#user_id').val();
+            var job_id = $('#job_id').val();
+            var assign_by = '@Model.name';
+            var assign_date = new Date();
+            var jr_string = JSON.stringify({
+                "user_id": user_id,
+                "job_id": job_id,
+                "role": "Engineer",
+                "assign_by": assign_by,
+                "assign_date": assign_date
+            });
+            await AddJobResponsible(jr_string);
+        });
+
+        async function AddJobResponsible(jr_string) {
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddJobResponsible", "AssignJob")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    jr_string
+                },
+                success: function (response) {
+                    if (response == "Success") {
+                        location.reload();
+                    }
+                    else {
+                        alert(response);
+                    }
+                }
+            });
+        }
+
+    </script>
+}

@@ -22,7 +22,7 @@
                 </form>
             </div>
             <div class="card-footer">
-                <button id="btn_load" type="button" class="btn btn-primary form-control elevation-1">
+                <button id="btn_load" type="button" class="btn btn-primary form-control elevation-1" disabled>
                     <i class="fas fa-sync"></i> Load
                 </button>
             </div>
@@ -223,9 +223,11 @@
         }
 
         async function GenerateJobOptions() {
+            var year = $('#year').val();
             var job_str = '<option value="" selected disabled>Please Select Job</option>';
             for (var i = 0; i < jobs.length; i++) {
-                job_str += '<option value="' + jobs[i].job_id + '">' + jobs[i].job_id + ": " + jobs[i].job_name + '</option>';
+                if(year === "" || (jobs[i].job_id.substring(1,3) === year.slice(-2)))
+                    job_str += '<option value="' + jobs[i].job_id + '">' + jobs[i].job_id + ": " + jobs[i].job_name + '</option>';
             }
             $('#job_id').empty();
             $('#job_id').append(job_str);
@@ -235,9 +237,7 @@
 
             var datas = [];
             var selected_engineer = $('#select_engineer').val();
-            console.log(engineers);
             var eng = engineers.filter(f => f.user_id == selected_engineer);
-            console.log(eng);
 
             if (eng.length > 0) {
                 var user_id = eng[0].user_id;
@@ -246,13 +246,6 @@
                 $('#user_id').val(user_id);
                 $('#user_name').val(user_name);
                 $('#department').val(department);
-            }
-
-            if ($('#user_id').val() === "") {
-                $('#BtnAddJob').attr('disabled', true);
-            }
-            else {
-                $('#BtnAddJob').attr('disabled', false);
             }
                 
             for (var i = 0; i < jrs.length; i++) {
@@ -277,6 +270,18 @@
             await GenerateEngineerOptions();
         });
 
+        $('#select_engineer').on('change', function () {
+            var select_engineer = $('#select_engineer').val();
+            if (select_engineer === "") {
+                $('#btn_load').attr('disabled', true);
+                $('#BtnAddJob').attr('disabled', true);
+            }
+            else {
+                $('#btn_load').attr('disabled', false);
+                $('#BtnAddJob').attr('disabled', false);
+            }
+        });
+
         $('#btn_load').on('click', async function () {
             var user_id = $('#select_engineer').val();
             await GetEngineers();
@@ -290,6 +295,10 @@
             await GenerateJobOptions();
             $('#modal_job').modal();
             $('#btn_accept').attr('disabled', true);
+        });
+
+        $('#year').on('change', function () {
+            GenerateJobOptions();
         });
 
         $('#job_id').on('change', function () {

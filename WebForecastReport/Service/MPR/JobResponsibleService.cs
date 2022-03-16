@@ -23,7 +23,8 @@ namespace WebForecastReport.Service.MPR
 	                    Sale_User.Name AS user_name,
 	                    Sale_User.Department2 AS department,
 	                    JobResponsible.role,
-	                    JobResponsible.assign_by
+	                    JobResponsible.assign_by,
+	                    JobResponsible.assign_date
                     FROM JobResponsible
                         LEFT JOIN Jobs ON JobResponsible.job_id = Jobs.job_id
                         LEFT JOIN [gps_sale_tracking].[dbo].Sale_User AS Sale_User ON JobResponsible.user_id = Sale_User.Login
@@ -48,6 +49,7 @@ namespace WebForecastReport.Service.MPR
                             department = dr["department"] != DBNull.Value ? dr["department"].ToString() : "",
                             role = dr["role"] != DBNull.Value ? dr["role"].ToString() : "",
                             assign_by = dr["assign_by"] != DBNull.Value ? dr["assign_by"].ToString() : "",
+                            assign_date = dr["assign_date"] != DBNull.Value ? Convert.ToDateTime(dr["assign_date"]) : default(DateTime),
                         };
                         jrs.Add(jr);
                     }
@@ -77,7 +79,8 @@ namespace WebForecastReport.Service.MPR
 	                    Sale_User.Name AS user_name,
 	                    Sale_User.Department2 AS department,
 	                    JobResponsible.role,
-	                    JobResponsible.assign_by
+	                    JobResponsible.assign_by,
+                        JobResponsible.assign_date
                     FROM JobResponsible
                         LEFT JOIN Jobs ON JobResponsible.job_id = Jobs.job_id
                         LEFT JOIN [gps_sale_tracking].[dbo].Sale_User AS Sale_User ON JobResponsible.user_id = Sale_User.Login
@@ -102,6 +105,7 @@ namespace WebForecastReport.Service.MPR
                             department = dr["department"] != DBNull.Value ? dr["department"].ToString() : "",
                             role = dr["role"] != DBNull.Value ? dr["role"].ToString() : "",
                             assign_by = dr["assign_by"] != DBNull.Value ? dr["assign_by"].ToString() : "",
+                            assign_date = dr["assign_date"] != DBNull.Value ? Convert.ToDateTime(dr["assign_date"].ToString()) : default(DateTime),
                         };
                         jrs.Add(jr);
                     }
