@@ -60,6 +60,13 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpGet]
+        public List<QuotationResponsibleModel> GetQuotations(string user_id)
+        {
+            List<QuotationResponsibleModel> qrs = JobResponsibleService.GetQuotationResponsible(user_id);
+            return qrs;
+        }
+
+        [HttpGet]
         public bool CheckAllowEditable(string user_id)
         {
             return EngineerService.CheckAllowEditable(user_id);

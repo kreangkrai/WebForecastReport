@@ -66,6 +66,49 @@ namespace WebForecastReport.Service.MPR
             return jrs;
         }
 
+        public List<QuotationResponsibleModel> GetQuotationResponsible(string user_id)
+        {
+            List<QuotationResponsibleModel> qrs = new List<QuotationResponsibleModel>();
+            try
+            {
+                string string_command = string.Format($@"
+                    SELECT 
+	                    Proposal.quotation_no,
+	                    Quotation.project_name
+                    FROM Proposal
+	                    LEFT JOIN Quotation ON Proposal.quotation_no = Quotation.quotation_no
+                    WHERE Proposal.engineer_in_charge LIKE '%{user_id}%'");
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        QuotationResponsibleModel qr = new QuotationResponsibleModel()
+                        {
+                            quotation_no = dr["quotation_no"] != DBNull.Value ? dr["quotation_no"].ToString() : "",
+                            project_name = dr["project_name"] != DBNull.Value ? dr["project_name"].ToString() : "",
+                        };
+                        qrs.Add(qr);
+                    }
+                    dr.Close();
+                }
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+            return qrs;
+        }
+
         public List<JobResponsibleModel> GetAssignEngineers(string job_id)
         {
             List<JobResponsibleModel> jrs = new List<JobResponsibleModel>();

@@ -189,6 +189,7 @@
         //Variable Declaration
         var users = [];
         var jobs = [];
+        var quotations = [];
         var tasks = [];
         var holidays = [];
         var wh_day = [];
@@ -202,6 +203,7 @@
         //Change these variable to true for show data response
         var debug_user = false;
         var debug_jobs = false;
+        var debug_quotations = false;
         var debug_tasks = false;
         var debug_holiday = false;
         var debug_whs = false;
@@ -247,6 +249,23 @@
                     if (debug_jobs) {
                         console.log("Jobs");
                         console.log(jobs);
+                    }
+                }
+            });
+        };
+
+        async function GetQuotations() {
+            var user_id = '@Model.name';
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetQuotations", "Calendar")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { user_id },
+                success: function (response) {
+                    quotations = response;
+                    if (debug_quotations) {
+                        console.log("Quotations");
+                        console.log(quotations);
                     }
                 }
             });
@@ -532,6 +551,9 @@
             for (var i = 0; i < jobs.length; i++) {
                 jobs_str += `<option value="${jobs[i].job_id}">${jobs[i].job_id}: ${jobs[i].job_name}</option>`;
             }
+            for (var i = 0; i < quotations.length; i++) {
+                jobs_str += `<option value="${quotations[i].quotation_no}">${quotations[i].quotation_no}: ${quotations[i].project_name}</option>`;
+            }
             $('#job_id').empty();
             $('#job_id').append(jobs_str);
         }
@@ -579,7 +601,8 @@
                 await GetUsers();
                 await GenerateUsersOption();
                 await GetWorkingHoursByDate("@Model.name", date_start);
-                await GetJobs()
+                await GetJobs();
+                await GetQuotations();
                 await GenerateJobsOption();
                 await GenerateLocationOption();
                 await GetTasks();
@@ -606,6 +629,7 @@
                 await GetUsers();
                 await GenerateUsersOption();
                 await GetJobs();
+                await GetQuotations();
                 await GenerateJobsOption();
                 await GenerateLocationOption();
                 await GetTasks();
@@ -937,6 +961,7 @@
             await GenerateUsersOption();
             await GetWorkingHoursByDate(user_id, date.split("T")[0]);
             await GetJobs();
+            await GetQuotations();
             await GenerateJobsOption();
             await GenerateLocationOption();
             PrepmodalEditTask(event.extendedProps);
