@@ -62,6 +62,13 @@ namespace WebForecastReport.Controllers
             return Json(whs);
         }
 
+        [HttpGet] 
+        public JsonResult GetEngineerUser(string user_id)
+        {
+            EngUserModel eng = EngineerService.GetEngineerUser(user_id);
+            return Json(eng);
+        }
+
         [HttpGet]
         public JsonResult GetWorkingHoursByDate(string user_id, DateTime working_date)
         {

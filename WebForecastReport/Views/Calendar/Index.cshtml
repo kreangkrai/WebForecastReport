@@ -88,7 +88,7 @@
                         </div>
                         <div class="col-4">
                             <label for="wh_type">WH Type</label>
-                            <select id="wh_type" class="form-control">
+                            <select id="wh_type" class="form-control" disabled>
                                 <option value="" selected disabled>Please Select Type</option>
                                 <option id="wh_option1" value="REG">Regular</option>
                                 <option id="wh_option2" value="OT1_5">OT 1.5</option>
@@ -197,6 +197,7 @@
         var update = false;
         var drag = false;
         var overlap = true;
+        var eng;
 
         //Change these variable to true for show data response
         var debug_user = false;
@@ -212,6 +213,7 @@
 
         $(document).ready(async function () {
             await GetHolidays();
+            await GetEngineerUser("@Model.name");
             await GetWorkingHours("@Model.name");
             await GetUsers();
             await GenerateUserFilterOptions();
@@ -399,17 +401,39 @@
             return false;
         }
 
-        function GenerateCalendar(whs) {
+        async function GetEngineerUser(user_id) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetEngineerUser", "Calendar")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { user_id },
+                success: function (response) {
+                    eng = response;
+                }
+            });
+        }
+
+        async function GenerateCalendar(whs) {
             var datas = [];
             for (var i = 0; i < whs.length; i++) {
                 var start_date = new Date(whs[i].working_date);
+                var enable_edit = false;
+
+                if (eng.role === "Admin" || eng.allow_edit === true) {
+                    enable_edit = true;
+                } else {
+                    var today = new Date();
+                    var date_diff = Math.floor((today - start_date) / (1000 * 60 * 60 * 24));
+                    enable_edit = date_diff < 15 ? true : false;
+                }
+                
                 datas.push(
                     {
                         title: whs[i].job_name + ": " + whs[i].task_name,
                         start: start_date.setHours(whs[i].start_time.split(":")[0], whs[i].start_time.split(":")[1]),
                         end: start_date.setHours(whs[i].stop_time.split(":")[0], whs[i].stop_time.split(":")[1]),
                         allDay: false,
-                        editable: true,
+                        editable: enable_edit,
                         overlap: true,
                         extendedProps: {
                             "index": whs[i].index,
@@ -810,7 +834,24 @@
                     "dinner": dinner,
                     "note": note,
                 });
-                await UpdateWorkingHours(wh_string);
+
+                var enable_edit = false;
+                if (eng.role === "Admin" || eng.allow_edit === true) {
+                    enable_edit = true;
+                } else {
+                    var today = new Date();
+                    var date_diff = Math.floor((today - working_date) / (1000 * 60 * 60 * 24));
+                    enable_edit = date_diff < 15 ? true : false;
+                }
+
+                if (enable_edit) {
+                    await UpdateWorkingHours(wh_string);
+                }
+                else {
+                    $('#modal_alert_title').text('Alert Edit Task');
+                    $('#alert_content').html('<p>You are not allow to edit task in beyond past 2 weeks</p>');
+                    $('#modal_alert').modal();
+                }
             }
             else {
                 if (working_date !== "") {

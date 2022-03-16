@@ -87,7 +87,14 @@ namespace WebForecastReport.Services.MPR
             List<EngUserModel> engineers = new List<EngUserModel>();
             try
             {
-                string string_command = string.Format($@"SELECT * FROM EngineerUsers");
+                string string_command = string.Format($@"
+                    SELECT 
+                        user_id,
+                        user_name,
+                        department,
+                        role,
+                        allow_edit
+                    FROM EngineerUsers");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (cmd.Connection.State != System.Data.ConnectionState.Open)
                 {
@@ -104,6 +111,7 @@ namespace WebForecastReport.Services.MPR
                             user_id = dr["user_id"] != DBNull.Value ? dr["user_id"].ToString() : "",
                             user_name = dr["user_name"] != DBNull.Value ? dr["user_name"].ToString() : "",
                             department = dr["department"] != DBNull.Value ? dr["department"].ToString() : "",
+                            role = dr["role"] != DBNull.Value ? dr["role"].ToString() : "",
                             allow_edit = dr["allow_edit"] != DBNull.Value ? Convert.ToBoolean(dr["allow_edit"].ToString()) : false,
                         };
                         engineers.Add(eng);
@@ -119,6 +127,55 @@ namespace WebForecastReport.Services.MPR
                 }
             }
             return engineers;
+        }
+
+        public EngUserModel GetEngineerUser(string user_id)
+        {
+            List<EngUserModel> engineers = new List<EngUserModel>();
+            try
+            {
+                string string_command = string.Format($@"
+                    SELECT 
+                        user_id,
+                        user_name,
+                        department,
+                        role,
+                        allow_edit
+                    FROM EngineerUsers
+                    WHERE user_id = '{user_id}'");
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (cmd.Connection.State != System.Data.ConnectionState.Open)
+                {
+                    cmd.Connection.Close();
+                    cmd.Connection.Open();
+                }
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        EngUserModel eng = new EngUserModel()
+                        {
+                            user_id = dr["user_id"] != DBNull.Value ? dr["user_id"].ToString() : "",
+                            user_name = dr["user_name"] != DBNull.Value ? dr["user_name"].ToString() : "",
+                            department = dr["department"] != DBNull.Value ? dr["department"].ToString() : "",
+                            role = dr["role"] != DBNull.Value ? dr["role"].ToString() : "",
+                            allow_edit = dr["allow_edit"] != DBNull.Value ? Convert.ToBoolean(dr["allow_edit"].ToString()) : false,
+                        };
+                        engineers.Add(eng);
+                    }
+                    dr.Close();
+                }
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+            EngUserModel engineer = engineers.Where(w => w.user_id == user_id).FirstOrDefault();
+            return engineer;
         }
 
         public string CreateEngineerUser(EngUserModel engineer)

@@ -11,6 +11,7 @@ namespace WebForecastReport.Interfaces.MPR
         bool CheckAllowEditable(string user_id);
         List<EngUserModel> GetUsers();
         List<EngUserModel> GetEngineerUsers();
+        EngUserModel GetEngineerUser(string user_id);
         string CreateEngineerUser(EngUserModel engineer);
         string UpdateEngineerUser(EngUserModel engineer);
     }
