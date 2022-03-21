@@ -23,7 +23,7 @@
                 <span class="card-title">Jobs</span>
             </div>
             <div class="card-body">
-                <table id="table_job" class="table table-sm compact border table-hover table-striped w-100">
+                <table id="table_job" class="table table-sm border table-hover table-striped" style="width:100%;overflow-x:scroll">
                     <thead class="text-center">
                         <tr>
                             <th>ID</th>
@@ -33,14 +33,16 @@
                             <th>Cost</th>
                             <th>MD</th>
                             <th>PD</th>
-                            <th>Factor</th>
-                            <th>Manpower</th>
-                            <th>Cost/Manpower</th>
-                            <th>OT Manpower</th>
+                            <th>FT</th>
+                            <th>MP</th>
+                            <th>Cost/MP</th>
+                            <th>OT MP</th>
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+
+                    </tbody>
                     <tfoot class="text-center">
                         <tr>
                             <th>ID</th>
@@ -50,10 +52,10 @@
                             <th>Cost</th>
                             <th>MD</th>
                             <th>PD</th>
-                            <th>Factor</th>
-                            <th>Manpower</th>
-                            <th>Cost/Manpower</th>
-                            <th>OT Manpower</th>
+                            <th>FT</th>
+                            <th>MP</th>
+                            <th>Cost/MP</th>
+                            <th>OT MP</th>
                             <th>Status</th>
                         </tr>
                     </tfoot>
@@ -150,7 +152,7 @@
 
         //Change these parameters to true to show result
         var debug_jobs = false;
-        var debug_user = true;
+        var debug_user = false;
         var debug_job_string = false;
 
         $(document).ready(function () {
@@ -198,7 +200,7 @@
                     jobs[i].job_name,
                     jobs[i].sale_department,
                     jobs[i].sale,
-                    jobs[i].cost,
+                    jobs[i].cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     jobs[i].md_rate,
                     jobs[i].pd_rate,
                     jobs[i].factor,
@@ -213,10 +215,25 @@
                 data: datas,
                 lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
                 fixedHeader: true,
+                fixedColumns: {
+                    left: 2
+                },
                 columnDefs: [
                     {
                         targets: [1,2,3,4,5,6,7,8,9,10,11],
                         className: "border-left"
+                    },
+                    {
+                        targets: 0,
+                        width: "5%"
+                    },
+                    {
+                        targets: 1,
+                        width: "45%"
+                    },
+                    {
+                        targets: [2,5,6],
+                        visible: false
                     },
                 ],
                 rowCallback: function (row, data) {
