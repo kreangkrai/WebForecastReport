@@ -16,22 +16,24 @@ namespace WebForecastReport.Services.MPR
             List<WorkingHoursModel> whs = new List<WorkingHoursModel>();
             try
             {
-                string string_command = string.Format($@"SELECT 
-                                                            WorkingHours.ind, 
-                                                            WorkingHours.user_id, 
-                                                            Users.Name, 
-                                                            WorkingHours.working_date, 
-                                                            WorkingHours.job_id,
-                                                            Jobs.job_name,
-                                                            WorkingHours.task_id,
-                                                            Tasks.task_name,
-                                                            WorkingHours.start_time,
-                                                            WorkingHours.stop_time,
-                                                            WorkingHours.note
-                                                        FROM WorkingHours 
-                                                            LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
-                                                            LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id 
-                                                            LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id");
+                string string_command = string.Format($@"
+                    SELECT
+                        WorkingHours.ind,
+                        WorkingHours.user_id,
+                        Users.Name,
+                        WorkingHours.working_date,
+                        WorkingHours.week_number,
+                        WorkingHours.job_id,
+                        Jobs.job_name,
+                        WorkingHours.task_id,
+                        Tasks.task_name,
+                        WorkingHours.start_time,
+                        WorkingHours.stop_time,
+                        WorkingHours.note
+                    FROM WorkingHours
+                        LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login
+                        LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
+                        LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
@@ -49,6 +51,7 @@ namespace WebForecastReport.Services.MPR
                             user_id = dr["user_id"] != DBNull.Value ? dr["user_id"].ToString() : "",
                             user_name = dr["Name"] != DBNull.Value ? dr["Name"].ToString() : "",
                             working_date = dr["working_date"] != DBNull.Value ? Convert.ToDateTime(dr["working_date"]) : default(DateTime),
+                            week_number = dr["week_number"] != DBNull.Value ? Convert.ToInt32(dr["week_number"]) : default(Int32),
                             job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
                             job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
                             task_id = dr["task_id"] != DBNull.Value ? dr["task_id"].ToString() : "",
@@ -78,23 +81,24 @@ namespace WebForecastReport.Services.MPR
             try
             {
                 string string_command = string.Format($@"
-                SELECT 
-                    WorkingHours.ind,
-                    WorkingHours.user_id,
-                    Users.Name,
-                    WorkingHours.working_date,
-                    WorkingHours.job_id,
-                    Jobs.job_name,
-                    WorkingHours.task_id,
-                    Tasks.task_name,
-                    WorkingHours.start_time,
-                    WorkingHours.stop_time,
-                    WorkingHours.note
-                FROM WorkingHours
-                    LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
-                    LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
-                    LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
-                WHERE WorkingHours.user_id = '{user_id}'");
+                    SELECT 
+                        WorkingHours.ind,
+                        WorkingHours.user_id,
+                        Users.Name,
+                        WorkingHours.working_date,
+                        WorkingHours.week_number,
+                        WorkingHours.job_id,
+                        Jobs.job_name,
+                        WorkingHours.task_id,
+                        Tasks.task_name,
+                        WorkingHours.start_time,
+                        WorkingHours.stop_time,
+                        WorkingHours.note
+                    FROM WorkingHours
+                        LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
+                        LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
+                        LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
+                    WHERE WorkingHours.user_id = '{user_id}'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
@@ -112,6 +116,7 @@ namespace WebForecastReport.Services.MPR
                             user_id = dr["user_id"] != DBNull.Value ? dr["user_id"].ToString() : "",
                             user_name = dr["Name"] != DBNull.Value ? dr["Name"].ToString() : "",
                             working_date = dr["working_date"] != DBNull.Value ? Convert.ToDateTime(dr["working_date"]) : default(DateTime),
+                            week_number = dr["week_number"] != DBNull.Value ? Convert.ToInt32(dr["week_number"]) : default(Int32),
                             job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
                             job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
                             task_id = dr["task_id"] != DBNull.Value ? dr["task_id"].ToString() : "",
@@ -141,24 +146,25 @@ namespace WebForecastReport.Services.MPR
             try
             {
                 string string_command = string.Format($@"
-                SELECT
-                    WorkingHours.ind,
-                    WorkingHours.user_id,
-                    Users.Name,
-                    WorkingHours.working_date,
-                    WorkingHours.job_id,
-                    Jobs.job_name,
-                    WorkingHours.task_id,
-                    Tasks.task_name,
-                    WorkingHours.start_time,
-                    WorkingHours.stop_time,
-                    WorkingHours.note
-                FROM WorkingHours
-                    LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
-                    LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
-                    LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
-                WHERE WorkingHours.working_date like '{year}-{month}%' 
-                AND WorkingHours.user_id ='{user}'");
+                    SELECT
+                        WorkingHours.ind,
+                        WorkingHours.user_id,
+                        Users.Name,
+                        WorkingHours.working_date,
+                        WorkingHours.week_number,
+                        WorkingHours.job_id,
+                        Jobs.job_name,
+                        WorkingHours.task_id,
+                        Tasks.task_name,
+                        WorkingHours.start_time,
+                        WorkingHours.stop_time,
+                        WorkingHours.note
+                    FROM WorkingHours
+                        LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
+                        LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
+                        LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
+                    WHERE WorkingHours.working_date like '{year}-{month}%' 
+                    AND WorkingHours.user_id ='{user}'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
@@ -176,6 +182,7 @@ namespace WebForecastReport.Services.MPR
                             user_id = dr["user_id"] != DBNull.Value ? dr["user_id"].ToString() : "",
                             user_name = dr["Name"] != DBNull.Value ? dr["Name"].ToString() : "",
                             working_date = dr["working_date"] != DBNull.Value ? Convert.ToDateTime(dr["working_date"]) : default(DateTime),
+                            week_number = dr["week_number"] != DBNull.Value ? Convert.ToInt32(dr["week_number"]) : default(Int32),
                             job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
                             job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
                             task_id = dr["task_id"] != DBNull.Value ? dr["task_id"].ToString() : "",
@@ -205,24 +212,25 @@ namespace WebForecastReport.Services.MPR
             try
             {
                 string string_command = string.Format($@"
-                SELECT
-                    ind,
-                    WorkingHours.user_id,
-                    Users.Name,
-                    WorkingHours.working_date,
-                    WorkingHours.job_id,
-                    Jobs.job_name,
-                    WorkingHours.task_id,
-                    Tasks.task_name,
-                    WorkingHours.start_time,
-                    WorkingHours.stop_time,
-                    WorkingHours.note
-                FROM WorkingHours
-                    LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
-                    LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
-                    LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
-                WHERE WorkingHours.user_id = '{user}'
-                AND WorkingHours.working_date LIKE '{working_date.ToString("yyyy-MM-dd")}'");
+                    SELECT
+                        ind,
+                        WorkingHours.user_id,
+                        Users.Name,
+                        WorkingHours.working_date,
+                        WorkingHours.week_number,
+                        WorkingHours.job_id,
+                        Jobs.job_name,
+                        WorkingHours.task_id,
+                        Tasks.task_name,
+                        WorkingHours.start_time,
+                        WorkingHours.stop_time,
+                        WorkingHours.note
+                    FROM WorkingHours
+                        LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
+                        LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
+                        LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
+                    WHERE WorkingHours.user_id = '{user}'
+                    AND WorkingHours.working_date LIKE '{working_date.ToString("yyyy-MM-dd")}'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
@@ -240,6 +248,7 @@ namespace WebForecastReport.Services.MPR
                             user_id = dr["user_id"] != DBNull.Value ? dr["user_id"].ToString() : "",
                             user_name = dr["Name"] != DBNull.Value ? dr["Name"].ToString() : "",
                             working_date = dr["working_date"] != DBNull.Value ? Convert.ToDateTime(dr["working_date"]) : default(DateTime),
+                            week_number = dr["week_number"] != DBNull.Value ? Convert.ToInt32(dr["week_number"]) : default(Int32),
                             job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
                             job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
                             task_id = dr["task_id"] != DBNull.Value ? dr["task_id"].ToString() : "",
@@ -268,10 +277,10 @@ namespace WebForecastReport.Services.MPR
             try
             {
                 string string_command = string.Format($@"
-                INSERT INTO WorkingHours(
-                    user_id, working_date, job_id, task_id, start_time, stop_time, lunch, dinner, note)
-                VALUES (
-                    @user_id, @working_date, @job_id, @task_id, @start_time, @stop_time, @lunch, @dinner, @note)");
+                    INSERT INTO WorkingHours(
+                        user_id, working_date, week_number, job_id, task_id, start_time, stop_time, lunch, dinner, note)
+                    VALUES (
+                        @user_id, @working_date, (SELECT DATEPART(ISO_WEEK,@working_date)), @job_id, @task_id, @start_time, @stop_time, @lunch, @dinner, @note)");
                 using (SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect()))
                 {
                     cmd.CommandType = System.Data.CommandType.Text;
@@ -315,6 +324,7 @@ namespace WebForecastReport.Services.MPR
                     SET
                         user_id = @user_id,
                         working_date = @working_date,
+                        week_number = (SELECT DATEPART(ISO_WEEK,@working_date)),
                         job_id = @job_id,
                         task_id = @task_id,
                         start_time = @start_time,
