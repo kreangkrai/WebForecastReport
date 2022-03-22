@@ -15,7 +15,7 @@
 
 <!-- Task Modal -->
 <div class="modal fade" id="modal_task" tabindex="-1" role="dialog" data-backdrop="static">
-    <div class="modal-lg modal-dialog modal-dialog-centered" role="document">
+    <div class="modal modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modal_task_title">Add Tasks</h5>
@@ -35,7 +35,7 @@
                     </div>
                     <div id="working_date_group" class="form-group">
                         <label for="working_date">Date</label>
-                        <input id="working_date" type="date" class="form-control" />
+                        <input id="working_date" type="date" class="form-control" disabled/>
                     </div>
                     <div id="date_group" class="form-group row">
                         <div class="col-6">
@@ -46,22 +46,6 @@
                             <label for="stop_date">To</label>
                             <input id="stop_date" type="date" class="form-control" />
                         </div>
-                    </div>
-                    <div id="group_tasks" class="form-group">
-                        <label for="table_tasks">Task(s) Today</label>
-                        <table id="table_tasks" class="table table-sm compact table-bordered text-center w-100">
-                            <thead class="text-center">
-                                <tr>
-                                    <th>No</th>
-                                    <th>Job</th>
-                                    <th>Task</th>
-                                    <th>From</th>
-                                    <th>To</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
                     </div>
                     <div class="form-group">
                         <label for="job_id">Job</label>
@@ -78,37 +62,13 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-4">
+                        <div class="col-6">
                             <label for="start_time">From</label>
                             <input id="start_time" type="time" class="form-control" />
                         </div>
-                        <div class="col-4">
+                        <div class="col-6">
                             <label for="stop_time">To</label>
                             <input id="stop_time" type="time" class="form-control" />
-                        </div>
-                        <div class="col-4">
-                            <label for="wh_type">WH Type</label>
-                            <select id="wh_type" class="form-control" disabled>
-                                <option value="" selected disabled>Please Select Type</option>
-                                <option id="wh_option1" value="REG">Regular</option>
-                                <option id="wh_option2" value="OT1_5">OT 1.5</option>
-                                <option id="wh_option3" value="OT3">OT 3.0</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Break</label>
-                    </div>
-                    <div class="form-group d-flex align-items-baseline">
-                        <div class="form-check">
-                            <input id="lunch" type="checkbox" class="form-check-input" />
-                            <label for="lunch" class="form-check-label">Lunch</label>
-                        </div>
-                    </div>
-                    <div class="form-group d-flex align-items-baseline">
-                        <div class="form-check">
-                            <input id="dinner" type="checkbox" class="form-check-input" />
-                            <label for="dinner" class="form-check-label">Break</label>
                         </div>
                     </div>
                     <div class="form-group">
@@ -126,7 +86,7 @@
                 </button>
                 <button id="btn_accept" type="button" class="btn btn-primary elevation-1">
                     <i class="fas fa-check"></i> Accept
-                </button>                
+                </button>
             </div>
         </div>
     </div>
@@ -336,57 +296,6 @@
             });
         }
 
-        async function CheckDropOverlap(task, date) {
-            var start_time = new Date();
-            start_time.setHours(task.start_time.split(":")[0]);
-            start_time.setMinutes(task.start_time.split(":")[1]);
-            start_time.setSeconds(0);
-            start_time.setMilliseconds(0);
-            var stop_time = new Date();
-            stop_time.setHours(task.stop_time.split(":")[0]);
-            stop_time.setMinutes(task.stop_time.split(":")[1]);
-            stop_time.setSeconds(0);
-            stop_time.setMilliseconds(0);
-            await GetWorkingHoursByDate("@Model.name", date);
-            for (var i = 0; i < wh_day.length; i++) {
-                var task_start = new Date();
-                task_start.setHours(wh_day[i].start_time.split(":")[0]);
-                task_start.setMinutes(wh_day[i].start_time.split(":")[1]);
-                task_start.setSeconds(0);
-                task_start.setMilliseconds(0);
-                var task_stop = new Date();
-                task_stop.setHours(wh_day[i].stop_time.split(":")[0]);
-                task_stop.setMinutes(wh_day[i].stop_time.split(":")[1]);
-                task_stop.setSeconds(0);
-                task_stop.setMilliseconds(0);
-                if (start_time > task_start && start_time < task_stop) {
-                    return true;
-                }
-                if (stop_time > task_start && stop_time < task_stop) {
-                    return true;
-                }
-                if (task_start > start_time && task_start < stop_time) {
-                    return true;
-                }
-                if (task_stop > start_time && task_stop < stop_time) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        async function GetEngineerUser(user_id) {
-            await $.ajax({
-                type: "GET",
-                url: '@Url.Action("GetEngineerUser", "Calendar")',
-	            contentType: 'application/x-www-form-urlencoded',
-                data: { user_id },
-                success: function (response) {
-                    eng = response;
-                }
-            });
-        }
-
         async function GenerateCalendar(whs) {
             var datas = [];
             for (var i = 0; i < whs.length; i++) {
@@ -446,7 +355,7 @@
                             minute: '2-digit',
                             hour12: false,
                             meridiem: false
-                        }
+                        },
                     }
                 },
                 headerToolbar: {
@@ -475,7 +384,7 @@
                         enable = true;
                     }
                     else {
-                        enable = await CheckAllowEditable();
+                        enable = CheckAllowEditable();
                     }
 
                     if (enable == true) {
@@ -569,15 +478,17 @@
 
         async function CheckAllowEditable() {
             var user_id = '@Model.name';
+            var allow = false;
             await $.ajax({
                 type: "GET",
                 url: '@Url.Action("CheckAllowEditable", "Calendar")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: { user_id },
                 success: function (response) {
-                    return response;
+                    allow = response;
                 }
             });
+            return allow;
         }
 
         async function AddTask(date_start) {
@@ -656,41 +567,8 @@
             $('#date_group').hide();
             $('#start_date').val(null);
             $('#stop_date').val(null);
-            if (wh_day.length > 0) {
-                $('#group_tasks').show()
-                $('#table_tasks tbody').empty();
-                var table_str = '';
-                for (var i = 0; i < wh_day.length; i++) {
-                    table_str += '<tr>';
-                    table_str += '<td>' + (i + 1) + '</td>';
-                    table_str += '<td>' + wh_day[i].job_id + '</td>';
-                    table_str += '<td>' + wh_day[i].task_name + '</td>';
-                    table_str += '<td>' + wh_day[i].start_time + '</td>';
-                    table_str += '<td>' + wh_day[i].stop_time + '</td>';
-                    table_str += '</tr>';
-                }
-                $('#table_tasks').append(table_str);
-            }
-            else {
-                $('#group_tasks').hide()
-            }
-            $('#location').attr('disabled', true);
-            $('#task_id').attr('disabled', true);
             $('#start_time').val(null);
             $('#stop_time').val(null);
-
-            var date = new Date(date_start);
-            if (date.getDay() == 0 || date.getDay() == 6) {
-                $('#wh_option1').hide();
-                $('#wh_type').val("OT1_5");
-            }
-            else {
-                $('#wh_option1').show();
-                $('#wh_type').val("REG");
-            }
-
-            $('#lunch').prop('checked', true);
-            $('#dinner').prop('checked', false);
             $('#note').val(null);
             $('#btn_delete').hide();
         }
@@ -705,14 +583,10 @@
             $('#date_group').show();
             $('#start_date').val(date_start);
             $('#stop_date').val(date_end);
-            $('#group_tasks').hide()
             $('#location').attr('disabled', true);
             $('#task_id').attr('disabled', true);
             $('#start_time').val("08:30");
             $('#stop_time').val("17:30");
-            $('#wh_type').val("REG");
-            $('#lunch').prop('checked', true);
-            $('#dinner').prop('checked', false);
             $('#note').val(null);
             $('#btn_delete').hide();
         }
@@ -779,10 +653,6 @@
             var task_id = $('#task_id').val();
             var start_time = $('#start_time').val();
             var stop_time = $('#stop_time').val();
-            var wh_type = ($('#wh_type').val() === "") ? "REG" : $('#wh_type').val();
-
-            var lunch = $('#lunch').prop('checked');
-            var dinner = $('#dinner').prop('checked');
             var note = $('#note').val();
 
             if (debug_accept) {
@@ -793,9 +663,6 @@
                 console.log("Task -> " + task_id);
                 console.log("From -> " + start_time);
                 console.log("To -> " + stop_time);
-                console.log("WH Type -> " + wh_type);
-                console.log("Lunch -> " + lunch);
-                console.log("Dinner -> " + dinner);
                 console.log("Note -> " + note);
             }
 
@@ -808,9 +675,6 @@
                     "task_id": task_id,
                     "start_time": start_time,
                     "stop_time": stop_time,
-                    "wh_type": wh_type,
-                    "lunch": lunch,
-                    "dinner": dinner,
                     "note": note,
                 });
 
@@ -841,9 +705,6 @@
                         "task_id": task_id,
                         "start_time": start_time,
                         "stop_time": stop_time,
-                        "wh_type": wh_type,
-                        "lunch": lunch,
-                        "dinner": dinner,
                         "note": note,
                     });
                     await AddWorkingHours(wh_string);
@@ -861,9 +722,6 @@
                             "task_id": task_id,
                             "start_time": start_time,
                             "stop_time": stop_time,
-                            "wh_type": wh_type,
-                            "lunch": lunch,
-                            "dinner": dinner,
                             "note": note,
                         });
                         var task_overlap = false;
@@ -911,6 +769,50 @@
             await DeleteWorkingHours(wh_string);
         })
 
+        async function CheckAddOverlap(wh_string) {
+            var task = JSON.parse(wh_string);
+            var date = task.working_date;
+            var start_time = new Date();
+            start_time.setHours(task.start_time.split(":")[0]);
+            start_time.setMinutes(task.start_time.split(":")[1]);
+            start_time.setSeconds(0);
+            start_time.setMilliseconds(0);
+            var stop_time = new Date();
+            stop_time.setHours(task.stop_time.split(":")[0]);
+            stop_time.setMinutes(task.stop_time.split(":")[1]);
+            stop_time.setSeconds(0);
+            stop_time.setMilliseconds(0);
+            await GetWorkingHoursByDate("@Model.name", date);
+            if (update) {
+                wh_day = wh_day.filter(f => f.index !== task.index);
+            }
+            for (var i = 0; i < wh_day.length; i++) {
+                var task_start = new Date();
+                var task_stop = new Date();
+                task_start.setHours(wh_day[i].start_time.split(":")[0]);
+                task_start.setMinutes(wh_day[i].start_time.split(":")[1]);
+                task_start.setSeconds(0);
+                task_start.setMilliseconds(0);
+                task_stop.setHours(wh_day[i].stop_time.split(":")[0]);
+                task_stop.setMinutes(wh_day[i].stop_time.split(":")[1]);
+                task_stop.setSeconds(0);
+                task_stop.setMilliseconds(0);
+                if (start_time >= task_start && start_time < task_stop) {
+                    return true;
+                }
+                if (stop_time > task_start && stop_time < task_stop) {
+                    return true;
+                }
+                if (task_start >= start_time && task_start < stop_time) {
+                    return true;
+                }
+                if (task_stop > start_time && task_stop < stop_time) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         async function CheckAddTasksOverlap(wh_string) {
             var task = JSON.parse(wh_string);
             var date = task.working_date;
@@ -936,13 +838,13 @@
                 task_stop.setMinutes(wh_day[i].stop_time.split(":")[1]);
                 task_stop.setSeconds(0);
                 task_stop.setMilliseconds(0);
-                if (start_time > task_start && start_time < task_stop) {
+                if (start_time >= task_start && start_time < task_stop) {
                     return true;
                 }
                 if (stop_time > task_start && stop_time < task_stop) {
                     return true;
                 }
-                if (task_start > start_time && task_start < stop_time) {
+                if (task_start >= start_time && task_start < stop_time) {
                     return true;
                 }
                 if (task_stop > start_time && task_stop < stop_time) {
@@ -950,6 +852,57 @@
                 }
             }
             return false;
+        }
+
+        async function CheckDropOverlap(task, date) {
+            var start_time = new Date();
+            start_time.setHours(task.start_time.split(":")[0]);
+            start_time.setMinutes(task.start_time.split(":")[1]);
+            start_time.setSeconds(0);
+            start_time.setMilliseconds(0);
+            var stop_time = new Date();
+            stop_time.setHours(task.stop_time.split(":")[0]);
+            stop_time.setMinutes(task.stop_time.split(":")[1]);
+            stop_time.setSeconds(0);
+            stop_time.setMilliseconds(0);
+            await GetWorkingHoursByDate("@Model.name", date);
+            for (var i = 0; i < wh_day.length; i++) {
+                var task_start = new Date();
+                task_start.setHours(wh_day[i].start_time.split(":")[0]);
+                task_start.setMinutes(wh_day[i].start_time.split(":")[1]);
+                task_start.setSeconds(0);
+                task_start.setMilliseconds(0);
+                var task_stop = new Date();
+                task_stop.setHours(wh_day[i].stop_time.split(":")[0]);
+                task_stop.setMinutes(wh_day[i].stop_time.split(":")[1]);
+                task_stop.setSeconds(0);
+                task_stop.setMilliseconds(0);
+                if (start_time >= task_start && start_time < task_stop) {
+                    return true;
+                }
+                if (stop_time > task_start && stop_time < task_stop) {
+                    return true;
+                }
+                if (task_start >= start_time && task_start < stop_time) {
+                    return true;
+                }
+                if (task_stop > start_time && task_stop < stop_time) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        async function GetEngineerUser(user_id) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetEngineerUser", "Calendar")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { user_id },
+                success: function (response) {
+                    eng = response;
+                }
+            });
         }
 
         var wh_index;
@@ -991,38 +944,13 @@
         async function PrepmodalEditTask(task) {
             wh_index = task.index;
             $('#job_id').val(task.job_id);
-            if (wh_day.length > 0) {
-                $('#group_tasks').show()
-                $('#table_tasks tbody').empty();
-                var table_str = '';
-                for (var i = 0; i < wh_day.length; i++) {
-                    if ((task.job_name === wh_day[i].job_name) && (task.task_name === wh_day[i].task_name) && (task.start_time === wh_day[i].start_time) && (task.stop_time === wh_day[i].stop_time)) {
-                        table_str += '<tr class="table-primary">';
-                    }
-                    else {
-                        table_str += '<tr>';
-                    }
-                    table_str += '<td>' + (i + 1) + '</td>';
-                    table_str += '<td>' + wh_day[i].job_name + '</td>';
-                    table_str += '<td>' + wh_day[i].task_name + '</td>';
-                    table_str += '<td>' + wh_day[i].start_time + '</td>';
-                    table_str += '<td>' + wh_day[i].stop_time + '</td>';
-                    table_str += '</tr>';
-                }
-                $('#table_tasks').append(table_str);
-            }
-            else {
-                $('#group_tasks').hide()
-            }
             await GetTasks();
             await GenerateTasksOption();
             $('#location').val(task.task_id[0]);
             $('#task_id').val(task.task_id);
-
             if (debug_edit) {
                 console.log(task);
             }
-
             $('#modal_task').modal();
             $('#modal_task_title').text("Edit Task");
             $('#user_id').val(task.user_id);
@@ -1033,66 +961,8 @@
             $('#stop_date').val(null);
             $('#start_time').val(task.start_time);
             $('#stop_time').val(task.stop_time);
-            $('#wh_type').val(task.wh_type);
-
-            if (task.lunch) {
-                $('#lunch').prop('checked', true);
-            }
-            else {
-                $('#lunch').prop('checked', false);
-            }
-            if (task.dinner) {
-                $('#dinner').prop('checked', true);
-            }
-            else {
-                $('#dinner').prop('checked', false);
-            }
             $('#note').val(task.note);
             $('#btn_delete').show();
-        }
-
-        async function CheckAddOverlap(wh_string) {
-            var task = JSON.parse(wh_string);
-            var date = task.working_date;
-            var start_time = new Date();
-            start_time.setHours(task.start_time.split(":")[0]);
-            start_time.setMinutes(task.start_time.split(":")[1]);
-            start_time.setSeconds(0);
-            start_time.setMilliseconds(0);
-            var stop_time = new Date();
-            stop_time.setHours(task.stop_time.split(":")[0]);
-            stop_time.setMinutes(task.stop_time.split(":")[1]);
-            stop_time.setSeconds(0);
-            stop_time.setMilliseconds(0);
-            await GetWorkingHoursByDate("@Model.name", date);
-            if (update) {
-                wh_day = wh_day.filter(f => f.index !== task.index);
-            }
-            for (var i = 0; i < wh_day.length; i++) {
-                var task_start = new Date();
-                var task_stop = new Date();
-                task_start.setHours(wh_day[i].start_time.split(":")[0]);
-                task_start.setMinutes(wh_day[i].start_time.split(":")[1]);
-                task_start.setSeconds(0);
-                task_start.setMilliseconds(0);
-                task_stop.setHours(wh_day[i].stop_time.split(":")[0]);
-                task_stop.setMinutes(wh_day[i].stop_time.split(":")[1]);
-                task_stop.setSeconds(0);
-                task_stop.setMilliseconds(0);
-                if (start_time > task_start && start_time < task_stop) {
-                    return true;
-                }
-                if (stop_time > task_start && stop_time < task_stop) {
-                    return true;
-                }
-                if (task_start > start_time && task_start < stop_time) {
-                    return true;
-                }
-                if (task_stop > start_time && task_stop < stop_time) {
-                    return true;
-                }
-            }
-            return false;
         }
 
         async function AddWorkingHours(wh_string) {
