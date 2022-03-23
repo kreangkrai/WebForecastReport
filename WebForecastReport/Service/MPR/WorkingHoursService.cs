@@ -29,6 +29,8 @@ namespace WebForecastReport.Services.MPR
                         Tasks.task_name,
                         WorkingHours.start_time,
                         WorkingHours.stop_time,
+                        WorkingHours.lunch,
+                        WorkingHours.dinner,
                         WorkingHours.note
                     FROM WorkingHours
                         LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login
@@ -58,6 +60,8 @@ namespace WebForecastReport.Services.MPR
                             task_name = dr["task_name"] != DBNull.Value ? dr["task_name"].ToString() : "",
                             start_time = dr["start_time"] != DBNull.Value ? TimeSpan.Parse(dr["start_time"].ToString()) : default(TimeSpan),
                             stop_time = dr["stop_time"] != DBNull.Value ? TimeSpan.Parse(dr["stop_time"].ToString()) : default(TimeSpan),
+                            lunch = dr["lunch"] != DBNull.Value ? Convert.ToBoolean(dr["lunch"].ToString()) : default(bool),
+                            dinner = dr["dinner"] != DBNull.Value ? Convert.ToBoolean(dr["dinner"].ToString()) : default(bool),
                             note = dr["note"] != DBNull.Value ? dr["note"].ToString() : "",
                         };
                         whs.Add(wh);
@@ -93,6 +97,8 @@ namespace WebForecastReport.Services.MPR
                         Tasks.task_name,
                         WorkingHours.start_time,
                         WorkingHours.stop_time,
+                        WorkingHours.lunch,
+                        WorkingHours.dinner,
                         WorkingHours.note
                     FROM WorkingHours
                         LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
@@ -123,6 +129,8 @@ namespace WebForecastReport.Services.MPR
                             task_name = dr["task_name"] != DBNull.Value ? dr["task_name"].ToString() : "",
                             start_time = dr["start_time"] != DBNull.Value ? TimeSpan.Parse(dr["start_time"].ToString()) : default(TimeSpan),
                             stop_time = dr["stop_time"] != DBNull.Value ? TimeSpan.Parse(dr["stop_time"].ToString()) : default(TimeSpan),
+                            lunch = dr["lunch"] != DBNull.Value ? Convert.ToBoolean(dr["lunch"].ToString()) : default(bool),
+                            dinner = dr["dinner"] != DBNull.Value ? Convert.ToBoolean(dr["dinner"].ToString()) : default(bool),
                             note = dr["note"] != DBNull.Value ? dr["note"].ToString() : "",
                         };
                         whs.Add(wh);
@@ -158,6 +166,8 @@ namespace WebForecastReport.Services.MPR
                         Tasks.task_name,
                         WorkingHours.start_time,
                         WorkingHours.stop_time,
+                        WorkingHours.lunch,
+                        WorkingHours.dinner,
                         WorkingHours.note
                     FROM WorkingHours
                         LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
@@ -189,6 +199,8 @@ namespace WebForecastReport.Services.MPR
                             task_name = dr["task_name"] != DBNull.Value ? dr["task_name"].ToString() : "",
                             start_time = dr["start_time"] != DBNull.Value ? TimeSpan.Parse(dr["start_time"].ToString()) : default(TimeSpan),
                             stop_time = dr["stop_time"] != DBNull.Value ? TimeSpan.Parse(dr["stop_time"].ToString()) : default(TimeSpan),
+                            lunch = dr["lunch"] != DBNull.Value ? Convert.ToBoolean(dr["lunch"].ToString()) : default(bool),
+                            dinner = dr["dinner"] != DBNull.Value ? Convert.ToBoolean(dr["dinner"].ToString()) : default(bool),
                             note = dr["note"] != DBNull.Value ? dr["note"].ToString() : "",
                         };
                         whs.Add(wh);
@@ -224,6 +236,8 @@ namespace WebForecastReport.Services.MPR
                         Tasks.task_name,
                         WorkingHours.start_time,
                         WorkingHours.stop_time,
+                        WorkingHours.lunch,
+                        WorkingHours.dinner,
                         WorkingHours.note
                     FROM WorkingHours
                         LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
@@ -255,6 +269,8 @@ namespace WebForecastReport.Services.MPR
                             task_name = dr["task_name"] != DBNull.Value ? dr["task_name"].ToString() : "",
                             start_time = dr["start_time"] != DBNull.Value ? TimeSpan.Parse(dr["start_time"].ToString()) : default(TimeSpan),
                             stop_time = dr["stop_time"] != DBNull.Value ? TimeSpan.Parse(dr["stop_time"].ToString()) : default(TimeSpan),
+                            lunch = dr["lunch"] != DBNull.Value ? Convert.ToBoolean(dr["lunch"].ToString()) : default(bool),
+                            dinner = dr["dinner"] != DBNull.Value ? Convert.ToBoolean(dr["dinner"].ToString()) : default(bool),
                             note = dr["note"] != DBNull.Value ? dr["note"].ToString() : "",
                         };
                         whs.Add(wh);
@@ -342,6 +358,53 @@ namespace WebForecastReport.Services.MPR
                     cmd.Parameters.AddWithValue("@stop_time", wh.stop_time);
                     cmd.Parameters.AddWithValue("@note", wh.note);
                     cmd.Parameters.AddWithValue("@ind", wh.index);
+                    if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                    {
+                        ConnectSQL.CloseConnect();
+                        ConnectSQL.OpenConnect();
+                    }
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+            return "Success";
+        }
+
+        public string UpdateRestTime(WorkingHoursModel wh)
+        {
+            try
+            {
+                string string_command = string.Format($@"
+                    UPDATE WorkingHours 
+                    SET lunch = @lunch,
+                        dinner = @dinner
+                    WHERE user_id = @user_id 
+                        AND working_date = @working_date 
+                        AND job_id = @job_id
+                        AND task_id = @task_id
+                        AND start_time = @start_time
+                        AND stop_time = @stop_time");
+                using (SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect()))
+                {
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.Parameters.AddWithValue("@lunch", wh.lunch);
+                    cmd.Parameters.AddWithValue("@dinner", wh.dinner);
+                    cmd.Parameters.AddWithValue("@user_id", wh.user_id);
+                    cmd.Parameters.AddWithValue("@working_date", wh.working_date);
+                    cmd.Parameters.AddWithValue("@job_id", wh.job_id);
+                    cmd.Parameters.AddWithValue("@task_id", wh.task_id);
+                    cmd.Parameters.AddWithValue("@start_time", wh.start_time);
+                    cmd.Parameters.AddWithValue("@stop_time", wh.stop_time);
                     if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                     {
                         ConnectSQL.CloseConnect();

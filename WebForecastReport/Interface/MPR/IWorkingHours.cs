@@ -14,6 +14,7 @@ namespace WebForecastReport.Interfaces.MPR
         List<WorkingHoursModel> GetWorkingHours(string user, DateTime working_date);
         string AddWorkingHours(WorkingHoursModel wh);
         string UpdateWorkingHours(WorkingHoursModel wh);
+        string UpdateRestTime(WorkingHoursModel wh);
         string DeleteWorkingHours(WorkingHoursModel wh);
     }
 }

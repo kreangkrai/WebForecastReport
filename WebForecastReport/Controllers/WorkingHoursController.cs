@@ -10,6 +10,7 @@ using WebForecastReport.Interface;
 using WebForecastReport.Service;
 using Microsoft.AspNetCore.Http;
 using WebForecastReport.Models;
+using Newtonsoft.Json;
 
 namespace WebForecastReport.Controllers
 {
@@ -17,12 +18,14 @@ namespace WebForecastReport.Controllers
     {
         readonly IAccessory Accessory;
         readonly IWorkingHours WorkingHoursService;
+        readonly IHoliday HolidayService;
         static List<WorkingHoursModel> monthly = new List<WorkingHoursModel>();
         
         public WorkingHoursController()
         {
             Accessory = new AccessoryService();
             WorkingHoursService = new WorkingHoursService();
+            HolidayService = new HolidayService();
         }
 
         public IActionResult Index()
@@ -48,19 +51,38 @@ namespace WebForecastReport.Controllers
         [HttpGet]
         public JsonResult GetWorkingHours(string user_id, string month)
         {
+            monthly = new List<WorkingHoursModel>();
             int yy = Convert.ToInt32(month.Split("-")[0]);
             int mm = Convert.ToInt32(month.Split("-")[1]);
-            List<WorkingHoursModel> whs = new List<WorkingHoursModel>();
+
+            List<WorkingHoursModel> whs = WorkingHoursService.GetWorkingHours(yy.ToString(), mm.ToString().PadLeft(2,'0'), user_id);
+            List<HolidayModel> holidays = HolidayService.GetHolidays();
+
+            whs = whs.OrderBy(o => o.working_date).ToList();
             int days = DateTime.DaysInMonth(yy, mm);
             for(int i = 0;i < days; i++)
             {
                 DateTime date = new DateTime(yy, mm, i + 1);
-                List<WorkingHoursModel> whd = WorkingHoursService.GetWorkingHours(user_id, date);
+                List<WorkingHoursModel> whd = whs.Where(w => w.working_date == date).ToList();
                 if(whd.Count > 0)
                 {
+                    TimeSpan substraction = new TimeSpan(8, 0, 0);
+
+                    TimeSpan noon = new TimeSpan(12, 0, 0);
+                    TimeSpan after_noon = new TimeSpan(13, 0, 0);
+
+                    TimeSpan evening = new TimeSpan(17, 30, 0);
+                    TimeSpan end_evening = new TimeSpan(18, 30, 0);
+
+
+                    bool isHoliday = holidays.Where(w => w.date == whd[0].working_date).Count() > 0 ? true : false;
+                    bool isWeekend = (whd[0].working_date.DayOfWeek == DayOfWeek.Saturday || whd[0].working_date.DayOfWeek == DayOfWeek.Sunday) ? true : false;
                     whd.OrderBy(o => o.start_time);
-                    for(int j = 0; j < whd.Count; j++)
+                    for (int j = 0; j < whd.Count; j++)
                     {
+                        TimeSpan regular = new TimeSpan();
+                        TimeSpan ot15 = new TimeSpan();
+                        TimeSpan ot3 = new TimeSpan();
                         WorkingHoursModel wh = new WorkingHoursModel();
                         wh.working_date = whd[j].working_date;
                         wh.job_id = whd[j].job_id;
@@ -71,27 +93,58 @@ namespace WebForecastReport.Controllers
                         wh.stop_time = whd[j].stop_time;
                         wh.lunch = whd[j].lunch;
                         wh.dinner = whd[j].dinner;
-                        wh.wh_type = whd[j].wh_type;
 
-                        TimeSpan hours = wh.stop_time - wh.start_time;
-                        if (wh.lunch == true)
-                            hours -= new TimeSpan(1, 0, 0);
-                        if (wh.dinner == true)
-                            hours -= new TimeSpan(1, 0, 0);
+                        if(isHoliday || isWeekend)
+                        {
+                            ot15 += wh.stop_time - wh.start_time;
+                            if (wh.lunch && wh.start_time <= noon && wh.stop_time > after_noon)
+                            {
+                                ot15 -= after_noon - noon;
+                            }
 
-                        if (hours < default(TimeSpan))
-                            hours = default(TimeSpan);
-
-                        if (wh.wh_type == "REG")
-                            wh.normal = hours;
-                        else if (wh.wh_type == "OT1_5")
-                            wh.ot1_5 = hours;
-                        else if (wh.wh_type == "OT3")
-                            wh.ot3_0 = hours;
+                            if (wh.dinner && wh.start_time <= evening && wh.stop_time > end_evening)
+                            {
+                                ot15 -= end_evening - evening;
+                            }
+                        }
                         else
-                            wh.normal = hours;
-                            
-                        whs.Add(wh);
+                        {
+                            if(wh.start_time < evening && wh.stop_time > end_evening)
+                            {
+                                regular += evening - wh.start_time;
+                                ot15 += wh.stop_time - evening;
+                            }
+                            else if(wh.start_time < evening && wh.stop_time <= evening)
+                            {
+                                regular += wh.stop_time - wh.start_time;
+                            }
+                            else
+                            {
+                                ot15 += wh.stop_time - wh.start_time;
+                            }
+
+                            if (wh.lunch && wh.start_time <= noon && wh.stop_time > after_noon && regular.Hours > 1)
+                            {
+                                regular -= after_noon - noon;
+                            }
+
+                            if (wh.dinner && wh.start_time <= evening && wh.stop_time > end_evening && ot15.Hours > 1)
+                            {
+                                ot15 -= end_evening - evening;
+                            }
+                        }
+
+                        if(ot15 > substraction)
+                        {
+                            ot3 += ot15 - substraction;
+                            ot15 -= ot15 - substraction;
+                        }
+
+                        wh.normal = regular;
+                        wh.ot1_5 = ot15;
+                        wh.ot3_0 = ot3;
+
+                        monthly.Add(wh);
                     }
                 }
                 else
@@ -111,11 +164,10 @@ namespace WebForecastReport.Controllers
                         ot1_5 = default(TimeSpan),
                         ot3_0 = default(TimeSpan)
                     };
-                    whs.Add(wh);
+                    monthly.Add(wh);
                 }
             }
-            monthly = whs;
-            return Json(whs);
+            return Json(monthly);
         }
 
         [HttpGet]
@@ -134,6 +186,14 @@ namespace WebForecastReport.Controllers
                 whs.Add(js);
             }
             return Json(whs);
+        }
+
+        [HttpPatch]
+        public JsonResult UpdateRestTime(string task_str)
+        {
+            WorkingHoursModel wh = JsonConvert.DeserializeObject<WorkingHoursModel>(task_str);
+            var result = WorkingHoursService.UpdateRestTime(wh);
+            return Json(result);
         }
     }
 }

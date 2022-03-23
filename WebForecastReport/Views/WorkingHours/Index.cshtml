@@ -35,6 +35,7 @@
                                 <tr>
                                     <th>Date</th>
                                     <th>Job</th>
+                                    <th>Location</th>
                                     <th>Task</th>
                                     <th>Start</th>
                                     <th>Stop</th>
@@ -49,6 +50,7 @@
                                 <tr>
                                     <th>Date</th>
                                     <th>Job</th>
+                                    <th>Location</th>
                                     <th>Task</th>
                                     <th>Start</th>
                                     <th>Stop</th>
@@ -115,6 +117,66 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal_task" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modal_title" class="modal-title">Edit Task</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input id="date" type="date" class="form-control" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label for="job">Job</label>
+                        <input id="job" type="text" class="form-control" disabled />
+                    </div>
+                    <div class="form-group" hidden>
+                        <label for="task_id">Location</label>
+                        <input id="task_id" type="text" class="form-control" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label for="task_name">Task</label>
+                        <input id="task_name" type="text" class="form-control" disabled />
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-6">
+                            <label for="start_time">From</label>
+                            <input id="start_time" type="time" class="form-control" disabled />
+                        </div>
+                        <div class="col-6">
+                            <label for="stop_time">To</label>
+                            <input id="stop_time" type="time" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input id="lunch" class="form-check-input" type="checkbox" />
+                            <label class="form-check-label">Lunch</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input id="dinner" class="form-check-input" type="checkbox" />
+                            <label class="form-check-label">Break</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button id="btn_save" type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts
 {
     <script type="text/javascript">
@@ -128,6 +190,8 @@
         var debug_user = false;
         var debug_whs = false;
         var debug_summary = false;
+        var debug_edit = false;
+        var debug_save = false;
 
         $(document).ready(async function () {
             var today = new Date();
@@ -218,7 +282,8 @@
             for (var i = 0; i < whs.length; i++) {
                 datas.push([
                     whs[i].working_date.split("T")[0],
-                    whs[i].job_name,
+                    whs[i].job_id,
+                    whs[i].task_id,
                     whs[i].task_name,
                     whs[i].start_time.substring(0, 5),
                     whs[i].stop_time.substring(0, 5),
@@ -242,20 +307,39 @@
                 data: datas,
                 rowCallback: function (row, data) {
                     var date = new Date(data[0].split("-")[0], data[0].split("-")[1] - 1, data[0].split("-")[2]);
-                    if (date.toString().split(" ")[0] == "Sat" || date.toString().split(" ")[0] == "Sun")
+
+                    if (date.toString().split(" ")[0] == "Sat" || date.toString().split(" ")[0] == "Sun") {
                         $('td', row).addClass("bg-gray disable");
-                    if (data[3] === "00:00")
-                        $('td:eq(3)', row).html("");
-                    if (data[4] === "00:00")
+                    }
+
+                    if (data[2] !== "") {
+                        data[2].substring(0, 1) === "O" ? $('td:eq(2)', row).html("Office") : $('td:eq(2)', row).html("Site");
+                    }
+
+                    $('td:eq(3)', row).addClass('text-left');
+
+                    if (data[4] === "00:00") {
                         $('td:eq(4)', row).html("");
-                    data[5] === true ? $('td:eq(5)', row).html("✓") : $('td:eq(5)', row).html("");
+                    }
+
+                    if (data[5] === "00:00") {
+                        $('td:eq(5)', row).html("");
+                    }
+
                     data[6] === true ? $('td:eq(6)', row).html("✓") : $('td:eq(6)', row).html("");
-                    if (data[7] === "00:00")
-                        $('td:eq(7)', row).html("");
-                    if (data[8] === "00:00")
+                    data[7] === true ? $('td:eq(7)', row).html("✓") : $('td:eq(7)', row).html("");
+
+                    if (data[8] === "00:00") {
                         $('td:eq(8)', row).html("");
-                    if (data[9] === "00:00")
+                    }
+
+                    if (data[9] === "00:00") {
                         $('td:eq(9)', row).html("");
+                    }
+
+                    if (data[10] === "00:00") {
+                        $('td:eq(10)', row).html("");
+                    }
                 }
             });
         }
@@ -294,7 +378,7 @@
                 monthly_regular += jobs[i].normal;
                 monthly_ot15 += jobs[i].ot1_5;
                 monthly_ot3 += jobs[i].ot3_0;
-                
+
                 datas.push([
                     jobs[i].job_id,
                     jobs[i].job_name,
@@ -338,6 +422,101 @@
             $('#monthly_ot3').text(ot3_str);
             $('#monthly_total').text(total_str);
 
+        }
+
+        $('#table_whs').on('click', 'tr', function () {
+            var task = table.row(this).data();
+            if (task[1] !== "") {
+                ShowModal(task);
+            }
+        });
+
+        function ShowModal(data) {
+            var date = data[0];
+            var job = data[1];
+            var task_id = data[2];
+            var task_name = data[3];
+            var start_time = data[4];
+            var stop_time = data[5];
+            var lunch = (data[6] === true) ? true : false;
+            var dinner = (data[7] === true) ? true : false;
+
+            if (debug_edit) {
+                console.log(`Date: ${date}`);
+                console.log(`Job: ${job}`);
+                console.log(`Task ID: ${task_id}`);
+                console.log(`Task Name: ${task_name}`);
+                console.log(`Start: ${start_time}`);
+                console.log(`Stop: ${stop_time}`);
+                console.log(`Lunch: ${lunch}`);
+                console.log(`Break: ${dinner}`);
+            }
+
+            $('#date').val(date);
+            $('#job').val(job);
+            $('#task_id').val(task_id);
+            $('#task_name').val(task_name);
+            $('#start_time').val(start_time);
+            $('#stop_time').val(stop_time);
+            $('#lunch').prop('checked', lunch);
+            $('#dinner').prop('checked', dinner);
+            $('#modal_task').modal();
+        }
+
+        $('#btn_save').on('click', function () {
+            var user = '@Model.name';
+            var date = $('#date').val();
+            var job = $('#job').val();
+            var task_id = $('#task_id').val();
+            var task_name = $('#task_name').val();
+            var start_time = $('#start_time').val();
+            var stop_time = $('#stop_time').val();
+            var lunch = ($('#lunch').prop('checked') === true) ? true : false;
+            var dinner = ($('#dinner').prop('checked') === true) ? true : false;
+
+            if (debug_save) {
+                console.log(`User: ${user}`);
+                console.log(`Date: ${date}`);
+                console.log(`Job: ${job}`);
+                console.log(`Task ID: ${task_id}`);
+                console.log(`Task Name: ${task_name}`);
+                console.log(`Start: ${start_time}`);
+                console.log(`Stop: ${stop_time}`);
+                console.log(`Lunch: ${lunch}`);
+                console.log(`Break: ${dinner}`);
+            }
+
+            var task_str = JSON.stringify({
+                "user_id": user,
+                "working_date": date,
+                "job_id": job,
+                "task_id": task_id,
+                "task_name": task_name,
+                "start_time": start_time,
+                "stop_time": stop_time,
+                "lunch": lunch,
+                "dinner": dinner
+            });
+            UpdateRestTime(task_str);
+        });
+
+        async function UpdateRestTime(task_str) {
+            await $.ajax({
+                type: "PATCH",
+                url: '@Url.Action("UpdateRestTime", "WorkingHours")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { task_str },
+                success: async function (response) {
+                    if (response === "Success") {
+                        $('#modal_task').modal('toggle');
+                        await GetWorkingHours('@Model.name', $('#whs_month').val())
+                        await GetWorkingHoursSummary();
+                    }
+                    else {
+                        alert(response);
+                    }
+                }
+            });
         }
 
     </script>
