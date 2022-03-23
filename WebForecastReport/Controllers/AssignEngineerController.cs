@@ -79,5 +79,12 @@ namespace WebForecastReport.Controllers
             List<JobResponsibleModel> jrs = JobResponsibleService.GetAssignEngineers(job_id);
             return jrs;
         }
+
+        [HttpGet]
+        public List<JobResponsibleModel> GetJobLists()
+        {
+            List<JobResponsibleModel> jrs = JobResponsibleService.GetJobLists();
+            return jrs;
+        }
     }
 }

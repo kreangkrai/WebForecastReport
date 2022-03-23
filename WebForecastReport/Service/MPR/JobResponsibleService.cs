@@ -66,6 +66,54 @@ namespace WebForecastReport.Service.MPR
             return jrs;
         }
 
+        public List<JobResponsibleModel> GetJobLists()
+        {
+            List<JobResponsibleModel> jrs = new List<JobResponsibleModel>();
+            try
+            {
+                string string_command = string.Format($@"
+                    SELECT
+	                    Jobs.job_id,
+                        Jobs.job_name,
+	                    JobResponsible.user_id,
+                        Sale_User.Name
+                    FROM Jobs
+                    LEFT JOIN JobResponsible ON Jobs.job_id = JobResponsible.job_id
+                    LEFT JOIN [gps_sale_tracking].dbo.Sale_User ON JobResponsible.user_id = Sale_User.Login
+                    ORDER BY Jobs.job_id, JobResponsible.user_id");
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        JobResponsibleModel jr = new JobResponsibleModel()
+                        {
+                            job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
+                            job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
+                            user_id = dr["user_id"] != DBNull.Value ? dr["user_id"].ToString() : "",
+                            user_name = dr["Name"] != DBNull.Value ? dr["Name"].ToString() : "",
+                        };
+                        jrs.Add(jr);
+                    }
+                    dr.Close();
+                }
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+            return jrs;
+        }
+
         public List<QuotationResponsibleModel> GetQuotationResponsible(string user_id)
         {
             List<QuotationResponsibleModel> qrs = new List<QuotationResponsibleModel>();

@@ -26,7 +26,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-10">
+    <div class="col-xl-6">
         <div class="card card-dark">
             <div class="card-header">
                 <span class="card-title">Engineer Assign</span>
@@ -59,6 +59,28 @@
                                     <th>Assign Date</th>
                                 </tr>
                             </thead>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">List Jobs</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <table id="table_jobs" class="table table-sm w-100">
+                            <thead>
+                                <tr>
+                                    <th>Job</th>
+                                    <th>Engineer(s)</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </form>
@@ -107,6 +129,7 @@
         var jrs = [];
         var assign_engs = [];
         var table;
+        var table_jobs;
 
         //Change These Parameters to true to show result
         var debug_jobs = false;
@@ -118,6 +141,7 @@
             await GenerateYearOption();
             await GetJobs();
             await GenerateJobOption();
+            await GetJobLists();
         });
 
         async function GetJobs() {
@@ -134,6 +158,18 @@
                 }
             });
         };
+
+        async function GetJobLists() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobLists", "AssignEngineer")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    GenerateTableJobLists(response);
+                }
+            });
+        }
 
         async function GetDepartments() {
             await $.ajax({
@@ -197,7 +233,26 @@
                 table.destroy();
             }
 
-            $('#table_staffs').DataTable({
+            table = $('#table_staffs').DataTable({
+                data: datas,
+            });
+        }
+
+        async function GenerateTableJobLists(lists) {
+            var datas = [];
+
+            for (var i = 0; i < lists.length; i++) {
+                datas.push([
+                    lists[i].job_id,
+                    lists[i].user_name,
+                ]);
+            }
+
+            if (table_jobs !== undefined) {
+                table_jobs.destroy();
+            }
+
+            table_jobs = $('#table_jobs').DataTable({
                 data: datas,
             });
         }
@@ -314,9 +369,15 @@
                 data: {
                     jr_string
                 },
-                success: function (response) {
+                success: async function (response) {
                     if (response == "Success") {
-                        location.reload();
+                        var select_job = $('#select_job').val();
+                        var job = jobs.filter(f => f.job_id == select_job);
+                        $('#job_id').val(job[0].job_id);
+                        $('#job_name').val(job[0].job_name);
+                        await GetAssignEngineers(select_job);
+                        await GenerateTable();
+                        await GetJobLists();
                     }
                     else {
                         toastr.error(response);
