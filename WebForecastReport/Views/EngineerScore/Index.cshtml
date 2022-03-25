@@ -1,13 +1,20 @@
-﻿@{ 
+﻿@using Microsoft.AspNetCore.Http
+@model WebForecastReport.Models.UserModel;
+@{
     ViewData["Title"] = "Engineer";
 }
 <div class="row p-3">
-    <div class="col-xl-4 pb-3">
+    <div class="col-xl-2 pb-3">
+        <select id="user_id" class="form-control">
+            <option value="">Please Select User</option>
+        </select>
+    </div>
+    <div class="col-xl-2 pb-3">
         <select id="year" class="form-control">
             <option value="">Please Select Year</option>
         </select>
     </div>
-    <div class="col-xl-2 pb-3">
+    <div class="col-xl-1 pb-3">
         <button id="btn_filter" type="button" class="btn btn-primary form-control elevation-1">
             <i class="fas fa-sync"></i> Load
         </button>
@@ -46,7 +53,7 @@
                 <span class="card-title">Scores</span>
             </div>
             <div class="card-body">
-                <table id="table_jobs" class="table table-sm compact border table-striped table-hover text-center">
+                <table id="table_jobs" class="table table-sm table-striped table-hover text-center">
                     <thead>
                         <tr>
                             <th>Job ID</th>
@@ -88,18 +95,43 @@
         //Variable Declaration
         var table;
         var scores = [];
+        var users;
 
         //Change these parameters to true to see result
-        var debug_score = true;
+        var debug_score = false;
+        var debug_user = false;
 
         $(document).ready(async function () {
+            await GetEngineers();
+            GenerateUserOption();
             GenerateYearOption();
-            await GetScores();
+            var date = new Date();
+            $('#user_id').val('@Model.name');
+            $('#year').val(date.getFullYear());
+            var user_id = $('#user_id').val();
+            var year = $('#year').val();
+            console.log(`User ID: ${user_id}`);
+            console.log(`Year: ${year}`);
+            await GetScores(user_id,year);
             GenerateTable();
         });
 
-        async function GetScores() {
-            var user_id = '@Model.name';
+        async function GetEngineers() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetUsers", "EngineerTasks")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    users = response;
+                    if (debug_user) {
+                        console.log(users);
+                    }
+                }
+            });
+        }
+
+        async function GetScores(user_id, year) {
             await $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetScores", "EngineerScore")',
@@ -115,6 +147,15 @@
             });
         }
 
+        function GenerateUserOption() {
+            var user_str = '<option value="" selected disabled>Please Select Engineer</option>';
+            for (var i = 0; i < users.length;i++) {
+                user_str += `<option value="${users[i].user_id}">${users[i].user_name}</option>`;
+            }
+            $('#user_id').empty();
+            $('#user_id').append(user_str);
+        }
+
         function GenerateTable() {
             var datas = [];
 
@@ -122,23 +163,39 @@
                 datas.push([
                     scores[i].job_id,
                     scores[i].job_name,
-                    scores[i].cost,
+                    scores[i].cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     scores[i].md_rate,
                     scores[i].pd_rate,
                     scores[i].factor,
                     scores[i].total_manpower,
-                    scores[i].cost_per_tmp,
+                    scores[i].cost_per_tmp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     scores[i].manpower,
-                    scores[i].manpower_per_tmp.toFixed(3),
-                    scores[i].score
+                    scores[i].manpower_per_tmp.toFixed(2),
+                    scores[i].score.toFixed(2)
                 ]);
             }
 
-            if (table !== undefined)
-                table.DataTable().destroy();
-
+            if (table !== undefined) {
+                table.destroy();
+            }
+                
             table = $('#table_jobs').DataTable({
-                data: datas
+                data: datas,
+                columnDefs: [
+                    {
+                        targets: 0,
+                        width: "10%"
+                    },
+                    {
+                        targets: 1,
+                        width: "40%",
+                        className: "text-left"
+                    },
+                    {
+                        targets: [3, 4, 10],
+                        visible: false
+                    }
+                ]
             });
         }
 
@@ -153,8 +210,12 @@
             $('#year').append(year_str);
         }
 
-        $('#btn_filter').on('click', function () {
-            alert("Button Load Clicked");
+        $('#btn_filter').on('click', async function () {
+            var user_id = $('#user_id').val();
+            var year = $('#year').val();
+            await GetScores(user_id,year);
+            await GenerateTable();
         });
+
     </script>
 }
