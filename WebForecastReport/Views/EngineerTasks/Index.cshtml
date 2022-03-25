@@ -105,6 +105,10 @@
                             <label for="dinner" class="form-check-label">Break</label>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="note">Note</label>
+                        <input id="note"type="text" class="form-control" readonly />
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -286,6 +290,7 @@
             var wh_type = task.wh_type;
             var lunch = task.lunch;
             var dinner = task.dinner;
+            var note = task.note;
             $('#modal_task').modal();
             $('#user_name').val(user_name);
             $('#working_date').val(working_date);
@@ -296,6 +301,7 @@
             $('#start_time').val(start_time);
             $('#stop_time').val(stop_time);
             $('#wh_type').val(wh_type);
+            $('#note').val(note);
 
             if (lunch === true) {
                 $('#lunch').prop('checked', true);
