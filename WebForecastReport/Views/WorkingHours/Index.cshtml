@@ -4,9 +4,12 @@
     ViewData["Title"] = "Monthly Working Hours";
 }
 <div class="row px-3 pt-3">
-    <div class="col-xl-2 col-lg-3 col-md-3 pb-3">
-        <select id="user_id" class="form-control"></select>
-    </div>
+    @if (Model.role == "Admin")
+    {
+        <div class="col-xl-2 col-lg-3 col-md-3 pb-3">
+            <select id="user_id" class="form-control"></select>
+        </div>
+    }
     <div class="col-xl-2 col-lg-3 col-md-3 pb-3">
         <input id="whs_month" type="month" class="form-control" />
     </div>
@@ -464,7 +467,7 @@
         }
 
         $('#btn_save').on('click', function () {
-            var user = '@Model.name';
+            var user = $('#user_id').val();
             var date = $('#date').val();
             var job = $('#job').val();
             var task_id = $('#task_id').val();
@@ -509,7 +512,8 @@
                 success: async function (response) {
                     if (response === "Success") {
                         $('#modal_task').modal('toggle');
-                        await GetWorkingHours('@Model.name', $('#whs_month').val())
+                        var user_id = $('#user_id').val();
+                        await GetWorkingHours(user_id, $('#whs_month').val());
                         await GetWorkingHoursSummary();
                     }
                     else {

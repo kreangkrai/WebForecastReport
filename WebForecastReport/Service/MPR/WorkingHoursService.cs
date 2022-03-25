@@ -411,6 +411,7 @@ namespace WebForecastReport.Services.MPR
                         ConnectSQL.OpenConnect();
                     }
                     cmd.ExecuteNonQuery();
+                    Console.WriteLine("Pass");
                 }
             }
             catch (Exception ex)
