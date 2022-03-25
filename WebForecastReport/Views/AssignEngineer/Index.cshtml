@@ -378,6 +378,7 @@
                         await GetAssignEngineers(select_job);
                         await GenerateTable();
                         await GetJobLists();
+                        $("#modal_engineer").modal("toggle");
                     }
                     else {
                         toastr.error(response);
