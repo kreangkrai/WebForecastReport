@@ -15,37 +15,68 @@ namespace WebForecastReport.Service.MPR
             List<EngineerScoreModel> scores = new List<EngineerScoreModel>();
             try
             {
-                string string_command = string.Format($@"
-                    SELECT 
+                string string_command = string.Format($@"with t2 as (
+					SELECT 
+		                    WorkingHours.job_id, 
+		                    SUM(case when lunch = 1
+							 then case when dinner = 1 
+								then 
+									DATEDIFF(HOUR,start_time,stop_time) - 2
+								else 
+									DATEDIFF(HOUR,start_time,stop_time) - 1 
+							 end
+							 else case when dinner = 1 
+								then 
+									DATEDIFF(HOUR,start_time,stop_time) - 1 
+								else 
+									DATEDIFF(HOUR,start_time,stop_time)
+							 end
+						end ) AS total_manpower 
+	                    FROM WorkingHours
+	                    GROUP BY job_id
+					),
+					t3 as (
+					SELECT 
+		                    WorkingHours.job_id, 
+		                    SUM(case when lunch = 1
+							 then case when dinner = 1 
+								then 
+									DATEDIFF(HOUR,start_time,stop_time) - 2
+								else 
+									DATEDIFF(HOUR,start_time,stop_time) - 1 
+							 end
+							 else case when dinner = 1 
+								then 
+									DATEDIFF(HOUR,start_time,stop_time) - 1 
+								else 
+									DATEDIFF(HOUR,start_time,stop_time)
+							 end
+						end ) AS working_hours 
+	                    FROM WorkingHours
+						WHERE user_id = '{user_id}'
+	                    GROUP BY user_id,job_id
+					)
+					
+					SELECT distinct
 	                    t1.user_id AS user_id,
 	                    t1.job_id AS job_id,
 	                    Jobs.job_name AS job_name,
                         cost,
 	                    md_rate AS md_rate,
 	                    pd_rate AS pd_rate,
-	                    (md_rate + pd_rate) AS factor,
+	                    (md_rate + pd_rate) AS factor,						
 	                    t2.total_manpower AS total_manpower,
 	                    (cost / t2.total_manpower) AS cost_per_tmp,
 	                    t3.working_hours AS manpower,
 	                    (CAST(t3.working_hours AS FLOAT) / (CAST(t2.total_manpower AS FLOAT))) AS manpower_per_tmp,
 	                    (cost * (md_rate + pd_rate) * (cost / t2.total_manpower) * (CAST(t3.working_hours AS FLOAT) / (CAST(t2.total_manpower AS FLOAT)))) AS score
-                    FROM ( SELECT user_id, job_id FROM WorkingHours GROUP BY user_id, job_id ) AS t1
-                    LEFT JOIN Jobs ON t1.job_id = Jobs.job_id
-                    LEFT JOIN (
-	                    SELECT 
-		                    WorkingHours.job_id, 
-		                    SUM(DATEDIFF(HOUR,start_time,stop_time)) AS total_manpower 
-	                    FROM WorkingHours 
-	                    GROUP BY job_id) AS t2 
+                    FROM WorkingHours  As t1  
+					LEFT JOIN Jobs ON t1.job_id = Jobs.job_id		     
+                    INNER JOIN t2	                     
                     ON t1.job_id = t2.job_id
-                    LEFT JOIN (
-	                    SELECT 
-		                    WorkingHours.job_id, 
-		                    WorkingHours.user_id, 
-		                    SUM(DATEDIFF(HOUR,start_time,stop_time)) AS working_hours
-	                    FROM WorkingHours GROUP BY job_id,user_id) AS t3 
-                    ON t1.user_id = t3.user_id
-                    WHERE t1.user_id = '{user_id}'");
+                    INNER JOIN t3					
+                    ON t1.job_id = t3.job_id
+                 WHERE t1.user_id = '{user_id}'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
