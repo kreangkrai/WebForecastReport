@@ -127,8 +127,6 @@
             await GenerateDepartmentOptions();
             await GetEngineers();
             await GenerateEngineerOptions();
-            //await GetJobResponsible('@Model.name');
-            //GenerateTable();
         });
 
         async function GetDepartments() {
@@ -334,9 +332,13 @@
                 data: {
                     jr_string
                 },
-                success: function (response) {
+                success: async function (response) {
                     if (response == "Success") {
-                        location.reload();
+                        var user_id = $('#select_engineer').val();
+                        await GetEngineers();
+                        await GetJobResponsible(user_id);
+                        await GenerateTable();
+                        $("#modal_job").modal("toggle");
                     }
                     else {
                         toastr.error(response);
