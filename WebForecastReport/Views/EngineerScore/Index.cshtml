@@ -1,14 +1,25 @@
 ﻿@using Microsoft.AspNetCore.Http
 @model WebForecastReport.Models.UserModel;
 @{
-    ViewData["Title"] = "Engineer";
+    ViewData["Title"] = "Engineer Score";
 }
 <div class="row p-3">
-    <div class="col-xl-2 pb-3">
-        <select id="user_id" class="form-control">
-            <option value="">Please Select User</option>
-        </select>
-    </div>
+    @if (Model.role == "Admin")
+    {
+        <div class="col-xl-2 pb-3">
+            <select id="user_id" class="form-control">
+                <option value="">Please Select User</option>
+            </select>
+        </div>
+    }
+    else
+    {
+        <div class="col-xl-2 pb-3" hidden>
+            <select id="user_id" class="form-control">
+                <option value="">Please Select User</option>
+            </select>
+        </div>
+    }
     <div class="col-xl-2 pb-3">
         <select id="year" class="form-control">
             <option value="">Please Select Year</option>
@@ -110,8 +121,6 @@
             $('#year').val(date.getFullYear());
             var user_id = $('#user_id').val();
             var year = $('#year').val();
-            console.log(`User ID: ${user_id}`);
-            console.log(`Year: ${year}`);
             await GetScores(user_id,year);
             GenerateTable();
         });
@@ -136,7 +145,7 @@
                 type: "GET",
                 url: '@Url.Action("GetScores", "EngineerScore")',
 	            contentType: 'application/x-www-form-urlencoded',
-                data: { user_id },
+                data: { user_id, year },
                 success: function (response) {
                     scores = response;
                     if (debug_score) {
