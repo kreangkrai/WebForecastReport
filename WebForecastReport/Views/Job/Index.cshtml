@@ -1,12 +1,17 @@
-﻿@{ 
+﻿@using Microsoft.AspNetCore.Http
+@model WebForecastReport.Models.UserModel;
+@{
     ViewData["Title"] = "Jobs";
 }
 <div class="row p-3">
-    <div class="col-xl-1 pb-3">
-        <button id="btn_create" type="button" class="btn btn-primary form-control elevation-1">
-            <i class="fas fa-plus"></i> Create Job
-        </button>
-    </div>
+    @if (Model.role == "Admin")
+    {
+        <div class="col-xl-1 pb-3">
+            <button id="btn_create" type="button" class="btn btn-primary form-control elevation-1">
+                <i class="fas fa-plus"></i> Create Job
+            </button>
+        </div>
+    }
     <div class="col-xl-1 pb-3">
         <button id="btn_import" type="button" class="btn btn-primary form-control elevation-1" hidden>
             <i class="fas fa-upload"></i> Import
@@ -41,7 +46,6 @@
                         </tr>
                     </thead>
                     <tbody>
-
                     </tbody>
                     <tfoot class="text-center">
                         <tr>
@@ -90,7 +94,7 @@
                     </div>
                     <div class="form-group">
                         <label for="sale_department">Sale Department</label>
-                        <input id="sale_department" type="text" class="form-control" placeholder="Department" disabled/>
+                        <input id="sale_department" type="text" class="form-control" placeholder="Department" disabled />
                     </div>
                     <div class="form-group row">
                         <div class="col-xl-6">
@@ -282,9 +286,12 @@
         };
 
         $('#table_job tbody').on('click', 'tr', async function () {
-            await GetUsers();
-            await GenerateUsersOption();
-            await EditJob(table.row(this).data());
+            var admin = '@Model.role' == "Admin" ? true : false;
+            if (admin) {
+                await GetUsers();
+                await GenerateUsersOption();
+                await EditJob(table.row(this).data());
+            }
         });
 
         function EditJob(data) {

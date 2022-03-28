@@ -1,12 +1,17 @@
-﻿@{ 
+﻿@using Microsoft.AspNetCore.Http
+@model WebForecastReport.Models.UserModel;
+@{
     ViewData["Title"] = "Tasks";
 }
 <div class="row p-3">
-    <div class="col-xl-1 col-lg-2 col-md-4 col-sm-4 pb-3">
-        <button id="btn_add" type="button" class="btn btn-primary form-control elevation-1">
-            <i class="fas fa-plus"></i> Create Task
-        </button>
-    </div>
+    @if (Model.role == "Admin")
+    {
+        <div class="col-xl-1 col-lg-2 col-md-4 col-sm-4 pb-3">
+            <button id="btn_add" type="button" class="btn btn-primary form-control elevation-1">
+                <i class="fas fa-plus"></i> Create Task
+            </button>
+        </div>
+    }
     <div class="col-xl-1 col-lg-2 col-md-4 col-sm-4 pb-3" hidden>
         <button id="btn_import" type="button" class="btn btn-primary form-control elevation-1">
             <i class="fas fa-upload"></i> Import
@@ -18,7 +23,7 @@
         </button>
     </div>
     <div class="col-xl-9">
-        
+
     </div>
     <!-- Office Tasks Table -->
     <div class="col-xl-6">
@@ -115,7 +120,7 @@
 </div>
 
 @section Scripts
-{ 
+{
     <script type="text/javascript">
         //Variable Declaration
         var tasks = [];
@@ -219,7 +224,7 @@
             if (table_site != null) {
                 table_site.destroy();
             }
-                
+
             for (var i = 0; i < tasks.length; i++) {
                 datas.push([
                     tasks[i].task_id,
@@ -271,7 +276,7 @@
             enable_save *= (task_name !== "") ? 1 : 0;
             $('#btn_save').attr('disabled', !enable_save);
         });
-            
+
         $('#table_office tbody').on('click', 'tr', function () {
             EditTask(table_office.row(this).data());
         });
@@ -281,15 +286,18 @@
         });
 
         function EditTask(data) {
-            update = true;
-            var task_id = data[0];
-            var task_name = data[1];
-            $('#modal_task').modal();
-            $('#modal_title').text("Edit Task");
-            $('#location_group').hide();
-            $('#task_id').val(task_id);
-            $('#task_id').attr('disabled', true);
-            $('#task_name').val(task_name);
+            var admin = '@Model.role' === "Admin" ? true : false;
+            if (admin) {
+                update = true;
+                var task_id = data[0];
+                var task_name = data[1];
+                $('#modal_task').modal();
+                $('#modal_title').text("Edit Task");
+                $('#location_group').hide();
+                $('#task_id').val(task_id);
+                $('#task_id').attr('disabled', true);
+                $('#task_name').val(task_name);
+            }
         }
 
         $('#btn_save').on('click', function () {
