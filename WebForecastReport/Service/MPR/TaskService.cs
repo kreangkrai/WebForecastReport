@@ -157,7 +157,7 @@ namespace WebForecastReport.Services.MPR
                 string string_command = string.Format($@"
                 UPDATE TASKS 
                 SET
-                    task_name = @task_name,
+                    task_name = @task_name
                 WHERE task_id = @task_id");
                 using (SqlCommand cmd = new SqlCommand(string_command,ConnectSQL.OpenConnect()))
                 {
