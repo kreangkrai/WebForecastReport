@@ -1,0 +1,198 @@
+﻿@{ 
+    ViewData["Title"] = "Task By Week";
+}
+<div class="row p-3">
+    <div class="col-xl-12">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-calendar-week"></i> Tasks By Week</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <input id="week" type="week" class="form-control" />
+                            </div>
+                            <div class="col-2">
+                                <button id="btn_load" type="button" class="btn btn-primary form-control elevation-1">
+                                    <i class="fas fa-sync"></i> Load
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <table id="table_task" class="table table-sm compact table-bordered text-center w-100">
+                            <thead>
+                                <tr>
+                                    <th rowspan="3" style="vertical-align:middle">Name</th>
+                                    <th colspan="2">MON</th>
+                                    <th colspan="2">TUE</th>
+                                    <th colspan="2">WED</th>
+                                    <th colspan="2">THU</th>
+                                    <th colspan="2">FRI</th>
+                                    <th colspan="2">SAT</th>
+                                    <th colspan="2">SUN</th>
+                                </tr>
+                                <tr>
+                                    <th id="date1" colspan="2">Date 1</th>
+                                    <th id="date2" colspan="2">Date 2</th>
+                                    <th id="date3" colspan="2">Date 3</th>
+                                    <th id="date4" colspan="2">Date 4</th>
+                                    <th id="date5" colspan="2">Date 5</th>
+                                    <th id="date6" colspan="2">Date 6</th>
+                                    <th id="date7" colspan="2">Date 7</th>
+                                </tr>
+                                <tr>
+                                    <th>Job</th>
+                                    <th>Task</th>
+                                    <th>Job</th>
+                                    <th>Task</th>
+                                    <th>Job</th>
+                                    <th>Task</th>
+                                    <th>Job</th>
+                                    <th>Task</th>
+                                    <th>Job</th>
+                                    <th>Task</th>
+                                    <th>Job</th>
+                                    <th>Task</th>
+                                    <th>Job</th>
+                                    <th>Task</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        //Variable Declaration
+        var table;
+        var tasks = [];
+
+        //Debug Variable
+        var debug_task = true;
+
+        $(document).ready(async function () {
+            var today = new Date();
+            var year = today.getFullYear();
+            var first_jan = new Date(year, 0, 1);
+            var days = Math.floor((today - first_jan) / (24 * 60 * 60 * 1000));
+            var week = Math.ceil((today.getDay() + 1 + days) / 7);
+            var week_str = `${year}-W${week}`;
+            $('#week').val(week_str);
+            await GetTasksByWeek(year, week);
+            GenerateTable();
+        });
+
+        async function GetTasksByWeek(year, week) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetTasksByWeek", "TasksByWeek")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { year, week },
+                success: function (response) {
+                    tasks = response;
+                    if (debug_task) {
+                        console.log(tasks);
+                    }
+                }
+            });
+        }
+
+        function GenerateTable() {
+            var week_str = $('#week').val();
+            var year = week_str.split("-W")[0];
+            var week = week_str.split("-W")[1];
+            var day = (1 + (week) * 7);
+            var offset = new Date(year, 0, 1).getDay();
+            offset--;
+            var dates = [];
+
+            for (var i = 0; i < 7; i++) {
+                dates.push(new Date(year, 0, day - offset + i + 1));
+            }
+
+            $('#date1').text(dates[0].toISOString().split("T")[0]);
+            $('#date2').text(dates[1].toISOString().split("T")[0]);
+            $('#date3').text(dates[2].toISOString().split("T")[0]);
+            $('#date4').text(dates[3].toISOString().split("T")[0]);
+            $('#date5').text(dates[4].toISOString().split("T")[0]);
+            $('#date6').text(dates[5].toISOString().split("T")[0]);
+            $('#date7').text(dates[6].toISOString().split("T")[0]);
+
+            var datas = [];
+            var users = [];
+            for (var i = 0; i < tasks.length; i++) {
+                users.push(tasks[i].user_id);
+            }
+            users = [...new Set(users)];
+
+            for (var i = 0; i < users.length; i++) {
+                var date_tasks = [];
+                date_tasks[0] = tasks.filter(f => f.user_id === users[i] && f.working_date.split("T")[0] === dates[0].toISOString().split("T")[0]);
+                date_tasks[1] = tasks.filter(f => f.user_id === users[i] && f.working_date.split("T")[0] === dates[1].toISOString().split("T")[0]);
+                date_tasks[2] = tasks.filter(f => f.user_id === users[i] && f.working_date.split("T")[0] === dates[2].toISOString().split("T")[0]);
+                date_tasks[3] = tasks.filter(f => f.user_id === users[i] && f.working_date.split("T")[0] === dates[3].toISOString().split("T")[0]);
+                date_tasks[4] = tasks.filter(f => f.user_id === users[i] && f.working_date.split("T")[0] === dates[4].toISOString().split("T")[0]);
+                date_tasks[5] = tasks.filter(f => f.user_id === users[i] && f.working_date.split("T")[0] === dates[5].toISOString().split("T")[0]);
+                date_tasks[6] = tasks.filter(f => f.user_id === users[i] && f.working_date.split("T")[0] === dates[6].toISOString().split("T")[0]);
+                for (var j = 0; j < 3; j++) {
+                    var con = 1;
+                    for (var k = 0; k < date_tasks.length; k++) {
+                        con *= date_tasks[k][j] !== undefined ? 0 : 1;
+                    }
+                    if (con === 1) {
+                        continue;
+                    }
+                    var j1 = date_tasks[0][j] !== undefined ? date_tasks[0][j].job_id : "";
+                    var t1 = date_tasks[0][j] !== undefined ? date_tasks[0][j].task_name : "";
+                    var j2 = date_tasks[1][j] !== undefined ? date_tasks[1][j].job_id : "";
+                    var t2 = date_tasks[1][j] !== undefined ? date_tasks[1][j].task_name : "";
+                    var j3 = date_tasks[2][j] !== undefined ? date_tasks[2][j].job_id : "";
+                    var t3 = date_tasks[2][j] !== undefined ? date_tasks[2][j].task_name : "";
+                    var j4 = date_tasks[3][j] !== undefined ? date_tasks[3][j].job_id : "";
+                    var t4 = date_tasks[3][j] !== undefined ? date_tasks[3][j].task_name : "";
+                    var j5 = date_tasks[4][j] !== undefined ? date_tasks[4][j].job_id : "";
+                    var t5 = date_tasks[4][j] !== undefined ? date_tasks[4][j].task_name : "";
+                    var j6 = date_tasks[5][j] !== undefined ? date_tasks[5][j].job_id : "";
+                    var t6 = date_tasks[5][j] !== undefined ? date_tasks[5][j].task_name : "";
+                    var j7 = date_tasks[6][j] !== undefined ? date_tasks[6][j].job_id : "";
+                    var t7 = date_tasks[6][j] !== undefined ? date_tasks[6][j].task_name : "";
+                    datas.push([
+                        users[i],
+                        j1, t1,
+                        j2, t2,
+                        j3, t3,
+                        j4, t4,
+                        j5, t5,
+                        j6, t6,
+                        j7, t7
+                    ]);
+                }
+            }
+
+            if (table !== undefined) {
+                table.destroy();
+            }
+
+            table = $('#table_task').DataTable({
+                data: datas,
+                ordering: false,
+            });
+        }
+
+        $('#btn_load').on('click', async function () {
+            var week_str = $('#week').val();
+            var year = week_str.split("-W")[0];
+            var week = week_str.split("-W")[1];
+            await GetTasksByWeek(year, week);
+            GenerateTable();
+        });
+
+    </script>
+}
