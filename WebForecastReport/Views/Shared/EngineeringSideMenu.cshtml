@@ -16,42 +16,74 @@
                     </a>
                 </li>
 
-                @if (Model.role == "Admin")
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="EngineerTasks" asp-action="Index">
-                            <i class="nav-icon fas fa-calendar-alt"></i>
-                            <p class="text-bold">ENGINEER TASKS</p>
-                        </a>
-                    </li>
-                }
-
-                @if (Model.role == "Admin")
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="AssignJob" asp-action="Index">
-                            <i class="nav-icon fas fa-thumbtack"></i>
-                            <p class="text-bold">ASSIGN JOB</p>
-                        </a>
-                    </li>
-                }
-
-                @if (Model.role == "Admin")
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="AssignEngineer" asp-action="Index">
-                            <i class="nav-icon fas fa-user-plus"></i>
-                            <p class="text-bold">ASSIGN ENGINEER</p>
-                        </a>
-                    </li>
-                }
-
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="WorkingHours" asp-action="Index">
                         <i class="nav-icon fas fa-file-alt"></i>
                         <p class="text-bold">WORKING HOURS</p>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="EngineerScore" asp-action="Index">
+                        <i class="nav-icon fas fa-star-half-alt"></i>
+                        <p class="text-bold">ENGINEER SCORE</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Holiday" asp-action="Index">
+                        <i class="nav-icon fas fa-home"></i>
+                        <p class="text-bold">HOLIDAY</p>
+                    </a>
+                </li>
+
+                @if (Model.role == "Admin")
+                {
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-search"></i>
+                            <p class="text-bold">VIEW TASKS<i class="right fas fa-angle-left"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="EngineerTasks" asp-action="Index">
+                                    <i class="nav-icon fas fa-calendar-alt"></i>
+                                    <p>ENGINEER TASKS</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="TasksByWeek" asp-action="Index">
+                                    <i class="nav-icon fas fa-calendar-week"></i>
+                                    <p>TASKS BY WEEK</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+
+                @if (Model.role == "Admin")
+                {
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-plus-square"></i>
+                            <p class="text-bold">ASSIGN<i class="right fas fa-angle-left"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="AssignJob" asp-action="Index">
+                                    <i class="nav-icon fas fa-thumbtack"></i>
+                                    <p>ASSIGN JOB</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="AssignEngineer" asp-action="Index">
+                                    <i class="nav-icon fas fa-user-plus"></i>
+                                    <p>ASSIGN ENGINEER</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                }
 
                 @if (Model.role == "Admin")
                 {
@@ -64,7 +96,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Analysis" asp-action="Index">
                                     <i class="nav-icon fas fa-info-circle"></i>
-                                    <p>Analysis</p>
+                                    <p>ANALYSIS</p>
                                 </a>
                             </li>
                             <li class="nav-item" hidden>
@@ -125,44 +157,35 @@
                     </li>
                 }
 
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="EngineerScore" asp-action="Index">
-                        <i class="nav-icon fas fa-star-half-alt"></i>
-                        <p class="text-bold">ENGINEER SCORE</p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Holiday" asp-action="Index">
-                        <i class="nav-icon fas fa-home"></i>
-                        <p class="text-bold">HOLIDAY</p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Job" asp-action="Index">
-                        <i class="nav-icon fas fa-project-diagram"></i>
-                        <p class="text-bold">JOBS</p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Tasks" asp-action="Index">
-                        <i class="nav-icon fas fa-tasks"></i>
-                        <p class="text-bold">TASKS</p>
-                    </a>
-                </li>
-
                 @if (Model.role == "Admin")
                 {
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="EngUser" asp-action="Index">
-                            <i class="nav-icon fas fa-user"></i>
-                            <p class="text-bold">USERS</p>
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-cogs"></i>
+                            <p class="text-bold">ADMIN<i class="right fas fa-angle-left"></i></p>
                         </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Job" asp-action="Index">
+                                    <i class="nav-icon fas fa-project-diagram"></i>
+                                    <p>JOBS</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Tasks" asp-action="Index">
+                                    <i class="nav-icon fas fa-tasks"></i>
+                                    <p>TASKS</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="EngUser" asp-action="Index">
+                                    <i class="nav-icon fas fa-user"></i>
+                                    <p>USERS</p>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 }
-
 
                 <li class="nav-item pt-2">
                     <a class="nav-link" asp-controller="Main" asp-action="Index">
@@ -170,7 +193,6 @@
                         <p class="text-bold">SELECT MODULE</p>
                     </a>
                 </li>
-
 
                 <li class="nav-item pt-2">
                     <a class="nav-link" asp-controller="Account" asp-action="Index">
