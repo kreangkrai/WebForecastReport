@@ -11,12 +11,12 @@ namespace WebForecastReport.Services.MPR
 {
     public class HolidayService : IHoliday
     {
-        public List<HolidayModel> GetHolidays()
+        public List<HolidayModel> GetHolidays(string year)
         {
             List<HolidayModel> holidays = new List<HolidayModel>();
             try
             {
-                string string_command = string.Format($@"SELECT * FROM Holidays");
+                string string_command = string.Format($@"SELECT * FROM Holidays WHERE date LIKE '{year}%'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if(ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {

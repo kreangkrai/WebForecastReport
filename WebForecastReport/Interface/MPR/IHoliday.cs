@@ -8,6 +8,6 @@ namespace WebForecastReport.Interfaces.MPR
 {
     interface IHoliday
     {
-        List<HolidayModel> GetHolidays();
+        List<HolidayModel> GetHolidays(string year);
     }
 }

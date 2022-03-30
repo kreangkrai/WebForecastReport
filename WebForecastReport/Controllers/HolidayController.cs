@@ -45,9 +45,9 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetHolidays()
+        public JsonResult GetHolidays(string year)
         {
-            List<HolidayModel> holidays = HolidayService.GetHolidays();
+            List<HolidayModel> holidays = HolidayService.GetHolidays(year);
             return Json(holidays);
         }
     }
