@@ -45,9 +45,9 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetScores(string user_id)
+        public JsonResult GetScores(string user_id, string year)
         {
-            List<EngineerScoreModel> scores = ScoreService.GetScores(user_id);
+            List<EngineerScoreModel> scores = ScoreService.GetScores(user_id,year);
             return Json(scores);
         }
     }

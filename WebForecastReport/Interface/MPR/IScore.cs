@@ -8,6 +8,6 @@ namespace WebForecastReport.Interface.MPR
 {
     interface IScore
     {
-        List<EngineerScoreModel> GetScores(string user_id);
+        List<EngineerScoreModel> GetScores(string user_id, string year);
     }
 }

@@ -10,7 +10,7 @@ namespace WebForecastReport.Service.MPR
 {
     public class EngineerScoreService : IScore
     {
-        public List<EngineerScoreModel> GetScores(string user_id)
+        public List<EngineerScoreModel> GetScores(string user_id, string year)
         {
             List<EngineerScoreModel> scores = new List<EngineerScoreModel>();
             try
