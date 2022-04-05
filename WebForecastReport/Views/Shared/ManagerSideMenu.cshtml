@@ -1,0 +1,135 @@
+﻿@using Microsoft.AspNetCore.Http
+<aside class="main-sidebar sidebar-dark-primary elevation-2">
+    <!-- Brand Logo -->
+    <a class="brand-link text-center" asp-controller="Quotation" asp-action="Index">
+        @*<img src="~/images/icon.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+            style="opacity: .8">*@
+        <span class="brand-text font-weight-light"><b>MES</b></span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar" style="padding-left:5px">
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                @* <li class="nav-item">
+        <a class="nav-link" asp-controller="Opportunity" asp-action="Index">
+        <i class="nav-icon fas fa-file-invoice"></i>
+        <p>Opportunity</p>
+        </a>
+        </li>*@
+                <li class="nav-item pt-2">
+                    <a class="nav-link" asp-controller="Home" asp-action="index">
+                        <i class="nav-icon fas fa-home"></i>
+                        <p class="text-bold">HOME</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-tasks"></i>
+                        <p><b>QUOTATION</b><i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul id="group_management" class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a class="nav-link pl-4" asp-controller="Quotation" asp-action="Index">
+                                <i class="nav-icon fas fa-file-invoice"></i>
+                                <p>Quotation</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link pl-4" asp-controller="QuotationReport" asp-action="Index">
+                                <i class="nav-icon fas fa-file-invoice"></i>
+                                <p>Report</p>
+                            </a>
+                        </li>
+                        @*<li class="nav-item">
+                <a class="nav-link pl-4" asp-controller="QuotationDashboard" asp-action="Index">
+                <i class="nav-icon fas fa-chart-line"></i>
+                <p>Dashboard</p>
+                </a>
+                </li>*@
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-tasks"></i>
+                        <p><b>PROPOSAL</b><i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul id="group_management" class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a class="nav-link pl-4" asp-controller="Proposal" asp-action="Index">
+                                <i class="nav-icon fas fa-file-invoice"></i>
+                                <p>Proposal</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                @* <li class="nav-item">
+        <a class="nav-link" asp-controller="OpportunityProposal" asp-action="Index">
+        <i class="nav-icon fas fa-file-invoice"></i>
+        <p>OpportunityProposal</p>
+        </a>
+        </li>*@
+
+                @*<li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-tasks"></i>
+                        <p><b>MANAGEMENT</b><i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul id="group_management" class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a class="nav-link pl-4" asp-controller="Product" asp-action="Index">
+                                <i class="nav-icon fab fa-product-hunt"></i>
+                                <p>Product</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link pl-4" asp-controller="User" asp-action="Index">
+                                <i class="nav-icon fas fa-user"></i>
+                                <p>User</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link pl-4" asp-controller="Target" asp-action="Index">
+                                <i class="nav-icon fas fa-bullseye"></i>
+                                <p>Target</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-tasks"></i>
+                        <p><b>LOG</b><i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul id="group_management" class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a class="nav-link pl-4" asp-controller="LogExpected" asp-action="Index">
+                                <i class="nav-icon fas fa-question-circle"></i>
+                                <p>Expected Order Date</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>*@
+               
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Main" asp-action="Index">
+                            <i class="nav-icon fas fa-project-diagram"></i>
+                            <p><b>SELECT MODULE</b></p>
+                        </a>
+                    </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Account" asp-action="Logout">
+                        <i class="nav-icon fas fa-power-off"></i>
+                        <p><b>LOG OUT</b></p>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

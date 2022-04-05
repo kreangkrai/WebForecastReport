@@ -901,7 +901,11 @@
 
                 $('#year_department').empty();
                 var selectQuarterDepartment = document.getElementById('year_department');
-                for (var i = 1, l = Departments.length; i < l; i++) {
+                var n = 0;  // Check Department All 
+                if (Departments.length > 1){
+                    n=1;
+                }
+                for (var i = n, l = Departments.length; i < l; i++) {
                     var option = Departments[i];
                     selectQuarterDepartment.options.add(new Option(option.text, option.value, option.selected));
                 }
@@ -1038,7 +1042,7 @@
                 document.getElementById('status_sale').selectedIndex = 0;
            });
 
-            $('#status_department').on('change',function(){
+            $('#status_department').on('focus change',function(){
                var department = document.getElementById("status_department").value;
                $.ajax({
                    url: '@Url.Action("GetSales", "QuotationReport")',

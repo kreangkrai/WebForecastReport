@@ -84,10 +84,14 @@
             {
                 <partial name="AdminSideMenu.cshtml" />
             }
+            else if (Model.section == "Sale" && Model.role != "Admin" && Model.role != "" && Model.role != null)
+            {
+                <partial name="ManagerSideMenu.cshtml" />
+            }
             else if(Model.section == "Eng" && Model.role == "Admin"){  // Engineering 
                 <partial name="EngineeringSideMenu.cshtml" />
             }
-            else if(Model.section == "Sale" && Model.role != "Admin")
+            else if(Model.section == "Sale" && Model.role == "")
             {
                 <partial name="UserSideMenu.cshtml" />
             } 

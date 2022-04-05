@@ -49,9 +49,19 @@ namespace WebForecastReport.Controllers
         public JsonResult GetDepartment()
         {
             List<string> departments = new List<string>();
-            departments.Add("ALL");
-            departments.AddRange(Accessory.GetDepartmentOfQuotation());
 
+            string role = HttpContext.Session.GetString("Role");
+
+            if (role != "Admin")
+            {
+                departments.Add(role); //Add Department
+            }
+            else
+            {
+                departments.Add("ALL");
+                departments.AddRange(Accessory.GetDepartmentOfQuotation());
+            }
+            
             List<string> years = new List<string>();
             for (int year = DateTime.Now.Year; year > DateTime.Now.Year - 5; year--)
             {
