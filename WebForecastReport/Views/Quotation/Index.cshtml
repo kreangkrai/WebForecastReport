@@ -1005,7 +1005,7 @@
         });
     };
     function numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").trim();
     };
     function diffDate(date_start, date_stop) {
         const date1 = new Date(date_start);

@@ -282,83 +282,90 @@ namespace WebForecastReport.Service
         {
             try
             {
-                string expected_order_date = "";
-                string required_onsite_date = "";
-                string expected_date = "";
-                string stages_update_date = "";
-                if (model.expected_order_date != null)
+                if (model.sale_name != "" && model.sale_name != null)
                 {
-                    expected_order_date = "expected_order_date='" + model.expected_order_date + "'";
+                    string expected_order_date = "";
+                    string required_onsite_date = "";
+                    string expected_date = "";
+                    string stages_update_date = "";
+                    if (model.expected_order_date != null)
+                    {
+                        expected_order_date = "expected_order_date='" + model.expected_order_date + "'";
+                    }
+                    else
+                    {
+                        expected_order_date = "expected_order_date=NULL";
+                    }
+
+                    if (model.required_onsite_date != null)
+                    {
+                        required_onsite_date = "required_onsite_date='" + model.required_onsite_date + "'";
+                    }
+                    else
+                    {
+                        required_onsite_date = "required_onsite_date=NULL";
+                    }
+
+                    if (model.expected_date != null)
+                    {
+                        expected_date = "expected_date='" + model.expected_date + "'";
+                    }
+                    else
+                    {
+                        expected_date = "expected_date=NULL";
+                    }
+
+                    if (model.stages_update_date != null)
+                    {
+                        stages_update_date = "stages_update_date='" + model.stages_update_date + "'";
+                    }
+                    else
+                    {
+                        stages_update_date = "stages_update_date=NULL";
+                    }
+
+                    SqlDataReader reader;
+                    SqlCommand cmd = new SqlCommand(@"UPDATE Quotation SET revision='" + model.revision + "'," +
+                                                                          "customer='" + model.customer + "'," +
+                                                                          "enduser='" + model.enduser + "'," +
+                                                                          "project_name='" + model.project_name + "'," +
+                                                                          "site_location='" + model.site_location + "'," +
+                                                                          "product_type='" + model.product_type + "'," +
+                                                                          "type='" + model.type + "'," +
+                                                                          "brand='" + model.brand + "'," +
+                                                                          "part_no='" + model.part_no + "'," +
+                                                                          "spec='" + model.spec + "'," +
+                                                                          "quantity='" + model.quantity + "'," +
+                                                                          "supplier_quotation_no='" + model.supplier_quotation_no + "'," +
+                                                                          "total_value='" + model.total_value + "'," +
+                                                                          "unit='" + model.unit + "'," +
+                                                                          "quoted_price='" + model.quoted_price + "'," +
+                                                                          expected_order_date + "," +
+                                                                          required_onsite_date + "," +
+                                                                          "proposer='" + model.proposer + "'," +
+                                                                          expected_date + "," +
+                                                                          "status='" + model.status + "'," +
+                                                                          "stages='" + model.stages + "'," +
+                                                                          stages_update_date + "," +
+                                                                          "how_to_support='" + model.how_to_support + "'," +
+                                                                          "competitor='" + model.competitor + "'," +
+                                                                          "competitor_description='" + model.competitor_description + "'," +
+                                                                          "competitor_price='" + model.competitor_price + "'," +
+                                                                          "sale_name='" + model.sale_name + "'," +
+                                                                          "department='" + model.department + "'," +
+                                                                          "detail='" + model.detail + "'" +
+                                                                          "WHERE quotation_no='" + model.quotation_no + "'");
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Connection = ConnectSQL.OpenConnect();
+                    reader = cmd.ExecuteReader();
+                    reader.Close();
+
+                    return "Update Success";
                 }
                 else
                 {
-                    expected_order_date = "expected_order_date=NULL";
+                    return "Update Failed";
                 }
-
-                if (model.required_onsite_date != null)
-                {
-                    required_onsite_date = "required_onsite_date='" + model.required_onsite_date + "'";
-                }
-                else
-                {
-                    required_onsite_date = "required_onsite_date=NULL";
-                }
-
-                if (model.expected_date != null)
-                {
-                    expected_date = "expected_date='" + model.expected_date + "'";
-                }
-                else
-                {
-                    expected_date = "expected_date=NULL";
-                }
-
-                if (model.stages_update_date != null)
-                {
-                    stages_update_date = "stages_update_date='" + model.stages_update_date + "'";
-                }
-                else
-                {
-                    stages_update_date = "stages_update_date=NULL";
-                }
-
-                SqlDataReader reader;
-                SqlCommand cmd = new SqlCommand(@"UPDATE Quotation SET revision='" + model.revision + "'," +
-                                                                      "customer='" + model.customer + "'," +
-                                                                      "enduser='" + model.enduser + "'," +
-                                                                      "project_name='" + model.project_name + "'," +
-                                                                      "site_location='" + model.site_location + "'," +
-                                                                      "product_type='" + model.product_type + "'," +
-                                                                      "type='" + model.type + "'," +
-                                                                      "brand='" + model.brand + "'," +
-                                                                      "part_no='" + model.part_no + "'," +
-                                                                      "spec='" + model.spec + "'," +
-                                                                      "quantity='" + model.quantity + "'," +
-                                                                      "supplier_quotation_no='" + model.supplier_quotation_no + "'," +
-                                                                      "total_value='" + model.total_value + "'," +
-                                                                      "unit='" + model.unit + "'," +
-                                                                      "quoted_price='" + model.quoted_price + "'," +
-                                                                      expected_order_date + "," +
-                                                                      required_onsite_date + "," +
-                                                                      "proposer='" + model.proposer + "'," +
-                                                                      expected_date + "," +
-                                                                      "status='" + model.status + "'," +
-                                                                      "stages='" + model.stages + "'," +
-                                                                      stages_update_date + "," +
-                                                                      "how_to_support='" + model.how_to_support + "'," +
-                                                                      "competitor='" + model.competitor + "'," +
-                                                                      "competitor_description='" + model.competitor_description + "'," +
-                                                                      "competitor_price='" + model.competitor_price + "'," +
-                                                                      "sale_name='" + model.sale_name + "'," +
-                                                                      "department='" + model.department + "'," +
-                                                                      "detail='" + model.detail + "'" +
-                                                                      "WHERE quotation_no='" + model.quotation_no + "'");
-                cmd.CommandType = CommandType.Text;
-                cmd.Connection = ConnectSQL.OpenConnect();
-                reader = cmd.ExecuteReader();
-                reader.Close();
-
-                return "Update Success";
             }
             catch
             {
