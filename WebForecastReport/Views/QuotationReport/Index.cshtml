@@ -41,6 +41,9 @@
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="report_quarter-tab" data-toggle="tab" href="#report_quarter" role="tab" aria-controls="report_quarter" aria-selected="false"><b>Report Quarter</b></a>
             </li>
+             <li class="nav-item" role="presentation">
+                <a class="nav-link" id="report_pending-tab" data-toggle="tab" href="#report_pending" role="tab" aria-controls="report_pending" aria-selected="false"><b>Report Pending In Out</b></a>
+            </li>
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="report_year-tab" data-toggle="tab" href="#report_year" role="tab" aria-controls="report_year" aria-selected="false"><b>Report Year</b></a>
             </li>
@@ -97,282 +100,366 @@
                                             <input type="checkbox" id="chkService_department" />
                                             <label>Service</label>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-2 col-xl-2">
-                                            <input type="checkbox" id="chkWon_department" />
-                                            <label>Won</label>
                                         </div>
-                                        <div class="col-md-2 col-xl-2">
-                                            <input type="checkbox" id="chkLoss_department" />
-                                            <label>Loss</label>
-                                        </div>
-                                        <div class="col-md-2 col-xl-2">
-                                            <input type="checkbox" id="chkNogo_department" />
-                                            <label>No go</label>
-                                        </div>
-                                        <div class="col-md-2 col-xl-2">
-                                            <input type="checkbox" id="chkPending_department" />
-                                            <label>Pending</label>
+                                        <div class="row">
+                                            <div class="col-md-2 col-xl-2">
+                                                <input type="checkbox" id="chkWon_department" />
+                                                <label>Won</label>
+                                            </div>
+                                            <div class="col-md-2 col-xl-2">
+                                                <input type="checkbox" id="chkLoss_department" />
+                                                <label>Loss</label>
+                                            </div>
+                                            <div class="col-md-2 col-xl-2">
+                                                <input type="checkbox" id="chkNogo_department" />
+                                                <label>No go</label>
+                                            </div>
+                                            <div class="col-md-2 col-xl-2">
+                                                <input type="checkbox" id="chkPending_department" />
+                                                <label>Pending</label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-12">
-                            <table id="table_department" class="table table-xl cell-border table-dark table-bordered display text-center responsive nowrap" style="width:100%">
-                                <thead style="color:black;background-color:#71C6F7">
-                                    <tr>
-                                        <th rowspan="4" style="text-align:center;vertical-align:middle;">Department</th>
-                                        <th rowspan="4" style="text-align:center;vertical-align:middle;">Sales Name</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Quotation</th>
-                                        <th colspan="30" style="text-align:center;vertical-align:middle;">Description</th>
-                                        <th colspan="32" style="text-align:center;vertical-align:middle;">Status Quotation</th>
-                                    </tr>
-                                    <tr>
-                                        <th rowspan="3" style="text-align:center;vertical-align:middle;">Total Quo.</th>
-                                        <th rowspan="3" style="text-align:center;vertical-align:middle;">Total MB</th>
-                                        <th colspan="10" style="text-align:center;vertical-align:middle;">Project</th>
-                                        <th colspan="10" style="text-align:center;vertical-align:middle;">Product</th>
-                                        <th colspan="10" style="text-align:center;vertical-align:middle;">Service</th>
-                                        <th colspan="8" style="text-align:center;vertical-align:middle;">Won</th>
-                                        <th colspan="8" style="text-align:center;vertical-align:middle;">Loss</th>
-                                        <th colspan="8" style="text-align:center;vertical-align:middle;">No go</th>
-                                        <th colspan="8" style="text-align:center;vertical-align:middle;">Pending</th>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Won</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Loss</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">No go</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Pending</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
+                            <div class="col-12">
+                                <table id="table_department" class="table table-xl cell-border table-dark table-bordered display text-center responsive nowrap" style="width:100%">
+                                    <thead style="color:black;background-color:#71C6F7">
+                                        <tr>
+                                            <th rowspan="4" style="text-align:center;vertical-align:middle;">Department</th>
+                                            <th rowspan="4" style="text-align:center;vertical-align:middle;">Sales Name</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Quotation</th>
+                                            <th colspan="30" style="text-align:center;vertical-align:middle;">Description</th>
+                                            <th colspan="32" style="text-align:center;vertical-align:middle;">Status Quotation</th>
+                                        </tr>
+                                        <tr>
+                                            <th rowspan="3" style="text-align:center;vertical-align:middle;">Total Quo.</th>
+                                            <th rowspan="3" style="text-align:center;vertical-align:middle;">Total MB</th>
+                                            <th colspan="10" style="text-align:center;vertical-align:middle;">Project</th>
+                                            <th colspan="10" style="text-align:center;vertical-align:middle;">Product</th>
+                                            <th colspan="10" style="text-align:center;vertical-align:middle;">Service</th>
+                                            <th colspan="8" style="text-align:center;vertical-align:middle;">Won</th>
+                                            <th colspan="8" style="text-align:center;vertical-align:middle;">Loss</th>
+                                            <th colspan="8" style="text-align:center;vertical-align:middle;">No go</th>
+                                            <th colspan="8" style="text-align:center;vertical-align:middle;">Pending</th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Won</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Loss</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">No go</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Pending</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
 
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Won</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Loss</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">No go</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Pending</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Won</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Loss</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">No go</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Pending</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
 
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Won</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Loss</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">No go</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Pending</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Won</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Loss</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">No go</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Pending</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
 
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Project</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Product</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Service</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Project</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Product</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Service</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
 
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Project</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Product</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Service</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Project</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Product</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Service</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
 
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Project</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Product</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Service</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Project</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Product</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Service</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
 
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Project</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Product</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Service</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
-                                    </tr>
-                                    <tr>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Project</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Product</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Service</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
+                                        </tr>
+                                        <tr>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
 
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
 
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
 
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
 
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
 
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
 
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
-                                        <th style="text-align:center;vertical-align:middle;">MB</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
         <div class="tab-pane fade" id="report_quarter" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="col-md-12 col-xl-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title"><b>Quotations Report Quarter</b></span>
+                        </div>
+                        <div class="card-body">
+                            <div class="col-md-12 col-xl-12">
+                                <div class="row d-flex justify-content-between">
+                                    <div class="col-md-6 col-xl-6 pb-3">
+                                        <div class="row">
+                                            <div class="col-md-4 col-xl-4 pb-3">
+                                                <select id="quarter_department" class="form-control">
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 col-xl-4 pb-3">
+                                                <select id="quarter_year" class="form-control">
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 pb-3">
+                                                <button type="button" id="btnquarter_OK" class="btn btn-primary form-control">OK</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-xl-2 pb-3">
+                                        <button type="button" id="export_quarter" class="btn btn-success form-control">Export</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12" id="chkGroup" hidden>
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <input type="checkbox" id="chkQ1" />
+                                                <label>Q1</label>
+                                            </div>
+                                            <div class="col-2">
+                                                <input type="checkbox" id="chkQ2" />
+                                                <label>Q2</label>
+                                            </div>
+                                            <div class="col-2">
+                                                <input type="checkbox" id="chkQ3" />
+                                                <label>Q3</label>
+                                            </div>
+                                            <div class="col-2">
+                                                <input type="checkbox" id="chkQ4" />
+                                                <label>Q4</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <table id="table_quarter" class="table-xl cell-border  table-dark  table-bordered display responsive nowrap " style="width:100%">
+                                    <thead style="color:black;background-color:#2F75B5">
+                                        <tr>
+                                            <th colspan="2" rowspan="2" style="text-align:center;vertical-align:middle">Sale</th>
+                                            <th colspan="8" style="text-align:center;background-color:#EFF5EC">Q1</th>
+                                            <th colspan="8" style="text-align:center;background-color:#C7D0C4">Q2</th>
+                                            <th colspan="8" style="text-align:center;background-color:#BCD9B2">Q3</th>
+                                            <th colspan="8" style="text-align:center;background-color:#ADE3DF">Q4</th>
+
+                                        </tr>
+                                        <tr>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#EFF5EC">January</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#EFF5EC">February</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#EFF5EC">March</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#EFF5EC">Total Q1</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#C7D0C4">April</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#C7D0C4">May</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#C7D0C4">June</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#C7D0C4">Total Q2</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#BCD9B2">July</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#BCD9B2">August</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#BCD9B2">September</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#BCD9B2">Total Q3</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">October</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">November</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">December</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">Total Q4</th>
+                                        </tr>
+                                        <tr>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">Department</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">Sale Name</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">OUT</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="tab-pane fade" id="report_pending" role="tabpanel" aria-labelledby="profile-tab">
             <div class="col-md-12 col-xl-12">
                 <div class="card">
                     <div class="card-header">
-                        <span class="card-title"><b>Quotations Report Quarter</b></span>
+                        <span class="card-title"><b>Quotations Report Pending In Out</b></span>
                     </div>
                     <div class="card-body">
                         <div class="col-md-12 col-xl-12">
                             <div class="row d-flex justify-content-between">
-                                <div class="col-md-6 col-xl-6 pb-3">
+                                <div class="col-md-8 col-xl-8 pb-3">
                                     <div class="row">
-                                        <div class="col-md-4 col-xl-4 pb-3">
-                                            <select id="quarter_department" class="form-control">
+                                        <div class="col-md-2 col-xl-2 pb-3">
+                                            <select id="pendinginout_department" class="form-control">
                                             </select>
                                         </div>
-                                        <div class="col-md-4 col-xl-4 pb-3">
-                                            <select id="quarter_year" class="form-control">
-                                            </select>
+                                        <div class="col-md-2 col-xl-3 pb-3">
+                                            <input type="month" id="pendinginout_month_first" class="form-control" />
+                                        </div>
+                                        <div class="col-md-2 col-xl-3 pb-3">
+                                            <input type="month" id="pendinginout_month_last" class="form-control" />
                                         </div>
                                         <div class="col-md-3 col-xl-3 pb-3">
-                                            <button type="button" id="btnquarter_OK" class="btn btn-primary form-control">OK</button>
+                                            <button type="button" id="btnpendinginout_OK" class="btn btn-primary form-control">OK</button>                                       
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-xl-2 pb-3">
-                                    <button type="button" id="export_quarter" class="btn btn-success form-control">Export</button>
+                                    <button type="button" id="export_pendinginout" class="btn btn-success form-control">Export</button>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-12" id="chkGroup" hidden>
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <div class="row">
-                                        <div class="col-2">
-                                            <input type="checkbox" id="chkQ1" />
-                                            <label>Q1</label>
-                                        </div>
-                                        <div class="col-2">
-                                            <input type="checkbox" id="chkQ2" />
-                                            <label>Q2</label>
-                                        </div>
-                                        <div class="col-2">
-                                            <input type="checkbox" id="chkQ3" />
-                                            <label>Q3</label>
-                                        </div>
-                                        <div class="col-2">
-                                            <input type="checkbox" id="chkQ4" />
-                                            <label>Q4</label>
-                                        </div>
-                                    </div>
-                                </div>
+                         </div>
+                     </div>
+                     <div class="col-md-12 col-xl-12">
+                        <ul class="nav nav-tabs pl-2 pb-2" id="mysubTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link active" id="report_pending-department-tab" data-toggle="tab" href="#report_pending_department" role="tab" aria-controls="report_pending_department" aria-selected="true"><b>Department</b></a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="report_pending-sale-tab" data-toggle="tab" href="#report_pending_sale" role="tab" aria-controls="report_pending_sale" aria-selected="false"><b>Sale</b></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content container-fluid" id="mysubTabContent">
+                        <div class="tab-pane fade" id="report_pending_department" role="tabpanel">
+                            <div class="col-md-12 col-xl-12">
+                                <table id="table_pendinginout_department" class="table-xl cell-border table-dark table-bordered display responsive nowrap" style="width:100%">
+                                    <thead style="color:black;background-color:#2F75B5">
+                                        <tr>
+                                            <th style="text-align:center;background-color:#EFF5EC">Department</th>
+                                            <th style="text-align:center;background-color:#EFF5EC">Product Type</th>
+                                            <th style="text-align:center;background-color:#C7D0C4">Type</th>
+                                            <th style="text-align:center;background-color:#BCD9B2">Brand</th>
+                                            <th style="text-align:center;background-color:#ADE3DF">IN (MB)</th>
+                                            <th style="text-align:center;background-color:#ADE3DF">OUT (MB)</th>
+                                            <th style="text-align:center;background-color:#ADE3DF">Pending (MB)</th>
+                                        </tr>                                   
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div>
-                        <div class="col-12">
-                            <table id="table_quarter" class="table-xl cell-border  table-dark  table-bordered display responsive nowrap " style="width:100%">
-                                <thead style="color:black;background-color:#2F75B5">
-                                    <tr>
-                                        <th colspan="2" rowspan="2" style="text-align:center;vertical-align:middle">Sale</th>
-                                        <th colspan="8" style="text-align:center;background-color:#EFF5EC">Q1</th>
-                                        <th colspan="8" style="text-align:center;background-color:#C7D0C4">Q2</th>
-                                        <th colspan="8" style="text-align:center;background-color:#BCD9B2">Q3</th>
-                                        <th colspan="8" style="text-align:center;background-color:#ADE3DF">Q4</th>
-
-                                    </tr>
-                                    <tr>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#EFF5EC">January</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#EFF5EC">February</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#EFF5EC">March</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#EFF5EC">Total Q1</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#C7D0C4">April</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#C7D0C4">May</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#C7D0C4">June</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#C7D0C4">Total Q2</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#BCD9B2">July</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#BCD9B2">August</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#BCD9B2">September</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#BCD9B2">Total Q3</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">October</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">November</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">December</th>
-                                        <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">Total Q4</th>
-                                    </tr>
-                                    <tr>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">Department</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">Sale Name</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#C7D0C4">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#BCD9B2">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">OUT</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">IN</th>
-                                        <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">OUT</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                         <div class="tab-pane fade" id="report_pending_sale" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="col-md-12 col-xl-12">
+                                <table id="table_pendinginout_sale" class="table-xl cell-border table-dark table-bordered display responsive nowrap" style="width:100%">
+                                    <thead style="color:black;background-color:#2F75B5">
+                                        <tr>
+                                            <th style="text-align:center;background-color:#EFF5EC">Department</th>
+                                            <th style="text-align:center;background-color:#EFF5EC">Sale Name</th>
+                                            <th style="text-align:center;background-color:#EFF5EC">Product Type</th>
+                                            <th style="text-align:center;background-color:#C7D0C4">Type</th>
+                                            <th style="text-align:center;background-color:#BCD9B2">Brand</th>
+                                            <th style="text-align:center;background-color:#ADE3DF">IN (MB)</th>
+                                            <th style="text-align:center;background-color:#ADE3DF">OUT (MB)</th>
+                                            <th style="text-align:center;background-color:#ADE3DF">Pending (MB)</th>
+                                        </tr>                                   
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </div>                
+             </div> 
         </div>
         <div class="tab-pane fade" id="report_year" role="tabpanel" aria-labelledby="profile-tab">
             <div class="col-md-12 col-xl-12">
@@ -621,6 +708,8 @@
 @section Scripts
 {
 <script type="text/javascript">
+    var DataPending_Department;
+    var DataPending_Sale;
     var Departments = [];
     var Years = [];
     var Sales = [];
@@ -669,6 +758,8 @@
         document.getElementById("table_quarter").hidden = true;
         document.getElementById("table_year").hidden = true;
         document.getElementById("table_status").hidden = true;
+        document.getElementById("table_pendinginout_department").hidden = true;
+        document.getElementById("table_pendinginout_sale").hidden = true;
         var today = new Date().toISOString().substring(0,7);
         document.getElementById("month_first").value = today;
         document.getElementById("month_last").value = today;
@@ -1095,6 +1186,108 @@
                    }
                 });
             });
+
+            $('#report_pending-tab').on('click',function(){
+                //set today
+                var today = new Date().toISOString().substring(0,7);
+                document.getElementById("pendinginout_month_first").value = today;
+                document.getElementById("pendinginout_month_last").value = today;
+
+                //set select department
+                $('#pendinginout_department').empty();
+                var selectQuarterDepartment = document.getElementById('pendinginout_department');
+                var n = 0;  // Check Department All 
+                if (Departments.length > 1){
+                    n=1;
+                }
+                for (var i = n, l = Departments.length; i < l; i++) {
+                    var option = Departments[i];
+                    selectQuarterDepartment.options.add(new Option(option.text, option.value, option.selected));
+                }
+                document.getElementById('pendinginout_department').selectedIndex = 0;
+            });
+
+            $('#btnpendinginout_OK').on('click', function(){
+               document.getElementById("table_pendinginout_department").hidden = false;
+               document.getElementById("table_pendinginout_sale").hidden = false;
+              // $('#report_pending_department').tab('show');
+               //cal api
+               var department = document.getElementById("pendinginout_department").value;
+               var month_first = document.getElementById("pendinginout_month_first").value;
+               var month_last = document.getElementById("pendinginout_month_last").value;
+               $.ajax({
+                   url: '@Url.Action("GetReportPendingInOut", "QuotationReport")',
+                   type: "post",
+                   contentType: 'application/x-www-form-urlencoded',
+                   data: {
+                       department,month_first,month_last
+                   },
+                   success: function (response) {
+                       DataPending_Sale = response.sale;
+                       DataPending_Department = response.department;
+                       
+                       var datas_department = DataPending_Department;
+                       var dataSet_department = [];
+                       for (var i = 0; i < datas_department.length; i++) {
+                           var data = [
+                               datas_department[i].department,
+                               datas_department[i].product_type,
+                               datas_department[i].type,
+                               datas_department[i].brand,
+                               datas_department[i].pending_in,
+                               datas_department[i].pending_out,
+                               datas_department[i].pending];
+
+                           dataSet_department.push(data);
+                       }
+                       tablePendingInOutDepartment(dataSet_department);
+                   }                 
+                });
+                 
+            });
+
+            $('#report_pending-sale-tab').on('click',function(){
+                $('#report_pending_department').tab('dispose');
+                var datas = DataPending_Sale;
+                var dataSet = [] ;
+                for (var i = 0; i < datas.length; i++) {
+                           var data = [
+                               datas[i].department,
+                               datas[i].sale_name,
+                               datas[i].product_type,
+                               datas[i].type,
+                               datas[i].brand,
+                               datas[i].pending_in,
+                               datas[i].pending_out,
+                               datas[i].pending];
+
+                           dataSet.push(data);
+                       }
+                tablePendingInOutSale(dataSet);
+            });
+            $('#report_pending-department-tab').on('click',function(){
+                var datas_department = DataPending_Department;
+                var dataSet_department = [];
+                       for (var i = 0; i < datas_department.length; i++) {
+                           var data = [
+                               datas_department[i].department,
+                               datas_department[i].product_type,
+                               datas_department[i].type,
+                               datas_department[i].brand,
+                               datas_department[i].pending_in,
+                               datas_department[i].pending_out,
+                               datas_department[i].pending];
+
+                           dataSet_department.push(data);
+                       }
+                       tablePendingInOutDepartment(dataSet_department);
+            });
+            $('#export_pendinginout').on('click',function(){
+               var department = document.getElementById("pendinginout_department").value;
+               var month_first = document.getElementById("pendinginout_month_first").value;
+               var month_last = document.getElementById("pendinginout_month_last").value;
+               location.href = '@Url.Action("DownloadXlsxReportPendingInOut", "QuotationReport")?department='+department+'&month_first='+month_first+'&month_last='+month_last;
+           });
         function init() {
 
                $.ajax({
@@ -1219,7 +1412,69 @@
             $(tables_quarter.table().body()).addClass('text-dark');
             },100);
         };
+        var tables_pendinginout_depatment;
+        function tablePendingInOutDepartment(dataSet) {
+            setTimeout(()=>{
+                if (tables_pendinginout_depatment !== undefined)
+                    tables_pendinginout_depatment.destroy();
+                tables_pendinginout_depatment = $('#table_pendinginout_department').DataTable({
+                data: dataSet,
+                "columnDefs": [
+                    {
+                        "targets": "_all",
+                        "className": "text-center",
+                    },
+                ],
+                "createdRow": function (row, data, index) {
+                    if (data[1] == "รวม") {
+                        $('td', row).css('background-color', '#AFA095');
+                        $('td', row).addClass('highlight');
+                    }else if (data[1] !== "Total" && data[1].includes("Total")) {
+                        $('td', row).css('background-color', '#EFE8E2');
+                        $('td', row).addClass('highlight');
+                    }
+                },
+                "paging": false,
+                "searching": false,
+                "bInfo": false,
+                "scrollX": true,
+                "ordering": false,
+            });
+            $(tables_pendinginout_depatment.table().body()).addClass('text-dark');
+            },200);
+        };
 
+         var tables_pendinginout_sale;
+        function tablePendingInOutSale(dataSet) {
+            setTimeout(()=>{
+                if (tables_pendinginout_sale !== undefined)
+                    tables_pendinginout_sale.destroy();
+                tables_pendinginout_sale = $('#table_pendinginout_sale').DataTable({
+                data: dataSet,
+                "columnDefs": [
+                    {
+                        "targets": "_all",
+                        "className": "text-center",
+                    },
+                ],
+                "createdRow": function (row, data, index) {
+                    if (data[1] == "รวม") {
+                        $('td', row).css('background-color', '#AFA095');
+                        $('td', row).addClass('highlight');
+                    }else if (data[1] !== "Total" && data[1].includes("Total")) {
+                        $('td', row).css('background-color', '#EFE8E2');
+                        $('td', row).addClass('highlight');
+                    }
+                },
+                "paging": false,
+                "searching": false,
+                "bInfo": false,
+                "scrollX": true,
+                "ordering": false,
+            });
+            $(tables_pendinginout_sale.table().body()).addClass('text-dark');
+            },200);
+        };
         var tables_year;
         function tableYear(dataSet) {
             setTimeout(()=>{
@@ -1256,7 +1511,7 @@
                 "fixedColumns": true
             });
             $(tables_year.table().body()).addClass('text-dark');
-            },10);
+            },100);
         };
 
         var tables_status;

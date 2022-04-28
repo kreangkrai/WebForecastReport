@@ -111,6 +111,18 @@ namespace WebForecastReport.Controllers
             reports = Quotation_Report.GetReportStatus(year, department, sale);
             return Json(reports);
         }
+
+        [HttpPost]
+        public JsonResult GetReportPendingInOut(string department, string month_first, string month_last)
+        {
+            List<Quotation_Report_PendingInOutModel> sales = new List<Quotation_Report_PendingInOutModel>();
+            sales = Quotation_Report.GetReportPendingInOutByDepSale(department, month_first, month_last);
+
+            List<Quotation_Report_PendingInOutModel> departments = new List<Quotation_Report_PendingInOutModel>();
+            departments = Quotation_Report.GetReportPendingInOutByDepartment(department, month_first, month_last);
+            var list = new { department = departments, sale = sales };
+            return Json(list);
+        }
         public IActionResult DownloadXlsxReportDepartment(string department, string month_first, string month_last)
         {
             //Download Excel
@@ -119,6 +131,13 @@ namespace WebForecastReport.Controllers
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "quotation_report_department_" + DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss") + ".xlsx");
         }
 
+        public IActionResult DownloadXlsxReportPendingInOut(string department, string month_first, string month_last)
+        {
+            //Download Excel
+            var templateFileInfo = new FileInfo(Path.Combine(_hostingEnvironment.ContentRootPath, "./wwwroot/template", "quotation_report_pendinginout.xlsx"));
+            var stream = Export.ExportQuotation_Report_PendingInOut(templateFileInfo, department, month_first, month_last);
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "quotation_report_pendinginout" + DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss") + ".xlsx");
+        }
         public IActionResult DownloadXlsxReportQuarter(string department, string year)
         {
             //Download Excel

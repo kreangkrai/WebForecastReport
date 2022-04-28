@@ -791,6 +791,205 @@ namespace WebForecastReport.Service
             }
         }
 
+        public List<Quotation_Report_PendingInOutModel> GetReportPendingInOutByDepSale(string department, string month_first, string month_last)
+        {
+			try
+			{
+				List<Quotation_Report_PendingInOutModel> pendings = new List<Quotation_Report_PendingInOutModel>();
+				string command = string.Format($@"  DECLARE @million as float
+													DECLARE @month_first as VARCHAR(10)
+													DECLARE @month_last as VARCHAR(10)
+													DECLARE @department as VARCHAR(10)
+													SET @million = 1000000
+													SET @month_first = '{month_first}';
+													SET @month_last = '{month_last}';
+													SET @department = '{department}';
+
+													with main as (
+														select department,
+															sale_name,
+															product_type,
+															type,
+															brand,
+															cast(sum(case when status ='IN' 
+																AND stages in ('Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting')
+																then cast(replace(quoted_price,',','') as float) / @million
+																else 0 end ) as decimal(10, 2)) as pending_in,
+															cast(sum(case when status in ('OUT','') 
+																AND stages in ('Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
+																then cast(replace(quoted_price,',','') as float) / @million 
+																else 0 end ) as decimal(10, 2)) as pending_out,
+															cast(sum(case when stages in ('Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
+																then cast(replace(quoted_price,',','') as float) / @million 
+																else 0 end ) as decimal(10, 2)) as pending
+														from Quotation 
+														where left(Convert(varchar, date,23),7) between @month_first and @month_last and department = @department
+														group by department,sale_name,product_type,type,brand	
+													)
+
+													select * from main  union all
+													select department,
+														(sale_name + '_Total') as sale_name,
+														'' product_type, 
+														'' as type, 
+														'' as brand, 
+														sum(main.pending_in) as pending_in,
+														sum(main.pending_out) as pending_out,sum(main.pending) as pending
+													from main  
+													group by main.department,main.sale_name union all
+													select department,
+														'รวม' as sale_name,
+														'' product_type, 
+														'' as type, 
+														'' as brand, 
+														sum(main.pending_in) as pending_in,
+														sum(main.pending_out) as pending_out,sum(main.pending) as pending
+													from main  
+													group by main.department
+													order by main.department,main.sale_name");
+				SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+				SqlDataReader dr = cmd.ExecuteReader();
+				if (dr.HasRows)
+				{
+					while (dr.Read())
+					{
+						Quotation_Report_PendingInOutModel p = new Quotation_Report_PendingInOutModel();
+
+						p.department = dr["department"].ToString();
+						p.sale_name = dr["sale_name"].ToString();
+						p.product_type = dr["product_type"].ToString();
+						if (dr["type"].ToString().Count(x => x == '|') > 0)
+                        {
+							p.type = dr["type"].ToString().Split('|')[0];
+						}
+                        else
+                        {
+							p.type = dr["type"].ToString();
+						}
+						if (dr["brand"].ToString().Count(x => x == '|') > 0)
+						{
+							p.brand = dr["brand"].ToString().Split('|')[0];
+						}
+						else
+						{
+							p.brand = dr["brand"].ToString();
+						}
+						p.pending_in = dr["pending_in"].ToString();
+						p.pending_out = dr["pending_out"].ToString();
+						p.pending = dr["pending"].ToString();
+						
+						pendings.Add(p);
+					}
+					dr.Close();
+				}
+				return pendings;
+			}
+			finally
+			{
+				if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+				{
+					ConnectSQL.CloseConnect();
+				}
+			}
+		}
+
+        public List<Quotation_Report_PendingInOutModel> GetReportPendingInOutByDepartment(string department, string month_first, string month_last)
+        {
+			try
+			{
+				List<Quotation_Report_PendingInOutModel> pendings = new List<Quotation_Report_PendingInOutModel>();
+				string command = string.Format($@"  DECLARE @million as float
+													DECLARE @month_first as VARCHAR(10)
+													DECLARE @month_last as VARCHAR(10)
+													DECLARE @department as VARCHAR(10)
+													SET @million = 1000000
+													SET @month_first = '{month_first}';
+													SET @month_last = '{month_last}';
+													SET @department = '{department}';
+
+													with main as (
+														select department,
+															product_type,
+															type,
+															brand,
+															cast(sum(case when status ='IN' 
+																AND stages in ('Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting')
+																then cast(replace(quoted_price,',','') as float) / @million
+																else 0 end ) as decimal(10, 2)) as pending_in,
+															cast(sum(case when status in ('OUT','') 
+																AND stages in ('Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
+																then cast(replace(quoted_price,',','') as float) / @million 
+																else 0 end ) as decimal(10, 2)) as pending_out,
+															cast(sum(case when stages in ('Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
+																then cast(replace(quoted_price,',','') as float) / @million 
+																else 0 end ) as decimal(10, 2)) as pending
+														from Quotation 
+														where left(Convert(varchar, date,23),7) between @month_first and @month_last and department = @department
+														group by department,product_type,type,brand	
+													)
+
+													select * from main  union all
+													select department,
+														(product_type + '_Total') as product_type, 
+														'' as type, 
+														'' as brand, 
+														sum(main.pending_in) as pending_in,
+														sum(main.pending_out) as pending_out,sum(main.pending) as pending
+													from main  
+													group by main.department,main.product_type union all
+													select department,
+														'รวม' product_type, 
+														'' as type, 
+														'' as brand, 
+														sum(main.pending_in) as pending_in,
+														sum(main.pending_out) as pending_out,sum(main.pending) as pending
+													from main  
+													group by main.department
+													order by main.department,main.product_type");
+				SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+				SqlDataReader dr = cmd.ExecuteReader();
+				if (dr.HasRows)
+				{
+					while (dr.Read())
+					{
+						Quotation_Report_PendingInOutModel p = new Quotation_Report_PendingInOutModel();
+
+						p.department = dr["department"].ToString();
+						p.product_type = dr["product_type"].ToString();
+						if (dr["type"].ToString().Count(x => x == '|') > 0)
+						{
+							p.type = dr["type"].ToString().Split('|')[0];
+						}
+						else
+						{
+							p.type = dr["type"].ToString();
+						}
+						if (dr["brand"].ToString().Count(x => x == '|') > 0)
+						{
+							p.brand = dr["brand"].ToString().Split('|')[0];
+						}
+						else
+						{
+							p.brand = dr["brand"].ToString();
+						}
+						p.pending_in = dr["pending_in"].ToString();
+						p.pending_out = dr["pending_out"].ToString();
+						p.pending = dr["pending"].ToString();
+
+						pendings.Add(p);
+					}
+					dr.Close();
+				}
+				return pendings;
+			}
+			finally
+			{
+				if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+				{
+					ConnectSQL.CloseConnect();
+				}
+			}
+		}
         public List<Quotation_Report_QuarterModel> GetReportQuarter(string department, string year)
         {
             try

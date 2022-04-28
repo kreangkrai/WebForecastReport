@@ -282,6 +282,56 @@ namespace WebForecastReport.Service
             return stream;
         }
 
+        public Stream ExportQuotation_Report_PendingInOut(FileInfo path, string department, string month_first, string month_last)
+        {
+            Stream stream = new MemoryStream();
+            List<Quotation_Report_PendingInOutModel> reports = new List<Quotation_Report_PendingInOutModel>();
+            if (path.Exists)
+            {     
+                using (ExcelPackage p = new ExcelPackage(path))
+                {
+                    reports = Quotation_Report.GetReportPendingInOutByDepSale(department, month_first, month_last);
+                    ExcelWorksheet worksheet = p.Workbook.Worksheets["Sale"];
+
+                    int startRows = 3;
+                    for (int i = 0; i < reports.Count; i++)
+                    {
+                        worksheet.Cells["A" + (i + startRows)].Value = reports[i].department != null ? reports[i].department.ToString() : "";
+                        worksheet.Cells["B" + (i + startRows)].Value = reports[i].sale_name != null ? reports[i].sale_name.ToString() : "";
+                        worksheet.Cells["C" + (i + startRows)].Value = reports[i].product_type != null ? reports[i].product_type.ToString() : "";
+                        worksheet.Cells["D" + (i + startRows)].Value = reports[i].type != null ? reports[i].type.ToString() : "";
+                        worksheet.Cells["E" + (i + startRows)].Value = reports[i].brand != null ? reports[i].brand.ToString() : "";
+                        worksheet.Cells["F" + (i + startRows)].Value = reports[i].pending_in != null ? double.Parse(reports[i].pending_in.ToString()) : 0.00;
+                        worksheet.Cells["G" + (i + startRows)].Value = reports[i].pending_out != null ? double.Parse(reports[i].pending_out.ToString()) : 0.00;
+                        worksheet.Cells["H" + (i + startRows)].Value = reports[i].pending != null ? double.Parse(reports[i].pending.ToString()) : 0.00;
+                    }
+                    worksheet.Cells["B1"].Value = month_first + "-" + month_last;
+                    worksheet.Cells["D1"].Value = department;
+
+                    reports = Quotation_Report.GetReportPendingInOutByDepartment(department, month_first, month_last);
+                    worksheet = p.Workbook.Worksheets["Department"];
+
+                    startRows = 3;
+                    for (int i = 0; i < reports.Count; i++)
+                    {
+                        worksheet.Cells["A" + (i + startRows)].Value = reports[i].department != null ? reports[i].department.ToString() : "";
+                        worksheet.Cells["B" + (i + startRows)].Value = reports[i].product_type != null ? reports[i].product_type.ToString() : "";
+                        worksheet.Cells["C" + (i + startRows)].Value = reports[i].type != null ? reports[i].type.ToString() : "";
+                        worksheet.Cells["D" + (i + startRows)].Value = reports[i].brand != null ? reports[i].brand.ToString() : "";
+                        worksheet.Cells["E" + (i + startRows)].Value = reports[i].pending_in != null ? double.Parse(reports[i].pending_in.ToString()) : 0.00;
+                        worksheet.Cells["F" + (i + startRows)].Value = reports[i].pending_out != null ? double.Parse(reports[i].pending_out.ToString()) : 0.00;
+                        worksheet.Cells["G" + (i + startRows)].Value = reports[i].pending != null ? double.Parse(reports[i].pending.ToString()) : 0.00;
+                    }
+                    worksheet.Cells["B1"].Value = month_first + "-" + month_last;
+                    worksheet.Cells["D1"].Value = department;
+
+                    p.SaveAs(stream);
+                    stream.Position = 0;
+                }               
+            }
+            return stream;
+        }
+
         public Stream ExportQuotation_Report_Quarter(FileInfo path, string department, string year)
         {
             Stream stream = new MemoryStream();
