@@ -392,10 +392,10 @@
                                             <select id="pendinginout_department" class="form-control">
                                             </select>
                                         </div>
-                                        <div class="col-md-2 col-xl-3 pb-3">
+                                        <div class="col-md-3 col-xl-3 pb-3">
                                             <input type="month" id="pendinginout_month_first" class="form-control" />
                                         </div>
-                                        <div class="col-md-2 col-xl-3 pb-3">
+                                        <div class="col-md-3 col-xl-3 pb-3">
                                             <input type="month" id="pendinginout_month_last" class="form-control" />
                                         </div>
                                         <div class="col-md-3 col-xl-3 pb-3">
@@ -408,56 +408,49 @@
                                 </div>
                             </div>
                          </div>
-                     </div>
-                     <div class="col-md-12 col-xl-12">
-                        <ul class="nav nav-tabs pl-2 pb-2" id="mysubTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link active" id="report_pending-department-tab" data-toggle="tab" href="#report_pending_department" role="tab" aria-controls="report_pending_department" aria-selected="true"><b>Department</b></a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="report_pending-sale-tab" data-toggle="tab" href="#report_pending_sale" role="tab" aria-controls="report_pending_sale" aria-selected="false"><b>Sale</b></a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="tab-content container-fluid" id="mysubTabContent">
-                        <div class="tab-pane fade" id="report_pending_department" role="tabpanel">
-                            <div class="col-md-12 col-xl-12">
-                                <table id="table_pendinginout_department" class="table-xl cell-border table-dark table-bordered display responsive nowrap" style="width:100%">
-                                    <thead style="color:black;background-color:#2F75B5">
-                                        <tr>
-                                            <th style="text-align:center;background-color:#EFF5EC">Department</th>
-                                            <th style="text-align:center;background-color:#EFF5EC">Product Type</th>
-                                            <th style="text-align:center;background-color:#C7D0C4">Type</th>
-                                            <th style="text-align:center;background-color:#BCD9B2">Brand</th>
-                                            <th style="text-align:center;background-color:#ADE3DF">IN (MB)</th>
-                                            <th style="text-align:center;background-color:#ADE3DF">OUT (MB)</th>
-                                            <th style="text-align:center;background-color:#ADE3DF">Pending (MB)</th>
-                                        </tr>                                   
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                         <div class="tab-pane fade" id="report_pending_sale" role="tabpanel" aria-labelledby="profile-tab">
-                            <div class="col-md-12 col-xl-12">
-                                <table id="table_pendinginout_sale" class="table-xl cell-border table-dark table-bordered display responsive nowrap" style="width:100%">
-                                    <thead style="color:black;background-color:#2F75B5">
-                                        <tr>
-                                            <th style="text-align:center;background-color:#EFF5EC">Department</th>
-                                            <th style="text-align:center;background-color:#EFF5EC">Sale Name</th>
-                                            <th style="text-align:center;background-color:#EFF5EC">Product Type</th>
-                                            <th style="text-align:center;background-color:#C7D0C4">Type</th>
-                                            <th style="text-align:center;background-color:#BCD9B2">Brand</th>
-                                            <th style="text-align:center;background-color:#ADE3DF">IN (MB)</th>
-                                            <th style="text-align:center;background-color:#ADE3DF">OUT (MB)</th>
-                                            <th style="text-align:center;background-color:#ADE3DF">Pending (MB)</th>
-                                        </tr>                                   
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                     
+                         <div class="col-md-12 col-xl-12">
+                                <div class="col-md-2 col-xl-2 p-0 pb-3">
+                                    <select id="select_pendinginout" class="form-control">
+                                        <option value="Department">Department</option>
+                                        <option value="Sale">Sale</option>
+                                    </select>
+                                </div>
+                          </div>
+                          <div class="col-md-12 col-xl-12" id="is_pending_department">
+                              <table id="table_pendinginout_department" class="table-xl cell-border table-dark table-bordered display responsive nowrap" style="width:100%">
+                                  <thead style="color:black;background-color:#2F75B5">
+                                      <tr>
+                                          <th style="text-align:center;background-color:#EFF5EC">Department</th>
+                                          <th style="text-align:center;background-color:#EFF5EC">Product Type</th>
+                                          <th style="text-align:center;background-color:#C7D0C4">Type</th>
+                                          <th style="text-align:center;background-color:#BCD9B2">Brand</th>
+                                          <th style="text-align:center;background-color:#ADE3DF">IN (MB)</th>
+                                          <th style="text-align:center;background-color:#ADE3DF">OUT (MB)</th>
+                                          <th style="text-align:center;background-color:#ADE3DF">Pending (MB)</th>
+                                      </tr>                                   
+                                  </thead>
+                                  <tbody></tbody>
+                              </table>
+                         </div>
+                         <div class="col-md-12 col-xl-12" id="is_pending_sale" hidden>
+                             <table id="table_pendinginout_sale" class="table-xl cell-border table-dark table-bordered display responsive nowrap" style="width:100%">
+                                 <thead style="color:black;background-color:#2F75B5">
+                                     <tr>
+                                         <th style="text-align:center;background-color:#EFF5EC">Department</th>
+                                         <th style="text-align:center;background-color:#EFF5EC">Sale Name</th>
+                                         <th style="text-align:center;background-color:#EFF5EC">Product Type</th>
+                                         <th style="text-align:center;background-color:#C7D0C4">Type</th>
+                                         <th style="text-align:center;background-color:#BCD9B2">Brand</th>
+                                         <th style="text-align:center;background-color:#ADE3DF">IN (MB)</th>
+                                         <th style="text-align:center;background-color:#ADE3DF">OUT (MB)</th>
+                                         <th style="text-align:center;background-color:#ADE3DF">Pending (MB)</th>
+                                     </tr>                                   
+                                 </thead>
+                                 <tbody></tbody>
+                             </table>
+                         </div>
+                   </div>
                 </div>                
              </div> 
         </div>
@@ -1109,7 +1102,7 @@
                });
            });
 
-            $('#report_status-tab').on('click',function(){
+           $('#report_status-tab').on('click',function(){
 
                 $('#status_department').empty();
                 var selectQuarterDepartment = document.getElementById('status_department');
@@ -1133,7 +1126,7 @@
                 document.getElementById('status_sale').selectedIndex = 0;
            });
 
-            $('#status_department').on('focus change',function(){
+           $('#status_department').on('focus change',function(){
                var department = document.getElementById("status_department").value;
                $.ajax({
                    url: '@Url.Action("GetSales", "QuotationReport")',
@@ -1154,9 +1147,9 @@
                         document.getElementById('status_sale').selectedIndex = 0;
                    }
                 });
-            });
+           });
 
-            $('#btnstatus_OK').on('click',function(){
+           $('#btnstatus_OK').on('click',function(){
                 document.getElementById("table_status").hidden = false;
                 var year = document.getElementById("status_year").value;
                 var department = document.getElementById("status_department").value;
@@ -1185,9 +1178,9 @@
                        tableStatus(dataSet);
                    }
                 });
-            });
+           });
 
-            $('#report_pending-tab').on('click',function(){
+           $('#report_pending-tab').on('click',function(){
                 //set today
                 var today = new Date().toISOString().substring(0,7);
                 document.getElementById("pendinginout_month_first").value = today;
@@ -1205,12 +1198,17 @@
                     selectQuarterDepartment.options.add(new Option(option.text, option.value, option.selected));
                 }
                 document.getElementById('pendinginout_department').selectedIndex = 0;
-            });
+           });
 
-            $('#btnpendinginout_OK').on('click', function(){
+           $('#btnpendinginout_OK').on('click', function(){
                document.getElementById("table_pendinginout_department").hidden = false;
                document.getElementById("table_pendinginout_sale").hidden = false;
-              // $('#report_pending_department').tab('show');
+
+               //initial select
+               document.getElementById('select_pendinginout').selectedIndex = 0;
+               document.getElementById("is_pending_department").hidden = false;
+               document.getElementById("is_pending_sale").hidden = true;
+
                //cal api
                var department = document.getElementById("pendinginout_department").value;
                var month_first = document.getElementById("pendinginout_month_first").value;
@@ -1242,15 +1240,37 @@
                        }
                        tablePendingInOutDepartment(dataSet_department);
                    }                 
-                });
-                 
-            });
+                });                 
+           });
 
-            $('#report_pending-sale-tab').on('click',function(){
-                $('#report_pending_department').tab('dispose');
-                var datas = DataPending_Sale;
-                var dataSet = [] ;
-                for (var i = 0; i < datas.length; i++) {
+           $('#select_pendinginout').on('change',function(){                
+                var val = document.getElementById("select_pendinginout").value;
+                if (val === "Department"){
+                    document.getElementById("is_pending_department").hidden = false;
+                    document.getElementById("is_pending_sale").hidden = true;
+
+                    var datas_department = DataPending_Department;
+                    var dataSet_department = [];
+                    for (var i = 0; i < datas_department.length; i++) {
+                         var data = [
+                               datas_department[i].department,
+                               datas_department[i].product_type,
+                               datas_department[i].type,
+                               datas_department[i].brand,
+                               datas_department[i].pending_in,
+                               datas_department[i].pending_out,
+                               datas_department[i].pending];
+
+                           dataSet_department.push(data);
+                       }
+                       tablePendingInOutDepartment(dataSet_department);
+                }else{
+                    document.getElementById("is_pending_department").hidden = true;
+                    document.getElementById("is_pending_sale").hidden = false;
+
+                    var datas = DataPending_Sale;
+                    var dataSet = [] ;
+                    for (var i = 0; i < datas.length; i++) {
                            var data = [
                                datas[i].department,
                                datas[i].sale_name,
@@ -1263,26 +1283,11 @@
 
                            dataSet.push(data);
                        }
-                tablePendingInOutSale(dataSet);
-            });
-            $('#report_pending-department-tab').on('click',function(){
-                var datas_department = DataPending_Department;
-                var dataSet_department = [];
-                       for (var i = 0; i < datas_department.length; i++) {
-                           var data = [
-                               datas_department[i].department,
-                               datas_department[i].product_type,
-                               datas_department[i].type,
-                               datas_department[i].brand,
-                               datas_department[i].pending_in,
-                               datas_department[i].pending_out,
-                               datas_department[i].pending];
+                    tablePendingInOutSale(dataSet);
+                }
+           });
 
-                           dataSet_department.push(data);
-                       }
-                       tablePendingInOutDepartment(dataSet_department);
-            });
-            $('#export_pendinginout').on('click',function(){
+           $('#export_pendinginout').on('click',function(){
                var department = document.getElementById("pendinginout_department").value;
                var month_first = document.getElementById("pendinginout_month_first").value;
                var month_last = document.getElementById("pendinginout_month_last").value;
@@ -1444,7 +1449,7 @@
             },200);
         };
 
-         var tables_pendinginout_sale;
+        var tables_pendinginout_sale;
         function tablePendingInOutSale(dataSet) {
             setTimeout(()=>{
                 if (tables_pendinginout_sale !== undefined)
