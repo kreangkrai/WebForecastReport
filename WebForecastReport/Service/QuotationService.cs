@@ -90,7 +90,9 @@ namespace WebForecastReport.Service
                             competitor_price = dr["competitor_price"].ToString(),
                             sale_name = dr["sale_name"].ToString(),
                             department = dr["department"].ToString(),
-                            detail = dr["detail"].ToString()
+                            detail = dr["detail"].ToString(),
+                            engineer_in_charge = dr["engineer_in_charge"].ToString(),
+                            engineer_department = dr["engineer_department"].ToString()
                         };
                         quotations.Add(q);
                     }
@@ -170,7 +172,9 @@ namespace WebForecastReport.Service
                                                                             competitor_price,
                                                                             sale_name,
                                                                             department,
-                                                                            detail) VALUES (
+                                                                            detail,
+                                                                            engineer_in_charge,
+                                                                            engineer_department) VALUES (
                                                                             @quotation_no,
                                                                             @revision,
                                                                             @date,
@@ -200,7 +204,9 @@ namespace WebForecastReport.Service
                                                                             @competitor_price, 
                                                                             @sale_name,
                                                                             @department,
-                                                                            @detail)", ConnectSQL.OpenConnect()))
+                                                                            @detail,
+                                                                            @engineer_in_charge,
+                                                                            @engineer_department)", ConnectSQL.OpenConnect()))
                 {
                     cmd.CommandType = CommandType.Text;
                     cmd.Connection = ConnectSQL.OpenConnect();
@@ -234,6 +240,8 @@ namespace WebForecastReport.Service
                     cmd.Parameters.AddWithValue("@sale_name", model.sale_name);
                     cmd.Parameters.AddWithValue("@department", model.department);
                     cmd.Parameters.AddWithValue("@detail", model.detail);
+                    cmd.Parameters.AddWithValue("@engineer_in_charge", model.engineer_in_charge);
+                    cmd.Parameters.AddWithValue("@engineer_department", model.engineer_department);
                     cmd.ExecuteNonQuery();
 
                     return "Insert Success";
@@ -353,7 +361,9 @@ namespace WebForecastReport.Service
                                                                           "competitor_price='" + model.competitor_price + "'," +
                                                                           "sale_name='" + model.sale_name + "'," +
                                                                           "department='" + model.department + "'," +
-                                                                          "detail='" + model.detail + "'" +
+                                                                          "detail='" + model.detail + "'," +
+                                                                          "engineer_in_charge='" + model.engineer_in_charge + "'," +
+                                                                          "engineer_department='" + model.engineer_department + "' " +
                                                                           "WHERE quotation_no='" + model.quotation_no + "'");
                     cmd.CommandType = CommandType.Text;
                     cmd.Connection = ConnectSQL.OpenConnect();
@@ -429,7 +439,9 @@ namespace WebForecastReport.Service
                             competitor_price = dr["competitor_price"].ToString(),
                             sale_name = dr["sale_name"].ToString(),
                             department = dr["department"].ToString(),
-                            detail = dr["detail"].ToString()
+                            detail = dr["detail"].ToString(),
+                            engineer_in_charge = dr["engineer_in_charge"].ToString(),
+                            engineer_department = dr["engineer_department"].ToString()
                         };
                         quotations.Add(q);
                     }

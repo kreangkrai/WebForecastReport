@@ -38,5 +38,7 @@ namespace WebForecastReport.Models
         public string sale_name { get; set; }
         public string department { get; set; }
         public string detail { get; set; }
+        public string engineer_in_charge { get; set; }
+        public string engineer_department { get; set; }
     }
 }
