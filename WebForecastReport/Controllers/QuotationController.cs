@@ -54,6 +54,7 @@ namespace WebForecastReport.Controllers
             }
         }
         [HttpPost]
+
         public JsonResult GetQuotation(string name, string department, string role)
         {
             string quotation = Quotation.GetlastQuotation();
@@ -118,8 +119,13 @@ namespace WebForecastReport.Controllers
             List<TypeModel> types = new List<TypeModel>();
             types = Product.GetProducts("Brand");
 
+            // get user engineer
+            List<string> engineers = new List<string>();
+            engineers.Add("Please Select");
+            engineers.AddRange(Accessory.getAllUser().Where(w => w.groups.Trim() == "Engineer").Select(s => s.name).ToList());
+
             bool statePage = true;
-            var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers, departments = departments, types = types, statepage = statePage };
+            var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers, departments = departments, types = types, statepage = statePage, engineers = engineers };
             return Json(list);
         }
 
@@ -127,7 +133,7 @@ namespace WebForecastReport.Controllers
         public JsonResult Update(string user, string quotation, string revision, string date, string customer, string enduser, string project_name, string site_location, string product_type, string type, string brand, string part_no,
                    string spec, string quantity, string supplier_quotation_no, string total_value, string unit, string quoted_price, string expected_order_date, string old_expected_order_date,
                    string required_onsite_date, string proposer, string expected_date, string status, string stages, string stages_update_date, string how_to_support, string competitor, string competitor_description,
-                   string competitor_price, string sale_name, string department, string detail)
+                   string competitor_price, string sale_name, string department, string detail,string engineer_in_charge,string engineer_department)
         {
             QuotationModel q = new QuotationModel()
             {
@@ -161,7 +167,9 @@ namespace WebForecastReport.Controllers
                 competitor_price = competitor_price,
                 sale_name = sale_name,
                 department = department,
-                detail = detail
+                detail = detail,
+                engineer_in_charge = engineer_in_charge,
+                engineer_department = engineer_department
             };
 
             Accessory.InsertCustomer(customer);

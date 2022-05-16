@@ -14,6 +14,10 @@
         cursor: pointer;
     }
 
+    #table_engineer_in_charge_edit td:nth-of-type(1){
+        cursor: pointer;
+    }
+
     td.highlight_yellow {
         background-color: yellow;
     }
@@ -59,7 +63,7 @@
 <partial name="ModalEdit" />
 @section Scripts
 {
-<script type="text/javascript">
+    <script type="text/javascript">
     var quotation_datas = [];
     var quotation = '';
     var revision = '';
@@ -94,6 +98,8 @@
     var sale_name = '';
     var department = '';
     var detail = '';
+    var engineer_in_charge = '';
+    var engineer_department = '';
 
     var arrProductType = [];
 
@@ -107,6 +113,8 @@
     var Proposers = [];
     var Customers = [];
     var EndUsers = [];
+    var Engineers = [];
+    var arrEngineer = [];
 
     var state_admin = false;
 
@@ -139,6 +147,9 @@
 
                 //add end user to datalist
                 EndUsers = add_enduser(response.endusers);
+
+                //add engineer user
+                Engineers = add_engineer(response.engineers);
 
                 var datas = response.quatations;
                 var dataSet = [];
@@ -175,7 +186,9 @@
                         datas[i].competitor_price,
                         datas[i].sale_name,
                         datas[i].department,
-                        datas[i].detail];
+                        datas[i].detail,
+                        datas[i].engineer_in_charge,
+                        datas[i].engineer_department];
 
                     dataSet.push(data);
                 }
@@ -203,6 +216,24 @@
         table_edit(dataSet);
     };
 
+    function init_engineer_edit() {
+            var dataSet = [];
+
+            for (var i = 0; i < arrEngineer.length; i++) {
+                var data = [arrEngineer[i][0].delete, arrEngineer[i][0].engineer, arrEngineer[i][0].department];
+                dataSet.push(data);
+            }
+            table_engineer_edit(dataSet);
+        };
+    function init_engineer_view() {
+            var dataSet = [];
+
+            for (var i = 0; i < arrEngineer.length; i++) {
+                var data = [arrEngineer[i][0].engineer, arrEngineer[i][0].department];
+                dataSet.push(data);
+            }
+            table_engineer_view(dataSet);
+    };
     var tables;
     function table(dataSet) {
         if (tables !== undefined)
@@ -243,6 +274,8 @@
                 { title: "Sale Name" },
                 { title: "Department" },
                 { title: "Detail Project" },
+                { title: "Engineer In Charge" },
+                { title: "Engineer Department" },
             ],
             "columnDefs": [
                 {
@@ -266,7 +299,7 @@
     }
 
     var tables_view;
-        function table_view(dataSet) {
+    function table_view(dataSet) {
             setTimeout(function () {
                 if (tables_view !== undefined)
                     tables_view.destroy();
@@ -293,8 +326,58 @@
 
         };
 
+    var tables_engineer_edit;
+    function table_engineer_edit(dataSet) {
+            setTimeout(function () {
+                if (tables_engineer_edit !== undefined)
+                    tables_engineer_edit.destroy();
+                tables_engineer_edit = $('#table_engineer_in_charge_edit').DataTable({
+                    data: dataSet,
+                    columns: [
+                        { title: "Delete", width: 5 },
+                        { title: "Engineer", width: 120 },
+                        { title: "Department", width: 120 },
+                    ],
+                    "columnDefs": [
+                        {
+                            "targets": 0,
+                            "data": null,
+                            "defaultContent": "<i class=\"fas fa-trash\"></i>",
+                            "className": 'dt-body-center',
+                        },
+                    ],
+                    "scrollX": true,
+                    "paging": false,
+                    "searching": false,
+                    "bInfo": false,
+                });
+                $(tables_engineer_edit.table().body()).addClass('text-dark');
+            }, 300);
+        };
+
+    var tables_engineer_view;
+    function table_engineer_view(dataSet) {
+            setTimeout(function () {
+                if (tables_engineer_view !== undefined)
+                    tables_engineer_view.destroy();
+                tables_engineer_view = $('#table_engineer_in_charge_view').DataTable({
+                    data: dataSet,
+                    columns: [
+                        { title: "Engineer", width: 120 },
+                        { title: "Department", width: 120 },
+                    ],
+                    "columnDefs": [                        
+                    ],
+                    "scrollX": true,
+                    "paging": false,
+                    "searching": false,
+                    "bInfo": false,
+                });
+                $(tables_engineer_view.table().body()).addClass('text-dark');
+            }, 300);
+    };
     var tables_edit;
-        function table_edit(dataSet) {
+    function table_edit(dataSet) {
             setTimeout(function () {
                 if (tables_edit !== undefined)
                     tables_edit.destroy();
@@ -396,7 +479,9 @@
                         datas[i].competitor_price,
                         datas[i].sale_name,
                         datas[i].department,
-                        datas[i].detail];
+                        datas[i].detail,
+                        datas[i].engineer_in_charge,
+                        datas[i].engineer_department];
 
                     dataSet.push(data);
                 }
@@ -440,8 +525,11 @@
         sale_name = cell.data()[30];
         department = cell.data()[31];
         detail = cell.data()[32];
+        engineer_in_charge = cell.data()[33];
+        engineer_department = cell.data()[34];
 
         arrProductType = [];
+        arrEngineer = [];
 
         var count = (brand.match(/\|/g) || []).length;
         for (var i = 0; i <= count; i++) {
@@ -468,10 +556,26 @@
             }
         }
 
+        var count_engineer = (engineer_in_charge.match(/\|/g) || []).length;
+        for (var i = 0; i <= count_engineer; i++) {
+            if (engineer_in_charge != "") {
+                var _engineer_in_charge = engineer_in_charge.split('|')[i];
+                var _engineer_department = engineer_department.split('|')[i];
+
+                arrEngineer.push([{
+                    "delete": "",
+                    "engineer": _engineer_in_charge,
+                    "department": _engineer_department
+                }]);
+            }
+        }
+
         if (column == "0") {
 
             //clear selection type and disabled button add
             document.getElementById("btnAddType").disabled = true;
+            document.getElementById("add_engineer_in_charge").disabled = true;
+            document.getElementById("edit_engineer_in_charge_department").value = "";
             $('#types').empty();
 
             document.getElementById('edit_quotation_no').value = quotation;
@@ -551,11 +655,22 @@
                 document.getElementById('edit_sale_name').disabled = true;
             }
 
+            // add select engineer
+            $('#select_engineer_in_charge').empty();
+            var selectEngineer = document.getElementById('select_engineer_in_charge');
+            for (var i = 0, l = Engineers.length; i < l; i++) {
+                var option = Engineers[i];
+                selectEngineer.options.add(new Option(option.text, option.value, option.selected));
+            }
+            document.getElementById('select_engineer_in_charge').selectedIndex = 0;
+            document.getElementById("select_engineer_in_charge").options[0].disabled = true;
+
             //init data table
             init_edit();
+            //init data engineer
+            init_engineer_edit();
 
             //get type
-
             var type = product_type;
             $('#brands').empty();
             $('#types').empty();
@@ -604,10 +719,26 @@
 
             //init data table view
             init_view();
+            init_engineer_view();
             $('#ShowModal').modal();
         }
 
     });
+        $('#table_engineer_in_charge_edit').on('click', 'tbody td', function () {
+        var cell = tables_engineer_edit.cell(this);
+        var column = cell[0][0].column;
+
+        if (column == "0") {
+            var name = cell.data()[1];
+
+            arrEngineer = arrEngineer.filter(function (obj) {
+                return obj[0].engineer !== name;
+            });
+
+            init_engineer_edit();
+        }
+    });
+
     $('#table_types').on('click', 'tbody td', function () {
         var cell = tables_edit.cell(this);
         var column = cell[0][0].column;
@@ -678,6 +809,19 @@
         var department = document.getElementById('edit_department').innerHTML;
         var detail = document.getElementById('edit_detail').value;
 
+        // data engineer in charge
+        var arrengineer_in_charge = [];
+        var arrengineer_department = [];
+        var engineer_in_charge = "";
+        var engineer_department = "";
+
+        for (var i = 0; i < arrEngineer.length; i++) {
+            arrengineer_in_charge.push(arrEngineer[i][0].engineer);
+            arrengineer_department.push(arrEngineer[i][0].department);
+        }
+        engineer_in_charge = arrengineer_in_charge.join('|');
+        engineer_department = arrengineer_department.join('|');
+
         $.ajax({
             url: '@Url.Action("Update", "Quotation")',
             type: "post",
@@ -685,7 +829,7 @@
             data: {
                 user,quotation, revision, date, customer, enduser, project_name, site_location, product_type, type,brand, part_no, spec, quantity, supplier_quotation_no,
                 total_value, unit, quoted_price, expected_order_date, old_expected_order_date, required_onsite_date, proposer, expected_date, status, stages, stages_update_date, how_to_support, competitor,
-                competitor_description, competitor_price, sale_name,department, detail
+                competitor_description, competitor_price, sale_name, department, detail, engineer_in_charge, engineer_department
             },
             success: function (response) {
                 //get state page
@@ -716,7 +860,11 @@
             init_edit();
          }
     });
-
+        $('#add_engineer_in_charge').on('click', function () {
+            var name = document.getElementById("select_engineer_in_charge").value;
+            var department = document.getElementById("edit_engineer_in_charge_department").value;
+            add_engineer_in_charge(name, department);
+        });
     $('#clear_btnType').on('click', function () {
         clear_dataall();
         document.getElementById('edit_product_type').value = "";
@@ -781,6 +929,23 @@
         }else{
              document.getElementById("edit_expected_date").disabled = false;
         }
+    });
+
+    $('#select_engineer_in_charge').on('change', function () {
+        var name = document.getElementById("select_engineer_in_charge").value;
+        $.ajax({
+            url: '@Url.Action("GetDepartment", "Quotation")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                name
+            },
+            success: function (response) {
+                var department = response;
+                document.getElementById("edit_engineer_in_charge_department").value = department;
+                document.getElementById("add_engineer_in_charge").disabled = false;
+            }
+         });
     });
 
     $('#edit_stages').on('change',function(){
@@ -1004,6 +1169,19 @@
             list.appendChild(option);
         });
     };
+    function add_engineer(engineers) {
+        var data_engineers = [];
+        for (var i = 0; i < engineers.length; i++) {
+            var data =
+            {
+                "text": engineers[i],
+                "value": engineers[i]
+            }
+            data_engineers.push(data);
+        }
+
+        return data_engineers;
+    };
     function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").trim();
     };
@@ -1105,6 +1283,24 @@
                     document.getElementById("types").options[0].disabled = true;
                 }
     };
-
-</script>
+    function add_engineer_in_charge(name, department) {
+                    
+            var chkName = false;
+            for (var i = 0; i < arrEngineer.length; i++) {
+                if (arrEngineer[i][0].engineer == name) {
+                    chkName = true;
+                    break;
+                }
+            }
+            if (chkName === false && name !== "") {
+                arrEngineer.push([{
+                    "delete": "",
+                    "engineer": name,
+                    "department": department
+                }]);
+                //init table engineer
+                init_engineer_edit();
+        }
+    };
+    </script>
 }
