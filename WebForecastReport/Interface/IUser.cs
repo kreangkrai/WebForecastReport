@@ -9,7 +9,7 @@ namespace WebForecastReport.Interface
     interface IUser
     {
         List<UserManagementModel> GetUsers();
-        string update(string name, string role);
+        string update(string name, string role,string group);
         string insert(string name);
     }
 }

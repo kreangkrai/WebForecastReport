@@ -16,7 +16,7 @@ namespace WebForecastReport.Service
             try
             {
                 List<UserManagementModel> users = new List<UserManagementModel>();
-                SqlCommand cmd = new SqlCommand("select * from [User] order by Department", ConnectSQL.OpenConnect());
+                SqlCommand cmd = new SqlCommand("select * from [User] order by Name", ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -26,7 +26,8 @@ namespace WebForecastReport.Service
                         {
                             name = dr["Name"].ToString(),
                             department = dr["Department"].ToString(),
-                            role = dr["Role"].ToString()
+                            role = dr["Role"].ToString(),
+                            groups = dr["Groups"].ToString()
                         };
                         users.Add(u);
                     }
@@ -61,10 +62,7 @@ namespace WebForecastReport.Service
                         cmd.CommandType = CommandType.Text;
                         cmd.Connection = ConnectSQL.OpenConnect();
                         cmd.Parameters.AddWithValue("@Name", name);
-
-                        cmd.ExecuteNonQuery();
-
-                        
+                        cmd.ExecuteNonQuery();                       
                     }
                 }
                 return "Insert Success";
@@ -82,13 +80,13 @@ namespace WebForecastReport.Service
             }
         }
 
-        public string update(string name,string role)
+        public string update(string name,string role,string group)
         {
             try
             {
                 SqlDataReader reader;
-                SqlCommand cmd = new SqlCommand(@"UPDATE [User] SET Role='" + role + "'" +
-                                                                      "WHERE Name='" + name + "'");
+                SqlCommand cmd = new SqlCommand(@"UPDATE [User] SET Role='" + role + "',Groups='" + group + "'" +
+                                                                      " WHERE Name='" + name + "'");
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = ConnectSQL.OpenConnect();
                 reader = cmd.ExecuteReader();

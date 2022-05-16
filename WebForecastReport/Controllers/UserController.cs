@@ -51,14 +51,20 @@ namespace WebForecastReport.Controllers
 
             List<UserModel> us = new List<UserModel>();
             us = Accessory.getAllUser();
-            var list = new { us = us, users = users, roles = departments };
+
+            //Group Department (ENG)
+            List<DepartmentModel> group_dep = new List<DepartmentModel>();
+            group_dep.Add(new DepartmentModel { department = "" });
+            group_dep.Add(new DepartmentModel { department = "ENG" });
+
+            var list = new { us = us, users = users, roles = departments, group = group_dep };
             return Json(list);
         }
 
         [HttpPost]
-        public JsonResult Update(string name, string role)
+        public JsonResult Update(string name, string role,string group)
         {
-            string message = Users.update(name, role);
+            string message = Users.update(name, role, group);
             return Json(message);
         }
         [HttpPost]

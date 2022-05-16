@@ -45,8 +45,10 @@
 <script type="text/javascript">
     var name = '';
     var role = '';
+    var group = '';
     var Roles = [];
     var Users = [];
+    var Groups = [];
     $(document).ready(function () {
         init();
     });
@@ -65,6 +67,9 @@
             // add users
             @*$('#users').empty();*@
 
+            //add groups
+            Groups = add_group(response.group);
+
             Users = add_user(response.us);
             var selectUser = document.getElementById('users');
             for (var i = 0, l = Users.length; i < l; i++) {
@@ -78,7 +83,8 @@
             for (var i = 0; i < datas.length; i++) {
                 var data = ["",
                     datas[i].name,
-                    datas[i].role];
+                    datas[i].role,
+                    datas[i].groups];
 
                 dataSet.push(data);
             }
@@ -99,6 +105,7 @@
                 { title: "Edit ", width:10 },
                 { title: "Name" },
                 { title: "Role" },
+                { title: "Group" },
             ],
             "columnDefs": [
                 {
@@ -138,15 +145,31 @@
 
         return data_users;
     };
+
+    function add_group(groups) {
+        var data_groups = [];
+        for (var i = 0; i < groups.length; i++) {
+            var data =
+            {
+                "text": groups[i],
+                "value": groups[i]
+            }
+            data_groups.push(data);
+        }
+
+        return data_groups;
+    };
     $('#table').on('click', 'tbody td', function () {
         var cell = tables.cell(this);
         var column = cell[0][0].column;
         name = cell.data()[1];
         role = cell.data()[2];
+        group = cell.data()[3];
 
         if (column == "0") {
             document.getElementById('edit_name').value = name;
 
+            //role
             $('#edit_role').empty();
             var selectRole = document.getElementById('edit_role');
             for (var i = 0, l = Roles.length; i < l; i++) {
@@ -156,18 +179,29 @@
             var index_role = Roles.map(function (e) { return e.value.department; }).indexOf(role);
             document.getElementById('edit_role').selectedIndex = index_role;
 
+            //group
+            $('#edit_group').empty();
+            var selectGroup = document.getElementById('edit_group');
+            for (var i = 0, l = Groups.length; i < l; i++) {
+                var option = Groups[i];
+                selectGroup.options.add(new Option(option.text.department, option.value.department, option.selected));
+            }
+            var index_group = Groups.map(function (e) { return e.value.department; }).indexOf(group);
+            document.getElementById('edit_group').selectedIndex = index_group;
+
             $('#EditModal').modal();
         }
     });
     $('#edit_RoleConfirm').on('click', function () {
         var name = document.getElementById('edit_name').value;
         var role = document.getElementById('edit_role').value;
+        var group = document.getElementById('edit_group').value;
         $.ajax({
             url: '@Url.Action("Update", "User")',
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                name,role
+                name,role,group
             },
             success: function (response) {
                 if (response == "Update Success") {
