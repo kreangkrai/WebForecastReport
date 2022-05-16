@@ -22,6 +22,7 @@ namespace WebForecastReport.Controllers
         readonly IService Service;
         readonly IExport Export;
         readonly ILog_Expected Log_Expected;
+        readonly IUser Users;
         private readonly IHostingEnvironment _hostingEnvironment;
         public QuotationController(IHostingEnvironment hostingEnvironment)
         {
@@ -31,6 +32,7 @@ namespace WebForecastReport.Controllers
             Project = new ProjectService();
             Service = new ServiceService();
             Export = new ExportService();
+            Users = new UserService();
             Log_Expected = new Log_ExpectedService();
             _hostingEnvironment = hostingEnvironment;
         }
@@ -122,7 +124,8 @@ namespace WebForecastReport.Controllers
             // get user engineer
             List<string> engineers = new List<string>();
             engineers.Add("Please Select");
-            engineers.AddRange(Accessory.getAllUser().Where(w => w.groups.Trim() == "Engineer").Select(s => s.name).ToList());
+            //engineers.AddRange(Accessory.getAllUser().Where(w => w.groups.Trim() == "Engineer").Select(s => s.name).ToList());
+            engineers.AddRange(Users.GetUsers().Where(w => w.groups.Trim() == "ENG").Select(s => s.name).ToList());
 
             bool statePage = true;
             var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers, departments = departments, types = types, statepage = statePage, engineers = engineers };

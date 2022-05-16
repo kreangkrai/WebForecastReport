@@ -15,11 +15,13 @@ namespace WebForecastReport.Controllers
         readonly IAccessory Accessory;
         readonly IProposal Proposal;
         readonly IQuotation Quotation;
+        readonly IUser Users;
         public ProposalController()
         {
             Accessory = new AccessoryService();
             Proposal = new ProposalService();
             Quotation = new QuotationService();
+            Users = new UserService();
         }
         public IActionResult Index()
         {
@@ -69,7 +71,8 @@ namespace WebForecastReport.Controllers
         {
             List<string> users = new List<string>();
             users.Add("Please Select");
-            users.AddRange(Accessory.getAllUser().Where(w => w.groups.Trim() == "Engineer").Select(s => s.name).ToList());
+            //users.AddRange(Accessory.getAllUser().Where(w => w.groups.Trim() == "Engineer").Select(s => s.name).ToList());
+            users.AddRange(Users.GetUsers().Where(w => w.groups.Trim() == "ENG").Select(s => s.name).ToList());
             return Json(users);
         }
 
@@ -79,9 +82,13 @@ namespace WebForecastReport.Controllers
             List<ProposalModel> proposals = new List<ProposalModel>();
             proposals = Proposal.getProposals(name, role);
 
+            // get user engineer
             List<string> users = new List<string>();
             users.Add("Please Select");
-            users.AddRange(Accessory.getAllUser().Where(w => w.groups == "Engineer").Select(s => s.name).ToList());
+            //users.AddRange(Accessory.getAllUser().Where(w => w.groups == "Engineer").Select(s => s.name).ToList());
+            users.AddRange(Users.GetUsers().Where(w => w.groups.Trim() == "ENG").Select(s => s.name).ToList());
+           
+
             var list = new { proposals = proposals, users = users };
 
             return Json(list);
