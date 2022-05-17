@@ -332,13 +332,13 @@ namespace WebForecastReport.Service
             return stream;
         }
 
-        public Stream ExportQuotation_Report_Quarter(FileInfo path, string department, string year)
+        public Stream ExportQuotation_Report_Quarter(FileInfo path, string department, string year,string stages)
         {
             Stream stream = new MemoryStream();
             List<Quotation_Report_QuarterModel> reports = new List<Quotation_Report_QuarterModel>();
             if (path.Exists)
             {
-                reports = Quotation_Report.GetReportQuarter(department, year);
+                reports = Quotation_Report.GetReportQuarter(department, year, stages);
                 using (ExcelPackage p = new ExcelPackage(path))
                 {
                     ExcelWorksheet worksheet = p.Workbook.Worksheets["Report"];
@@ -380,8 +380,11 @@ namespace WebForecastReport.Service
                         worksheet.Cells["AF" + (i + startRows)].Value = reports[i].dec_out != null ? reports[i].dec_out.ToString() : "";
                         worksheet.Cells["AG" + (i + startRows)].Value = reports[i].sum_in_q4 != null ? reports[i].sum_in_q4.ToString() : "";
                         worksheet.Cells["AH" + (i + startRows)].Value = reports[i].sum_out_q4 != null ? reports[i].sum_out_q4.ToString() : "";
+                        worksheet.Cells["AI" + (i + startRows)].Value = reports[i].sum_in != null ? reports[i].sum_in.ToString() : "";
+                        worksheet.Cells["AJ" + (i + startRows)].Value = reports[i].sum_out != null ? reports[i].sum_out.ToString() : "";
                     }
                     worksheet.Cells["B1"].Value = year;
+                    worksheet.Cells["E1"].Value = stages;
                     p.SaveAs(stream);
                     stream.Position = 0;
                 }

@@ -10,7 +10,7 @@ namespace WebForecastReport.Interface
     {
         Stream ExportQuotation(FileInfo path, string role, string name, string department);
         Stream ExportQuotation_Report_Department(FileInfo path, string department, string month_first, string month_last);
-        Stream ExportQuotation_Report_Quarter(FileInfo path, string department, string year);
+        Stream ExportQuotation_Report_Quarter(FileInfo path, string department, string year, string stages);
         Stream ExportQuotation_Report_PendingInOut(FileInfo path, string department, string month_first, string month_last);
     }
 }

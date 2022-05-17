@@ -39,7 +39,7 @@
                 <a class="nav-link active" id="report_department-tab" data-toggle="tab" href="#report_department" role="tab" aria-controls="report_department" aria-selected="true"><b>Report Department</b></a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="report_quarter-tab" data-toggle="tab" href="#report_quarter" role="tab" aria-controls="report_quarter" aria-selected="false"><b>Report Quarter</b></a>
+                <a class="nav-link" id="report_quarter-tab" data-toggle="tab" href="#report_quarter" role="tab" aria-controls="report_quarter" aria-selected="false"><b>Forcast Order Report</b></a>
             </li>
              <li class="nav-item" role="presentation">
                 <a class="nav-link" id="report_pending-tab" data-toggle="tab" href="#report_pending" role="tab" aria-controls="report_pending" aria-selected="false"><b>Report Pending In Out</b></a>
@@ -256,19 +256,27 @@
                 <div class="col-md-12 col-xl-12">
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title"><b>Quotations Report Quarter</b></span>
+                            <span class="card-title"><b>Forcast Order Report (Expected Order Date)</b></span>
                         </div>
                         <div class="card-body">
                             <div class="col-md-12 col-xl-12">
                                 <div class="row d-flex justify-content-between">
-                                    <div class="col-md-6 col-xl-6 pb-3">
+                                    <div class="col-md-8 col-xl-8 pb-3">
                                         <div class="row">
-                                            <div class="col-md-4 col-xl-4 pb-3">
+                                            <div class="col-md-3 col-xl-3 pb-3">
                                                 <select id="quarter_department" class="form-control">
                                                 </select>
                                             </div>
-                                            <div class="col-md-4 col-xl-4 pb-3">
+                                            <div class="col-md-3 col-xl-3 pb-3">
                                                 <select id="quarter_year" class="form-control">
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 pb-3">
+                                                <select id="quarter_stages" class="form-control">
+                                                    <option value="Pending">Pending</option>
+                                                    <option value="Win">Win</option>
+                                                    <option value="Lose">Lose</option>
+                                                    <option value="No go">No go</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-3 col-xl-3 pb-3">
@@ -283,26 +291,32 @@
                             </div>
                             <div class="col-12" id="chkGroup" hidden>
                                 <div class="form-group row">
-                                    <div class="col-4">
-                                        <div class="row">
-                                            <div class="col-2">
-                                                <input type="checkbox" id="chkQ1" />
-                                                <label>Q1</label>
-                                            </div>
-                                            <div class="col-2">
-                                                <input type="checkbox" id="chkQ2" />
-                                                <label>Q2</label>
-                                            </div>
-                                            <div class="col-2">
-                                                <input type="checkbox" id="chkQ3" />
-                                                <label>Q3</label>
-                                            </div>
-                                            <div class="col-2">
-                                                <input type="checkbox" id="chkQ4" />
-                                                <label>Q4</label>
-                                            </div>
-                                        </div>
+                                    <div class="col-xl-2 col-md-2 d-flex justify-contents-between align-items-baseline">
+                                        <label class="pr-2">Status</label>
+                                        <select id="select_quarter_status" class="form-control">
+                                            <option value="ALL">ALL</option>
+                                            <option value="IN">IN</option>
+                                            <option value="OUT">OUT</option>
+                                        </select>
                                     </div>
+                                    <div class="col-xl-3 col-md-3 form-inline d-flex justify-content-between">
+                                        <div class="form-check">
+                                            <input type="checkbox" id="chkQ1" class="form-check-input" />
+                                            <label class="form-check-label">Q1</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" id="chkQ2" class="form-check-input" />
+                                            <label class="form-check-label">Q2</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" id="chkQ3" class="form-check-input" />
+                                            <label class="form-check-label">Q3</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" id="chkQ4" class="form-check-input" />
+                                            <label class="form-check-label">Q4</label>
+                                        </div>
+                                    </div>           
                                 </div>
                             </div>
                             <div class="col-12">
@@ -314,6 +328,7 @@
                                             <th colspan="8" style="text-align:center;background-color:#C7D0C4">Q2</th>
                                             <th colspan="8" style="text-align:center;background-color:#BCD9B2">Q3</th>
                                             <th colspan="8" style="text-align:center;background-color:#ADE3DF">Q4</th>
+                                            <th colspan="2" rowspan="2" style="text-align:center;background-color:#5DA3DF">Total</th>
 
                                         </tr>
                                         <tr>
@@ -332,7 +347,7 @@
                                             <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">October</th>
                                             <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">November</th>
                                             <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">December</th>
-                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">Total Q4</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;background-color:#ADE3DF">Total Q4</th>                                           
                                         </tr>
                                         <tr>
                                             <th style="text-align:center;vertical-align:middle;background-color:#EFF5EC">Department</th>
@@ -369,6 +384,8 @@
                                             <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">OUT</th>
                                             <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">IN</th>
                                             <th style="text-align:center;vertical-align:middle;background-color:#ADE3DF">OUT</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#5DA3DF">IN</th>
+                                            <th style="text-align:center;vertical-align:middle;background-color:#5DA3DF">OUT</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -706,11 +723,23 @@
     var Departments = [];
     var Years = [];
     var Sales = [];
+    var Status = "ALL";
     var columnQ1 = [2,3,4,5,6,7];
     var columnQ2 = [10,11,12,13,14,15];
     var columnQ3 = [18,19,20,21,22,23];
     var columnQ4 = [26,27,28,29,30,31];
+    var columnINQ1 = [2,4,6,8];
+    var columnINQ2 = [10,12,14,16];
+    var columnINQ3 = [18,20,22,24];
+    var columnINQ4 = [26,28,30,32];
+    var columnOUTQ1 = [3,5,7,9];
+    var columnOUTQ2 = [11,13,15,17];
+    var columnOUTQ3 = [19,21,23,25];
+    var columnOUTQ4 = [27,29,31,33];
+    var columnTotalIN = [34];
+    var columnTotalOUT = [35];
     var temp_dataset_quarter = [];
+    //var hide_column = columnQ1.concat(columnQ2).concat(columnQ3).concat(columnQ4).concat(columnOUTQ1).concat(columnOUTQ2).concat(columnOUTQ3).concat(columnOUTQ4);
     var hide_column = columnQ1.concat(columnQ2).concat(columnQ3).concat(columnQ4);
 
     var department_columnProject = [4,5,6,7,8,9,10,11];
@@ -856,12 +885,13 @@
                 document.getElementById("chkGroup").hidden = false;
                 var department = document.getElementById("quarter_department").value;
                 var year = document.getElementById("quarter_year").value;
+                var stages = document.getElementById("quarter_stages").value;
                 $.ajax({
                    url: '@Url.Action("GetReportQuarter", "QuotationReport")',
                    type: "post",
                    contentType: 'application/x-www-form-urlencoded',
                    data: {
-                       department, year
+                       department, year,stages
                    },
                    success: function (response) {
 
@@ -902,8 +932,9 @@
                                datas[i].dec_in,
                                datas[i].dec_out,
                                datas[i].sum_in_q4,
-                               datas[i].sum_out_q4
-                               ];
+                               datas[i].sum_out_q4,
+                               datas[i].sum_in,
+                               datas[i].sum_out];
 
                            dataSet.push(data);
                        }
@@ -921,7 +952,8 @@
            $('#export_quarter').on('click',function(){
                var department = document.getElementById("quarter_department").value;
                var year = document.getElementById("quarter_year").value;
-               location.href = '@Url.Action("DownloadXlsxReportQuarter", "QuotationReport")?department='+department+'&year='+year;
+               var stages = document.getElementById("quarter_stages").value;
+               location.href = '@Url.Action("DownloadXlsxReportQuarter", "QuotationReport")?department='+department+'&year='+year+'&stages='+stages;
            });
            $('#chkQ1').on('change',function(){
                hide_column_quarter();
@@ -1293,6 +1325,24 @@
                var month_last = document.getElementById("pendinginout_month_last").value;
                location.href = '@Url.Action("DownloadXlsxReportPendingInOut", "QuotationReport")?department='+department+'&month_first='+month_first+'&month_last='+month_last;
            });
+
+           $('#select_quarter_status').on('change',function(){
+               Status = document.getElementById("select_quarter_status").value;
+               document.getElementById("chkQ1").checked = false;
+               document.getElementById("chkQ2").checked = false;
+               document.getElementById("chkQ3").checked = false;
+               document.getElementById("chkQ4").checked = false;
+               hide_column = [];
+               if (Status == "ALL"){
+                   hide_column = columnQ1.concat(columnQ2).concat(columnQ3).concat(columnQ4);
+               }else if (Status == "OUT"){
+                   hide_column = columnQ1.concat(columnQ2).concat(columnQ3).concat(columnQ4).concat(columnINQ1).concat(columnINQ2).concat(columnINQ3).concat(columnINQ4).concat(columnTotalIN);
+               }else if (Status == "IN"){
+                   hide_column = columnQ1.concat(columnQ2).concat(columnQ3).concat(columnQ4).concat(columnOUTQ1).concat(columnOUTQ2).concat(columnOUTQ3).concat(columnOUTQ4).concat(columnTotalOUT);
+               }
+               // show column
+               tableQuarter(temp_dataset_quarter);
+           });
         function init() {
 
                $.ajax({
@@ -1380,14 +1430,14 @@
         };
         var tables_quarter;
         function tableQuarter(dataSet) {
-            setTimeout(()=>{
+            setTimeout(()=>{ console.log(hide_column);
                 if (tables_quarter !== undefined)
-                tables_quarter.destroy();
+                    tables_quarter.destroy();
             tables_quarter = $('#table_quarter').DataTable({
                 data: dataSet,
                 "columnDefs": [
                     {
-                         "targets" : [8,9,16,17,24,25,32,33],
+                         "targets" : [8,9,16,17,24,25,32,33,34,35],
                          "class": "index_quarter",
                     },
                     {
@@ -1413,6 +1463,7 @@
                 "searching": false,
                 "bInfo": false,
                 "scrollX": true,
+                "ordering": false,
             });
             $(tables_quarter.table().body()).addClass('text-dark');
             },100);
@@ -1598,18 +1649,88 @@
                var chkQ3 = document.getElementById("chkQ3").checked;
                var chkQ4 = document.getElementById("chkQ4").checked;
 
-
                if(chkQ1 == false){
-                  hide_column =  hide_column.concat(columnQ1);
+                  if(Status == "IN"){
+                      hide_column =  hide_column.concat(columnQ1).concat(columnOUTQ1).concat(columnTotalOUT);
+                  }else if(Status == "OUT"){
+                      hide_column =  hide_column.concat(columnQ1).concat(columnINQ1).concat(columnTotalIN);
+                  }else if (Status == "ALL"){
+                      hide_column = hide_column.concat(columnQ1);
+                  }
+               }else{
+                  if(Status == "IN"){
+                     hide_column =  remove_arr(hide_column,columnINQ1);
+                     hide_column = hide_column.concat(columnOUTQ1).concat(columnTotalOUT);
+                  }else if(Status == "OUT"){
+                     hide_column =  remove_arr(hide_column,columnOUTQ1);
+                     hide_column = hide_column.concat(columnINQ1).concat(columnTotalIN);
+                  }else if (Status == "ALL"){
+                      var x = columnINQ1.concat(columnOUTQ1);
+                      hide_column =  remove_arr(hide_column,x);
+                  }
                }
                if(chkQ2 == false){
-                   hide_column = hide_column.concat(columnQ2);
+                  if(Status == "IN"){
+                      console.log(hide_column);
+                      hide_column =  hide_column.concat(columnQ2).concat(columnOUTQ2);
+                  }else if(Status == "OUT"){
+                      hide_column =  hide_column.concat(columnQ2).concat(columnINQ2);
+                  }else if (Status == "ALL"){
+                    hide_column = hide_column.concat(columnQ2);
+                  }
+               }else{
+                  if(Status == "IN"){
+                     hide_column =  remove_arr(hide_column,columnINQ2);
+                     hide_column = hide_column.concat(columnOUTQ2);
+                  }else if(Status == "OUT"){
+                     hide_column =  remove_arr(hide_column,columnOUTQ2);
+                     hide_column = hide_column.concat(columnINQ2);
+                  }else if (Status == "ALL"){
+                    var x = columnINQ2.concat(columnOUTQ2);
+                    hide_column =  remove_arr(hide_column,x);
+                  }
                }
                if(chkQ3 == false){
-                   hide_column = hide_column.concat(columnQ3);
+                  if(Status == "IN"){
+                      console.log(hide_column);
+                      hide_column =  hide_column.concat(columnQ3).concat(columnOUTQ3);
+                  }else if(Status == "OUT"){
+                      hide_column =  hide_column.concat(columnQ3).concat(columnINQ3);
+                  }else if (Status == "ALL"){
+                    hide_column = hide_column.concat(columnQ3);
+                  }
+               }else{
+                    if(Status == "IN"){
+                     hide_column =  remove_arr(hide_column,columnINQ3);
+                     hide_column = hide_column.concat(columnOUTQ3);
+                  }else if(Status == "OUT"){
+                     hide_column =  remove_arr(hide_column,columnOUTQ3);
+                     hide_column = hide_column.concat(columnINQ3);
+                  }else if (Status == "ALL"){
+                    var x = columnINQ3.concat(columnOUTQ3);
+                    hide_column =  remove_arr(hide_column,x);
+                  }
                }
                if(chkQ4 == false){
-                  hide_column = hide_column.concat(columnQ4);
+                  if(Status == "IN"){
+                      console.log(hide_column);
+                      hide_column =  hide_column.concat(columnQ4).concat(columnOUTQ4);
+                  }else if(Status == "OUT"){
+                      hide_column =  hide_column.concat(columnQ4).concat(columnINQ4);
+                  }else if (Status == "ALL"){
+                    hide_column = hide_column.concat(columnQ4);
+                  }
+               }else{
+                  if(Status == "IN"){
+                     hide_column =  remove_arr(hide_column,columnINQ4);
+                     hide_column = hide_column.concat(columnOUTQ4);
+                  }else if(Status == "OUT"){
+                     hide_column =  remove_arr(hide_column,columnOUTQ4);
+                     hide_column = hide_column.concat(columnINQ4);
+                  }else if (Status == "ALL"){
+                    var x = columnINQ4.concat(columnOUTQ4);
+                    hide_column =  remove_arr(hide_column,x);
+                  }
                }
 
                // show column
@@ -1687,6 +1808,15 @@
 
                // show column
                tableYear(temp_dataset_year);
+        };
+
+        function remove_arr(src,arr){
+            var c = src.filter(function(s) {
+                return !arr.find(function(a) {
+                    return s === a
+                });
+            });
+            return c;
         };
 </script>
 }

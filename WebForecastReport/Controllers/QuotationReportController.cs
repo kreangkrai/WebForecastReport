@@ -91,10 +91,10 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetReportQuarter(string department, string year)
+        public JsonResult GetReportQuarter(string department, string year,string stages)
         {
             List<Quotation_Report_QuarterModel> reports = new List<Quotation_Report_QuarterModel>();
-            reports = Quotation_Report.GetReportQuarter(department, year);
+            reports = Quotation_Report.GetReportQuarter(department, year, stages);
             return Json(reports);
         }
         [HttpPost]
@@ -138,11 +138,11 @@ namespace WebForecastReport.Controllers
             var stream = Export.ExportQuotation_Report_PendingInOut(templateFileInfo, department, month_first, month_last);
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "quotation_report_pendinginout" + DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss") + ".xlsx");
         }
-        public IActionResult DownloadXlsxReportQuarter(string department, string year)
+        public IActionResult DownloadXlsxReportQuarter(string department, string year,string stages)
         {
             //Download Excel
             var templateFileInfo = new FileInfo(Path.Combine(_hostingEnvironment.ContentRootPath, "./wwwroot/template", "quotation_report_quarter.xlsx"));
-            var stream = Export.ExportQuotation_Report_Quarter(templateFileInfo, department, year);
+            var stream = Export.ExportQuotation_Report_Quarter(templateFileInfo, department, year, stages);
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "quotation_report_quarter_" + DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss") + ".xlsx");
         }
     }
