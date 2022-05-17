@@ -17,21 +17,21 @@
     <div class="col-xl-6">
         <div class="card bg-dark" style="height:600px">
             <div class="card-header">
-                <span class="card-title"><i class="fas fa-chart-pie"></i> Manpower Ratio</span>
+                <span class="card-title"><i class="fas fa-chart-pie"></i> Task Ratio</span>
             </div>
             <div class="card-body p-1">
-                <div id="whr_chart" class="h-100 w-100"></div>
+                <div id="task_ratio" class="h-100 w-100"></div>
             </div>
         </div>
     </div>
     <div class="col-xl-6">
         <div class="card bg-dark" style="height:600px">
             <div class="card-header">
-                <span class="card-title"><i class="fas fa-chart-bar"></i> Tasks Working Hours</span>
+                <span class="card-title"><i class="fas fa-chart-bar"></i> Task Distribution</span>
             </div>
             <div class="card-body">
                 <div class="h-100 w-100">
-                    <canvas id="myChart3"></canvas>
+                    <canvas id="task_distribution"></canvas>
                 </div>
             </div>
         </div>
@@ -41,21 +41,21 @@
     <div class="col-xl-6">
         <div class="card bg-dark" style="height:600px">
             <div class="card-header">
-                <span class="card-title">Staff Involve Ratio</span>
+                <span class="card-title">Manpower Ratio</span>
             </div>
             <div class="card-body">
-                <div id="inv_chart" class="h-100 w-100"></div>
+                <div id="manpower_ratio" class="h-100 w-100"></div>
             </div>
         </div>
     </div>
     <div class="col-xl-6">
         <div class="card bg-dark" style="height:600px">
             <div class="card-header">
-                <span class="card-title">Staff Hours Involve</span>
+                <span class="card-title">Manpower Distribution</span>
             </div>
             <div class="card-body">
                 <div class="w-100 h-100">
-                    <canvas id="myChart4"></canvas>
+                    <canvas id="manpower_distribution"></canvas>
                 </div>
             </div>
         </div>
@@ -83,6 +83,10 @@
             var job_id = $('#job_id').val();
             await GetTasksRatio(job_id);
             await GetPercentInvolve(job_id);
+            GenerateChartTaskRatio();
+            GenerateChartTaskDistribution();
+            GenerateChartManpowerRatio();
+            GenerateChartManpowerDistribution();
         });
 
         async function GetJobs() {
@@ -102,6 +106,15 @@
             });
         }
 
+        function GenerateJobOptions() {
+            $('#job_id').empty();
+            var job_str = '<option value="" selected disabled>Please Select Job</option>';
+            for (var i = 0; i < jobs.length; i++) {
+                job_str += '<option value="' + jobs[i].job_id + '">' + jobs[i].job_name + '</option>';
+            }
+            $('#job_id').append(job_str);
+        }
+
         async function GetTasksRatio(job_id) {
             await $.ajax({
                 type: "GET",
@@ -116,7 +129,6 @@
                         console.log("Task Total Working Hours");
                         console.log(whs_ratio);
                     }
-                    GenerateWorkingHoursRatioChart();
                 }
             });
         }
@@ -135,29 +147,12 @@
                         console.log("Task Total Working Hours");
                         console.log(inv_ratio);
                     }
-                    GenerateJobInvolvingChart();
                 }
             });
         }
 
-        function GenerateJobOptions() {
-            $('#job_id').empty();
-            var job_str = '<option value="" selected disabled>Please Select Job</option>';
-            for (var i = 0; i < jobs.length; i++) {
-                job_str += '<option value="' + jobs[i].job_id + '">' + jobs[i].job_name + '</option>';
-            }
-            $('#job_id').append(job_str);
-        }
-
-        var myChart3;
-        function GenerateWorkingHoursRatioChart() {
-            var task_names = [];
-            var hours = [];
-
-            for (var i = 0; i < whs_ratio.length; i++) {
-                task_names.push(whs_ratio[i].task_name);
-                hours.push(whs_ratio[i].hours);
-            }
+        var chart_task_ratio;
+        function GenerateChartTaskRatio() {
 
             var whr_data = [];
             for (var i = 0; i < whs_ratio.length; i++) {
@@ -173,10 +168,10 @@
                 );
             }
 
-            var whr_chart = new CanvasJS.Chart("whr_chart",
+            chart_task_ratio = new CanvasJS.Chart("task_ratio",
                 {
                     title: {
-                        text: "Total Working Hour",
+                        text: "Task Ratio",
                         fontSize: 18,
                         fontFamily: "san-seriff",
                         fontWeight: "bold",
@@ -199,19 +194,30 @@
                     }],
                 }
             );
-            whr_chart.render();
+            chart_task_ratio.render();
+        }
 
-            if (myChart3 !== undefined) {
-                myChart3.destroy();
+        var chart_task_distribution;
+        function GenerateChartTaskDistribution() {
+            var task_names = [];
+            var hours = [];
+
+            for (var i = 0; i < whs_ratio.length; i++) {
+                task_names.push(whs_ratio[i].task_name);
+                hours.push(whs_ratio[i].hours);
             }
 
-            var ctx3 = document.getElementById('myChart3').getContext('2d');
-            myChart3 = new Chart(ctx3, {
+            if (chart_task_distribution !== undefined) {
+                chart_task_distribution.destroy();
+            }
+
+            var ctx3 = document.getElementById('task_distribution').getContext('2d');
+            chart_task_distribution = new Chart(ctx3, {
                 type: 'bar',
                 data: {
                     labels: task_names,
                     datasets: [{
-                        label: "Total Working Hours",
+                        label: "Task Distribution",
                         data: hours,
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.8)',
@@ -239,15 +245,8 @@
             });
         }
 
-        var myChart4;
-        function GenerateJobInvolvingChart() {
-            var user_names = [];
-            var hours = [];
-
-            for (var i = 0; i < inv_ratio.length; i++) {
-                user_names.push(inv_ratio[i].user_name);
-                hours.push(inv_ratio[i].hours);
-            }
+        var chart_manpower_ratio;
+        function GenerateChartManpowerRatio() {
 
             var inv_data = [];
             for (var i = 0; i < inv_ratio.length; i++) {
@@ -263,10 +262,10 @@
                 );
             }
 
-            var inv_chart = new CanvasJS.Chart("inv_chart",
+            chart_manpower_ratio = new CanvasJS.Chart("manpower_ratio",
                 {
                     title: {
-                        text: "Total Working Hour",
+                        text: "Manpower Ratio",
                         fontSize: 18,
                         fontFamily: "san-seriff",
                         fontWeight: "bold",
@@ -289,19 +288,30 @@
                     }],
                 }
             );
-            inv_chart.render();
+            chart_manpower_ratio.render();
+        }
 
-            if (myChart4 !== undefined) {
-                myChart4.destroy();
+        var chart_manpower_distribution;
+        function GenerateChartManpowerDistribution() {
+            var user_names = [];
+            var hours = [];
+
+            for (var i = 0; i < inv_ratio.length; i++) {
+                user_names.push(inv_ratio[i].user_name);
+                hours.push(inv_ratio[i].hours);
             }
 
-            var ctx4 = document.getElementById('myChart4').getContext('2d');
-            myChart4 = new Chart(ctx4, {
+            if (chart_manpower_distribution !== undefined) {
+                chart_manpower_distribution.destroy();
+            }
+
+            var ctx4 = document.getElementById('manpower_distribution').getContext('2d');
+            chart_manpower_distribution = new Chart(ctx4, {
                 type: 'bar',
                 data: {
                     labels: user_names,
                     datasets: [{
-                        label: 'Total Hours Involve',
+                        label: 'Manpower Distribution',
                         data: hours,
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.8)',
