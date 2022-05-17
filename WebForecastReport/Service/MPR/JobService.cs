@@ -20,13 +20,17 @@ namespace WebForecastReport.Services.MPR
                     SELECT
                         Jobs.job_id,
                         Jobs.job_name,
-                        Jobs.sale_department,
-                        Jobs.sale,
                         Jobs.cost,
                         Jobs.md_rate,
                         Jobs.pd_rate,
-                        Jobs.status
-                    FROM Jobs");
+                        Jobs.status,
+                        Jobs.quotation_no,
+                        Quotation.customer,
+	                    Quotation.enduser,
+	                    Quotation.sale_name,
+	                    Quotation.department
+                    FROM Jobs
+                    LEFT JOIN Quotation ON Jobs.quotation_no = Quotation.quotation_no");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
@@ -42,8 +46,6 @@ namespace WebForecastReport.Services.MPR
                         {
                             job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
                             job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
-                            sale_department = dr["sale_department"] != DBNull.Value ? dr["sale_department"].ToString() : "",
-                            sale = dr["sale"] != DBNull.Value ? dr["sale"].ToString() : "",
                             cost = dr["cost"] != DBNull.Value ? Convert.ToInt32(dr["cost"]) : 0,
                             md_rate = dr["md_rate"] != DBNull.Value ? Convert.ToDouble(dr["md_rate"]) : 1,
                             pd_rate = dr["pd_rate"] != DBNull.Value ? Convert.ToDouble(dr["pd_rate"]) : 1,
@@ -52,6 +54,11 @@ namespace WebForecastReport.Services.MPR
                             cost_per_manpower = 0,
                             ot_manpower = 0,
                             status = dr["status"] != DBNull.Value ? dr["status"].ToString() : "",
+                            quotation_no = dr["quotation_no"] != DBNull.Value ? dr["quotation_no"].ToString() : "",
+                            customer = dr["customer"] != DBNull.Value ? dr["customer"].ToString() : "",
+                            enduser = dr["enduser"] != DBNull.Value ? dr["enduser"].ToString() : "",
+                            sale_name = dr["sale_name"] != DBNull.Value ? dr["sale_name"].ToString() : "",
+                            department = dr["department"] != DBNull.Value ? dr["department"].ToString() : "",
                         };
                         job.factor = job.md_rate + job.pd_rate;
                         jobs.Add(job);
@@ -75,19 +82,18 @@ namespace WebForecastReport.Services.MPR
             {
                 string string_command = string.Format($@"
                     INSERT INTO 
-                        Jobs(job_id, job_name, sale_department, sale, cost, md_rate, pd_rate, status)
-                        VALUES(@job_id, @job_name, @sale_department, @sale, @cost, @md_rate, @pd_rate, @status)");
+                        Jobs(job_id, job_name, quotation_no, cost, md_rate, pd_rate, status)
+                        VALUES(@job_id, @job_name, @quotation_no, @cost, @md_rate, @pd_rate, @status)");
                 using (SqlCommand cmd = new SqlCommand(string_command,ConnectSQL.OpenConnect()))
                 {
                     cmd.CommandType = System.Data.CommandType.Text;
                     cmd.Parameters.AddWithValue("@job_id", job.job_id.Replace("-", String.Empty));
                     cmd.Parameters.AddWithValue("@job_name", job.job_name);
-                    cmd.Parameters.AddWithValue("@sale_department", job.sale_department);
-                    cmd.Parameters.AddWithValue("@sale", job.sale);
+                    cmd.Parameters.AddWithValue("@quotation_no", job.quotation_no);
                     cmd.Parameters.AddWithValue("@cost", job.cost);
                     cmd.Parameters.AddWithValue("@md_rate", job.md_rate);
                     cmd.Parameters.AddWithValue("@pd_rate", job.pd_rate);
-                    cmd.Parameters.AddWithValue("@status", "");
+                    cmd.Parameters.AddWithValue("@status", job.status);
                     if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                     {
                         ConnectSQL.CloseConnect();
@@ -114,8 +120,7 @@ namespace WebForecastReport.Services.MPR
                     UPDATE Jobs 
                     SET
                         job_name = @job_name,
-                        sale_department = @sale_department,
-                        sale = @sale,
+                        quotation_no = @quotation_no,
                         cost = @cost,
                         md_rate = @md_rate,
                         pd_rate = @pd_rate,
@@ -126,8 +131,7 @@ namespace WebForecastReport.Services.MPR
                     cmd.CommandType = System.Data.CommandType.Text;
                     cmd.Parameters.AddWithValue("@job_id", job.job_id.Replace("-", String.Empty));
                     cmd.Parameters.AddWithValue("@job_name", job.job_name);
-                    cmd.Parameters.AddWithValue("@sale_department", job.sale_department);
-                    cmd.Parameters.AddWithValue("@sale", job.sale);
+                    cmd.Parameters.AddWithValue("@quotation_no", job.quotation_no);
                     cmd.Parameters.AddWithValue("@cost", job.cost);
                     cmd.Parameters.AddWithValue("@md_rate", job.md_rate);
                     cmd.Parameters.AddWithValue("@pd_rate", job.pd_rate);
