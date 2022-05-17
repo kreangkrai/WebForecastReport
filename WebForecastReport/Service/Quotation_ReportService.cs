@@ -812,11 +812,11 @@ namespace WebForecastReport.Service
 															type,
 															brand,
 															cast(sum(case when status ='IN' 
-																AND stages in ('Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting')
+																AND stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting')
 																then cast(replace(quoted_price,',','') as float) / @million
 																else 0 end ) as decimal(10, 2)) as pending_in,
 															cast(sum(case when status in ('OUT','') 
-																AND stages in ('Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
+																AND stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
 																then cast(replace(quoted_price,',','') as float) / @million 
 																else 0 end ) as decimal(10, 2)) as pending_out,
 															cast(sum(case when stages in ('Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
@@ -913,11 +913,11 @@ namespace WebForecastReport.Service
 															type,
 															brand,
 															cast(sum(case when status ='IN' 
-																AND stages in ('Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting')
+																AND stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting')
 																then cast(replace(quoted_price,',','') as float) / @million
 																else 0 end ) as decimal(10, 2)) as pending_in,
 															cast(sum(case when status in ('OUT','') 
-																AND stages in ('Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
+																AND stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
 																then cast(replace(quoted_price,',','') as float) / @million 
 																else 0 end ) as decimal(10, 2)) as pending_out,
 															cast(sum(case when stages in ('Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
@@ -998,144 +998,152 @@ namespace WebForecastReport.Service
                 string command = "";
                 if (department == "ALL")
                 {
-                    command = @"with s1 as(select department,sale_name as sale, " +
-                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jan_in, " +
-                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jan_out, " +
-                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as feb_in, " +
-                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as feb_out, " +
-                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as mar_in, " +
-                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as mar_out, " +
-                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as apr_in, " +
-                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as apr_out, " +
-                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as may_in, " +
-                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as may_out, " +
-                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jun_in, " +
-                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jun_out, " +
-                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jul_in, " +
-                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jul_out, " +
-                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as aug_in, " +
-                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as aug_out, " +
-                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as sep_in, " +
-                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as sep_out, " +
-                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as oct_in, " +
-                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as oct_out, " +
-                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as nov_in, " +
-                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as nov_out, " +
-                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as dec_in, " +
-                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as dec_out " +
-                            "from Quotation group by department,sale_name union all " +
+                    command = string.Format($@"DECLARE @million as float
+											SET @million = 1000000;
+											with s1 as(select department,sale_name as sale, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jan_in, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jan_out, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as feb_in, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as feb_out, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as mar_in, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as mar_out, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as apr_in, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as apr_out, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as may_in, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as may_out, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jun_in, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jun_out, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jul_in, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jul_out, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as aug_in, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as aug_out, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as sep_in, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as sep_out, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as oct_in, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as oct_out, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_in, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_out, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_in, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_out " +
+							"from Quotation where stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting')" +
+							" group by department,sale_name union all " +
 
                             "select(department + ' Total') as department,'' as sale, " +
-                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jan_in, " +
-                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jan_out, " +
-                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as feb_in, " +
-                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as feb_out, " +
-                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as mar_in, " +
-                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as mar_out, " +
-                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as apr_in, " +
-                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as apr_out, " +
-                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as may_in, " +
-                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as may_out, " +
-                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jun_in, " +
-                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jun_out, " +
-                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jul_in, " +
-                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jul_out, " +
-                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as aug_in, " +
-                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as aug_out, " +
-                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as sep_in, " +
-                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as sep_out, " +
-                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as oct_in, " +
-                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as oct_out, " +
-                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as nov_in, " +
-                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as nov_out, " +
-                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as dec_in, " +
-                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as dec_out " +
-                            "from Quotation group by department union all " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jan_in, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jan_out, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as feb_in, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as feb_out, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as mar_in, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as mar_out, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as apr_in, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as apr_out, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as may_in, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as may_out, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jun_in, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jun_out, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jul_in, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jul_out, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as aug_in, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as aug_out, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as sep_in, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as sep_out, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as oct_in, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as oct_out, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_in, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_out, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_in, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_out " +
+							"from Quotation where stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') " +
+							"group by department union all " +
 
                             "select 'Total' as department,'' as sale, " +
-                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jan_in, " +
-                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jan_out, " +
-                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as feb_in, " +
-                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as feb_out, " +
-                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as mar_in, " +
-                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as mar_out, " +
-                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as apr_in, " +
-                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as apr_out, " +
-                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as may_in, " +
-                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as may_out, " +
-                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jun_in, " +
-                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jun_out, " +
-                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jul_in, " +
-                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jul_out, " +
-                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as aug_in, " +
-                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as aug_out, " +
-                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as sep_in, " +
-                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as sep_out, " +
-                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as oct_in, " +
-                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as oct_out, " +
-                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as nov_in, " +
-                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as nov_out, " +
-                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as dec_in, " +
-                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as dec_out " +
-                            "from Quotation) " +
-                            "select* from s1 order by s1.department,s1.sale ";
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jan_in, " +
+                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jan_out, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as feb_in, " +
+                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as feb_out, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as mar_in, " +
+                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as mar_out, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as apr_in, " +
+                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as apr_out, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as may_in, " +
+                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as may_out, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jun_in, " +
+                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jun_out, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jul_in, " +
+                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jul_out, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as aug_in, " +
+                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as aug_out, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as sep_in, " +
+                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as sep_out, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as oct_in, " +
+                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as oct_out, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_in, " +
+                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_out, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_in, " +
+                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_out " +
+							"from Quotation where stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting')) " +
+                            "select* from s1 order by s1.department,s1.sale ");
                 }
                 else
                 {
-                    command = @"with s1 as(select department,sale_name as sale, " +
-                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jan_in, " +
-                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jan_out, " +
-                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as feb_in, " +
-                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as feb_out, " +
-                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as mar_in, " +
-                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as mar_out, " +
-                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as apr_in, " +
-                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as apr_out, " +
-                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as may_in, " +
-                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as may_out, " +
-                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jun_in, " +
-                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jun_out, " +
-                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jul_in, " +
-                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jul_out, " +
-                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as aug_in, " +
-                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as aug_out, " +
-                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as sep_in, " +
-                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as sep_out, " +
-                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as oct_in, " +
-                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as oct_out, " +
-                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as nov_in, " +
-                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as nov_out, " +
-                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as dec_in, " +
-                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as dec_out " +
-                            "from Quotation where department='" + department + "' group by department,sale_name union all " +
+					command = string.Format($@" DECLARE @million as float
+											SET @million = 1000000;
+							with s1 as(select department,sale_name as sale, " +
+							"sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jan_in, " +
+							"sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jan_out, " +
+							"sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as feb_in, " +
+							"sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as feb_out, " +
+							"sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as mar_in, " +
+							"sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as mar_out, " +
+							"sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as apr_in, " +
+							"sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as apr_out, " +
+							"sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as may_in, " +
+							"sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as may_out, " +
+							"sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jun_in, " +
+							"sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jun_out, " +
+							"sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jul_in, " +
+							"sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jul_out, " +
+							"sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as aug_in, " +
+							"sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as aug_out, " +
+							"sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as sep_in, " +
+							"sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as sep_out, " +
+							"sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as oct_in, " +
+							"sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as oct_out, " +
+							"sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_in, " +
+							"sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_out, " +
+							"sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_in, " +
+							"sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_out " +
+							"from Quotation where department='" + department + "' and stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting')" +
+							" group by department,sale_name union all " +
 
-                            "select(department + ' Total') as department,'' as sale, " +
-                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jan_in, " +
-                            "sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jan_out, " +
-                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as feb_in, " +
-                            "sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as feb_out, " +
-                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as mar_in, " +
-                            "sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as mar_out, " +
-                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as apr_in, " +
-                            "sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as apr_out, " +
-                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as may_in, " +
-                            "sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as may_out, " +
-                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jun_in, " +
-                            "sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jun_out, " +
-                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jul_in, " +
-                            "sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as jul_out, " +
-                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as aug_in, " +
-                            "sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as aug_out, " +
-                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as sep_in, " +
-                            "sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as sep_out, " +
-                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as oct_in, " +
-                            "sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as oct_out, " +
-                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as nov_in, " +
-                            "sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as nov_out, " +
-                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as dec_in, " +
-                            "sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) /1000000 as decimal(10,2)) else 0 end end) as dec_out " +
-                            "from Quotation where department='" + department + "' group by department) " +
-                            "select* from s1 order by s1.department,s1.sale ";
+							"select(department + ' Total') as department,'' as sale, " +
+							"sum(case when expected_order_date like '" + year + "-01%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jan_in, " +
+							"sum(case when expected_order_date like '" + year + "-01%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jan_out, " +
+							"sum(case when expected_order_date like '" + year + "-02%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as feb_in, " +
+							"sum(case when expected_order_date like '" + year + "-02%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as feb_out, " +
+							"sum(case when expected_order_date like '" + year + "-03%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as mar_in, " +
+							"sum(case when expected_order_date like '" + year + "-03%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as mar_out, " +
+							"sum(case when expected_order_date like '" + year + "-04%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as apr_in, " +
+							"sum(case when expected_order_date like '" + year + "-04%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as apr_out, " +
+							"sum(case when expected_order_date like '" + year + "-05%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as may_in, " +
+							"sum(case when expected_order_date like '" + year + "-05%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as may_out, " +
+							"sum(case when expected_order_date like '" + year + "-06%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jun_in, " +
+							"sum(case when expected_order_date like '" + year + "-06%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jun_out, " +
+							"sum(case when expected_order_date like '" + year + "-07%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jul_in, " +
+							"sum(case when expected_order_date like '" + year + "-07%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as jul_out, " +
+							"sum(case when expected_order_date like '" + year + "-08%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as aug_in, " +
+							"sum(case when expected_order_date like '" + year + "-08%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as aug_out, " +
+							"sum(case when expected_order_date like '" + year + "-09%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as sep_in, " +
+							"sum(case when expected_order_date like '" + year + "-09%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as sep_out, " +
+							"sum(case when expected_order_date like '" + year + "-10%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as oct_in, " +
+							"sum(case when expected_order_date like '" + year + "-10%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as oct_out, " +
+							"sum(case when expected_order_date like '" + year + "-11%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_in, " +
+							"sum(case when expected_order_date like '" + year + "-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_out, " +
+							"sum(case when expected_order_date like '" + year + "-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_in, " +
+							"sum(case when expected_order_date like '" + year + "-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_out " +
+							"from Quotation where department='" + department + "' and stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') " +
+							"group by department) " +
+							"select* from s1 order by s1.department,s1.sale ");
                 }
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
