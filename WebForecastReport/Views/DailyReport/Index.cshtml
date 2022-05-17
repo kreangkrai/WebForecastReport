@@ -1,0 +1,468 @@
+﻿@{
+    ViewData["Title"] = "Daily Report";
+}
+<div class="row p-3">
+    <div class="col-xl-12">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Total Reports</span>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="table_total" class="table table-sm table-bordered text-center w-100">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Job</th>
+                            <th>Records</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-12">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Daily Reports</span>
+                <div class="card-tools">
+                    <button id="btn_add" type="button" class="btn btn-primary btn-sm elevation-1">
+                        <i class="fas fa-plus"></i> Add Record
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group row">
+                        <div class="col-xl-4">
+                            <label for="sel_job_id">Job</label>
+                            <select id="sel_job_id" class="form-control"></select>
+                        </div>
+                        <div class="col-xl-4">
+                            <label for="sel_month">Month</label>
+                            <input id="sel_month" type="month" class="form-control" />
+                        </div>
+                        <div class="col-xl-2 d-flex align-items-end">
+                            <button id="btn_load" type="button" class="btn btn-primary form-control elevation-1" disabled>
+                                <i class="fas fa-sync"></i> Load
+                            </button>
+                        </div>
+                        <div class="col-xl-2 d-flex align-items-end">
+                            <button id="btn_export" type="button" class="btn btn-success form-control elevation-1" disabled>
+                                <i class="fas fa-file-excel"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="form-group">
+                        <table id="table_dr" class="table table-sm compact table-bordered table-hover text-center w-100">
+                            <thead>
+                                <tr>
+                                    <th>Ind</th>
+                                    <th>Date</th>
+                                    <th>Start Time</th>
+                                    <th>Stop Time</th>
+                                    <th>Job</th>
+                                    <th>Customer</th>
+                                    <th>Activity</th>
+                                    <th>Problem</th>
+                                    <th>Solution</th>
+                                    <th>Tomorrow Plan</th>
+                                    <th>Action By</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_dr" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_dr_title">Add Daily Report</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group" hidden>
+                        <input id="index" type="number" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input id="date" type="date" class="form-control" />
+                        <small>Required</small>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xl-6">
+                            <label for="start_time">Start</label>
+                            <input id="start_time" type="time" class="form-control" />
+                            <small>Required</small>
+                        </div>
+                        <div class="col-xl-6">
+                            <label for="stop_time">Stop</label>
+                            <input id="stop_time" type="time" class="form-control" />
+                            <small>Required</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xl-6">
+                            <label for="job_id">Job</label>
+                            <select id="job_id" class="form-control"></select>
+                            <small>Required</small>
+                        </div>
+                        <div class="col-xl-6">
+                            <label for="customer">Customer</label>
+                            <input id="customer" type="text" class="form-control" placeholder="Customer" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="activity">Activity</label>
+                        <input id="activity" type="text" class="form-control" placeholder="Activity" />
+                        <small>Required</small>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xl-6">
+                            <label for="problem">Problem</label>
+                            <input id="problem" type="text" class="form-control" placeholder="Problem" />
+                        </div>
+                        <div class="col-xl-6">
+                            <label for="solution">Solution</label>
+                            <input id="solution" type="text" class="form-control" placeholder="Solution" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="tomorrow_plan">Tomorrow Action Plan</label>
+                        <input id="tomorrow_plan" type="text" class="form-control" placeholder="Tomorrow Plan" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer d-flex">
+                <button id="btn_delete" type="button" class="btn btn-danger elevation-1 justify-self-start">
+                    <i class="fas fa-trash-alt"></i> Delete
+                </button>
+                <button type="button" class="btn btn-secondary elevation-1" data-dismiss="modal">
+                    <i class="fas fa-times"></i> Close
+                </button>
+                <button id="btn_accept" type="button" class="btn btn-primary elevation-1">
+                    <i class="fas fa-check"></i> Accept
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts 
+{
+    <script type="text/javascript">
+        //Variable Declaration
+        var jrs;
+        var drs;
+        var table_total;
+        var table_drs;
+        var update = false;
+
+        //Debug Variable
+        var debug_jrs = false;
+        var debug_drs = false;
+
+        $(document).ready(async function () {
+            await GetJobResponsible('@Model.name');
+            GenerateJobSelectOptions();
+        });
+
+        async function GetJobResponsible(user_id) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobResponsible", "DailyReport")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { user_id },
+                success: function (response) {
+                    jrs = response;
+                    if (debug_jrs) {
+                        console.log("Job Responsible");
+                        console.log(jrs);
+                    }
+                }
+            });
+        }
+
+        function GenerateJobSelectOptions() {
+            var job_str = '<option value="" selected disabled>Please Select Job</option>';
+            for (var i = 0; i < jrs.length; i++) {
+                job_str += `<option value="${jrs[i].job_id}">${jrs[i].job_id}: ${jrs[i].job_name}</option>`;
+            }
+            $('#sel_job_id').empty();
+            $('#sel_job_id').append(job_str);
+        }
+
+        function GenerateJobOptions() {
+            var job_str = '<option value="" selected disabled>Please Select Job</option>';
+            for (var i = 0; i < jrs.length; i++) {
+                job_str += `<option value="${jrs[i].job_id}">${jrs[i].job_id}: ${jrs[i].job_name}</option>`;
+            }
+            $('#job_id').empty();
+            $('#job_id').append(job_str);
+        }
+
+        $('#sel_job_id').on('change', function () {
+            EnableLoadExport();
+        });
+
+        $('#sel_month').on('change', function () {
+            EnableLoadExport();
+        });
+
+        function EnableLoadExport() {
+            var sel_job_id = $('#sel_job_id').val();
+            var sel_month = $('#sel_month').val();
+            if (sel_job_id !== "" && sel_month !== "") {
+                $('#btn_load').attr('disabled', false);
+                $('#btn_export').attr('disabled', false);
+            }
+            else {
+                $('#btn_load').attr('disabled', true);
+                $('#btn_export').attr('disabled', true);
+            }
+        }
+
+        $('#btn_load').on('click', async function () {
+            var user_id = '@Model.name';
+            var month = $('#sel_month').val();
+            var job_id = $('#sel_job_id').val();
+            await GetDailyReport(user_id, month, job_id);
+            GenerateTableDailyReport();
+        });
+
+        async function GetDailyReport(user_id, month, job_id) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetDailyReport", "DailyReport")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { user_id, month, job_id },
+                success: function (response) {
+                    drs = response;
+                    if (debug_drs) {
+                        console.log("Daily Report");
+                        console.log(drs);
+                    }
+                }
+            });
+        }
+
+        $('#btn_export').on('click', function () {
+            alert("Btn Export Click");
+        });
+
+        function GenerateTableTotal() {
+            $('#table_total').DataTable();
+        }
+
+        function GenerateTableDailyReport() {
+            var datas = [];
+
+            for (var i = 0; i < drs.length; i++) {
+                datas.push([
+                    drs[i].index,
+                    drs[i].date.split("T")[0],
+                    drs[i].start_time,
+                    drs[i].stop_time,
+                    drs[i].job_id,
+                    drs[i].customer,
+                    drs[i].activity,
+                    drs[i].problem,
+                    drs[i].solution,
+                    drs[i].tomorrow_plan,
+                    drs[i].user_id
+                ]);
+            }
+
+            if (table_drs !== undefined) {
+                table_drs.destroy();
+            }
+
+            table_drs = $('#table_dr').DataTable({
+                data: datas,
+            });
+        }
+
+        $('#table_dr tbody').on('click', 'tr', async function () {
+            await GetJobResponsible('@Model.name');
+            GenerateJobOptions();
+            PrepformEdit(table_drs.row(this).data());
+        });
+
+        $('#btn_add').on('click', async function () {
+            await GetJobResponsible('@Model.name');
+            GenerateJobOptions();
+            PrepformAdd();
+        });
+
+        function PrepformAdd() {
+            update = false;
+            var today = new Date();
+            $('#index').val(null);
+            $('#date').val(today.toISOString().split("T")[0]);
+            $('#start_time').val(null);
+            $('#stop_time').val(null);
+            $('#job_id').val(null);
+            $('#customer').val(null);
+            $('#activity').val(null);
+            $('#problem').val(null);
+            $('#solution').val(null);
+            $('#tomorrow_plan').val(null);
+            $('#modal_dr').modal();
+            $('#modal_dr_title').text("Add Daily Report");
+            $('#btn_accept').attr('disabled', true);
+        }
+
+        function PrepformEdit(data) {
+            update = true;
+            var index = data[0];
+            var date = data[1];
+            var start_time = data[2];
+            var stop_time = data[3];
+            var job_id = data[4];
+            var customer = data[5];
+            var activity = data[6];
+            var problem = data[7];
+            var solution = data[8];
+            var tomorrow_plan = data[9];
+            $('#index').val(index);
+            $('#date').val(date);
+            $('#start_time').val(start_time);
+            $('#stop_time').val(stop_time);
+            $('#job_id').val(job_id);
+            $('#customer').val(customer);
+            $('#activity').val(activity);
+            $('#problem').val(problem);
+            $('#solution').val(solution);
+            $('#tomorrow_plan').val(tomorrow_plan);
+            $('#modal_dr').modal();
+            $('#modal_dr_title').text("Edit Daily Report");
+        }
+
+        $('#date').on('change', function () {
+            EnableAccept();
+        });
+
+        $('#start_time').on('change', function () {
+            EnableAccept();
+        });
+
+        $('#stop_time').on('change', function () {
+            EnableAccept();
+        });
+
+        $('#job_id').on('change', function () {
+            EnableAccept();
+        });
+
+        $('#activity').on('change', function () {
+            EnableAccept();
+        });
+
+        function EnableAccept() {
+            var enable = 1;
+            enable *= $('#date').val() !== "" ? 1 : 0;
+            enable *= $('#start_time').val() !== "" ? 1 : 0;
+            enable *= $('#stop_time').val() !== "" ? 1 : 0;
+            enable *= $('#job_id').val() !== "" ? 1 : 0;
+            enable *= $('#activity').val() !== "" ? 1 : 0;
+            $('#btn_accept').attr('disabled', !enable);
+        }
+
+        $('#btn_accept').on('click', function () {
+            var index = $('#index').val();
+            var date = $('#date').val();
+            var start_time = $('#start_time').val();
+            var stop_time = $('#stop_time').val();
+            var job_id = $('#job_id').val();
+            var user_id = '@Model.name';
+            var customer = $('#customer').val();
+            var activity = $('#activity').val();
+            var problem = $('#problem').val();
+            var solution = $('#solution').val();
+            var tomorrow_plan = $('#tomorrow_plan').val();
+            var dr_str = JSON.stringify({
+                "index": index,
+                "date": date,
+                "start_time": start_time,
+                "stop_time": stop_time,
+                "job_id": job_id,
+                "user_id": user_id,
+                "customer": customer,
+                "activity": activity,
+                "problem": problem,
+                "solution": solution,
+                "tomorrow_plan": tomorrow_plan
+            });
+            if (!update) {
+                AddDailyReport(dr_str);
+            }
+            else {
+                EditDailyReport(dr_str);
+            }
+        });
+
+        async function AddDailyReport(dr_str) {
+            var dr = JSON.parse(dr_str);
+            var user_id = '@Model.name';
+            var month = dr.date.substring(0, 7);
+            var job_id = dr.job_id;
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddDailyReport", "DailyReport")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { dr_str },
+                success: async function (response) {
+                    if (response == "Success") {
+                        $("#modal_dr").modal("toggle");
+                        $('#sel_job_id').val(job_id);
+                        $('#sel_month').val(month);
+                        await GetDailyReport(user_id, month, job_id);
+                        GenerateTableDailyReport();
+                    }
+                    else {
+                        toastr.error(response);
+                    }
+                }
+            });
+        };
+
+        async function EditDailyReport(dr_str) {
+            var dr = JSON.parse(dr_str);
+            var user_id = '@Model.name';
+            var month = dr.date.substring(0, 7);
+            var job_id = dr.job_id;
+            await $.ajax({
+                type: "PATCH",
+                url: '@Url.Action("EditDailyReport", "DailyReport")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { dr_str },
+                success: async function (response) {
+                    if (response == "Success") {
+                        $("#modal_dr").modal("toggle");
+                        $('#sel_job_id').val(job_id);
+                        $('#sel_month').val(month);
+                        await GetDailyReport(user_id, month, job_id);
+                        GenerateTableDailyReport();
+                    }
+                    else {
+                        toastr.error(response);
+                    }
+                }
+            });
+        };
+
+    </script>
+}
