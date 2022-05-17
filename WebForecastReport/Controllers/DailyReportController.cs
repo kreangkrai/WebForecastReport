@@ -1,6 +1,4 @@
-﻿using WebForecastReport.Interfaces.MPR;
-using WebForecastReport.Models.MPR;
-using WebForecastReport.Services.MPR;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -8,21 +6,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebForecastReport.Interface;
-using WebForecastReport.Service;
-using Microsoft.AspNetCore.Http;
+using WebForecastReport.Interface.MPR;
 using WebForecastReport.Models;
+using WebForecastReport.Models.MPR;
+using WebForecastReport.Service;
+using WebForecastReport.Service.MPR;
 
 namespace WebForecastReport.Controllers
 {
-    public class JobController : Controller
+    public class DailyReportController : Controller
     {
-        readonly IJob JobService;
         readonly IAccessory Accessory;
+        readonly IJobResponsible JRService;
+        readonly IDRService DRService;
 
-        public JobController()
+        public DailyReportController()
         {
-            JobService = new JobService();
             Accessory = new AccessoryService();
+            JRService = new JobResponsibleService();
+            DRService = new ENG_DailyReportService();
         }
 
         public IActionResult Index()
@@ -46,26 +48,33 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetJobs()
+        public List<JobResponsibleModel> GetJobResponsible(string user_id)
         {
-            List<JobModel> jobs = JobService.GetAllJobs();
-            return Json(jobs);
+            List<JobResponsibleModel> jrs = JRService.GetJobResponsible(user_id);
+            return jrs;
+        }
+
+        [HttpGet]
+        public List<ENG_DailyReportModel> GetDailyReport(string user_id, string month, string job_id)
+        {
+            List<ENG_DailyReportModel> dlrs = DRService.GetDailyReport(user_id, month, job_id);
+            return dlrs;
         }
 
         [HttpPost]
-        public JsonResult AddJob(string job_string)
+        public string AddDailyReport(string dr_str)
         {
-            JobModel job = JsonConvert.DeserializeObject<JobModel>(job_string);
-            var result = JobService.CreateJob(job);
-            return Json(result);
+            ENG_DailyReportModel dlr = JsonConvert.DeserializeObject<ENG_DailyReportModel>(dr_str);
+            var result = DRService.AddDailyReport(dlr);
+            return result;
         }
 
         [HttpPatch]
-        public JsonResult UpdateJob(string job_string)
+        public string EditDailyReport(string dr_str)
         {
-            JobModel job = JsonConvert.DeserializeObject<JobModel>(job_string);
-            var result = JobService.UpdateJob(job);
-            return Json(result);
+            ENG_DailyReportModel dlr = JsonConvert.DeserializeObject<ENG_DailyReportModel>(dr_str);
+            var result = DRService.EditDailyReport(dlr);
+            return result;
         }
     }
 }

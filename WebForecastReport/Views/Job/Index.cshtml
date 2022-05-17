@@ -28,13 +28,16 @@
                 <span class="card-title">Jobs</span>
             </div>
             <div class="card-body">
-                <table id="table_job" class="table table-sm border table-hover table-striped" style="width:100%;overflow-x:scroll">
-                    <thead class="text-center">
+                <table id="table_job" class="table table-sm table-bordered table-hover text-center table-striped nowrap w-100">
+                    <thead>
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>Sale Dep</th>
-                            <th>Sale</th>
+                            <th>Quotation</th>
+                            <th>Customer</th>
+                            <th>End User</th>
+                            <th>Sale Name</th>
+                            <th>Department</th>
                             <th>Cost</th>
                             <th>MD</th>
                             <th>PD</th>
@@ -51,8 +54,11 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>Sale Dep</th>
-                            <th>Sale</th>
+                            <th>Quotation</th>
+                            <th>Customer</th>
+                            <th>End User</th>
+                            <th>Sale Name</th>
+                            <th>Department</th>
                             <th>Cost</th>
                             <th>MD</th>
                             <th>PD</th>
@@ -89,51 +95,43 @@
                         <input id="job_name" type="text" class="form-control" placeholder="Job Name" />
                     </div>
                     <div class="form-group">
-                        <label for="sale">Sale</label>
-                        <select id="sale" class="form-control"></select>
+                        <label for="quotation_no">Quotation Number</label>
+                        <input id="quotation_no" type="text" class="form-control" placeholder="Quotation Number" />
                     </div>
                     <div class="form-group">
-                        <label for="sale_department">Sale Department</label>
-                        <input id="sale_department" type="text" class="form-control" placeholder="Department" disabled />
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-xl-6">
-                            <div class="row">
-                                <div class="col-10">
-                                    <label for="cost">Cost</label>
-                                    <input id="cost" type="number" class="form-control text-right" placeholder="0" value="0" />
-                                </div>
-                                <div class="col-2 d-flex align-items-end justify-content-center">
-                                    <label class="col-form-label">THB</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3">
-                            <label for="md_rate">Market Develop</label>
-                            <div class="row">
-                                <div class="col-10">
-                                    <input id="md_rate" type="number" class="form-control text-right" placeholder="#.#" value="1.0" step="0.1" min="0" max="10" />
-                                </div>
-                                <div class="col-2 text-center">
-                                    <label class="col-form-label">X</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3">
-                            <label for="pd_rate">Product Develop</label>
-                            <div class="row">
-                                <div class="col-10">
-                                    <input id="pd_rate" type="number" class="form-control text-right" placeholder="#.#" value="1.0" step="0.1" min="0" max="10" />
-                                </div>
-                                <div class="col-2 text-center">
-                                    <label class="col-form-label">X</label>
-                                </div>
+                        <label for="cost">Cost</label>
+                        <div class="input-group">
+                            <input id="cost" type="number" class="form-control" placeholder="0" value="0" />
+                            <div class="input-group-append">
+                                <span class="input-group-text">THB</span>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" hidden>
+                    <div class="form-group">
+                        <label for="md_rate">Market Develop</label>
+                        <div class="input-group">
+                            <input id="md_rate" type="number" class="form-control" placeholder="#.#" value="1.0" step="0.1" min="0" max="10" />
+                            <div class="input-group-append">
+                                <span class="input-group-text">X</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <label for="pd_rate">Product Develop</label>
+                        <div class="input-group">
+                            <input id="pd_rate" type="number" class="form-control" placeholder="#.#" value="1.0" step="0.1" min="0" max="10" />
+                            <div class="input-group-append">
+                                <span class="input-group-text">X</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="status">Status</label>
-                        <input id="status" type="text" class="form-control" placeholder="Job Status" />
+                        <select id="status" class="form-control">
+                            <option value="" selected disabled>Please Select Status</option>
+                            <option value="1">In Progress</option>
+                            <option value="0">Finished</option>
+                        </select>
                     </div>
                 </form>
             </div>
@@ -202,8 +200,11 @@
                 datas.push([
                     jobs[i].job_id,
                     jobs[i].job_name,
-                    jobs[i].sale_department,
-                    jobs[i].sale,
+                    jobs[i].quotation_no,
+                    jobs[i].customer,
+                    jobs[i].enduser,
+                    jobs[i].sale_name,
+                    jobs[i].department,
                     jobs[i].cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     jobs[i].md_rate,
                     jobs[i].pd_rate,
@@ -224,52 +225,31 @@
                 },
                 columnDefs: [
                     {
-                        targets: [1,2,3,4,5,6,7,8,9,10,11],
-                        className: "border-left"
-                    },
-                    {
-                        targets: 0,
-                        width: "5%"
-                    },
-                    {
-                        targets: 1,
-                        width: "45%"
-                    },
-                    {
-                        targets: [2,5,6],
+                        targets: [4, 5, 6, 8, 9, 11, 12, 13],
                         visible: false
                     },
                 ],
                 rowCallback: function (row, data) {
-                    $('td:eq(0)', row).addClass("text-center");
-                    $('td:eq(2)', row).addClass("text-center");
-                    $('td:eq(3)', row).addClass("text-center");
-                    $('td:eq(4)', row).addClass("text-center");
-                    $('td:eq(5)', row).addClass("text-center");
-                    $('td:eq(6)', row).addClass("text-center");
-                    $('td:eq(7)', row).addClass("text-center");
-                    $('td:eq(8)', row).addClass("text-center");
-                    $('td:eq(9)', row).addClass("text-center");
-                    $('td:eq(10)', row).addClass("text-center");
-                    $('td:eq(11)', row).addClass("text-center");
+                    $('td:eq(1)', row).addClass("text-left");
+                    $('td:eq(3)', row).addClass("text-left");
+                    var status_str = '';
+                    if (data[14] === "1") {
+                        status_str = `<span class="badge badge-warning">IN PROGRESS</span>`;
+                    }
+                    else if (data[14] === "0") {
+                        status_str = `<span class="badge badge-success">FINISHED</span>`;
+                    }
+                    else {
+                        status_str = '';
+                    }
+                    $('td:eq(6)', row).html(status_str);
                 }
             });
         };
 
-        $('#btn_create').on('click', async function () {
-            await GetUsers();
-            await GenerateUsersOption();
-            await Prepmodal();
+        $('#btn_create').on('click', function () {
+            Prepmodal();
         });
-
-        function GenerateUsersOption() {
-            $('#sale').empty();
-            var sale_str = '<option value="" selected disabled>Please Select Sale</option>';
-            for (var i = 0; i < users.length; i++) {
-                sale_str += '<option value="' + users[i].user_id + '">' + users[i].user_name + '</option>';
-            }
-            $('#sale').append(sale_str);
-        }
 
         function Prepmodal() {
             update = false;
@@ -277,8 +257,7 @@
             $('#modal_title').text("Create Job");
             $('#job_id').val(null);
             $('#job_name').val(null);
-            $('#sale').val(null);
-            $('#sale_department').val(null);
+            $('#quotation_no').val(null);
             $('#cost').val(0);
             $('#md').val(1);
             $('#pd').val(1);
@@ -288,8 +267,6 @@
         $('#table_job tbody').on('click', 'tr', async function () {
             var admin = '@Model.role' == "Admin" ? true : false;
             if (admin) {
-                await GetUsers();
-                await GenerateUsersOption();
                 await EditJob(table.row(this).data());
             }
         });
@@ -301,35 +278,26 @@
 
             var job_id = data[0];
             var job_name = data[1];
-            var sale_department = data[2];
-            var sale = data[3];
-            var cost = data[4];
-            var md = data[5];
-            var pd = data[6];
-            var status = data[11];
+            var quotation_no = data[2];
+            var cost = data[7].replaceAll(",","");
+            var md = data[8];
+            var pd = data[9];
+            var status = data[14];
 
             $('#job_id').val(job_id);
             $('#job_id').attr('disabled', true);
             $('#job_name').val(job_name);
-            $('#sale_department').val(sale_department);
-            $('#sale').val(sale);
+            $('#quotation_no').val(quotation_no);
             $('#cost').val(cost);
             $('#md').val(md);
             $('#pd').val(pd);
             $('#status').val(status);
         }
 
-        $('#sale').on('change', function () {
-            var user_id = $('#sale').val();
-            var user = users.filter(f => f.user_id === user_id);
-            $('#sale_department').val(user[0].department);
-        });
-
         $('#btn_save').on('click', function () {
             var job_id = $('#job_id').val();
             var job_name = $('#job_name').val();
-            var sale_department = $('#sale_department').val();
-            var sale = $('#sale').val();
+            var quotation_no = $('#quotation_no').val();
             var cost = $('#cost').val();
             var md_rate = $('#md_rate').val();
             var pd_rate = $('#pd_rate').val();
@@ -338,21 +306,24 @@
             var job_string = JSON.stringify({
                 "job_id": job_id,
                 "job_name": job_name,
-                "sale_department": sale_department,
-                "sale": sale,
+                "quotation_no": quotation_no,
                 "cost": cost,
                 "md_rate": md_rate,
                 "pd_rate": pd_rate,
                 "status": status
             });
 
-            if (debug_job_string)
+            if (debug_job_string) {
                 console.log(job_string);
+            }
 
-            if(update)
+            if (update) {
                 UpdateJob(job_string);
-            else
+            }
+            else {
                 AddJob(job_string);
+            }
+
         });
 
         async function AddJob(job_string) {

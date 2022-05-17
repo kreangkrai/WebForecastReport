@@ -1,27 +1,21 @@
-﻿using WebForecastReport.Interfaces.MPR;
-using WebForecastReport.Models.MPR;
-using WebForecastReport.Services.MPR;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebForecastReport.Interface;
-using WebForecastReport.Service;
-using Microsoft.AspNetCore.Http;
 using WebForecastReport.Models;
+using WebForecastReport.Service;
 
 namespace WebForecastReport.Controllers
 {
-    public class JobController : Controller
+    public class OvertimeRequestController : Controller
     {
-        readonly IJob JobService;
         readonly IAccessory Accessory;
 
-        public JobController()
+        public OvertimeRequestController()
         {
-            JobService = new JobService();
             Accessory = new AccessoryService();
         }
 
@@ -43,29 +37,6 @@ namespace WebForecastReport.Controllers
             {
                 return RedirectToAction("Index", "Account");
             }
-        }
-
-        [HttpGet]
-        public JsonResult GetJobs()
-        {
-            List<JobModel> jobs = JobService.GetAllJobs();
-            return Json(jobs);
-        }
-
-        [HttpPost]
-        public JsonResult AddJob(string job_string)
-        {
-            JobModel job = JsonConvert.DeserializeObject<JobModel>(job_string);
-            var result = JobService.CreateJob(job);
-            return Json(result);
-        }
-
-        [HttpPatch]
-        public JsonResult UpdateJob(string job_string)
-        {
-            JobModel job = JsonConvert.DeserializeObject<JobModel>(job_string);
-            var result = JobService.UpdateJob(job);
-            return Json(result);
         }
     }
 }

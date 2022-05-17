@@ -23,6 +23,23 @@
                     </a>
                 </li>
 
+                @if (Model.name == "Korakod.P")
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="DailyReport" asp-action="Index">
+                            <i class="nav-icon fas fa-user-edit"></i>
+                            <p class="text-bold">DAILY REPORT <span class="badge badge-danger">NEW</span></p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="OvertimeRequest" asp-action="Index">
+                            <i class="nav-icon fas fa-clock"></i>
+                            <p class="text-bold">OVERTIME REQUEST <span class="badge badge-danger">NEW</span></p>
+                        </a>
+                    </li>
+                }
+
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="EngineerScore" asp-action="Index">
                         <i class="nav-icon fas fa-star-half-alt"></i>
