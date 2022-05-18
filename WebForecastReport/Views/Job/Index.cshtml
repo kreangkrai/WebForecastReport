@@ -96,7 +96,8 @@
                     </div>
                     <div class="form-group">
                         <label for="quotation_no">Quotation Number</label>
-                        <input id="quotation_no" type="text" class="form-control" placeholder="Quotation Number" />
+                        <input id="quotation_no" type="text" class="form-control" placeholder="Quotation Number" list="quotations" />
+                        <datalist id="quotations"></datalist>
                     </div>
                     <div class="form-group">
                         <label for="cost">Cost</label>
@@ -151,11 +152,13 @@
         var update = false;
         var jobs = [];
         var users = [];
+        var quots = [];
 
         //Change these parameters to true to show result
         var debug_jobs = false;
         var debug_user = false;
         var debug_job_string = false;
+        var debug_quots = false;
 
         $(document).ready(function () {
             GetJobs();
@@ -169,8 +172,9 @@
                 data: { },
                 success: function (response) {
                     jobs = response;
-                    if (debug_jobs)
+                    if (debug_jobs) {
                         console.log(jobs);
+                    }
                     GenerateTable(jobs);
                 }
             });
@@ -184,8 +188,26 @@
                 data: { },
                 success: function (response) {
                     users = response;
-                    if (debug_user)
+                    if (debug_user) {
                         console.log(users);
+                    }
+                }
+            });
+        }
+
+        async function GetQuotations() {
+            var today = new Date();
+            var year = today.getFullYear().toString().substring(2, 4);
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetQuotations", "Job")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { year },
+                success: function (response) {
+                    quots = response;
+                    if (debug_quots) {
+                        console.log(quots);
+                    }
                 }
             });
         }
@@ -247,7 +269,18 @@
             });
         };
 
-        $('#btn_create').on('click', function () {
+        function GenerateQuotationOptions() {
+            var quots_str = '';
+            for (var i = 0; i < quots.length; i++) {
+                quots_str += `<option value="${quots[i].quotation_no}">${quots[i].quotation_no} - ${quots[i].customer}</option>`;
+            }
+            $('#quotations').empty();
+            $('#quotations').append(quots_str);
+        }
+
+        $('#btn_create').on('click', async function () {
+            await GetQuotations();
+            await GenerateQuotationOptions();
             Prepmodal();
         });
 
@@ -267,6 +300,8 @@
         $('#table_job tbody').on('click', 'tr', async function () {
             var admin = '@Model.role' == "Admin" ? true : false;
             if (admin) {
+                await GetQuotations();
+                await GenerateQuotationOptions();
                 await EditJob(table.row(this).data());
             }
         });
@@ -335,10 +370,12 @@
                     job_string
                 },
                 success: function (response) {
-                    if (response === "Success")
+                    if (response === "Success") {
                         location.reload();
-                    else
+                    }
+                    else {
                         alert(response);
+                    }
                 }
             });
         };
@@ -352,10 +389,12 @@
                     job_string
                 },
                 success: function (response) {
-                    if (response === "Success")
+                    if (response === "Success") {
                         location.reload();
-                    else
+                    }
+                    else {
                         alert(response);
+                    }
                 }
             });
         }

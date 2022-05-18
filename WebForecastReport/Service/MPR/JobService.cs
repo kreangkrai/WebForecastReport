@@ -153,5 +153,47 @@ namespace WebForecastReport.Services.MPR
             }
             return "Success";
         }
+
+        public List<JobQuotationModel> GetJobQuotations(string year)
+        {
+            List<JobQuotationModel> quots = new List<JobQuotationModel>();
+            try
+            {
+                string string_command = string.Format($@"
+                    SELECT
+                        quotation_no,
+                        customer
+                    FROM Quotation
+                    WHERE quotation_no Like 'Q{year}%'");
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        JobQuotationModel quot = new JobQuotationModel()
+                        {
+                            quotation_no = dr["quotation_no"] != DBNull.Value ? dr["quotation_no"].ToString() : "",
+                            customer = dr["customer"] != DBNull.Value ? dr["customer"].ToString() : "",
+                        };
+                        quots.Add(quot);
+                    }
+                    dr.Close();
+                }
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+            return quots;
+        }
     }
 }
