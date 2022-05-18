@@ -41,5 +41,7 @@ namespace WebForecastReport.Models
         public string dec_out { get; set; }
         public string sum_in_q4 { get; set; }
         public string sum_out_q4 { get; set; }
+        public string sum_in { get; set; }
+        public string sum_out { get; set; }
     }
 }

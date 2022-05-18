@@ -1182,8 +1182,15 @@
 
         return data_engineers;
     };
+
     function numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").trim();
+        //check digit number and comma
+        var is_digit = (/^[0-9]+(?:\.[0-9]+)?$/g.test(x));
+        if (is_digit){
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").trim();
+        }else{
+            return '0';
+        }
     };
     function diffDate(date_start, date_stop) {
         const date1 = new Date(date_start);
