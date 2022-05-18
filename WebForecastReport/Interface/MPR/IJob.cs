@@ -11,5 +11,6 @@ namespace WebForecastReport.Interfaces.MPR
         List<JobModel> GetAllJobs();
         string CreateJob(JobModel job);
         string UpdateJob(JobModel job);
+        List<JobQuotationModel> GetJobQuotations(string year);
     }
 }

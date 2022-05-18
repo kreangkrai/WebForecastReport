@@ -67,5 +67,12 @@ namespace WebForecastReport.Controllers
             var result = JobService.UpdateJob(job);
             return Json(result);
         }
+
+        [HttpGet]
+        public JsonResult GetQuotations(string year)
+        {
+            List<JobQuotationModel> quots = JobService.GetJobQuotations(year);
+            return Json(quots);
+        }
     }
 }
