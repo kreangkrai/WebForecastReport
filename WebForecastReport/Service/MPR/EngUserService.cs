@@ -11,12 +11,12 @@ namespace WebForecastReport.Services.MPR
 {
     public class EngUserService : IEngUser
     {
-        public bool CheckAllowEditable(string user_id)
+        public bool CheckAllowEditable(string user_name)
         {
             bool allow = false;
             try
             {
-                string string_command = string.Format($@"SELECT allow_edit FROM EngineerUsers Where user_id = '{user_id}'");
+                string string_command = string.Format($@"SELECT allow_edit FROM EngineerUsers Where LOWER(user_name) = '{user_name}'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (cmd.Connection.State != System.Data.ConnectionState.Open)
                 {
@@ -129,7 +129,7 @@ namespace WebForecastReport.Services.MPR
             return engineers;
         }
 
-        public EngUserModel GetEngineerUser(string user_id)
+        public EngUserModel GetEngineerUser(string user_name)
         {
             List<EngUserModel> engineers = new List<EngUserModel>();
             try
@@ -142,7 +142,7 @@ namespace WebForecastReport.Services.MPR
                         role,
                         allow_edit
                     FROM EngineerUsers
-                    WHERE user_id = '{user_id}'");
+                    WHERE LOWER(user_name) = '{user_name}'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (cmd.Connection.State != System.Data.ConnectionState.Open)
                 {
@@ -174,7 +174,7 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.CloseConnect();
                 }
             }
-            EngUserModel engineer = engineers.Where(w => w.user_id == user_id).FirstOrDefault();
+            EngUserModel engineer = engineers.Where(w => w.user_name.ToLower() == user_name).FirstOrDefault();
             return engineer;
         }
 
