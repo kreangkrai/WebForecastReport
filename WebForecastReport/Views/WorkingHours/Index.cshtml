@@ -24,6 +24,11 @@
             <i class="fas fa-sync"></i> Load
         </button>
     </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 pb-3">
+        <button id="btn_print" type="button" class="btn btn-primary form-control elevation-1">
+            <i class="fas fa-print"></i> Print
+        </button>
+    </div>
     <div class="col-xl-1 col-lg-3 col-md-3 pb-3" hidden>
         <button id="btn_export" type="button" class="btn btn-success form-control elevation-1">
             <i class="fas fa-file-excel"></i> Export
@@ -206,7 +211,7 @@
             var today = new Date();
             await GetUsers();
             await GenerateUsersOption();
-            await GetWorkingHours("@Model.name", today.toISOString().substring(0, 7));
+            await GetWorkingHours("@Model.fullname.ToLower()", today.toISOString().substring(0, 7));
             await GetWorkingHoursSummary();
             $('#user_id').val("@Model.name");
             $('#whs_month').val(today.getFullYear() + "-" + (today.getMonth()+1).toString().padStart(2,0));
@@ -257,21 +262,22 @@
 
         $('#btn_load').on('click', function () {
             var load_enable = 1;
-            var user_id = $('#user_id').val();
+            var user_name = $('#user_id option:selected').text().toLowerCase();
             var month = $('#whs_month').val();
-            load_enable *= user_id !== "" ? 1 : 0;
+            load_enable *= user_name !== "" ? 1 : 0;
             load_enable *= month !== "" ? 1 : 0;
-            if(load_enable)
-                GetWorkingHours(user_id, month).then(() => GetWorkingHoursSummary());
+            if (load_enable) {
+                GetWorkingHours(user_name, month).then(() => GetWorkingHoursSummary());
+            }
         });
 
-        async function GetWorkingHours(user_id,month) {
+        async function GetWorkingHours(user_name, month) {
             await $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetWorkingHours", "WorkingHours")',
                 contentType: 'application/x-www-form-urlencoded',
                 data: {
-                    user_id, month
+                    user_name, month
                 },
                 success: function (response) {
                     if (debug_whs) {
@@ -518,8 +524,8 @@
                 success: async function (response) {
                     if (response === "Success") {
                         $('#modal_task').modal('toggle');
-                        var user_id = $('#user_id').val();
-                        await GetWorkingHours(user_id, $('#whs_month').val());
+                        var user_name = $('#user_id option:selected').text().toLowerCase();
+                        await GetWorkingHours(user_name, $('#whs_month').val());
                         await GetWorkingHoursSummary();
                     }
                     else {
@@ -528,6 +534,11 @@
                 }
             });
         }
+
+        $('#btn_print').on('click', function () {
+            var url = '@Url.Action("FormOvertime","WorkingHours")';
+            window.location.href = url;
+        });
 
     </script>
 }

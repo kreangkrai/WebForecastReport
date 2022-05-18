@@ -10,7 +10,7 @@ namespace WebForecastReport.Service.MPR
 {
     public class JobResponsibleService : IJobResponsible
     {
-        public List<JobResponsibleModel> GetJobResponsible(string user_id)
+        public List<JobResponsibleModel> GetJobResponsible(string user_name)
         {
             List<JobResponsibleModel> jrs = new List<JobResponsibleModel>();
             try
@@ -28,7 +28,7 @@ namespace WebForecastReport.Service.MPR
                     FROM JobResponsible
                         LEFT JOIN Jobs ON JobResponsible.job_id = Jobs.job_id
                         LEFT JOIN [gps_sale_tracking].[dbo].Sale_User AS Sale_User ON JobResponsible.user_id = Sale_User.Login
-                    WHERE  JobResponsible.user_id = '{user_id}'");
+                    WHERE LOWER(Sale_User.Name) = '{user_name}'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
@@ -114,7 +114,7 @@ namespace WebForecastReport.Service.MPR
             return jrs;
         }
 
-        public List<QuotationResponsibleModel> GetQuotationResponsible(string user_id)
+        public List<QuotationResponsibleModel> GetQuotationResponsible(string user_name)
         {
             List<QuotationResponsibleModel> qrs = new List<QuotationResponsibleModel>();
             try
@@ -125,7 +125,7 @@ namespace WebForecastReport.Service.MPR
 	                    Quotation.project_name
                     FROM Proposal
 	                    LEFT JOIN Quotation ON Proposal.quotation_no = Quotation.quotation_no
-                    WHERE Proposal.engineer_in_charge LIKE '%{user_id}%'");
+                    WHERE Proposal.engineer_in_charge LIKE '%{user_name}%'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {

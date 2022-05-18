@@ -9,9 +9,9 @@ namespace WebForecastReport.Interfaces.MPR
     interface IWorkingHours
     {
         List<WorkingHoursModel> GetWorkingHours();
-        List<WorkingHoursModel> GetWorkingHours(string user_id);
-        List<WorkingHoursModel> GetWorkingHours(string year, string month, string user);
-        List<WorkingHoursModel> GetWorkingHours(string user, DateTime working_date);
+        List<WorkingHoursModel> GetWorkingHours(string user_name);
+        List<WorkingHoursModel> GetWorkingHours(string year, string month, string user_name);
+        List<WorkingHoursModel> GetWorkingHours(string user_name, DateTime working_date);
         string AddWorkingHours(WorkingHoursModel wh);
         string UpdateWorkingHours(WorkingHoursModel wh);
         string UpdateRestTime(WorkingHoursModel wh);

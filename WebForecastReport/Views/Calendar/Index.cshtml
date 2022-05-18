@@ -175,8 +175,8 @@
 
         $(document).ready(async function () {
             await GetHolidays();
-            await GetEngineerUser("@Model.name");
-            await GetWorkingHours("@Model.name");
+            await GetEngineerUser("@Model.fullname.ToLower()");
+            await GetWorkingHours("@Model.fullname.ToLower()");
             await GetUsers();
             await GetJobs();
             await GetTasks();
@@ -198,12 +198,12 @@
         }
 
         async function GetJobs() {
-            var user_id = '@Model.name';
+            var user_name = '@Model.fullname.ToLower()';
             await $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetJobs", "Calendar")',
 	            contentType: 'application/x-www-form-urlencoded',
-                data: { user_id },
+                data: { user_name },
                 success: function (response) {
                     jobs = response;
                     if (debug_jobs) {
@@ -215,12 +215,12 @@
         };
 
         async function GetQuotations() {
-            var user_id = '@Model.name';
+            var user_name = '@Model.fullname.ToLower()';
             await $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetQuotations", "Calendar")',
 	            contentType: 'application/x-www-form-urlencoded',
-                data: { user_id },
+                data: { user_name },
                 success: function (response) {
                     quotations = response;
                     if (debug_quotations) {
@@ -263,12 +263,12 @@
             });
         };
 
-        async function GetWorkingHours(user_id) {
+        async function GetWorkingHours(user_name) {
             await $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetWorkingHours", "Calendar")',
 	            contentType: 'application/x-www-form-urlencoded',
-                data: { user_id },
+                data: { user_name },
                 success: function (response) {
                     if (debug_whs) {
                         console.log("Working Hours Data");
@@ -279,13 +279,13 @@
             });
         };
 
-        async function GetWorkingHoursByDate(user_id,working_date) {
+        async function GetWorkingHoursByDate(user_name ,working_date) {
             await $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetWorkingHoursByDate", "Calendar")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: {
-                    user_id, working_date
+                    user_name, working_date
                 },
                 success: function (response) {
                     wh_day = response;
@@ -477,13 +477,13 @@
         }
 
         async function CheckAllowEditable() {
-            var user_id = '@Model.name';
+            var user_name = '@Model.fullname.ToLower()';
             var allow = false;
             await $.ajax({
                 type: "GET",
                 url: '@Url.Action("CheckAllowEditable", "Calendar")',
 	            contentType: 'application/x-www-form-urlencoded',
-                data: { user_id },
+                data: { user_name },
                 success: function (response) {
                     allow = response;
                 }
@@ -511,7 +511,7 @@
                 }
                 await GetUsers();
                 await GenerateUsersOption();
-                await GetWorkingHoursByDate("@Model.name", date_start);
+                await GetWorkingHoursByDate("@Model.fullname.ToLower()", date_start);
                 await GetJobs();
                 await GetQuotations();
                 await GenerateJobsOption();
@@ -560,7 +560,9 @@
         function PrepmodalTask(date_start) {
             $('#modal_task').modal();
             $('#modal_task_title').text("Add Task");
-            $('#user_id').val('@Model.name');
+            var user_name = '@Model.fullname.ToLower()';
+            var user_id = users.filter(f => f.user_name.toLowerCase() === user_name).map(m => m.user_id);
+            $('#user_id').val(user_id);
             $('#working_date_group').show();
             $('#working_date').attr('disabled', true);
             $('#working_date').val(date_start);
@@ -576,7 +578,9 @@
         function PrepmodalTasks(date_start, date_end) {
             $('#modal_task').modal();
             $('#modal_task_title').text("Add Tasks");
-            $('#user_id').val('@Model.name');
+            var user_name = '@Model.fullname.ToLower()';
+            var user_id = users.filter(f => f.user_name.toLowerCase() === user_name).map(m => m.user_id);
+            $('#user_id').val(user_id);
             $('#working_date_group').hide();
             $('#working_date').attr('disabled', true);
             $('#working_date').val(null);
@@ -893,12 +897,12 @@
             return false;
         }
 
-        async function GetEngineerUser(user_id) {
+        async function GetEngineerUser(user_name) {
             await $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetEngineerUser", "Calendar")',
 	            contentType: 'application/x-www-form-urlencoded',
-                data: { user_id },
+                data: { user_name },
                 success: function (response) {
                     eng = response;
                 }
@@ -909,10 +913,11 @@
         async function EditTask(event) {
             update = true;
             var user_id = event.extendedProps.user_id;
+            var user_name = users.filter(f => f.user_id === user_id).map(m => m.user_name.toLowerCase());
             var date = event.extendedProps.working_date;
             await GetUsers();
             await GenerateUsersOption();
-            await GetWorkingHoursByDate(user_id, date.split("T")[0]);
+            await GetWorkingHoursByDate(user_name, date.split("T")[0]);
             await GetJobs();
             await GetQuotations();
             await GenerateJobsOption();

@@ -11,6 +11,7 @@ using WebForecastReport.Service;
 using Microsoft.AspNetCore.Http;
 using WebForecastReport.Models;
 using Newtonsoft.Json;
+using Rotativa.AspNetCore;
 
 namespace WebForecastReport.Controllers
 {
@@ -19,7 +20,14 @@ namespace WebForecastReport.Controllers
         readonly IAccessory Accessory;
         readonly IWorkingHours WorkingHoursService;
         readonly IHoliday HolidayService;
+
         static List<WorkingHoursModel> monthly = new List<WorkingHoursModel>();
+        static string form_employee_name;
+        static string form_department;
+        static string form_phone_number;
+        static string form_start_time;
+        static string form_month;
+        static Form_OvertimeModel form_data;
         
         public WorkingHoursController()
         {
@@ -35,11 +43,15 @@ namespace WebForecastReport.Controllers
                 string user = HttpContext.Session.GetString("userId");
                 List<UserModel> users = new List<UserModel>();
                 users = Accessory.getAllUser();
-                UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name, department = s.department, role = s.role, section = "Eng" }).FirstOrDefault();
-                HttpContext.Session.SetString("Role", u.role);
+                UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { 
+                    name = s.name,
+                    fullname = s.fullname,
+                    department = s.department, 
+                    role = s.role }).FirstOrDefault();
                 HttpContext.Session.SetString("Name", u.name);
+                HttpContext.Session.SetString("Fullname", u.fullname);
                 HttpContext.Session.SetString("Department", u.department);
-                HttpContext.Session.SetString("Section", u.section);
+                HttpContext.Session.SetString("Role", u.role);
                 return View(u);
             }
             else
@@ -49,13 +61,19 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetWorkingHours(string user_id, string month)
+        public JsonResult GetWorkingHours(string user_name, string month)
         {
             monthly = new List<WorkingHoursModel>();
+            form_employee_name = user_name;
+            form_department = "";
+            form_phone_number = "";
+            form_start_time = "";
+            form_month = month;
+
             int yy = Convert.ToInt32(month.Split("-")[0]);
             int mm = Convert.ToInt32(month.Split("-")[1]);
 
-            List<WorkingHoursModel> whs = WorkingHoursService.GetWorkingHours(yy.ToString(), mm.ToString().PadLeft(2,'0'), user_id);
+            List<WorkingHoursModel> whs = WorkingHoursService.GetWorkingHours(yy.ToString(), mm.ToString().PadLeft(2,'0'), user_name);
             List<HolidayModel> holidays = HolidayService.GetHolidays(yy.ToString());
 
             whs = whs.OrderBy(o => o.working_date).ToList();
@@ -194,6 +212,27 @@ namespace WebForecastReport.Controllers
             WorkingHoursModel wh = JsonConvert.DeserializeObject<WorkingHoursModel>(task_str);
             var result = WorkingHoursService.UpdateRestTime(wh);
             return Json(result);
+        }
+
+        public IActionResult FormOvertime()
+        {
+            form_data = new Form_OvertimeModel()
+            {
+                employee_name = form_employee_name,
+                department = form_department,
+                phone_number = form_phone_number,
+                normal_start_time = form_start_time,
+                month = form_month,
+                working_hours = monthly
+            };
+
+            var form_overtime = new ViewAsPdf("FormOvertime")
+            {
+                Model = form_data,
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                PageSize = Rotativa.AspNetCore.Options.Size.A4
+            };
+            return form_overtime;
         }
     }
 }

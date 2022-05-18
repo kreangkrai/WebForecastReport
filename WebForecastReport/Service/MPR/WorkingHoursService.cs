@@ -79,7 +79,7 @@ namespace WebForecastReport.Services.MPR
             return whs;
         }
 
-        public List<WorkingHoursModel> GetWorkingHours(string user_id)
+        public List<WorkingHoursModel> GetWorkingHours(string user_name)
         {
             List<WorkingHoursModel> whs = new List<WorkingHoursModel>();
             try
@@ -104,7 +104,7 @@ namespace WebForecastReport.Services.MPR
                         LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
                         LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
                         LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
-                    WHERE WorkingHours.user_id = '{user_id}'");
+                    WHERE LOWER(Users.Name) = '{user_name}'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
@@ -148,7 +148,7 @@ namespace WebForecastReport.Services.MPR
             return whs;
         }
 
-        public List<WorkingHoursModel> GetWorkingHours(string year, string month, string user)
+        public List<WorkingHoursModel> GetWorkingHours(string year, string month, string user_name)
         {
             List<WorkingHoursModel> whs = new List<WorkingHoursModel>();
             try
@@ -174,7 +174,7 @@ namespace WebForecastReport.Services.MPR
                         LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
                         LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
                     WHERE WorkingHours.working_date like '{year}-{month}%' 
-                    AND WorkingHours.user_id ='{user}'");
+                    AND LOWER(Users.Name) ='{user_name}'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
@@ -218,7 +218,7 @@ namespace WebForecastReport.Services.MPR
             return whs;
         }
 
-        public List<WorkingHoursModel> GetWorkingHours(string user, DateTime working_date)
+        public List<WorkingHoursModel> GetWorkingHours(string user_name, DateTime working_date)
         {
             List<WorkingHoursModel> whs = new List<WorkingHoursModel>();
             try
@@ -243,7 +243,7 @@ namespace WebForecastReport.Services.MPR
                         LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
                         LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
                         LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
-                    WHERE WorkingHours.user_id = '{user}'
+                    WHERE LOWER(Users.Name) = '{user_name}'
                     AND WorkingHours.working_date LIKE '{working_date.ToString("yyyy-MM-dd")}'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)

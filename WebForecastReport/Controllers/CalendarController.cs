@@ -39,11 +39,15 @@ namespace WebForecastReport.Controllers
                 string user = HttpContext.Session.GetString("userId");
                 List<UserModel> users = new List<UserModel>();
                 users = Accessory.getAllUser();
-                UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name, department = s.department, role = s.role, section = "Eng" }).FirstOrDefault();
-                HttpContext.Session.SetString("Role", u.role);
+                UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { 
+                    name = s.name, 
+                    fullname = s.fullname,
+                    department = s.department, 
+                    role = s.role }).FirstOrDefault();
                 HttpContext.Session.SetString("Name", u.name);
+                HttpContext.Session.SetString("Fullname", u.fullname);
                 HttpContext.Session.SetString("Department", u.department);
-                HttpContext.Session.SetString("Section", u.section);
+                HttpContext.Session.SetString("Role", u.role);
                 return View(u);
             }
             else
@@ -53,45 +57,45 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpGet]
-        public List<JobResponsibleModel> GetJobs(string user_id)
+        public List<JobResponsibleModel> GetJobs(string user_name)
         {
-            List<JobResponsibleModel> jrs = JobResponsibleService.GetJobResponsible(user_id);
+            List<JobResponsibleModel> jrs = JobResponsibleService.GetJobResponsible(user_name);
             return jrs;
         }
 
         [HttpGet]
-        public List<QuotationResponsibleModel> GetQuotations(string user_id)
+        public List<QuotationResponsibleModel> GetQuotations(string user_name)
         {
-            List<QuotationResponsibleModel> qrs = JobResponsibleService.GetQuotationResponsible(user_id);
+            List<QuotationResponsibleModel> qrs = JobResponsibleService.GetQuotationResponsible(user_name);
             return qrs;
         }
 
         [HttpGet]
-        public bool CheckAllowEditable(string user_id)
+        public bool CheckAllowEditable(string user_name)
         {
-            bool allow = EngineerService.CheckAllowEditable(user_id);
+            bool allow = EngineerService.CheckAllowEditable(user_name);
             return allow;
         }
 
         [HttpGet]
-        public JsonResult GetWorkingHours(string user_id)
+        public JsonResult GetWorkingHours(string user_name)
         {
-            List<WorkingHoursModel> whs = WorkingHoursService.GetWorkingHours(user_id);
+            List<WorkingHoursModel> whs = WorkingHoursService.GetWorkingHours(user_name);
             whs = whs.OrderByDescending(w => w.working_date).ToList();
             return Json(whs);
         }
 
         [HttpGet] 
-        public JsonResult GetEngineerUser(string user_id)
+        public JsonResult GetEngineerUser(string user_name)
         {
-            EngUserModel eng = EngineerService.GetEngineerUser(user_id);
+            EngUserModel eng = EngineerService.GetEngineerUser(user_name);
             return Json(eng);
         }
 
         [HttpGet]
-        public JsonResult GetWorkingHoursByDate(string user_id, DateTime working_date)
+        public JsonResult GetWorkingHoursByDate(string user_name, DateTime working_date)
         {
-            List<WorkingHoursModel> whs = WorkingHoursService.GetWorkingHours(user_id, working_date);
+            List<WorkingHoursModel> whs = WorkingHoursService.GetWorkingHours(user_name, working_date);
             whs = whs.OrderByDescending(w => w.working_date).ToList();
             return Json(whs);
         }
