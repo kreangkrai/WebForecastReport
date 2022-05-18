@@ -68,8 +68,7 @@ namespace WebForecastReport.Service
 		                                            sum(case when s1.day >= 7 and s1.day < 14 then 1 else 0 end) as day_7,
 		                                            sum(case when s1.day >= 14 and s1.day < 30 then 1 else 0 end) as day_14,
 		                                            sum(case when s1.day >= 30 and s1.day < 60 then 1 else 0 end) as day_30,
-		                                            sum(case when s1.day >= 60 and s1.day < 90 then 1 else 0 end) as day_60,
-		                                            sum(case when s1.day > 90 then 1 else 0 end) as day_90
+		                                            sum(case when s1.day >= 60 then 1 else 0 end) as day_60
 		                                            from (
 	                                            select sale_name,
 		                                            stages,
@@ -89,7 +88,6 @@ namespace WebForecastReport.Service
                         day.day_14 = dr["day_14"].ToString();
                         day.day_30 = dr["day_30"].ToString();
                         day.day_60 = dr["day_60"].ToString();
-                        day.day_90 = dr["day_90"].ToString();
                     }
                     dr.Close();
                 }

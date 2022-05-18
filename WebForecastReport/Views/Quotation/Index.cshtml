@@ -113,6 +113,8 @@
     var Proposers = [];
     var Customers = [];
     var EndUsers = [];
+    var Departments = [];
+    var arrDepartment = [];
     var Engineers = [];
     var arrEngineer = [];
 
@@ -141,15 +143,18 @@
                 //add sale to select
                 Sales = add_sale(response.sales);
 
-                Proposers = add_proposer(response.sales);
+                // add proposer
+                Proposers = add_proposer(response.proposers);
+
                 //add customer to datalist
                 Customers = add_customer(response.customers);
 
                 //add end user to datalist
                 EndUsers = add_enduser(response.endusers);
 
-                //add engineer user
-                Engineers = add_engineer(response.engineers);
+                //add engineer department
+                Departments = add_engineer_department(response.engineers);
+                Engineers = response.engineers;
 
                 var datas = response.quatations;
                 var dataSet = [];
@@ -575,7 +580,9 @@
             //clear selection type and disabled button add
             document.getElementById("btnAddType").disabled = true;
             document.getElementById("add_engineer_in_charge").disabled = true;
-            document.getElementById("edit_engineer_in_charge_department").value = "";
+            document.getElementById("select_engineer_in_charge").value = "";
+            document.getElementById("select_engineer_in_charge").disabled = true;
+
             $('#types').empty();
 
             document.getElementById('edit_quotation_no').value = quotation;
@@ -655,15 +662,16 @@
                 document.getElementById('edit_sale_name').disabled = true;
             }
 
-            // add select engineer
-            $('#select_engineer_in_charge').empty();
-            var selectEngineer = document.getElementById('select_engineer_in_charge');
-            for (var i = 0, l = Engineers.length; i < l; i++) {
-                var option = Engineers[i];
-                selectEngineer.options.add(new Option(option.text, option.value, option.selected));
+            // add select engineer department
+            $('#select_engineer_in_charge_department').empty();
+            var selectEngineerDepartment = document.getElementById('select_engineer_in_charge_department');
+            selectEngineerDepartment.options.add(new Option("Please Select", "Please Select", true));
+            for (var i = 0, l = Departments.length; i < l; i++) {
+                var option = Departments[i];
+                selectEngineerDepartment.options.add(new Option(option.text, option.value, option.selected));
             }
-            document.getElementById('select_engineer_in_charge').selectedIndex = 0;
-            document.getElementById("select_engineer_in_charge").options[0].disabled = true;
+            document.getElementById('select_engineer_in_charge_department').selectedIndex = 0;
+            document.getElementById("select_engineer_in_charge_department").options[0].disabled = true;
 
             //init data table
             init_edit();
@@ -862,7 +870,7 @@
     });
         $('#add_engineer_in_charge').on('click', function () {
             var name = document.getElementById("select_engineer_in_charge").value;
-            var department = document.getElementById("edit_engineer_in_charge_department").value;
+            var department = document.getElementById("select_engineer_in_charge_department").value;
             add_engineer_in_charge(name, department);
         });
     $('#clear_btnType').on('click', function () {
@@ -931,21 +939,23 @@
         }
     });
 
-    $('#select_engineer_in_charge').on('change', function () {
-        var name = document.getElementById("select_engineer_in_charge").value;
-        $.ajax({
-            url: '@Url.Action("GetDepartment", "Quotation")',
-            type: "post",
-            contentType: 'application/x-www-form-urlencoded',
-            data: {
-                name
-            },
-            success: function (response) {
-                var department = response;
-                document.getElementById("edit_engineer_in_charge_department").value = department;
-                document.getElementById("add_engineer_in_charge").disabled = false;
+    $('#select_engineer_in_charge_department').on('change', function () {
+        document.getElementById("select_engineer_in_charge").disabled = false;
+        var department = document.getElementById("select_engineer_in_charge_department").value;
+        var engineer = Engineers.filter(f => f.department === department).map(m => m.name);
+      
+        var engineers = add_engineer(engineer);
+
+        // add select engineer department
+            $('#select_engineer_in_charge').empty();
+            var selectEngineer = document.getElementById('select_engineer_in_charge');
+            for (var i = 0, l = engineers.length; i < l; i++) {
+                var option = engineers[i];
+                selectEngineer.options.add(new Option(option.text, option.value, option.selected));
             }
-         });
+            document.getElementById('select_engineer_in_charge').selectedIndex = 0;
+            document.getElementById("add_engineer_in_charge").disabled = false;
+          
     });
 
     $('#edit_stages').on('change',function(){
@@ -1171,16 +1181,28 @@
     };
     function add_engineer(engineers) {
         var data_engineers = [];
-        for (var i = 0; i < engineers.length; i++) {
+        for (var i = 0; i < engineers[0].length; i++) {
             var data =
             {
-                "text": engineers[i],
-                "value": engineers[i]
+                "text": engineers[0][i],
+                "value": engineers[0][i]
             }
             data_engineers.push(data);
         }
-
         return data_engineers;
+    };
+    function add_engineer_department(departments) {
+        var data_departments = [];
+        for (var i = 0; i < departments.length; i++) {
+            var data =
+            {
+                "text": departments[i].department,
+                "value": departments[i].department
+            }
+            data_departments.push(data);
+        }
+
+        return data_departments;
     };
 
     function numberWithCommas(x) {

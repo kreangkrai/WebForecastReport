@@ -105,6 +105,11 @@ namespace WebForecastReport.Controllers
                 sales.AddRange(Accessory.getAllUser().Where(s => s.name == name).Select(s => s.name).ToList());
             }
 
+            // get psm proposer
+            List<string> proposer = new List<string>();
+            proposer.Add("");
+            proposer.AddRange(Accessory.getAllUser().Where(w=>w.department == "PSM").Select(s => s.name).ToList());
+
             //get all customer
             List<string> customers = new List<string>();
             customers = Accessory.getCustomers().Select(s => s.name).ToList();
@@ -122,13 +127,19 @@ namespace WebForecastReport.Controllers
             types = Product.GetProducts("Brand");
 
             // get user engineer
-            List<string> engineers = new List<string>();
-            engineers.Add("Please Select");
+            List<UserManagementModel> engineer = new List<UserManagementModel>();
+            //engineers.Add(new UserManagementModel() { department = "Please Select"});
             //engineers.AddRange(Accessory.getAllUser().Where(w => w.groups.Trim() == "Engineer").Select(s => s.name).ToList());
-            engineers.AddRange(Users.GetUsers().Where(w => w.groups.Trim() == "ENG").Select(s => s.name).ToList());
-
+            engineer = Users.GetUsers().Where(w => w.groups.Trim() == "ENG").ToList();
+            var engineers = engineer.GroupBy(g => g.department)
+                .Select(s =>
+                new { 
+                    department = s.Key,
+                    name = engineer.Where(w => w.department == s.Key).Select(a => a.name).ToList()
+                }
+            ).ToList();
             bool statePage = true;
-            var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers, departments = departments, types = types, statepage = statePage, engineers = engineers };
+            var list = new { quatations = quotations, sales = sales, customers = customers, endusers = endusers, departments = departments, types = types, statepage = statePage, engineers = engineers, proposers = proposer };
             return Json(list);
         }
 
