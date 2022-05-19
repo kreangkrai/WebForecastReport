@@ -216,6 +216,69 @@ namespace WebForecastReport.Controllers
 
         public IActionResult FormOvertime()
         {
+            List<Form_OvertimeDataModel> datas = new List<Form_OvertimeDataModel>();
+            List<HolidayModel> holidays = HolidayService.GetHolidays(monthly[0].working_date.Year.ToString());
+            TimeSpan sum_normal = default(TimeSpan);
+            TimeSpan sum_ot1_5 = default(TimeSpan);
+            TimeSpan sum_ot3_0 = default(TimeSpan);
+            for(int i = 0; i < monthly.Count(); i++)
+            {
+                Form_OvertimeDataModel data = new Form_OvertimeDataModel()
+                {
+                    date = monthly[i].working_date.ToString("dd MMMM yyyy").ToUpper(),
+                    day = monthly[i].working_date.DayOfWeek.ToString().ToUpper(),
+                    job = monthly[i].job_id,
+                    task = monthly[i].task_name,
+                    lunch = monthly[i].lunch == true ? "✓" : "",
+                    dinner = monthly[i].dinner == true ? "✓" : "",
+                    weekend = (monthly[i].working_date.DayOfWeek == DayOfWeek.Saturday || monthly[i].working_date.DayOfWeek == DayOfWeek.Sunday) ? true : false,
+                    holiday = (holidays.Where(w=>w.date == monthly[i].working_date).ToList().Count() > 0) ? true : false,
+                };
+
+                sum_normal += monthly[i].normal;
+                sum_ot1_5 += monthly[i].ot1_5;
+                sum_ot3_0 += monthly[i].ot3_0;
+
+                if(monthly[i].job_id == "")
+                {
+                    data.job = "";
+                    data.location = "";
+                    data.task = "";
+                    data.start_time = "";
+                    data.stop_time = "";
+                    data.normal = "";
+                    data.ot1_5 = "";
+                    data.ot3_0 = "";
+                }
+                else
+                {
+                    data.location = monthly[i].task_id.Substring(0, 1) == "O" ? "Office" : "Site";
+                    data.start_time = monthly[i].start_time.ToString().Substring(0,5) != "00:00" ? monthly[i].start_time.ToString().Substring(0, 5) : "";
+                    data.stop_time = monthly[i].stop_time.ToString().Substring(0, 5) != "00:00" ? monthly[i].stop_time.ToString().Substring(0, 5) : "";
+                    data.normal = monthly[i].normal.ToString().Substring(0, 5) != "00:00" ? monthly[i].normal.ToString().Substring(0, 5) : "";
+                    data.ot1_5 = monthly[i].ot1_5.ToString().Substring(0, 5) != "00:00" ? monthly[i].ot1_5.ToString().Substring(0, 5) : "";
+                    data.ot3_0 = monthly[i].ot3_0.ToString().Substring(0, 5) != "00:00" ? monthly[i].ot3_0.ToString().Substring(0, 5) : "";
+                }
+
+                datas.Add(data);
+            }
+
+            List<WorkingHoursModel> summaries = new List<WorkingHoursModel>();
+            string[] jobs = monthly.Select(s => s.job_id).Where(w => w != "").Distinct().ToArray();
+            for(int i = 0; i < jobs.Count(); i++)
+            {
+                WorkingHoursModel summary = new WorkingHoursModel()
+                {
+                    job_id = jobs[i],
+                    normal = new TimeSpan(monthly.Where(w => w.job_id == jobs[i]).Sum(s => s.normal.Ticks)),
+                    ot1_5 = new TimeSpan(monthly.Where(w => w.job_id == jobs[i]).Sum(s => s.ot1_5.Ticks)),
+                    ot3_0 = new TimeSpan(monthly.Where(w => w.job_id == jobs[i]).Sum(s => s.ot3_0.Ticks)),
+                };
+                summaries.Add(summary);
+            }
+
+            TimeSpan twhs = sum_normal + sum_ot1_5 + sum_ot3_0;
+
             form_data = new Form_OvertimeModel()
             {
                 employee_name = form_employee_name,
@@ -223,7 +286,15 @@ namespace WebForecastReport.Controllers
                 phone_number = form_phone_number,
                 normal_start_time = form_start_time,
                 month = form_month,
-                working_hours = monthly
+                datas = datas,
+                summary = summaries,
+                total_working_hours = Convert.ToInt32(twhs.TotalHours).ToString().PadLeft(2,'0') + ":" + twhs.Minutes.ToString().PadLeft(2,'0'),
+                total_normal = Convert.ToInt32(sum_normal.TotalHours).ToString().PadLeft(2,'0') + ":" + sum_normal.Minutes.ToString().PadLeft(2,'0'),
+                total_ot1_5 = Convert.ToInt32(sum_ot1_5.TotalHours).ToString().PadLeft(2,'0') + ":" + sum_ot1_5.Minutes.ToString().PadLeft(2,'0'),
+                total_ot3_0 = Convert.ToInt32(sum_ot3_0.TotalHours).ToString().PadLeft(2,'0') + ":" + sum_ot3_0.Minutes.ToString().PadLeft(2, '0'),
+                hours_normal = Convert.ToDouble(sum_normal.TotalHours),
+                hours_1_5 = Convert.ToDouble(sum_ot1_5.TotalHours),
+                hours_3_0 = Convert.ToDouble(sum_ot3_0.TotalHours)
             };
 
             var form_overtime = new ViewAsPdf("FormOvertime")
