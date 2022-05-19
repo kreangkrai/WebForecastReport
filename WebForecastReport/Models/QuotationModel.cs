@@ -40,5 +40,6 @@ namespace WebForecastReport.Models
         public string detail { get; set; }
         public string engineer_in_charge { get; set; }
         public string engineer_department { get; set; }
+        public bool exclude_quote { get; set; }
     }
 }

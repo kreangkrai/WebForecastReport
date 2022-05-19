@@ -23,6 +23,8 @@ namespace WebForecastReport.Controllers
         readonly IExport Export;
         readonly ILog_Expected Log_Expected;
         readonly IUser Users;
+        readonly ILogStatus LogStatus;
+        readonly ILogStages LogStages;
         private readonly IHostingEnvironment _hostingEnvironment;
         public QuotationController(IHostingEnvironment hostingEnvironment)
         {
@@ -33,6 +35,8 @@ namespace WebForecastReport.Controllers
             Service = new ServiceService();
             Export = new ExportService();
             Users = new UserService();
+            LogStatus = new LogStatusService();
+            LogStages = new LogStagesService();
             Log_Expected = new Log_ExpectedService();
             _hostingEnvironment = hostingEnvironment;
         }
@@ -147,7 +151,7 @@ namespace WebForecastReport.Controllers
         public JsonResult Update(string user, string quotation, string revision, string date, string customer, string enduser, string project_name, string site_location, string product_type, string type, string brand, string part_no,
                    string spec, string quantity, string supplier_quotation_no, string total_value, string unit, string quoted_price, string expected_order_date, string old_expected_order_date,
                    string required_onsite_date, string proposer, string expected_date, string status, string stages, string stages_update_date, string how_to_support, string competitor, string competitor_description,
-                   string competitor_price, string sale_name, string department, string detail,string engineer_in_charge,string engineer_department)
+                   string competitor_price, string sale_name, string department, string detail,string engineer_in_charge,string engineer_department,bool exclude_quote, string status_changed, string stages_changed, string check_last_status, string check_last_stages, string reason_status, string reason_stages)
         {
             QuotationModel q = new QuotationModel()
             {
@@ -183,7 +187,8 @@ namespace WebForecastReport.Controllers
                 department = department,
                 detail = detail,
                 engineer_in_charge = engineer_in_charge,
-                engineer_department = engineer_department
+                engineer_department = engineer_department,
+                exclude_quote = exclude_quote
             };
 
             Accessory.InsertCustomer(customer);
@@ -202,6 +207,36 @@ namespace WebForecastReport.Controllers
                     date_to = expected_order_date
                 };
                 Log_Expected.Insert(log);
+            }
+
+            //update log status, stages
+            if (reason_status != "" && reason_status != null)
+            {
+                Log_StatusModel logs = new Log_StatusModel()
+                {
+                    name = user,
+                    quotation = quotation,
+                    project_name = project_name,
+                    status_from = check_last_status,
+                    status_to = status_changed,
+                    date_edit = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    reason = reason_status
+                };
+                LogStatus.Insert(logs);
+            }
+            if (reason_stages != "" && reason_stages != null)
+            {
+                Log_StagesModel logs = new Log_StagesModel()
+                {
+                    name = user,
+                    quotation = quotation,
+                    project_name = project_name,
+                    stages_from = check_last_stages,
+                    stages_to = stages_changed,
+                    date_edit = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    reason = reason_stages
+                };
+                LogStages.Insert(logs);
             }
 
             string message = Quotation.Update(q);

@@ -75,7 +75,8 @@ namespace WebForecastReport.Service
                             competitor_price = dr["competitor_price"].ToString(),
                             sale_name = dr["sale_name"].ToString(),
                             department = dr["department"].ToString(),
-                            detail = dr["detail"].ToString()
+                            detail = dr["detail"].ToString(),
+                            exclude_quote = dr["exclude_quote"] != DBNull.Value ? Convert.ToBoolean(dr["exclude_quote"].ToString()):false
                         };
 
                         int count = q.brand.Count(x => x == '|');
@@ -117,7 +118,8 @@ namespace WebForecastReport.Service
                                         competitor_price = q.competitor_price,
                                         sale_name = q.sale_name,
                                         department = q.department,
-                                        detail = q.detail
+                                        detail = q.detail,
+                                        exclude_quote = q.exclude_quote
                                     };
                                     quotations.Add(qu);
                                 }
@@ -184,6 +186,7 @@ namespace WebForecastReport.Service
                         worksheet.Cells["AC" + (i + startRows)].Value = quotations[i].sale_name != null ? quotations[i].sale_name.ToString() : "";
                         worksheet.Cells["AD" + (i + startRows)].Value = quotations[i].department != null ? quotations[i].department.ToString() : "";
                         worksheet.Cells["AE" + (i + startRows)].Value = quotations[i].detail != null ? quotations[i].detail.ToString() : "";
+                        worksheet.Cells["AF" + (i + startRows)].Value = quotations[i].exclude_quote.ToString();
                     }
                     p.SaveAs(stream);
                     stream.Position = 0;

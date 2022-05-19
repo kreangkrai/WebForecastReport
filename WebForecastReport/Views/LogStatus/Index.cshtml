@@ -1,0 +1,84 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Log Status";
+}
+<div class="container-fluid p-3" style="background-color:#ECF0F5;">
+    <div class="row pt-3">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                   <div class="row d-flex justify-content-between">
+                        <div class="col-md-2 col-xl-2 pb-3">
+                            <span class="card-title"><b>Log Status</b></span>
+                        </div>
+                        <div class="col-md-2 col-xl-2 pb-3">
+                             <button type="button" id="export_status" class="btn btn-success form-control">Export</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table id="table" class="table table-xl cell-border table-dark display responsive nowrap" width="100%">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+
+    $(document).ready(function () {
+        init();
+    });
+
+    function init() {
+        $.ajax({
+            url: '@Url.Action("GetData", "LogStatus")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+            },
+            success: function (response) {
+                var datas = response;
+                var dataSet = [];
+                for (var i = 0; i < datas.length; i++) {
+                    var data = [datas[i].quotation,
+                    datas[i].project_name,
+                    datas[i].date_edit,
+                    datas[i].status_from,
+                    datas[i].status_to,
+                    datas[i].reason,
+                    datas[i].name];
+                    dataSet.push(data);
+                }
+                table(dataSet);
+            }
+        });
+    };
+
+    var tables;
+    function table(dataSet) {
+        if (tables !== undefined)
+            tables.destroy();
+            tables = $('#table').DataTable({
+            data: dataSet,
+            columns: [
+                { title: "Quotation" },
+                { title: "Project Name" },
+                { title: "Date Edit" },
+                { title: "From" },
+                { title: "To" },
+                { title: "Reason" },
+                { title: "Name" },
+            ],
+            "columnDefs": [
+                
+            ],
+            "scrollX": true,
+        });
+        $(tables.table().body()).addClass('text-dark');
+    };
+  
+    </script>
+}
