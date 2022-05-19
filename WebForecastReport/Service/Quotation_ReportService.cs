@@ -796,7 +796,79 @@ namespace WebForecastReport.Service
 			try
 			{
 				List<Quotation_Report_PendingInOutModel> pendings = new List<Quotation_Report_PendingInOutModel>();
-				string command = string.Format($@"  DECLARE @million as float
+				string command = "";
+				if (department == "ALL")
+				{
+					command = string.Format($@"  DECLARE @million as float
+													DECLARE @month_first as VARCHAR(10)
+													DECLARE @month_last as VARCHAR(10)
+													SET @million = 1000000
+													SET @month_first = '{month_first}';
+													SET @month_last = '{month_last}';
+
+													with main as (
+														select department,
+															sale_name,
+															product_type,
+															type,
+															brand,
+															cast(sum(case when status ='IN' 
+																AND stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting')
+																then cast(replace(quoted_price,',','') as float) / @million
+																else 0 end ) as decimal(10, 2)) as pending_in,
+															cast(sum(case when status in ('OUT','') 
+																AND stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
+																then cast(replace(quoted_price,',','') as float) / @million 
+																else 0 end ) as decimal(10, 2)) as pending_out,
+															cast(sum(case when stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
+																then cast(replace(quoted_price,',','') as float) / @million 
+																else 0 end ) as decimal(10, 2)) as pending
+														from Quotation 
+														where left(Convert(varchar, date,23),7) between @month_first and @month_last AND product_type IS NOT NULL and product_type <>''
+														group by department,sale_name,product_type,type,brand	
+													)
+
+													select * from main  union all
+													select department,
+														(sale_name + '_Total') as sale_name,
+														'' product_type, 
+														'' as type, 
+														'' as brand, 
+														sum(main.pending_in) as pending_in,
+														sum(main.pending_out) as pending_out,sum(main.pending) as pending
+													from main  
+													group by main.department,main.sale_name union all
+													select department,
+														'รวม' as sale_name,
+														'' product_type, 
+														'' as type, 
+														'' as brand, 
+														sum(main.pending_in) as pending_in,
+														sum(main.pending_out) as pending_out,sum(main.pending) as pending
+													from main  
+													group by main.department union all
+													select department,
+														sale_name,
+														product_type + '_Total' as product_type , 
+														'' as type, 
+														'' as brand, 
+														sum(main.pending_in) as pending_in,
+														sum(main.pending_out) as pending_out,sum(main.pending) as pending
+													from main  
+													group by main.department,main.sale_name,main.product_type union all
+													select 'รวม' as department,
+														'' as sale_name,
+														'' product_type, 
+														'' as type, 
+														'' as brand, 
+														sum(main.pending_in) as pending_in,
+														sum(main.pending_out) as pending_out,sum(main.pending) as pending
+													from main
+													order by main.department,main.sale_name,main.product_type");
+				}
+				else
+				{
+					command = string.Format($@"  DECLARE @million as float
 													DECLARE @month_first as VARCHAR(10)
 													DECLARE @month_last as VARCHAR(10)
 													DECLARE @department as VARCHAR(10)
@@ -819,11 +891,11 @@ namespace WebForecastReport.Service
 																AND stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
 																then cast(replace(quoted_price,',','') as float) / @million 
 																else 0 end ) as decimal(10, 2)) as pending_out,
-															cast(sum(case when stages in ('Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
+															cast(sum(case when stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
 																then cast(replace(quoted_price,',','') as float) / @million 
 																else 0 end ) as decimal(10, 2)) as pending
 														from Quotation 
-														where left(Convert(varchar, date,23),7) between @month_first and @month_last and department = @department
+														where left(Convert(varchar, date,23),7) between @month_first and @month_last and department = @department AND product_type IS NOT NULL and product_type <>''
 														group by department,sale_name,product_type,type,brand	
 													)
 
@@ -837,8 +909,8 @@ namespace WebForecastReport.Service
 														sum(main.pending_out) as pending_out,sum(main.pending) as pending
 													from main  
 													group by main.department,main.sale_name union all
-													select department,
-														'รวม' as sale_name,
+													select 'รวม' as department,
+														'' as sale_name,
 														'' product_type, 
 														'' as type, 
 														'' as brand, 
@@ -847,6 +919,7 @@ namespace WebForecastReport.Service
 													from main  
 													group by main.department
 													order by main.department,main.sale_name");
+				}
 				SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
 				SqlDataReader dr = cmd.ExecuteReader();
 				if (dr.HasRows)
@@ -898,7 +971,79 @@ namespace WebForecastReport.Service
 			try
 			{
 				List<Quotation_Report_PendingInOutModel> pendings = new List<Quotation_Report_PendingInOutModel>();
-				string command = string.Format($@"  DECLARE @million as float
+				string command = "";
+				if (department == "ALL")
+				{
+					command = string.Format($@"     DECLARE @million as float
+													DECLARE @month_first as VARCHAR(10)
+													DECLARE @month_last as VARCHAR(10)
+													SET @million = 1000000
+													SET @month_first = '{month_first}';
+													SET @month_last = '{month_last}';
+													
+
+													with main as (
+														select department,
+															product_type,
+															type,
+															brand,
+															cast(sum(case when status ='IN' 
+																AND stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting')
+																then cast(replace(quoted_price,',','') as float) / @million
+																else 0 end ) as decimal(10, 2)) as pending_in,
+															cast(sum(case when status in ('OUT','') 
+																AND stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
+																then cast(replace(quoted_price,',','') as float) / @million 
+																else 0 end ) as decimal(10, 2)) as pending_out,
+															cast(sum(case when stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
+																then cast(replace(quoted_price,',','') as float) / @million 
+																else 0 end ) as decimal(10, 2)) as pending
+														from Quotation 
+														where left(Convert(varchar, date,23),7) between @month_first and @month_last AND product_type IS NOT NULL and product_type <>''
+														group by department,product_type,type,brand	
+													)
+
+													select * from main  union all
+													select department,
+														(product_type + '_Total') as product_type, 
+														'' as type, 
+														'' as brand, 
+														sum(main.pending_in) as pending_in,
+														sum(main.pending_out) as pending_out,sum(main.pending) as pending
+													from main  
+													group by main.department,main.product_type union all
+													select department,
+														'Total' product_type, 
+														'' as type, 
+														'' as brand, 
+														sum(main.pending_in) as pending_in,
+														sum(main.pending_out) as pending_out,sum(main.pending) as pending
+													from main  
+													group by main.department union all
+
+													select 'รวม' as department,
+														product_type, 
+														'' as type, 
+														'' as brand, 
+														sum(main.pending_in) as pending_in,
+														sum(main.pending_out) as pending_out,
+														sum(main.pending) as pending
+													from main
+													group by main.product_type union all
+
+													select 'รวมทั้งหมด' as department,
+														'' as product_type, 
+														'' as type, 
+														'' as brand, 
+														sum(main.pending_in) as pending_in,
+														sum(main.pending_out) as pending_out,
+														sum(main.pending) as pending
+													from main
+													order by main.department,main.product_type");
+				}
+				else
+				{
+					command = string.Format($@"  DECLARE @million as float
 													DECLARE @month_first as VARCHAR(10)
 													DECLARE @month_last as VARCHAR(10)
 													DECLARE @department as VARCHAR(10)
@@ -920,11 +1065,11 @@ namespace WebForecastReport.Service
 																AND stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
 																then cast(replace(quoted_price,',','') as float) / @million 
 																else 0 end ) as decimal(10, 2)) as pending_out,
-															cast(sum(case when stages in ('Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
+															cast(sum(case when stages in ('','Quote for Budget','Negotiation/Review','Proposal/Quote for Order','Prospecting') 
 																then cast(replace(quoted_price,',','') as float) / @million 
 																else 0 end ) as decimal(10, 2)) as pending
 														from Quotation 
-														where left(Convert(varchar, date,23),7) between @month_first and @month_last and department = @department
+														where left(Convert(varchar, date,23),7) between @month_first and @month_last and department = @department AND product_type IS NOT NULL and product_type <>''
 														group by department,product_type,type,brand	
 													)
 
@@ -937,15 +1082,16 @@ namespace WebForecastReport.Service
 														sum(main.pending_out) as pending_out,sum(main.pending) as pending
 													from main  
 													group by main.department,main.product_type union all
-													select department,
-														'รวม' product_type, 
+													select 'รวม' as department,
+														'' as product_type, 
 														'' as type, 
 														'' as brand, 
 														sum(main.pending_in) as pending_in,
 														sum(main.pending_out) as pending_out,sum(main.pending) as pending
-													from main  
+													from main
 													group by main.department
 													order by main.department,main.product_type");
+				}
 				SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
 				SqlDataReader dr = cmd.ExecuteReader();
 				if (dr.HasRows)

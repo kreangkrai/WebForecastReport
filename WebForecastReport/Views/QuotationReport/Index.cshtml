@@ -126,8 +126,7 @@
                                 <table id="table_department" class="table table-xl cell-border table-dark table-bordered display text-center responsive nowrap" style="width:100%">
                                     <thead style="color:black;background-color:#71C6F7">
                                         <tr>
-                                            <th rowspan="4" style="text-align:center;vertical-align:middle;">Department</th>
-                                            <th rowspan="4" style="text-align:center;vertical-align:middle;">Sales Name</th>
+                                            <th colspan="2" rowspan="3" style="text-align:center;vertical-align:middle;">Sales</th>
                                             <th colspan="2" style="text-align:center;vertical-align:middle;">Quotation</th>
                                             <th colspan="30" style="text-align:center;vertical-align:middle;">Description</th>
                                             <th colspan="32" style="text-align:center;vertical-align:middle;">Status Quotation</th>
@@ -190,6 +189,8 @@
                                             <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
                                         </tr>
                                         <tr>
+                                            <th style="text-align:center;vertical-align:middle;">Department</th>
+                                            <th style="text-align:center;vertical-align:middle;">Sales Name</th>
                                             <th style="text-align:center;vertical-align:middle;">Quo.</th>
                                             <th style="text-align:center;vertical-align:middle;">MB</th>
                                             <th style="text-align:center;vertical-align:middle;">Quo.</th>
@@ -1221,11 +1222,11 @@
                 //set select department
                 $('#pendinginout_department').empty();
                 var selectQuarterDepartment = document.getElementById('pendinginout_department');
-                var n = 0;  // Check Department All 
-                if (Departments.length > 1){
-                    n=1;
-                }
-                for (var i = n, l = Departments.length; i < l; i++) {
+                //var n = 0;  // Check Department All 
+               // if (Departments.length > 1){
+                //    n=1;
+                //}
+                for (var i = 0, l = Departments.length; i < l; i++) {
                     var option = Departments[i];
                     selectQuarterDepartment.options.add(new Option(option.text, option.value, option.selected));
                 }
@@ -1430,7 +1431,7 @@
         };
         var tables_quarter;
         function tableQuarter(dataSet) {
-            setTimeout(()=>{ console.log(hide_column);
+            setTimeout(()=>{
                 if (tables_quarter !== undefined)
                     tables_quarter.destroy();
             tables_quarter = $('#table_quarter').DataTable({
@@ -1482,10 +1483,10 @@
                     },
                 ],
                 "createdRow": function (row, data, index) {
-                    if (data[1] == "รวม") {
+                    if (data[0].includes("รวม")) {
                         $('td', row).css('background-color', '#AFA095');
                         $('td', row).addClass('highlight');
-                    }else if (data[1] !== "Total" && data[1].includes("Total")) {
+                    }else if (data[1].includes("Total")) {
                         $('td', row).css('background-color', '#EFE8E2');
                         $('td', row).addClass('highlight');
                     }
@@ -1514,10 +1515,10 @@
                     },
                 ],
                 "createdRow": function (row, data, index) {
-                    if (data[1] == "รวม") {
+                    if (data[0].includes("รวม")) {
                         $('td', row).css('background-color', '#AFA095');
                         $('td', row).addClass('highlight');
-                    }else if (data[1] !== "Total" && data[1].includes("Total")) {
+                    }else if (data[1].includes("Total") || data[1].includes("รวม") || data[2].includes("_Total") ) {
                         $('td', row).css('background-color', '#EFE8E2');
                         $('td', row).addClass('highlight');
                     }
@@ -1671,7 +1672,6 @@
                }
                if(chkQ2 == false){
                   if(Status == "IN"){
-                      console.log(hide_column);
                       hide_column =  hide_column.concat(columnQ2).concat(columnOUTQ2);
                   }else if(Status == "OUT"){
                       hide_column =  hide_column.concat(columnQ2).concat(columnINQ2);
@@ -1692,7 +1692,6 @@
                }
                if(chkQ3 == false){
                   if(Status == "IN"){
-                      console.log(hide_column);
                       hide_column =  hide_column.concat(columnQ3).concat(columnOUTQ3);
                   }else if(Status == "OUT"){
                       hide_column =  hide_column.concat(columnQ3).concat(columnINQ3);
@@ -1713,7 +1712,6 @@
                }
                if(chkQ4 == false){
                   if(Status == "IN"){
-                      console.log(hide_column);
                       hide_column =  hide_column.concat(columnQ4).concat(columnOUTQ4);
                   }else if(Status == "OUT"){
                       hide_column =  hide_column.concat(columnQ4).concat(columnINQ4);

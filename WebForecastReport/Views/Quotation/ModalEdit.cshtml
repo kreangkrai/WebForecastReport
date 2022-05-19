@@ -100,7 +100,7 @@
 
                         <div class="col-md-3 col-xl-3">
                             <label>Proposal Created By</label>
-                            <select id="edit_proposer" class="form-control" style="width:100%" disabled></select>
+                            <select id="edit_proposer" class="form-control" style="width:100%"></select>
                         </div>
                         <div class="col-md-3 col-xl-3">
                             <label>Proposal Expected Date</label>
@@ -110,14 +110,15 @@
                     <div class="form-group row">
                         <div class="col-12">
                             <label for="table_quotation_edit">Engineering In Charge</label>
-                            <div class="form-group row">
-                                <div class="col-md-3 col-xl-3 pt-1">
-                                    <select class="form-control" id="select_engineer_in_charge">
+                            <div class="form-group row">                              
+                                <div class="col-md-2 col-xl-2 pt-1">                                   
+                                    <select class="form-control" id="select_engineer_in_charge_department">
                                         <option value="" disabled>Please Select</option>
                                     </select>
                                 </div>
-                                <div class="col-md-2 col-xl-2 pt-1">
-                                    <input type="text" id="edit_engineer_in_charge_department" class="form-control" disabled />
+                                <div class="col-md-3 col-xl-3 pt-1">
+                                    <select class="form-control" id="select_engineer_in_charge">
+                                    </select>
                                 </div>
                                 <div class="col-md-1 col-xl-1 pt-1">
                                     <input type="button" class="btn btn-success form-control" id="add_engineer_in_charge" value="ADD" disabled />

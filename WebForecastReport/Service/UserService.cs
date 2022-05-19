@@ -11,6 +11,11 @@ namespace WebForecastReport.Service
 {
     public class UserService : IUser
     {
+        readonly IAccessory Accessory;
+        public UserService()
+        {
+            Accessory = new AccessoryService();
+        }
         public List<UserManagementModel> GetUsers()
         {
             try
@@ -49,19 +54,22 @@ namespace WebForecastReport.Service
             try
             {
                 bool b = false;
+                string department = "";
                 SqlCommand cmd1 = new SqlCommand("select * from [User] where Name = '" + name+"'", ConnectSQL.OpenConnect());
                 SqlDataReader dr1 = cmd1.ExecuteReader();
                 if (dr1.HasRows)
                 {
-                    b = true;
+                    b = true;                  
                 }
                 if (!b)
                 {
-                    using (SqlCommand cmd = new SqlCommand(@"INSERT INTO [User](Name) VALUES (@Name)", ConnectSQL.OpenConnect()))
+                    department = Accessory.getAllUser().Where(w => w.name == name).Select(s => s.department).FirstOrDefault();
+                    using (SqlCommand cmd = new SqlCommand(@"INSERT INTO [User](Name,Department) VALUES (@Name,@Department)", ConnectSQL.OpenConnect()))
                     {
                         cmd.CommandType = CommandType.Text;
                         cmd.Connection = ConnectSQL.OpenConnect();
                         cmd.Parameters.AddWithValue("@Name", name);
+                        cmd.Parameters.AddWithValue("@Department", department);
                         cmd.ExecuteNonQuery();                       
                     }
                 }
