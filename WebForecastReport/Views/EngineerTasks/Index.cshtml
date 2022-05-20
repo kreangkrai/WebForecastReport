@@ -255,17 +255,17 @@
         }
 
         $('#btn_load').on('click', async function () {
-            var user_id = $('#user_id').val();
-            await GetWorkingHours(user_id);
+            var user_name = $('#user_id option:selected').text();
+            await GetWorkingHours(user_name);
         });
 
-        async function GetWorkingHours(user_id) {
+        async function GetWorkingHours(user_name) {
             await $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetWorkingHours", "Calendar")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: {
-                    user_id
+                    user_name
                 },
                 success: function (response) {
                     whs = response;
