@@ -100,6 +100,7 @@
     var detail = '';
     var engineer_in_charge = '';
     var engineer_department = '';
+    var exclude_quote = false;
 
     var arrProductType = [];
 
@@ -121,6 +122,19 @@
     var state_admin = false;
 
     var statepage = false;
+
+    var check_last_status = "";
+    var check_last_stages = "";
+    var check_last_stages_update_date = "";
+    var state_status = false;
+    var state_stages = false;
+
+    var status_changed = "";
+    var stages_changed = "";
+
+    var reason_status = "";
+    var reason_stages = "";
+
 
     $(document).ready(function () {
         init();
@@ -193,7 +207,8 @@
                         datas[i].department,
                         datas[i].detail,
                         datas[i].engineer_in_charge,
-                        datas[i].engineer_department];
+                        datas[i].engineer_department,
+                        datas[i].exclude_quote];
 
                     dataSet.push(data);
                 }
@@ -281,6 +296,7 @@
                 { title: "Detail Project" },
                 { title: "Engineer In Charge" },
                 { title: "Engineer Department" },
+                { title: "Exclude Quote" },
             ],
             "columnDefs": [
                 {
@@ -486,7 +502,8 @@
                         datas[i].department,
                         datas[i].detail,
                         datas[i].engineer_in_charge,
-                        datas[i].engineer_department];
+                        datas[i].engineer_department,
+                        datas[i].exclude_quote];
 
                     dataSet.push(data);
                 }
@@ -532,6 +549,7 @@
         detail = cell.data()[32];
         engineer_in_charge = cell.data()[33];
         engineer_department = cell.data()[34];
+        exclude_quote = cell.data()[35];
 
         arrProductType = [];
         arrEngineer = [];
@@ -582,6 +600,15 @@
             document.getElementById("add_engineer_in_charge").disabled = true;
             document.getElementById("select_engineer_in_charge").value = "";
             document.getElementById("select_engineer_in_charge").disabled = true;
+            document.getElementById("edit_status").disabled = false;
+            document.getElementById("edit_stages").disabled = false;
+
+            state_status = false;
+            state_stages = false;
+            status_changed = "";
+            stages_changed = "";
+            reason_status = "";
+            reason_stages = "";
 
             $('#types').empty();
 
@@ -673,6 +700,19 @@
             document.getElementById('select_engineer_in_charge_department').selectedIndex = 0;
             document.getElementById("select_engineer_in_charge_department").options[0].disabled = true;
 
+            //get last status,stages 
+            check_last_status = document.getElementById("edit_status").value;
+            check_last_stages = document.getElementById("edit_stages").value;
+            check_last_stages_update_date = document.getElementById("edit_stages_update_date").value;
+            
+
+            //exclude quote
+            if (exclude_quote){
+                 document.getElementById("edit_chk_exclude_quote").checked = true;
+            }else{
+                 document.getElementById("edit_chk_exclude_quote").checked = false;
+            }
+           
             //init data table
             init_edit();
             //init data engineer
@@ -725,6 +765,12 @@
 
             document.getElementById('detail').value = detail;
 
+            //exclude quote
+            if (exclude_quote){
+                 document.getElementById("view_chk_exclude_quote").checked = true;
+            }else{
+                 document.getElementById("view_chk_exclude_quote").checked = false;
+            }
             //init data table view
             init_view();
             init_engineer_view();
@@ -816,6 +862,7 @@
         var sale_name = document.getElementById('edit_sale_name').value;
         var department = document.getElementById('edit_department').innerHTML;
         var detail = document.getElementById('edit_detail').value;
+        var exclude_quote = document.getElementById('edit_chk_exclude_quote').checked;
 
         // data engineer in charge
         var arrengineer_in_charge = [];
@@ -837,7 +884,7 @@
             data: {
                 user,quotation, revision, date, customer, enduser, project_name, site_location, product_type, type,brand, part_no, spec, quantity, supplier_quotation_no,
                 total_value, unit, quoted_price, expected_order_date, old_expected_order_date, required_onsite_date, proposer, expected_date, status, stages, stages_update_date, how_to_support, competitor,
-                competitor_description, competitor_price, sale_name, department, detail, engineer_in_charge, engineer_department
+                competitor_description, competitor_price, sale_name, department, detail, engineer_in_charge, engineer_department,exclude_quote,status_changed,stages_changed,check_last_status,check_last_stages,reason_status,reason_stages
             },
             success: function (response) {
                 //get state page
@@ -1062,6 +1109,54 @@
 
         $('#ShowInfoModal').modal('show');
     });
+
+    
+    // Status , Stages Changed
+
+    $('#edit_status').on('change',function(){        
+        if (check_last_status !== ""){
+            status_changed = document.getElementById("edit_status").value;
+            $('#ShowStatusChangedModal').modal();
+         }
+    });
+    $('#edit_stages').on('change',function(){        
+        if (check_last_stages !== ""){
+            stages_changed = document.getElementById("edit_stages").value;
+            $('#ShowStagesChangedModal').modal();
+         }
+    });
+
+    $('#ShowStatusChangedModal').on('hidden.bs.modal', function () {
+        if (!state_status){
+            document.getElementById("edit_status").value = check_last_status;
+        }
+    });
+
+    $('#ShowStagesChangedModal').on('hidden.bs.modal', function () {
+        if (!state_stages){
+            document.getElementById("edit_stages").value = check_last_stages;
+            document.getElementById("edit_stages_update_date").value = check_last_stages_update_date;
+        }
+    });
+
+    $('#StatusChangedConfirm').on('click',function(){
+        reason_status = document.getElementById("edit_status_reason").value;
+        if (reason_status.trim() !== ""){
+            document.getElementById("edit_status").disabled = true;
+            state_status = true;
+            $('#ShowStatusChangedModal').modal('hide');
+        }
+    });
+    $('#StagesChangedConfirm').on('click',function(){
+        reason_stages = document.getElementById("edit_stages_reason").value;
+        if (reason_stages.trim() !==""){
+            document.getElementById("edit_stages").disabled = true;
+            state_stages = true;
+            $('#ShowStagesChangedModal').modal('hide');
+        }
+    });
+
+    ////
     function add_info(arr){
         var div = "";
         for (var i=0;i<arr.length;i++){

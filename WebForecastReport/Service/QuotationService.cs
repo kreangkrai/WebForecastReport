@@ -92,7 +92,8 @@ namespace WebForecastReport.Service
                             department = dr["department"].ToString(),
                             detail = dr["detail"].ToString(),
                             engineer_in_charge = dr["engineer_in_charge"].ToString(),
-                            engineer_department = dr["engineer_department"].ToString()
+                            engineer_department = dr["engineer_department"].ToString(),
+                            exclude_quote = dr["exclude_quote"] != DBNull.Value ? Convert.ToBoolean(dr["exclude_quote"].ToString()): false
                         };
                         quotations.Add(q);
                     }
@@ -174,7 +175,8 @@ namespace WebForecastReport.Service
                                                                             department,
                                                                             detail,
                                                                             engineer_in_charge,
-                                                                            engineer_department) VALUES (
+                                                                            engineer_department,
+                                                                            exclude_quote) VALUES (
                                                                             @quotation_no,
                                                                             @revision,
                                                                             @date,
@@ -206,7 +208,8 @@ namespace WebForecastReport.Service
                                                                             @department,
                                                                             @detail,
                                                                             @engineer_in_charge,
-                                                                            @engineer_department)", ConnectSQL.OpenConnect()))
+                                                                            @engineer_department,
+                                                                            @exclude_quote)", ConnectSQL.OpenConnect()))
                 {
                     cmd.CommandType = CommandType.Text;
                     cmd.Connection = ConnectSQL.OpenConnect();
@@ -242,6 +245,7 @@ namespace WebForecastReport.Service
                     cmd.Parameters.AddWithValue("@detail", model.detail);
                     cmd.Parameters.AddWithValue("@engineer_in_charge", model.engineer_in_charge);
                     cmd.Parameters.AddWithValue("@engineer_department", model.engineer_department);
+                    cmd.Parameters.AddWithValue("@exclude_quote", false);
                     cmd.ExecuteNonQuery();
 
                     return "Insert Success";
@@ -363,7 +367,8 @@ namespace WebForecastReport.Service
                                                                           "department='" + model.department + "'," +
                                                                           "detail='" + model.detail + "'," +
                                                                           "engineer_in_charge='" + model.engineer_in_charge + "'," +
-                                                                          "engineer_department='" + model.engineer_department + "' " +
+                                                                          "engineer_department='" + model.engineer_department + "', " +
+                                                                          "exclude_quote='" + model.exclude_quote + "' " +
                                                                           "WHERE quotation_no='" + model.quotation_no + "'");
                     cmd.CommandType = CommandType.Text;
                     cmd.Connection = ConnectSQL.OpenConnect();
@@ -441,7 +446,8 @@ namespace WebForecastReport.Service
                             department = dr["department"].ToString(),
                             detail = dr["detail"].ToString(),
                             engineer_in_charge = dr["engineer_in_charge"].ToString(),
-                            engineer_department = dr["engineer_department"].ToString()
+                            engineer_department = dr["engineer_department"].ToString(),
+                            exclude_quote = dr["exclude_quote"] != DBNull.Value ? Convert.ToBoolean(dr["exclude_quote"].ToString()) : false
                         };
                         quotations.Add(q);
                     }

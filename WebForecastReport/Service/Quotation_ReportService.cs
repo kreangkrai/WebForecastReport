@@ -145,7 +145,7 @@ namespace WebForecastReport.Service
 
                                                             from Quotation
 
-                                                            where left(Convert(varchar, date,23),7) between @month_first and @month_last and product_type<> ''
+                                                            where left(Convert(varchar, date,23),7) between @month_first and @month_last and product_type<> ''  AND (exclude_quote is null or exclude_quote = 0)
 															group by department, sale_name, product_type) as sub_type
 
                                                         group by sub_type.department, sub_type.sale_name
@@ -187,7 +187,7 @@ namespace WebForecastReport.Service
 																sum(case when product_type = 'Service' then 1 else 0 end) as stages_service_cnt,
 																format(sum(case when product_type = 'Service' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_service_mb
                                                              from Quotation
-                                                             where left(Convert(varchar, date,23),7) between @month_first and @month_last and stages in('Closed(Won)','Closed(Lost)','No go')
+                                                             where left(Convert(varchar, date,23),7) between @month_first and @month_last and stages in('Closed(Won)','Closed(Lost)','No go')  AND (exclude_quote is null or exclude_quote = 0)
                                                              group by department, sale_name, stages ) as sub_stages
 
 
@@ -223,7 +223,7 @@ namespace WebForecastReport.Service
 
                                                                 from Quotation
 
-                                                                where left(Convert(varchar, date,23),7) between @month_first and @month_last and stages<> '' 
+                                                                where left(Convert(varchar, date,23),7) between @month_first and @month_last and stages<> ''  AND (exclude_quote is null or exclude_quote = 0) 
 		                                                        group by department, sale_name, product_type, stages having stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go')) as sub_stages
                                                         group by sub_stages.department, sub_stages.sale_name, sub_stages.product_type) as sub_pending
 
@@ -234,7 +234,7 @@ namespace WebForecastReport.Service
 
                                                     ON Quotation.sale_name = sub_sub_pending.sale_name
 
-                                                    where left(Convert(varchar, Quotation.date,23),7) between @month_first and @month_last 
+                                                    where left(Convert(varchar, Quotation.date,23),7) between @month_first and @month_last  AND (exclude_quote is null or exclude_quote = 0)
 													group by Quotation.department, Quotation.sale_name)
                                                     -- Name
 													select * from main
@@ -524,7 +524,7 @@ namespace WebForecastReport.Service
 
                                                             from Quotation
 
-                                                            where department = @department and left(Convert(varchar, date,23),7) between @month_first and @month_last and product_type<> ''
+                                                            where department = @department and left(Convert(varchar, date,23),7) between @month_first and @month_last and product_type<> ''  AND (exclude_quote is null or exclude_quote = 0)
 															group by department, sale_name, product_type) as sub_type
 
                                                         group by sub_type.department, sub_type.sale_name
@@ -566,7 +566,7 @@ namespace WebForecastReport.Service
 																sum(case when product_type = 'Service' then 1 else 0 end) as stages_service_cnt,
 																format(sum(case when product_type = 'Service' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_service_mb
                                                              from Quotation
-                                                             where department = @department and left(Convert(varchar, date,23),7) between @month_first and @month_last and stages in('Closed(Won)','Closed(Lost)','No go')
+                                                             where department = @department and left(Convert(varchar, date,23),7) between @month_first and @month_last and stages in('Closed(Won)','Closed(Lost)','No go')  AND (exclude_quote is null or exclude_quote = 0)
                                                              group by department, sale_name, stages ) as sub_stages
 
 
@@ -602,7 +602,7 @@ namespace WebForecastReport.Service
 
                                                                 from Quotation
 
-                                                                where department = @department and left(Convert(varchar, date,23),7) between @month_first and @month_last and stages<> '' 
+                                                                where department = @department and left(Convert(varchar, date,23),7) between @month_first and @month_last and stages<> ''  AND (exclude_quote is null or exclude_quote = 0)
 		                                                        group by department, sale_name, product_type, stages having stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go')) as sub_stages
                                                         group by sub_stages.department, sub_stages.sale_name, sub_stages.product_type) as sub_pending
 
@@ -613,7 +613,7 @@ namespace WebForecastReport.Service
 
                                                     ON Quotation.sale_name = sub_sub_pending.sale_name
 
-                                                    where Quotation.department = @department and left(Convert(varchar, Quotation.date,23),7) between @month_first and @month_last 
+                                                    where Quotation.department = @department and left(Convert(varchar, Quotation.date,23),7) between @month_first and @month_last  AND (exclude_quote is null or exclude_quote = 0)
 													group by Quotation.department, Quotation.sale_name)
                                                     -- Name
 													select * from main
@@ -824,7 +824,7 @@ namespace WebForecastReport.Service
 																then cast(replace(quoted_price,',','') as float) / @million 
 																else 0 end ) as decimal(10, 2)) as pending
 														from Quotation 
-														where left(Convert(varchar, date,23),7) between @month_first and @month_last AND product_type IS NOT NULL and product_type <>''
+														where left(Convert(varchar, date,23),7) between @month_first and @month_last AND product_type IS NOT NULL and product_type <>'' AND (exclude_quote is null or exclude_quote = 0)
 														group by department,sale_name,product_type,type,brand	
 													)
 
@@ -895,7 +895,7 @@ namespace WebForecastReport.Service
 																then cast(replace(quoted_price,',','') as float) / @million 
 																else 0 end ) as decimal(10, 2)) as pending
 														from Quotation 
-														where left(Convert(varchar, date,23),7) between @month_first and @month_last and department = @department AND product_type IS NOT NULL and product_type <>''
+														where left(Convert(varchar, date,23),7) between @month_first and @month_last and department = @department AND product_type IS NOT NULL and product_type <>'' AND (exclude_quote is null or exclude_quote = 0)
 														group by department,sale_name,product_type,type,brand	
 													)
 
@@ -999,7 +999,7 @@ namespace WebForecastReport.Service
 																then cast(replace(quoted_price,',','') as float) / @million 
 																else 0 end ) as decimal(10, 2)) as pending
 														from Quotation 
-														where left(Convert(varchar, date,23),7) between @month_first and @month_last AND product_type IS NOT NULL and product_type <>''
+														where left(Convert(varchar, date,23),7) between @month_first and @month_last AND product_type IS NOT NULL and product_type <>'' AND (exclude_quote is null or exclude_quote = 0)
 														group by department,product_type,type,brand	
 													)
 
@@ -1069,7 +1069,7 @@ namespace WebForecastReport.Service
 																then cast(replace(quoted_price,',','') as float) / @million 
 																else 0 end ) as decimal(10, 2)) as pending
 														from Quotation 
-														where left(Convert(varchar, date,23),7) between @month_first and @month_last and department = @department AND product_type IS NOT NULL and product_type <>''
+														where left(Convert(varchar, date,23),7) between @month_first and @month_last and department = @department AND product_type IS NOT NULL and product_type <>'' AND (exclude_quote is null or exclude_quote = 0)
 														group by department,product_type,type,brand	
 													)
 
@@ -1194,7 +1194,7 @@ namespace WebForecastReport.Service
                             sum(case when expected_order_date like '{year}-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_out,
                             sum(case when expected_order_date like '{year}-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_in,
                             sum(case when expected_order_date like '{year}-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_out
-							from Quotation where {stage}
+							from Quotation where {stage} AND (exclude_quote is null or exclude_quote = 0)
 							group by department,sale_name union all
 
                             select(department + ' Total') as department,'' as sale,
@@ -1222,7 +1222,7 @@ namespace WebForecastReport.Service
                             sum(case when expected_order_date like '{year}-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_out,
                             sum(case when expected_order_date like '{year}-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_in,
                             sum(case when expected_order_date like '{year}-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_out
-							from Quotation where {stage}
+							from Quotation where {stage} AND (exclude_quote is null or exclude_quote = 0)
 							group by department union all
 
                             select 'Total' as department,'' as sale,
@@ -1250,7 +1250,7 @@ namespace WebForecastReport.Service
                             sum(case when expected_order_date like '{year}-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_out,
                             sum(case when expected_order_date like '{year}-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_in,
                             sum(case when expected_order_date like '{year}-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_out
-							from Quotation where {stage} )
+							from Quotation where {stage} AND (exclude_quote is null or exclude_quote = 0) )
                             select* from s1 order by s1.department,s1.sale ");
                 }
                 else
@@ -1282,7 +1282,7 @@ namespace WebForecastReport.Service
 							sum(case when expected_order_date like '{year}-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_out,
 							sum(case when expected_order_date like '{year}-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_in,
 							sum(case when expected_order_date like '{year}-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_out
-							from Quotation where department='{department}' and {stage}
+							from Quotation where department='{department}' and {stage} AND (exclude_quote is null or exclude_quote = 0)
 							group by department,sale_name union all
 
 							select(department + ' Total') as department,'' as sale,
@@ -1310,7 +1310,7 @@ namespace WebForecastReport.Service
 							sum(case when expected_order_date like '{year}-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_out,
 							sum(case when expected_order_date like '{year}-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_in,
 							sum(case when expected_order_date like '{year}-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_out
-							from Quotation where department='{department}' and {stage}
+							from Quotation where department='{department}' and {stage} AND (exclude_quote is null or exclude_quote = 0)
 							group by department)
 							select* from s1 order by s1.department,s1.sale ");
                 }
@@ -1423,7 +1423,8 @@ namespace WebForecastReport.Service
                                  project_name,
                                  format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
                                  format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
-                                 from Quotation where status <>'' and date like '{year}%' group by sale_name,enduser,project_name
+                                 from Quotation
+								 where status <>'' and date like '{year}%' group by sale_name,enduser,project_name AND (exclude_quote is null or exclude_quote = 0)
                                  union all
                                  select  '' as no,
                                  sale_name + '_Total',
@@ -1431,7 +1432,9 @@ namespace WebForecastReport.Service
                                  '',
                                  format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
                                  format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
-                                 from Quotation where status <>'' and date like '{year}%' group by sale_name
+                                 from Quotation 
+								 where status <>'' and date like '{year}%' AND (exclude_quote is null or exclude_quote = 0)
+								 group by sale_name
 
                                  union all
 
@@ -1441,7 +1444,8 @@ namespace WebForecastReport.Service
                                  '',
                                  format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
                                  format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
-                                 from Quotation where status <>'' and date like '{year}%')
+                                 from Quotation 
+								 where status <>'' and date like '{year}%' AND (exclude_quote is null or exclude_quote = 0) )
 
                                  select * from s1 order by s1.sale_name");
                 }
@@ -1454,7 +1458,9 @@ namespace WebForecastReport.Service
                                  project_name,
                                  format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
                                  format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
-                                 from Quotation where status <>'' and department='{department}' and date like '{year}%' group by sale_name,enduser,project_name
+                                 from Quotation 
+								 where status <>'' and department='{department}' and date like '{year}%' AND (exclude_quote is null or exclude_quote = 0)
+							     group by sale_name,enduser,project_name
                                  union all
                                  select  '' as no,
                                  sale_name + '_Total',
@@ -1462,7 +1468,9 @@ namespace WebForecastReport.Service
                                  '',
                                  format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
                                  format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
-                                 from Quotation where status <>'' and department='{department}' and date like '{year}%' group by sale_name
+                                 from Quotation 
+							     where status <>'' and department='{department}' and date like '{year}%' AND (exclude_quote is null or exclude_quote = 0)
+							     group by sale_name
 
                                  union all
 
@@ -1472,7 +1480,8 @@ namespace WebForecastReport.Service
                                  '',
                                  format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
                                  format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
-                                 from Quotation where status <>'' and department='{department}' and date like '{year}%')
+                                 from Quotation 
+								 where status <>'' and department='{department}' and date like '{year}%' AND (exclude_quote is null or exclude_quote = 0) )
 
                                  select * from s1 order by s1.sale_name");
                 }
@@ -1485,7 +1494,9 @@ namespace WebForecastReport.Service
                                  project_name,
                                  format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
                                  format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
-                                 from Quotation where status <>'' and department='{department}' and sale_name='{sale}' and date like '{year}%' group by sale_name,enduser,project_name
+                                 from Quotation
+								 where status <>'' and department='{department}' and sale_name='{sale}' and date like '{year}%' AND (exclude_quote is null or exclude_quote = 0)
+								 group by sale_name,enduser,project_name
                                  union all
                                  select  '' as no,
                                  sale_name + '_Total',
@@ -1493,7 +1504,9 @@ namespace WebForecastReport.Service
                                  '',
                                  format(sum(case when [status] ='IN' then cast(replace(quoted_price,',','') as float) / 1000000 else 0 end),'N2') as status_in,
                                  format(sum(case when [status] ='OUT' then cast(replace(quoted_price,',','') as float) /1000000 else 0 end),'N2') as status_out
-                                 from Quotation where status <>'' and department='{department}' and  sale_name='{sale}' and date like '{year}%' group by sale_name)
+                                 from Quotation 
+								 where status <>'' and department='{department}' and  sale_name='{sale}' and date like '{year}%' AND (exclude_quote is null or exclude_quote = 0)
+								 group by sale_name)
 
                                  select * from s1 order by s1.sale_name");
                 }
@@ -1731,7 +1744,7 @@ namespace WebForecastReport.Service
 																cast(sum(case when stages is not null and stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as decimal(10, 2)) as type_pending_mb
 
                                                             from Quotation
-                                                            where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year
+                                                            where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year AND (exclude_quote is null or exclude_quote = 0)
 															group by date,product_type having date like '{year}%' ) as sub_type
 
                                                         group by sub_type.month
@@ -1775,7 +1788,7 @@ namespace WebForecastReport.Service
 																sum(case when product_type = 'Service' then 1 else 0 end) as stages_service_cnt,
 																cast(sum(case when product_type = 'Service' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as decimal(10, 2)) as stages_service_mb
                                                              from Quotation
-                                                             where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year and stages in('Closed(Won)','Closed(Lost)','No go')
+                                                             where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year and stages in('Closed(Won)','Closed(Lost)','No go') AND (exclude_quote is null or exclude_quote = 0)
                                                              group by date,stages having date like '{year}%') as sub_stages
 
                                                         group by sub_stages.month
@@ -1811,7 +1824,7 @@ namespace WebForecastReport.Service
 
 																	from Quotation
 
-																	where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year and stages<> '' 
+																	where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year and stages<> '' AND (exclude_quote is null or exclude_quote = 0)
 																	group by date, product_type, stages having date like '{year}%' and stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go')) as sub_stages
 																group by sub_stages.month, sub_stages.product_type) as sub_pending
                                                         group by sub_pending.month
@@ -1819,7 +1832,7 @@ namespace WebForecastReport.Service
 
                                                     ON CAST(YEAR(date) AS VARCHAR(4)) + '-' + right('00' + CAST(MONTH(date) AS VARCHAR(2)), 2) = sub_sub_pending.month
 													
-                                                    where Quotation.department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year
+                                                    where Quotation.department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year AND (exclude_quote is null or exclude_quote = 0)
 													group by date having date like '{year}%'
 													)as sub_main
 													  
