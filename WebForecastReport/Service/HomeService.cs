@@ -102,6 +102,95 @@ namespace WebForecastReport.Service
             }
         }
 
+        public List<Home_DayModel> getDataDayByDepartment(string year, string department)
+        {
+            try
+            {
+                List<Home_DayModel> days = new List<Home_DayModel>();
+                string command = "";
+                if (department == "ALL")
+                {
+                    command = string.Format($@"select s1.department,s1.sale_name,
+                                                    sum(s1.no_data) / count(s1.no_data) as no_data,
+	                                                sum(case when s1.day < 7 then 1 else 0 end) as day_0,
+	                                                sum(case when s1.day >= 7 and s1.day < 14 then 1 else 0 end) as day_7,
+	                                                sum(case when s1.day >= 14 and s1.day < 30 then 1 else 0 end) as day_14,
+	                                                sum(case when s1.day >= 30 and s1.day < 60 then 1 else 0 end) as day_30,
+	                                                sum(case when s1.day >= 60 then 1 else 0 end) as day_60
+	                                                from (
+		                                                select Quotation.department,
+			                                                Quotation.sale_name,
+			                                                Quotation.stages,
+			                                                s2.no_data,
+			                                                DATEDIFF(Day, stages_update_date,getDate()) as day
+		                                                from Quotation
+		                                                LEFT JOIN (
+					                                                select department,sale_name,
+						                                                   sum(case when (stages is null or stages='') then 1 else 0 end) as no_data
+					                                                from Quotation 
+					                                                where sale_name <>'' and date like '{year}%'
+					                                                group by department,sale_name) as s2
+					                                                ON s2.sale_name = Quotation.sale_name
+		                                                where Quotation.sale_name <>'' and stages_update_date like '{year}%' and stages not in ('Closed(Won)','Closed(Lost)','No go')) as s1 
+	                                                group by s1.department,s1.sale_name
+	                                                order by s1.sale_name");
+                }
+                else
+                {
+                    command = string.Format($@" select s1.department,s1.sale_name,
+                                                    sum(s1.no_data) / count(s1.no_data) as no_data,
+	                                                sum(case when s1.day < 7 then 1 else 0 end) as day_0,
+	                                                sum(case when s1.day >= 7 and s1.day < 14 then 1 else 0 end) as day_7,
+	                                                sum(case when s1.day >= 14 and s1.day < 30 then 1 else 0 end) as day_14,
+	                                                sum(case when s1.day >= 30 and s1.day < 60 then 1 else 0 end) as day_30,
+	                                                sum(case when s1.day >= 60 then 1 else 0 end) as day_60
+	                                                from (
+		                                                select Quotation.department,
+			                                                Quotation.sale_name,
+			                                                Quotation.stages,
+			                                                s2.no_data,
+			                                                DATEDIFF(Day, stages_update_date,getDate()) as day
+		                                                from Quotation
+		                                                LEFT JOIN (
+					                                                select department,sale_name,
+						                                                   sum(case when (stages is null or stages='') then 1 else 0 end) as no_data
+					                                                from Quotation 
+					                                                where department = '{department}' and sale_name <>'' and date like '{year}%'
+					                                                group by department,sale_name) as s2
+					                                                ON s2.sale_name = Quotation.sale_name
+		                                                where Quotation.department = '{department}' and Quotation.sale_name <>'' and stages_update_date like '{year}%' and stages not in ('Closed(Won)','Closed(Lost)','No go')) as s1 
+	                                            group by s1.department,s1.sale_name");
+                }
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        Home_DayModel d = new Home_DayModel()
+                        {
+                            sale_name = dr["sale_name"].ToString(),
+                            no_data = dr["no_data"].ToString(),
+                            day_0 = dr["day_0"].ToString(),
+                            day_7 = dr["day_7"].ToString(),
+                            day_14 = dr["day_14"].ToString(),
+                            day_30 = dr["day_30"].ToString(),
+                            day_60 = dr["day_60"].ToString()
+                        };
+                        days.Add(d);
+                    }
+                    dr.Close();
+                }
+                return days;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
         public List<Home_Stages_DayModel> getDataQuotationMoreDay(string year, string sale_name, string day)
         {
             try
@@ -196,6 +285,114 @@ namespace WebForecastReport.Service
                     dr.Close();
                 }
                 return stages;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public List<HittingRateModel> GetHittingRateByDepartment(string department)
+        {
+            try
+            {
+                List<HittingRateModel> hittingRates = new List<HittingRateModel>();
+                string command = string.Format($@"   DECLARE @million as float
+                                                     SET @million = 1000000;
+	                                                    with main as (select product_type,sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as win,
+		                                                    sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as lose,
+		                                                    sum(case when stages = 'No go' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as nogo,
+		                                                    sum(case when stages in ('Closed(Won)','Closed(Lost)','No go') then cast(replace(quoted_price,',','') as float) / @million else 0 end) as total
+	                                                    from Quotation
+	                                                    where department= '{department}' and product_type <>'' and product_type is not null and stages in ('Closed(Won)','Closed(Lost)','No go')
+	                                                    group by product_type
+	                                                    ), sub as (
+		                                                    select 'all' as product_type,sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as win,
+			                                                    sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as lose,
+			                                                    sum(case when stages = 'No go' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as nogo,
+			                                                    sum(case when stages in ('Closed(Won)','Closed(Lost)','No go') then cast(replace(quoted_price,',','') as float) / @million else 0 end) as total
+		                                                    from Quotation
+		                                                    where department= '{department}' and product_type <>'' and product_type is not null and stages in ('Closed(Won)','Closed(Lost)','No go')
+	                                                    )
+	                                                    select main.product_type as type,
+	                                                    cast(((main.win / main.total)*100)as decimal(10, 1)) as hitting_rate
+	                                                    from main union all
+	                                                    select 'Total' as type,
+	                                                    cast(((sub.win / sub.total)*100)as decimal(10, 1)) as hitting_rate
+	                                                    from sub");
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        HittingRateModel p = new HittingRateModel()
+                        {
+                            type = dr["type"].ToString(),
+                            hitting_rate = double.Parse(dr["hitting_rate"].ToString())
+                        };
+                        hittingRates.Add(p);
+                    }
+                    dr.Close();
+                }
+                return hittingRates;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public List<HittingRateModel> GetHittingRateByName(string name)
+        {
+            try
+            {
+                List<HittingRateModel> hittingRates = new List<HittingRateModel>();
+                string command = string.Format($@"   DECLARE @million as float
+                                                     SET @million = 1000000;
+	                                                    with main as (select product_type,sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as win,
+		                                                    sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as lose,
+		                                                    sum(case when stages = 'No go' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as nogo,
+		                                                    sum(case when stages in ('Closed(Won)','Closed(Lost)','No go') then cast(replace(quoted_price,',','') as float) / @million else 0 end) as total
+	                                                    from Quotation
+	                                                    where sale_name= '{name}' and product_type <>'' and product_type is not null and stages in ('Closed(Won)','Closed(Lost)','No go')
+	                                                    group by product_type
+	                                                    ), sub as (
+		                                                    select 'all' as product_type,sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as win,
+			                                                    sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as lose,
+			                                                    sum(case when stages = 'No go' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as nogo,
+			                                                    sum(case when stages in ('Closed(Won)','Closed(Lost)','No go') then cast(replace(quoted_price,',','') as float) / @million else 0 end) as total
+		                                                    from Quotation
+		                                                    where sale_name= '{name}' and product_type <>'' and product_type is not null and stages in ('Closed(Won)','Closed(Lost)','No go')
+	                                                    )
+	                                                    select main.product_type as type,
+	                                                    cast(((main.win / main.total)*100)as decimal(10, 1)) as hitting_rate
+	                                                    from main union all
+	                                                    select 'Total' as type,
+	                                                    cast(((sub.win / sub.total)*100)as decimal(10, 1)) as hitting_rate
+	                                                    from sub");
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        HittingRateModel p = new HittingRateModel()
+                        {
+                            type = dr["type"].ToString(),
+                            hitting_rate = dr["hitting_rate"] != DBNull.Value ? double.Parse(dr["hitting_rate"].ToString()) : 0.0
+                        };
+                        hittingRates.Add(p);
+                    }
+                    dr.Close();
+                }
+                return hittingRates;
             }
             finally
             {

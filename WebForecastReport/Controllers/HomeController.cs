@@ -94,7 +94,10 @@ namespace WebForecastReport.Controllers
             Home_DayModel day = new Home_DayModel();
             day = Home.getDataDay(year, name);
 
-            var list = new { datas = datas, stages = stages, day = day };
+            List<HittingRateModel> hittingRates = new List<HittingRateModel>();
+            hittingRates = Home.GetHittingRateByName(name);
+
+            var list = new { datas = datas, stages = stages, day = day, hittingrates = hittingRates };
 
             return Json(list);
         }
@@ -118,6 +121,14 @@ namespace WebForecastReport.Controllers
             List<Home_Stages_DayModel> quotations = new List<Home_Stages_DayModel>();
             quotations = Home.getDataQuotationMoreDay(year, name, day);
             return Json(quotations);
+        }
+
+        [HttpPost]
+        public JsonResult GetDataDepartment(string year,string department)
+        {
+            List<Home_DayModel> last_update = new List<Home_DayModel>();
+            last_update = Home.getDataDayByDepartment(year,department);
+            return Json(last_update);
         }
     }
 }

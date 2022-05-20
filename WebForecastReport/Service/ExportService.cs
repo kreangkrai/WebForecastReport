@@ -13,10 +13,73 @@ namespace WebForecastReport.Service
     public class ExportService : IExport
     {
         readonly IQuotation_Report Quotation_Report;
+        readonly ILogStatus LogStatus;
+        readonly ILogStages LogStages;
         public ExportService()
         {
             Quotation_Report = new Quotation_ReportService();
+            LogStatus = new LogStatusService();
+            LogStages = new LogStagesService();
         }
+
+        public Stream ExportLogStages(FileInfo path, string year)
+        {
+            Stream stream = new MemoryStream();
+            List<Log_StagesModel> reports = new List<Log_StagesModel>();
+            if (path.Exists)
+            {
+                reports = LogStages.GetStagesByYear(year);
+                using (ExcelPackage p = new ExcelPackage(path))
+                {
+                    ExcelWorksheet worksheet = p.Workbook.Worksheets["Sheet1"];
+
+                    int startRows = 2;
+                    for (int i = 0; i < reports.Count; i++)
+                    {
+                        worksheet.Cells["A" + (i + startRows)].Value = reports[i].quotation != null ? reports[i].quotation.ToString() : "";
+                        worksheet.Cells["B" + (i + startRows)].Value = reports[i].project_name != null ? reports[i].project_name.ToString() : "";
+                        worksheet.Cells["C" + (i + startRows)].Value = reports[i].date_edit != null ? reports[i].date_edit.ToString() : "";
+                        worksheet.Cells["D" + (i + startRows)].Value = reports[i].stages_from != null ? reports[i].stages_from.ToString() : "";
+                        worksheet.Cells["E" + (i + startRows)].Value = reports[i].stages_to != null ? reports[i].stages_to.ToString() : "";
+                        worksheet.Cells["F" + (i + startRows)].Value = reports[i].reason != null ? reports[i].reason.ToString() : "";
+                        worksheet.Cells["G" + (i + startRows)].Value = reports[i].name != null ? reports[i].name.ToString() : "";
+                    }
+                    p.SaveAs(stream);
+                    stream.Position = 0;
+                }
+            }
+            return stream;
+        }
+
+        public Stream ExportLogStatus(FileInfo path, string year)
+        {
+            Stream stream = new MemoryStream();
+            List<Log_StatusModel> reports = new List<Log_StatusModel>();
+            if (path.Exists)
+            {
+                reports = LogStatus.GetStatusByYear(year);
+                using (ExcelPackage p = new ExcelPackage(path))
+                {
+                    ExcelWorksheet worksheet = p.Workbook.Worksheets["Sheet1"];
+
+                    int startRows = 2;
+                    for (int i = 0; i < reports.Count; i++)
+                    {
+                        worksheet.Cells["A" + (i + startRows)].Value = reports[i].quotation != null ? reports[i].quotation.ToString() : "";
+                        worksheet.Cells["B" + (i + startRows)].Value = reports[i].project_name != null ? reports[i].project_name.ToString() : "";
+                        worksheet.Cells["C" + (i + startRows)].Value = reports[i].date_edit != null ? reports[i].date_edit.ToString() : "";
+                        worksheet.Cells["D" + (i + startRows)].Value = reports[i].status_from != null ? reports[i].status_from.ToString() : "";
+                        worksheet.Cells["E" + (i + startRows)].Value = reports[i].status_to != null ? reports[i].status_to.ToString() : "";
+                        worksheet.Cells["F" + (i + startRows)].Value = reports[i].reason != null ? reports[i].reason.ToString() : "";
+                        worksheet.Cells["G" + (i + startRows)].Value = reports[i].name != null ? reports[i].name.ToString() : "";
+                    }
+                    p.SaveAs(stream);
+                    stream.Position = 0;
+                }
+            }
+            return stream;
+        }
+
         public Stream ExportQuotation(FileInfo path, string role, string name, string department)
         {
             Stream stream = new MemoryStream();

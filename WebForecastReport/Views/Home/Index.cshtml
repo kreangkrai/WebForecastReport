@@ -7,8 +7,7 @@
         font-weight: bold;
     }
 
-    .dataTables_scrollHeadInner,
-    .table {
+    .dataTables_scrollHeadInner, .table {
         width: 100% !important;
     }
 </style>
@@ -16,10 +15,19 @@
     <div class="col-md-12 col-xl-12">
         <ul class="nav nav-tabs pb-2" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="tab_a" data-toggle="tab" href="#dashboard_a" role="tab" aria-controls="dashboard_a" aria-selected="true"><b>Dashboard Individual</b></a>
+                <a class="nav-link active" id="tab_a" data-toggle="tab" href="#dashboard_a" role="tab" aria-controls="dashboard_a" aria-selected="true">
+                    <b>Dashboard Individual</b>
+                </a>
+            </li>            
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="tab_c" data-toggle="tab" href="#dashboard_c" role="tab" aria-controls="dashboard_c" aria-selected="false">
+                    <b>Dashboard Department</b>
+                </a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="tab_b" data-toggle="tab" href="#dashboard_b" role="tab" aria-controls="dashboard_b" aria-selected="false"><b>Performance</b></a>
+                <a class="nav-link" id="tab_b" data-toggle="tab" href="#dashboard_b" role="tab" aria-controls="dashboard_b" aria-selected="false">
+                    <b>Performance</b>
+                </a>
             </li>
         </ul>
     </div>
@@ -48,17 +56,24 @@
                         <div class="col-md-4 col-xl-4">
                             <div class="card bg-dark" style="height:600px">
                                 <div class="card-header">
-                                    <span class="card-title">Type</span>
+                                    <span class="card-title">Type-Hitting Rate</span>
                                 </div>
                                 <div class="card-body">
-                                    <div class="w-100" id="pie_chart_type"></div>
+                                    <div class="row">
+                                        <div class="col-xl-12 d-flex justify-content-center">
+                                            <div class="w-100" id="pie_chart_type" style="width:100%;height:250px"></div>
+                                        </div>
+                                        <div class="col-xl-12 d-flex justify-content-center">
+                                            <canvas id="chart_hitting_rate" style="width:250px;height:250px"></canvas>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4 col-xl-4">
                             <div class="card bg-dark" style="height:600px">
                                 <div class="card-header">
-                                    <span class="card-title">Won - Lost</span>
+                                    <span class="card-title">Won-Lost</span>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
@@ -231,6 +246,123 @@
                 </div>
             </div>
         </div>
+        <div class="tab-pane fade" id="dashboard_c" role="tabpanel" aria-labelledby="home-tab">
+            <div class="row pt-3">
+                <div class="col-md-6 col-xl-6">
+                    <div class="row">
+                        <div class="col-md-3 col-xl-3 pb-3">
+                            <select id="years_dashboard_department" class="form-control">
+                            </select>
+                        </div>
+                        <div class="col-md-4 col-xl-4 pb-3">
+                            <select id="department_name" class="form-control">
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-xl-3 pb-4">
+                            <button type="button" id="btn_department_OK" class="btn btn-primary form-control">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-xl-12">
+                    <div class="row">
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card bg-dark" style="height:600px">
+                                <div class="card-header">
+                                    <span class="card-title">Type-Hitting Rate</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-xl-12 d-flex justify-content-center">
+                                            <div class="w-100" id="pie_chart_type_department" style="width:100%;height:250px"></div>
+                                        </div>
+                                        <div class="col-xl-12 d-flex justify-content-center">
+                                            <canvas id="chart_hitting_rate_department" style="width:250px;height:250px"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card bg-dark" style="height:600px">
+                                <div class="card-header">
+                                    <span class="card-title">Won - Lost</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-xl-12 d-flex justify-content-center">
+                                            <div id="pie_chart_won_department" style="width:100%;height:250px"></div>
+                                        </div>
+                                        <div class="col-xl-12 d-flex justify-content-center">
+                                            <div id="pie_chart_lost_department" style="width:100%;height:250px"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card bg-dark" style="height:600px">
+                                <div class="card-header">
+                                    <span class="card-title">No go - Pending</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-xl-12 d-flex justify-content-center">
+                                            <div id="pie_chart_nogo_department" style="width:100%;height:250px"></div>
+                                        </div>
+                                        <div class="col-xl-12 d-flex justify-content-center">
+                                            <div id="pie_chart_pending_department" style="width:100%;height:250px"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12 col-xl-12">
+                    <div class="row">
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card bg-dark" style="height:600px">
+                                <div class="card-header">
+                                    <span class="card-title">Stages</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-xl-12">
+                                            <div id="pie_chart_stages_department"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-xl-8">
+                            <div class="card bg-dark " style="height:auto">
+                                <div class="card-header">
+                                    <span class="card-title">Last Update</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 col-xl-6 pt-3">
+                                            <div class="w-100">
+                                                <canvas id="bar_chart_stages_department" style="height:450px"></canvas>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6 pt-2">
+                                            <div style="overflow:auto; height:500px">
+                                                <table id="table_stages_department" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @section Scripts
@@ -243,6 +375,7 @@
         var Datas = [];
         var Data_Stages = [];
         var Data_Stages_Day = [];
+        var Hitting_Rates = [];
 
         var product = "0";
         var project = "0";
@@ -280,7 +413,11 @@
 
         var pie_chart_type;
         var pie_chart_won;
-        var bar_chart_stages;        
+        var bar_chart_stages;     
+        var chart_hitting_rate;
+
+        var DataLastUpdateDepartment = [];
+
         $(document).ready(function () {
 
             init();
@@ -306,7 +443,6 @@
 
                     initSale(role,Sales);
                     initYearDashboard(Years);
-
                     //draw pie chart
                     var name = document.getElementById("sale_name").value;
                     pie_chart_data(year,name);
@@ -325,6 +461,11 @@
         $('#tab_b').on('click',function(){
              initDepartment(Role,Departments);
              initYearPerformance(Years);
+        });
+
+        $('#tab_c').on('click',function(){
+             initDashboardDepartment(Role,Departments);
+             initYearDashboardDepartment(Years);
         });
 
         $('#btn_performance_OK').on('click',function(){
@@ -367,6 +508,26 @@
                 }
             });
         });
+
+        $('#btn_department_OK').on('click',function(){
+            var department = document.getElementById("department_name").value;
+            var year = document.getElementById("years_dashboard_department").value;
+            $.ajax({
+                url: '@Url.Action("GetDataDepartment", "Home")',
+                type: "post",
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    year,department
+                },
+                success: function (response) {
+                   
+                    DataLastUpdateDepartment = response;
+                    UpdateDepartmentStack();
+                }
+            });
+            
+        });
+
         function initSale(role,Sales){
             $('#sale_name').empty();
             var name = '@Model.name';
@@ -407,6 +568,24 @@
                 document.getElementById('departments').selectedIndex = 0;
             }
         };
+        function initDashboardDepartment(role,Departments){
+            //Department
+            $('#department_name').empty();
+            if(role == "Admin"){
+                  var selectdepartment = document.getElementById('department_name');
+                  selectdepartment.options.add(new Option("ALL", "ALL", true));
+                for (var i = 0, l = Departments.length; i < l; i++) {
+                 var option = Departments[i];
+                 selectdepartment.options.add(new Option(option.text, option.value, option.selected));
+                }
+                document.getElementById('departments').selectedIndex = 0;
+
+            }else{
+                  var selectdepartment = document.getElementById('department_name');
+                  selectdepartment.options.add(new Option(Departments[0].text, Departments[0].value, null));
+                document.getElementById('department_name').selectedIndex = 0;
+            }
+        };
 
         function initYearDashboard(Years){
             //Year
@@ -418,6 +597,19 @@
             }
             document.getElementById('years_dashboard').selectedIndex = 0;
         };
+
+        function initYearDashboardDepartment(Years){
+            //Year
+            $('#years_dashboard_department').empty();
+            var selectyear = document.getElementById('years_dashboard_department');
+            for (var i = 0, l = Years.length; i < l; i++) {
+                 var option = Years[i];
+                 selectyear.options.add(new Option(option.text, option.value, option.selected));
+            }
+            document.getElementById('years_dashboard_department').selectedIndex = 0;
+        };
+
+
         function initYearPerformance(Years){
             //Year
             $('#years_performance').empty();
@@ -441,6 +633,7 @@
                      Datas = response.datas;
                      Data_Stages = response.stages;
                      Data_Stages_Day = response.day;
+                     Hitting_Rates = response.hittingrates;
 
                      product = "0";
                      project = "0";
@@ -588,6 +781,7 @@
                      UpdatePieChartPending();
                      UpdatePieChartStages();
                      PopulateDataBarChart(Data_Stages_Day);
+                     UpdateChartHittingRate();
                  }
              });           
         };
@@ -957,6 +1151,7 @@
             });
             pie_chart.render();  
         };
+
        @* var pie_chart_nogo;
         function UpdatePieChartNogo() {
 
@@ -1219,7 +1414,7 @@
                             text: 'Stages',
                             color: '#FFFFFFC8',
                             font: {
-                                size: 14
+                                size: 4
                             },
                         },
                         legend: {
@@ -1507,6 +1702,228 @@
             }
         };
 
+       function UpdateChartHittingRate() {
+
+            if (chart_hitting_rate != null)
+                chart_hitting_rate.destroy();
+            
+            var product = Hitting_Rates.filter(f=>f.type == "Product").map(m=>m.hitting_rate)[0];
+            var project = Hitting_Rates.filter(f=>f.type == "Project").map(m=>m.hitting_rate)[0];
+            var service = Hitting_Rates.filter(f=>f.type == "Service").map(m=>m.hitting_rate)[0];
+            var total = Hitting_Rates.filter(f=>f.type == "Total").map(m=>m.hitting_rate)[0];
+            
+            if (typeof product === "undefined"){
+                product = 0;
+            }
+            if (typeof project === "undefined"){
+                project = 0;
+            }
+            if (typeof service === "undefined"){
+                service = 0;
+            }
+            if (typeof total === "undefined"){
+                total = 0;
+            }
+            var datas = [product,project,service,total];
+
+            var type = [ "Product", "Project", "Service","Total"];
+
+            var bg_colors = ['#41384D', '#725A7A', '#B8AAC3','#FFFFCC'];
+            var border_colors = ['#41384D', '#725A7A', '#B8AAC3','#FFFFCC'];
+
+            chart_hitting_rate = new Chart("chart_hitting_rate", {
+                type: 'polarArea',
+                data: {
+                    datasets: [
+                        {
+                            data: datas,
+                            backgroundColor: bg_colors,
+                            borderColor: border_colors,
+                            borderWidth: 2,
+                        }
+                    ],
+                    labels: type
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Hitting Rate',
+                            color: '#FFFFFFC8',
+                            font: {
+                                size: 24
+                            },
+                        },
+                        legend: {
+                            position: 'right',
+                            display: true,
+                            labels: {
+                                color: '#FFFFFFC8',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.raw;
+                                    if (label) {
+                                        label = type[context.dataIndex] + ' : ' + label + ' %';
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
+                    },
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            pointLabels: {
+                                color: 'rgba(255,255,255,0.8)',
+                            },
+                            grid: {
+                                    color: 'rgba(255,255,255,0.8)'
+                            },
+                            angleLines: {
+                                    color: "gray"
+                            },
+                        }
+                    }
+                }
+            });
+        };
+
+        // Dashboard Department
+
+        var stages_department_stack;
+        function UpdateDepartmentStack(datas){
+            if (stages_department_stack != null){
+                stages_department_stack.destroy();
+
+            }
+            var chartName = "bar_chart_stages_department";
+            var ctx = document.getElementById(chartName).getContext('2d');
+
+            var names = [];
+            var no_data = [];
+            var day_0 = [];
+            var day_7 = [];
+            var day_14 = [];
+            var day_30 = [];
+            var day_60 = [];
+
+            //get datas
+            for (var i =0; i<DataLastUpdateDepartment.length;i++){
+                names.push(DataLastUpdateDepartment[i].sale_name);
+                no_data.push(DataLastUpdateDepartment[i].no_data);
+                day_0.push(DataLastUpdateDepartment[i].day_0);
+                day_7.push(DataLastUpdateDepartment[i].day_7);
+                day_14.push(DataLastUpdateDepartment[i].day_14);
+                day_30.push(DataLastUpdateDepartment[i].day_30);
+                day_60.push(DataLastUpdateDepartment[i].day_60);
+            }
+            var labels = names;
+            const data = {
+                              labels: labels,
+                              datasets: [
+                                {
+                                  label: '> 60 Day',
+                                  data: day_60,
+                                  backgroundColor: '#E35812',
+                                },
+                                {
+                                  label: '> 30 Day',
+                                  data: day_30,
+                                  backgroundColor: '#DE8124',
+                                },
+                                {
+                                  label: '> 14 Day',
+                                  data: day_14,
+                                  backgroundColor: '#DEA824',
+                                },
+                                {
+                                  label: '> 7 Day',
+                                  data: day_7,
+                                  backgroundColor: '#E2D445',
+                                },
+                                {
+                                  label: '> 0 Day',
+                                  data: day_0,
+                                  backgroundColor: '#F1F48F',
+                                },
+                                {
+                                  label: 'No Data',
+                                  data: no_data,
+                                  backgroundColor: '#D8D8D8',
+                                },
+                              ],
+                        };
+
+                        const options = {
+                              indexAxis: 'y',
+                              maintainAspectRatio: false,
+                              plugins: {
+                                title: {
+                                  display: false,
+                                  text: 'Last Update',
+                                  color: '#FFFFFFC8',
+                                  font: {
+                                        size: 16
+                                    }
+                                },
+                                @*tooltip: {
+                                       callbacks: {
+                                            label: function(context) {
+                                                var label = context.dataset.label || '';
+                                                if (label) {
+                                                    label += ' : ';
+                                                }
+                                                if (context.parsed.y !== null) {
+                                                    label += context.parsed.y + ' MB';
+                                                }
+                                                return label;
+                                        }
+                                    }
+                                },*@
+                                legend: {
+                                    labels: {
+                                        color: '#FFFFFFC8',
+                                        font: {
+                                            size: 14
+                                        },
+                                 
+                                    },
+                                    display: false
+                                }
+                              },
+                              @*interaction: {
+                                  intersect: false,
+                              },*@
+                              responsive: true,
+                              scales: {
+                                x: {
+                                  stacked: true,
+                                  ticks: {
+                                    color: '#FFFFFFC8',
+                                    font: {
+                                        size: 14
+                                    },
+                                  },
+                                },
+                                y: {
+                                  stacked: true,
+                                  ticks: {
+                                    color: '#FFFFFFC8',
+                                    font: {
+                                        size: 14
+                                    },
+                                  },
+                                }
+                              }
+                        };
+                        stages_department_stack = new Chart(ctx, { type: 'bar', data: data, options: options });
+        };
         var tables;
         function table(dataSet) {
             if (tables !== undefined)
@@ -1631,7 +2048,6 @@
 
                 return data_departments;
         };
-
         function add_sale(sales) {
                 var data_sales = [];
                 for (var i = 0; i < sales.length; i++) {

@@ -7,11 +7,19 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                   <div class="row d-flex justify-content-between">
-                        <div class="col-md-2 col-xl-2 pb-3">
-                            <span class="card-title"><b>Log Status</b></span>
+                   <div class="row d-flex justify-content-between pt-2">
+                        <div class="col-md-4 col-xl-4">
+                            <div class="row">
+                                <div class="col-md-4 col-xl-4 pb-2">
+                                    <span class="card-title"><b>Log Status</b></span>
+                                </div>
+                                <div class="col-md-4 col-xl-4 pb-2">
+                                    <select id="years_status" class="form-control">
+                                    </select>
+                                </div>
+                            </div>                           
                         </div>
-                        <div class="col-md-2 col-xl-2 pb-3">
+                        <div class="col-md-2 col-xl-2 pb-2">
                              <button type="button" id="export_status" class="btn btn-success form-control">Export</button>
                         </div>
                     </div>
@@ -28,19 +36,24 @@
 {
     <script type="text/javascript">
 
+    var Years = [];
     $(document).ready(function () {
         init();
     });
 
     function init() {
+        var year = document.getElementById("years_status").value;
         $.ajax({
             url: '@Url.Action("GetData", "LogStatus")',
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
+                year
             },
             success: function (response) {
-                var datas = response;
+                Years = add_year(response.years);
+                
+                var datas = response.logs;
                 var dataSet = [];
                 for (var i = 0; i < datas.length; i++) {
                     var data = [datas[i].quotation,
@@ -53,9 +66,45 @@
                     dataSet.push(data);
                 }
                 table(dataSet);
+                initYear(Years);
+                
             }
         });
     };
+
+    $('#years_status').on('change',function(){
+        var year = document.getElementById("years_status").value;
+        $.ajax({
+            url: '@Url.Action("GetData", "LogStatus")',
+            type: "post",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                year
+            },
+            success: function (response) {
+                Years = add_year(response.years);
+                
+                var datas = response.logs;
+                var dataSet = [];
+                for (var i = 0; i < datas.length; i++) {
+                    var data = [datas[i].quotation,
+                    datas[i].project_name,
+                    datas[i].date_edit,
+                    datas[i].status_from,
+                    datas[i].status_to,
+                    datas[i].reason,
+                    datas[i].name];
+                    dataSet.push(data);
+                }
+                table(dataSet);               
+            }
+         });
+    });
+
+    $('#export_status').on('click',function(){
+        var year = document.getElementById("years_status").value;
+        location.href = '@Url.Action("DownloadXlsxLogStatus", "LogStatus")?year='+year;
+    });
 
     var tables;
     function table(dataSet) {
@@ -79,6 +128,28 @@
         });
         $(tables.table().body()).addClass('text-dark');
     };
-  
+
+    function initYear(Years){
+        //Year
+        $('#years_status').empty();
+        var selectyear = document.getElementById('years_status');
+        for (var i = 0, l = Years.length; i < l; i++) {
+             var option = Years[i];
+             selectyear.options.add(new Option(option.text, option.value, option.selected));
+        }
+        document.getElementById('years_status').selectedIndex = 0;
+    };
+    function add_year(years) {
+        var data_years = [];
+        for (var i = 0; i < years.length; i++) {
+            var data =
+                {
+                    "text": years[i],
+                    "value": years[i],
+                }
+                data_years.push(data);
+        }
+        return data_years;
+    };
     </script>
 }

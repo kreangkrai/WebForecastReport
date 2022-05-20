@@ -9,7 +9,6 @@ namespace WebForecastReport.Interface
     interface ILogStages
     {
         string Insert(Log_StagesModel model);
-        List<Log_StagesModel> GetStages();
-        List<Log_StagesModel> GetStagesByName(string name);
+        List<Log_StagesModel> GetStagesByYear(string year);
     }
 }

@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WebForecastReport.Interface;
@@ -14,10 +16,14 @@ namespace WebForecastReport.Controllers
     {
         readonly IAccessory Accessory;
         readonly ILogStatus LogStatus;
-        public LogStatusController()
+        readonly IExport Export;
+        private readonly IHostingEnvironment _hostingEnvironment;
+        public LogStatusController(IHostingEnvironment hostingEnvironment)
         {
             Accessory = new AccessoryService();
             LogStatus = new LogStatusService();
+            Export = new ExportService();
+            _hostingEnvironment = hostingEnvironment;
         }
         public IActionResult Index()
         {
@@ -39,11 +45,26 @@ namespace WebForecastReport.Controllers
             }
         }
         [HttpPost]
-        public JsonResult GetData()
+        public JsonResult GetData(string year)
         {
             List<Log_StatusModel> logs = new List<Log_StatusModel>();
-            logs = LogStatus.GetStatus();
-            return Json(logs);
+            logs = LogStatus.GetStatusByYear(year);
+
+            List<string> years = new List<string>();
+            for (int y = DateTime.Now.Year; y > DateTime.Now.Year - 3; y--)
+            {
+                years.Add(y.ToString());
+            }
+            var list = new { logs = logs, years = years };
+            return Json(list);
+        }
+
+        public IActionResult DownloadXlsxLogStatus(string year)
+        {
+            //Download Excel
+            var templateFileInfo = new FileInfo(Path.Combine(_hostingEnvironment.ContentRootPath, "./wwwroot/template", "LogStatus.xlsx"));
+            var stream = Export.ExportLogStatus(templateFileInfo, year);
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "LogStatus_" + DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss") + ".xlsx");
         }
     }
 }
