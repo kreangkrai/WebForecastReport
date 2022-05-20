@@ -13,7 +13,12 @@ namespace WebForecastReport.Models.MPR
         public DateTime working_date { get; set; }
         public string job_id { get; set; }
         public string job_name { get; set; }
+        public string customer { get; set; }
         public string task_id { get; set; }
         public string task_name { get; set; }
+        public TimeSpan start_time { get; set; }
+        public TimeSpan stop_time { get; set; }
+        public bool lunch { get; set; }
+        public bool dinner { get; set; }
     }
 }
