@@ -15,20 +15,22 @@ namespace WebForecastReport.Service
             try
             {
                 List<Home_DataModel> datas = new List<Home_DataModel>();
-                SqlCommand cmd = new SqlCommand(@"select 'Type' as [group],sale_name,product_type as [type], '' as stages, format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as mb
-                                                  from Quotation where sale_name='" + name + "' and stages_update_date like '" + year + "%' AND (exclude_quote is null or exclude_quote = 0) group by sale_name,product_type having product_type <>'' union all " +
+                string command = string.Format($@"select 'Type' as [group],sale_name as name,product_type as [type], '' as stages, format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as mb
+                                                  from Quotation 
+                                                  where sale_name='{name}' and stages_update_date like '{year}%' AND (exclude_quote is null or exclude_quote = 0) group by sale_name,product_type having product_type <>'' union all
 
-                                                  "select 'Stages' as [group],sale_name,product_type,stages,format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as mb " +
-                                                  "from Quotation " +
-                                                  "where sale_name='" + name + "' and stages_update_date like '" + year + "%' AND (exclude_quote is null or exclude_quote = 0) " +
-                                                  "group by sale_name,stages,product_type having product_type <>'' and stages in('Closed(Won)','Closed(Lost)','No go') union all " +
+                                                  select 'Stages' as [group],sale_name as name,product_type,stages,format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as mb
+                                                  from Quotation
+                                                  where sale_name='{name}' and stages_update_date like '{year}%' AND (exclude_quote is null or exclude_quote = 0)
+                                                  group by sale_name,stages,product_type having product_type <>'' and stages in('Closed(Won)','Closed(Lost)','No go') union all
 
-                                                  "select s1.[group],s1.sale_name,s1.product_type,'Pending' as stages, sum(cast(s1.mb as float)) as mb " +
-                                                  "from (select 'Stages' as [group],sale_name,product_type,stages,format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as mb " +
-                                                        "from Quotation where sale_name='" + name + "' and stages_update_date like '" + year + "%' " +
-                                                        "group by sale_name,stages,product_type " +
-                                                        "having product_type <>'' and stages not in('','Closed(Won)','Closed(Lost)','No go')) as s1 " +
-                                                  "group by s1.[group],s1.sale_name,s1.product_type", ConnectSQL.OpenConnect());
+                                                  select s1.[group],s1.name,s1.product_type,'Pending' as stages, sum(cast(s1.mb as float)) as mb
+                                                  from (select 'Stages' as [group],sale_name as name,product_type,stages,format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as mb
+                                                        from Quotation where sale_name='{name}' and stages_update_date like '{year}%'
+                                                        group by sale_name,stages,product_type
+                                                        having product_type <>'' and stages not in('Closed(Won)','Closed(Lost)','No go')) as s1
+                                                  group by s1.[group],s1.name,s1.product_type");
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -37,7 +39,7 @@ namespace WebForecastReport.Service
                         Home_DataModel p = new Home_DataModel()
                         {
                             group = dr["group"].ToString(),
-                            sale_name = dr["sale_name"].ToString(),
+                            name = dr["name"].ToString(),
                             type = dr["type"].ToString(),
                             stages = dr["stages"].ToString(),
                             mb = dr["mb"].ToString()
@@ -55,6 +57,82 @@ namespace WebForecastReport.Service
                     ConnectSQL.CloseConnect();
                 }
             }
+        }
+
+        public List<Home_DataModel> getDataByDepartment(string year, string department)
+        {
+            try
+            {
+                List<Home_DataModel> datas = new List<Home_DataModel>();
+                string command = "";
+                if (department == "ALL")
+                {
+                    command = string.Format($@"DECLARE @million as float
+												  SET @million = 1000000
+												  select 'Type' as [group],product_type as [type],'' as name, '' as stages, cast(sum(cast(replace(quoted_price,',','') as float))/@million as decimal(10,2)) as mb
+                                                  from Quotation 
+                                                  where stages_update_date like '{year}%' AND (exclude_quote is null or exclude_quote = 0) group by product_type having product_type <>'' union all
+
+                                                  select 'Stages' as [group],product_type,'' as name,stages,cast(sum(cast(replace(quoted_price,',','') as float))/@million as decimal(10,2)) as mb
+                                                  from Quotation
+                                                  where stages_update_date like '{year}%' AND (exclude_quote is null or exclude_quote = 0)
+                                                  group by stages,product_type having product_type <>'' and stages in('Closed(Won)','Closed(Lost)','No go') union all
+
+                                                  select s1.[group],s1.product_type,'' as name,'Pending' as stages, sum(cast(s1.mb as float)) as mb
+                                                  from (select 'Stages' as [group],product_type,stages,cast(sum(cast(replace(quoted_price,',','') as float))/@million as decimal(10,2)) as mb
+                                                        from Quotation where stages_update_date like '{year}%'
+                                                        group by stages,product_type
+                                                        having product_type <>'' and stages not in('Closed(Won)','Closed(Lost)','No go')) as s1
+                                                  group by s1.[group],s1.product_type");
+                }
+                else
+                {
+                    command = string.Format($@"DECLARE @million as float
+												  SET @million = 1000000
+                                                  select 'Type' as [group],department as name,product_type as [type], '' as stages, cast(sum(cast(replace(quoted_price,',','') as float))/ @million as decimal(10,2)) as mb
+                                                  from Quotation 
+                                                  where department='{department}' and stages_update_date like '{year}%' AND (exclude_quote is null or exclude_quote = 0) group by department,product_type having product_type <>'' union all
+
+                                                  select 'Stages' as [group],department as name,product_type,stages,cast(sum(cast(replace(quoted_price,',','') as float))/@million as decimal(10,2)) as mb
+                                                  from Quotation
+                                                  where department='{department}' and stages_update_date like '{year}%' AND (exclude_quote is null or exclude_quote = 0)
+                                                  group by department,stages,product_type having product_type <>'' and stages in('Closed(Won)','Closed(Lost)','No go') union all
+
+                                                  select s1.[group],s1.name,s1.product_type,'Pending' as stages, sum(cast(s1.mb as float)) as mb
+                                                  from (select 'Stages' as [group],department as name,product_type,stages,cast(sum(cast(replace(quoted_price,',','') as float))/@million as decimal(10,2)) as mb
+                                                        from Quotation where department='{department}' and stages_update_date like '{year}%'
+                                                        group by department,stages,product_type
+                                                        having product_type <>'' and stages not in('Closed(Won)','Closed(Lost)','No go')) as s1
+                                                  group by s1.[group],s1.name,s1.product_type");
+                }
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        Home_DataModel p = new Home_DataModel()
+                        {
+                            group = dr["group"].ToString(),
+                            name = dr["name"].ToString(),
+                            type = dr["type"].ToString(),
+                            stages = dr["stages"].ToString(),
+                            mb = dr["mb"].ToString()
+                        };
+                        datas.Add(p);
+                    }
+                    dr.Close();
+                }
+                return datas;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+
         }
 
         public Home_DayModel getDataDay(string year, string name)
@@ -262,7 +340,7 @@ namespace WebForecastReport.Service
                                                 set @sale = '{name}';
                                                 set @year = '{year}';
                                                 set @million = 1000000;
-                                                select sale_name,
+                                                select sale_name as name,
                                                 stages,
                                                 format(sum(cast(replace(quoted_price,',','') as float))/ @million,'N2') as mb
                                                 from Quotation 
@@ -276,7 +354,7 @@ namespace WebForecastReport.Service
                     {
                         Home_StagesModel p = new Home_StagesModel()
                         {
-                            sale_name = dr["sale_name"].ToString(),
+                            name = dr["name"].ToString(),
                             stages = dr["stages"].ToString(),
                             mb = dr["mb"].ToString()
                         };
@@ -295,19 +373,81 @@ namespace WebForecastReport.Service
             }
         }
 
-        public List<HittingRateModel> GetHittingRateByDepartment(string department)
+        public List<Home_StagesModel> getDataStagesByDepartment(string year, string department)
+        {
+            try
+            {
+                List<Home_StagesModel> stages = new List<Home_StagesModel>();
+                string command = "";
+                if (department == "ALL")
+                {
+                    command = string.Format($@"declare @million as float
+                                                set @million = 1000000;
+                                                select '' as name,
+                                                stages,
+                                                cast(sum(cast(replace(quoted_price,',','') as float))/ @million as decimal(10,2)) as mb
+                                                from Quotation 
+                                                where CAST(YEAR(stages_update_date) AS VARCHAR(4)) = '{year}' 
+													and ( stages <> '' and stages is not null AND (exclude_quote is null or exclude_quote = 0))
+                                                group by stages");
+                }
+                else
+                {
+                    command = string.Format($@"declare @million as float
+                                                set @million = 1000000;
+                                                select department as 'name',
+                                                stages,
+                                                cast(sum(cast(replace(quoted_price,',','') as float))/ @million as decimal(10,2)) as mb
+                                                from Quotation 
+                                                where department = '{department}' and CAST(YEAR(stages_update_date) AS VARCHAR(4)) = '{year}' 
+													and ( stages <> '' and stages is not null AND (exclude_quote is null or exclude_quote = 0))
+                                                group by department,stages");
+                }
+               
+                 
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        Home_StagesModel p = new Home_StagesModel()
+                        {
+                            name = dr["name"].ToString(),
+                            stages = dr["stages"].ToString(),
+                            mb = dr["mb"].ToString()
+                        };
+                        stages.Add(p);
+                    }
+                    dr.Close();
+                }
+                return stages;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public List<HittingRateModel> GetHittingRateByDepartment(string year,string department)
         {
             try
             {
                 List<HittingRateModel> hittingRates = new List<HittingRateModel>();
-                string command = string.Format($@"   DECLARE @million as float
+                string command = "";
+                if (department == "ALL")
+                {
+                    command = string.Format($@"   DECLARE @million as float
                                                      SET @million = 1000000;
 	                                                    with main as (select product_type,sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as win,
 		                                                    sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as lose,
 		                                                    sum(case when stages = 'No go' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as nogo,
 		                                                    sum(case when stages in ('Closed(Won)','Closed(Lost)','No go') then cast(replace(quoted_price,',','') as float) / @million else 0 end) as total
 	                                                    from Quotation
-	                                                    where department= '{department}' and product_type <>'' and product_type is not null and stages in ('Closed(Won)','Closed(Lost)','No go')
+	                                                    where product_type <>'' and stages_update_date like '{year}%' and product_type is not null and stages in ('Closed(Won)','Closed(Lost)','No go') AND (exclude_quote is null or exclude_quote = 0)
 	                                                    group by product_type
 	                                                    ), sub as (
 		                                                    select 'all' as product_type,sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as win,
@@ -315,7 +455,7 @@ namespace WebForecastReport.Service
 			                                                    sum(case when stages = 'No go' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as nogo,
 			                                                    sum(case when stages in ('Closed(Won)','Closed(Lost)','No go') then cast(replace(quoted_price,',','') as float) / @million else 0 end) as total
 		                                                    from Quotation
-		                                                    where department= '{department}' and product_type <>'' and product_type is not null and stages in ('Closed(Won)','Closed(Lost)','No go')
+		                                                    where product_type <>'' and stages_update_date like '{year}%' and product_type is not null and stages in ('Closed(Won)','Closed(Lost)','No go') AND (exclude_quote is null or exclude_quote = 0)
 	                                                    )
 	                                                    select main.product_type as type,
 	                                                    cast(((main.win / main.total)*100)as decimal(10, 1)) as hitting_rate
@@ -323,6 +463,33 @@ namespace WebForecastReport.Service
 	                                                    select 'Total' as type,
 	                                                    cast(((sub.win / sub.total)*100)as decimal(10, 1)) as hitting_rate
 	                                                    from sub");
+                }
+                else
+                {
+                    command = string.Format($@"   DECLARE @million as float
+                                                     SET @million = 1000000;
+	                                                    with main as (select product_type,sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as win,
+		                                                    sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as lose,
+		                                                    sum(case when stages = 'No go' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as nogo,
+		                                                    sum(case when stages in ('Closed(Won)','Closed(Lost)','No go') then cast(replace(quoted_price,',','') as float) / @million else 0 end) as total
+	                                                    from Quotation
+	                                                    where department= '{department}' and product_type <>'' and stages_update_date like '{year}%' and product_type is not null and stages in ('Closed(Won)','Closed(Lost)','No go') AND (exclude_quote is null or exclude_quote = 0)
+	                                                    group by product_type
+	                                                    ), sub as (
+		                                                    select 'all' as product_type,sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as win,
+			                                                    sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as lose,
+			                                                    sum(case when stages = 'No go' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as nogo,
+			                                                    sum(case when stages in ('Closed(Won)','Closed(Lost)','No go') then cast(replace(quoted_price,',','') as float) / @million else 0 end) as total
+		                                                    from Quotation
+		                                                    where department= '{department}' and product_type <>'' and stages_update_date like '{year}%' and product_type is not null and stages in ('Closed(Won)','Closed(Lost)','No go') AND (exclude_quote is null or exclude_quote = 0)
+	                                                    )
+	                                                    select main.product_type as type,
+	                                                    cast(((main.win / main.total)*100)as decimal(10, 1)) as hitting_rate
+	                                                    from main union all
+	                                                    select 'Total' as type,
+	                                                    cast(((sub.win / sub.total)*100)as decimal(10, 1)) as hitting_rate
+	                                                    from sub");
+                }
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
@@ -332,7 +499,7 @@ namespace WebForecastReport.Service
                         HittingRateModel p = new HittingRateModel()
                         {
                             type = dr["type"].ToString(),
-                            hitting_rate = double.Parse(dr["hitting_rate"].ToString())
+                            hitting_rate = dr["hitting_rate"] != DBNull.Value ? double.Parse(dr["hitting_rate"].ToString()) :0.0
                         };
                         hittingRates.Add(p);
                     }
@@ -349,7 +516,7 @@ namespace WebForecastReport.Service
             }
         }
 
-        public List<HittingRateModel> GetHittingRateByName(string name)
+        public List<HittingRateModel> GetHittingRateByName(string year,string name)
         {
             try
             {
@@ -361,7 +528,7 @@ namespace WebForecastReport.Service
 		                                                    sum(case when stages = 'No go' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as nogo,
 		                                                    sum(case when stages in ('Closed(Won)','Closed(Lost)','No go') then cast(replace(quoted_price,',','') as float) / @million else 0 end) as total
 	                                                    from Quotation
-	                                                    where sale_name= '{name}' and product_type <>'' and product_type is not null and stages in ('Closed(Won)','Closed(Lost)','No go')
+	                                                    where sale_name= '{name}' and stages_update_date like '{year}%' and product_type <>'' and product_type is not null and stages in ('Closed(Won)','Closed(Lost)','No go') AND (exclude_quote is null or exclude_quote = 0)
 	                                                    group by product_type
 	                                                    ), sub as (
 		                                                    select 'all' as product_type,sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as win,
@@ -369,7 +536,7 @@ namespace WebForecastReport.Service
 			                                                    sum(case when stages = 'No go' then cast(replace(quoted_price,',','') as float) / @million else 0 end) as nogo,
 			                                                    sum(case when stages in ('Closed(Won)','Closed(Lost)','No go') then cast(replace(quoted_price,',','') as float) / @million else 0 end) as total
 		                                                    from Quotation
-		                                                    where sale_name= '{name}' and product_type <>'' and product_type is not null and stages in ('Closed(Won)','Closed(Lost)','No go')
+		                                                    where sale_name= '{name}' and stages_update_date like '{year}%' and product_type <>'' and product_type is not null and stages in ('Closed(Won)','Closed(Lost)','No go') AND (exclude_quote is null or exclude_quote = 0)
 	                                                    )
 	                                                    select main.product_type as type,
 	                                                    cast(((main.win / main.total)*100)as decimal(10, 1)) as hitting_rate
