@@ -344,8 +344,7 @@
                 });
                 $(tables_view.table().body()).addClass('text-dark');
             }, 300);
-
-        };
+    };
 
     var tables_engineer_edit;
     function table_engineer_edit(dataSet) {
@@ -778,7 +777,7 @@
         }
 
     });
-        $('#table_engineer_in_charge_edit').on('click', 'tbody td', function () {
+    $('#table_engineer_in_charge_edit').on('click', 'tbody td', function () {
         var cell = tables_engineer_edit.cell(this);
         var column = cell[0][0].column;
 
