@@ -9,7 +9,6 @@ namespace WebForecastReport.Interface
     interface ILogStatus
     {
         string Insert(Log_StatusModel model);
-        List<Log_StatusModel> GetStatus();
-        List<Log_StatusModel> GetStatusByName(string name);
+        List<Log_StatusModel> GetStatusByYear(string year);
     }
 }

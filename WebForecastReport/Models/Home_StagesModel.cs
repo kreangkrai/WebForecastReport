@@ -7,7 +7,7 @@ namespace WebForecastReport.Models
 {
     public class Home_StagesModel
     {
-        public string sale_name { get; set; }
+        public string name { get; set; }
         public string stages { get; set; }
         public string mb { get; set; }
     }

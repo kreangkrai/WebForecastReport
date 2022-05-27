@@ -94,7 +94,30 @@ namespace WebForecastReport.Controllers
             Home_DayModel day = new Home_DayModel();
             day = Home.getDataDay(year, name);
 
-            var list = new { datas = datas, stages = stages, day = day };
+            List<HittingRateModel> hittingRates = new List<HittingRateModel>();
+            hittingRates = Home.GetHittingRateByName(year,name);
+
+            var list = new { datas = datas, stages = stages, day = day, hittingrates = hittingRates };
+
+            return Json(list);
+        }
+
+        [HttpPost]
+        public JsonResult GetDataDepartment(string year, string department)
+        {
+            List<Home_DataModel> datas = new List<Home_DataModel>();
+            datas = Home.getDataByDepartment(year, department);
+
+            List<Home_StagesModel> stages = new List<Home_StagesModel>();
+            stages = Home.getDataStagesByDepartment(year, department);
+
+            List<Home_DayModel> day = new List<Home_DayModel>();
+            day = Home.getDataDayByDepartment(year, department);
+
+            List<HittingRateModel> hittingRates = new List<HittingRateModel>();
+            hittingRates = Home.GetHittingRateByDepartment(year,department);
+
+            var list = new { datas = datas, stages = stages, day = day, hittingrates = hittingRates };
 
             return Json(list);
         }
@@ -118,6 +141,6 @@ namespace WebForecastReport.Controllers
             List<Home_Stages_DayModel> quotations = new List<Home_Stages_DayModel>();
             quotations = Home.getDataQuotationMoreDay(year, name, day);
             return Json(quotations);
-        }
+        }     
     }
 }
