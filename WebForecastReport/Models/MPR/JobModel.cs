@@ -18,7 +18,7 @@ namespace WebForecastReport.Models.MPR
         public double manpower { get; set; }
         public double cost_per_manpower { get; set; }
         public double ot_manpower { get; set; }
-        public string status { get; set; }
+        public string status { get; set; } 
         public string quotation_no { get; set; }
         public string customer { get; set; }
         public string enduser { get; set; }
