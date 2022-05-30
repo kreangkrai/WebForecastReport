@@ -11,23 +11,34 @@ namespace WebForecastReport.Services.MPR
 {
     public class AnalysisService : IAnalysis
     {
-        public List<TaskTotalHoursModel> GetTasksWorkingHours(string job_id)
+        public List<TaskRatioModel> GetTaskRatio(string job_id)
         {
-            List<TaskTotalHoursModel> tasks = new List<TaskTotalHoursModel>();
+            List<TaskRatioModel> trs = new List<TaskRatioModel>();
             try
             {
                 string string_command = string.Format($@"
-                    SELECT
-                        WorkingHours.job_id,
-                        Jobs.job_name,
-                        WorkingHours.task_id,
-                        Tasks.task_name,
-                        SUM(DATEDIFF(HOUR, WorkingHours.start_time, WorkingHours.stop_time)) as total_hours
+                    SELECT 
+	                    WorkingHours.job_id,
+	                    Jobs.job_name,
+	                    WorkingHours.task_id,
+	                    Tasks.task_name,
+	                    SUM(
+	                    CASE 
+		                    WHEN lunch = 1 AND dinner = 1 THEN 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) - 2 > 0 THEN DATEDIFF(HOUR, start_time, stop_time) - 2 ELSE 0 END
+		                    WHEN lunch = 1 AND dinner = 0 THEN 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) - 1 > 0 THEN DATEDIFF(HOUR, start_time, stop_time) - 1 ELSE 0 END
+		                    WHEN lunch = 0 AND dinner = 1 THEN 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) - 1 > 0 THEN DATEDIFF(HOUR, start_time, stop_time) - 1 ELSE 0 END
+		                    ELSE 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) > 0 THEN DATEDIFF(HOUR, start_time, stop_time) ELSE 0 END
+	                    END) as hours
                     FROM WorkingHours
-                        LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
-                        LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
+                    LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
+                    LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
                     WHERE WorkingHours.job_id = '{job_id}'
-                    GROUP BY WorkingHours.job_id, Jobs.job_name, WorkingHours.task_id, Tasks.task_name");
+                    GROUP BY WorkingHours.task_id, Tasks.task_name, WorkingHours.job_id, Jobs.job_name
+                    ORDER BY hours desc");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
@@ -39,15 +50,16 @@ namespace WebForecastReport.Services.MPR
                 {
                     while (dr.Read())
                     {
-                        TaskTotalHoursModel task = new TaskTotalHoursModel()
+                        TaskRatioModel tr = new TaskRatioModel()
                         {
                             job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
                             job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
                             task_id = dr["task_id"] != DBNull.Value ? dr["task_id"].ToString() : "",
                             task_name = dr["task_name"] != DBNull.Value ? dr["task_name"].ToString() : "",
-                            hours = dr["total_hours"] != DBNull.Value ? Convert.ToInt32(dr["total_hours"].ToString()) : 0,
+                            hours = dr["hours"] != DBNull.Value ? Convert.ToDouble(dr["hours"]) : 0,
+                            percents = 0
                         };
-                        tasks.Add(task);
+                        trs.Add(tr);
                     }
                     dr.Close();
                 }
@@ -59,26 +71,37 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.CloseConnect();
                 }
             }
-            return tasks;
+            return trs;
         }
 
-        public List<JobInvolveModel> GetPercentsInvolve(string job_id)
+        public List<TaskDistributionModel> GetTaskDistribution(string job_id)
         {
-            List<JobInvolveModel> invs = new List<JobInvolveModel>();
+            List<TaskDistributionModel> tds = new List<TaskDistributionModel>();
             try
             {
                 string string_command = string.Format($@"
-                    SELECT
-                        WorkingHours.job_id,
-                        Jobs.job_name,
-                        WorkingHours.user_id,
-                        Users.Name,
-                        SUM(DATEDIFF(HOUR, WorkingHours.start_time, WorkingHours.stop_time)) as total_hours
+                    SELECT 
+	                    WorkingHours.job_id,
+	                    Jobs.job_name,
+	                    WorkingHours.task_id,
+	                    Tasks.task_name,
+	                    SUM(
+	                    CASE 
+		                    WHEN lunch = 1 AND dinner = 1 THEN 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) - 2 > 0 THEN DATEDIFF(HOUR, start_time, stop_time) - 2 ELSE 0 END
+		                    WHEN lunch = 1 AND dinner = 0 THEN 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) - 1 > 0 THEN DATEDIFF(HOUR, start_time, stop_time) - 1 ELSE 0 END
+		                    WHEN lunch = 0 AND dinner = 1 THEN 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) - 1 > 0 THEN DATEDIFF(HOUR, start_time, stop_time) - 1 ELSE 0 END
+		                    ELSE 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) > 0 THEN DATEDIFF(HOUR, start_time, stop_time) ELSE 0 END
+	                    END) as hours
                     FROM WorkingHours
-                        LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
-                        LEFT JOIN gps_sale_tracking.dbo.Sale_User Users ON WorkingHours.user_id = Users.Login 
+                    LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
+                    LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
                     WHERE WorkingHours.job_id = '{job_id}'
-                    GROUP BY WorkingHours.job_id, Jobs.job_name, WorkingHours.user_id, Users.Name");
+                    GROUP BY WorkingHours.task_id, Tasks.task_name, WorkingHours.job_id, Jobs.job_name
+                    ORDER BY hours desc");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
@@ -90,15 +113,15 @@ namespace WebForecastReport.Services.MPR
                 {
                     while (dr.Read())
                     {
-                        JobInvolveModel inv = new JobInvolveModel()
+                        TaskDistributionModel td = new TaskDistributionModel()
                         {
                             job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
                             job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
-                            user_id = dr["user_id"] != DBNull.Value ? dr["user_id"].ToString() : "",
-                            user_name = dr["Name"] != DBNull.Value ? dr["Name"].ToString() : "",
-                            hours = dr["total_hours"] != DBNull.Value ? Convert.ToInt32(dr["total_hours"].ToString()) : 0,
+                            task_id = dr["task_id"] != DBNull.Value ? dr["task_id"].ToString() : "",
+                            task_name = dr["task_name"] != DBNull.Value ? dr["task_name"].ToString() : "",
+                            hours = dr["hours"] != DBNull.Value ? Convert.ToDouble(dr["hours"].ToString()) : 0,
                         };
-                        invs.Add(inv);
+                        tds.Add(td);
                     }
                     dr.Close();
                 }
@@ -110,7 +133,138 @@ namespace WebForecastReport.Services.MPR
                     ConnectSQL.CloseConnect();
                 }
             }
-            return invs;
+            return tds;
+        }
+
+        public List<ManpowerRatioModel> GetManpowerRatio(string job_id)
+        {
+            List<ManpowerRatioModel> mrs = new List<ManpowerRatioModel>();
+            try
+            {
+                string string_command = string.Format($@"
+                    SELECT 
+	                    WorkingHours.user_id,
+	                    gps_sale_tracking.[dbo].Sale_User.name,
+	                    WorkingHours.job_id,
+	                    Jobs.job_name,
+	                    WorkingHours.task_id,
+	                    Tasks.task_name,
+	                    SUM(CASE
+		                    WHEN lunch = 1 AND dinner = 1 THEN 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) - 2 > 0 THEN DATEDIFF(HOUR, start_time, stop_time) - 2 ELSE 0 END
+		                    WHEN lunch = 1 AND dinner = 0 THEN 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) - 1 > 0 THEN DATEDIFF(HOUR, start_time, stop_time) - 1 ELSE 0 END
+		                    WHEN lunch = 0 AND dinner = 0 THEN 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) - 1 > 0 THEN DATEDIFF(HOUR, start_time, stop_time) - 1 ELSE 0 END
+		                    ELSE 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) > 0 THEN DATEDIFF(HOUR, start_time, stop_time) ELSE 0 END
+	                    END) as hours
+                    FROM WorkingHours
+                    LEFT JOIN gps_sale_tracking.[dbo].Sale_User ON WorkingHours.user_id = gps_sale_tracking.[dbo].Sale_User.Login
+                    LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
+                    LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
+                    WHERE WorkingHours.job_id = '{job_id}'
+                    GROUP BY WorkingHours.user_id, gps_sale_tracking.[dbo].Sale_User.name, WorkingHours.job_id, job_name, WorkingHours.task_id, Tasks.task_name
+                    ORDER BY user_id");
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        ManpowerRatioModel mr = new ManpowerRatioModel()
+                        {
+                            job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
+                            job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
+                            user_id = dr["user_id"] != DBNull.Value ? dr["user_id"].ToString() : "",
+                            user_name = dr["name"] != DBNull.Value ? dr["name"].ToString() : "",
+                            hours = dr["hours"] != DBNull.Value ? Convert.ToDouble(dr["hours"]) : 0,
+                            percents = 0
+                        };
+                        mrs.Add(mr);
+                    }
+                    dr.Close();
+                }
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+            return mrs;
+        }
+
+        public List<ManpowerDistributionModel>  GetManpowerDistribution(string job_id)
+        {
+            List<ManpowerDistributionModel> mds = new List<ManpowerDistributionModel>();
+            try
+            {
+                string string_command = string.Format($@"
+                    SELECT 
+	                    WorkingHours.user_id,
+	                    gps_sale_tracking.[dbo].Sale_User.name,
+	                    WorkingHours.job_id,
+	                    Jobs.job_name,
+	                    WorkingHours.task_id,
+	                    Tasks.task_name,
+	                    SUM(CASE
+		                    WHEN lunch = 1 AND dinner = 1 THEN 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) - 2 > 0 THEN DATEDIFF(HOUR, start_time, stop_time) - 2 ELSE 0 END
+		                    WHEN lunch = 1 AND dinner = 0 THEN 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) - 1 > 0 THEN DATEDIFF(HOUR, start_time, stop_time) - 1 ELSE 0 END
+		                    WHEN lunch = 0 AND dinner = 0 THEN 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) - 1 > 0 THEN DATEDIFF(HOUR, start_time, stop_time) - 1 ELSE 0 END
+		                    ELSE 
+			                    CASE WHEN DATEDIFF(HOUR, start_time, stop_time) > 0 THEN DATEDIFF(HOUR, start_time, stop_time) ELSE 0 END
+	                    END) as hours
+                    FROM WorkingHours
+                    LEFT JOIN gps_sale_tracking.[dbo].Sale_User ON WorkingHours.user_id = gps_sale_tracking.[dbo].Sale_User.Login
+                    LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
+                    LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
+                    WHERE WorkingHours.job_id = '{job_id}'
+                    GROUP BY WorkingHours.user_id, gps_sale_tracking.[dbo].Sale_User.name, WorkingHours.job_id, job_name, WorkingHours.task_id, Tasks.task_name
+                    ORDER BY user_id");
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        ManpowerDistributionModel md = new ManpowerDistributionModel()
+                        {
+                            job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
+                            job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
+                            user_id = dr["user_id"] != DBNull.Value ? dr["user_id"].ToString() : "",
+                            user_name = dr["name"] != DBNull.Value ? dr["name"].ToString() : "",
+                            task_id = dr["task_id"] != DBNull.Value ? dr["task_id"].ToString() : "",
+                            task_name = dr["task_name"] != DBNull.Value ? dr["task_name"].ToString() : "",
+                            hours = dr["hours"] != DBNull.Value ? Convert.ToInt32(dr["hours"].ToString()) : 0,
+                        };
+                        mds.Add(md);
+                    }
+                    dr.Close();
+                }
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+            return mds;
         }
     }
 }

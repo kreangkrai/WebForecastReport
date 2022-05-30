@@ -44,38 +44,49 @@ namespace WebForecastReport.Controllers
             }
         }
 
-        public IActionResult OverallWorkload()
+        [HttpGet]
+        public JsonResult GetTaskRatio(string job_id)
         {
-            if (HttpContext.Session.GetString("Login") != null)
+            List<TaskRatioModel> trs = AnalysisService.GetTaskRatio(job_id);
+            int total_hours = Convert.ToInt32(trs.Sum(s => s.hours));
+            for(int i = 0; i < trs.Count(); i++)
             {
-                string user = HttpContext.Session.GetString("userId");
-                List<UserModel> users = new List<UserModel>();
-                users = Accessory.getAllUser();
-                UserModel u = users.Where(w => w.fullname.ToLower() == user.ToLower()).Select(s => new UserModel { name = s.name, department = s.department, role = s.role, section = "Eng" }).FirstOrDefault();
-                HttpContext.Session.SetString("Role", u.role);
-                HttpContext.Session.SetString("Name", u.name);
-                HttpContext.Session.SetString("Department", u.department);
-                HttpContext.Session.SetString("Section", u.section);
-                return View(u);
+                trs[i].percents = trs[i].hours / total_hours * 100;
             }
-            else
-            {
-                return RedirectToAction("Index", "Account");
-            }
+            trs.OrderByDescending(o => o.percents);
+            return Json(trs);
         }
 
         [HttpGet]
-        public JsonResult GetTasksRatio(string job_id)
+        public JsonResult GetTaskDistribution(string job_id)
         {
-            List<TaskTotalHoursModel> tasks = AnalysisService.GetTasksWorkingHours(job_id);
-            return Json(tasks);
+            List<TaskDistributionModel> tds = AnalysisService.GetTaskDistribution(job_id);
+            tds.OrderByDescending(o => o.hours);
+            return Json(tds);
         }
 
         [HttpGet]
-        public JsonResult GetPercentInvolve(string job_id)
+        public JsonResult GetManpowerRatio(string job_id)
         {
-            List<JobInvolveModel> invs = AnalysisService.GetPercentsInvolve(job_id);
-            return Json(invs);
+            List<ManpowerRatioModel> mrs = AnalysisService.GetManpowerRatio(job_id);
+            int total_hours = Convert.ToInt32(mrs.Sum(s => s.hours));
+            mrs = mrs.GroupBy(g => g.user_id).Select(s => new ManpowerRatioModel
+            {
+                user_id = s.FirstOrDefault().user_id,
+                user_name = s.FirstOrDefault().user_name,
+                job_id = s.FirstOrDefault().job_id,
+                job_name = s.FirstOrDefault().job_name,
+                hours = s.Sum(su => su.hours),
+                percents = s.Sum(su => su.hours) / total_hours * 100,
+            }).OrderByDescending(o => o.hours).ToList();
+            return Json(mrs);
+        }
+
+        [HttpGet]
+        public JsonResult GetManpowerDistribution(string job_id)
+        {
+            List<ManpowerDistributionModel> mds = AnalysisService.GetManpowerDistribution(job_id);
+            return Json(mds);
         }
     }
 }

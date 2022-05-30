@@ -14,18 +14,18 @@
     </div>
 </div>
 <div class="row px-3">
-    <div class="col-xl-6">
-        <div class="card bg-dark" style="height:600px">
+    <div class="col-xl-5">
+        <div class="card bg-dark" style="height:350px">
             <div class="card-header">
                 <span class="card-title"><i class="fas fa-chart-pie"></i> Task Ratio</span>
             </div>
-            <div class="card-body p-1">
+            <div class="card-body">
                 <div id="task_ratio" class="h-100 w-100"></div>
             </div>
         </div>
     </div>
-    <div class="col-xl-6">
-        <div class="card bg-dark" style="height:600px">
+    <div class="col-xl-7">
+        <div class="card bg-dark" style="height:350px">
             <div class="card-header">
                 <span class="card-title"><i class="fas fa-chart-bar"></i> Task Distribution</span>
             </div>
@@ -36,22 +36,20 @@
             </div>
         </div>
     </div>
-</div>
-<div class="row px-3">
-    <div class="col-xl-6">
-        <div class="card bg-dark" style="height:600px">
+    <div class="col-xl-5">
+        <div class="card bg-dark" style="height:350px">
             <div class="card-header">
-                <span class="card-title">Manpower Ratio</span>
+                <span class="card-title"><i class="fas fa-chart-pie"></i> Manpower Ratio</span>
             </div>
             <div class="card-body">
                 <div id="manpower_ratio" class="h-100 w-100"></div>
             </div>
         </div>
     </div>
-    <div class="col-xl-6">
-        <div class="card bg-dark" style="height:600px">
+    <div class="col-xl-7">
+        <div class="card bg-dark" style="height:350px">
             <div class="card-header">
-                <span class="card-title">Manpower Distribution</span>
+                <span class="card-title"><i class="fas fa-chart-bar"></i> Manpower Distribution</span>
             </div>
             <div class="card-body">
                 <div class="w-100 h-100">
@@ -65,14 +63,22 @@
 {
     <script type="text/javascript">
         //Variable Declaration
-        var whs_ratio = [];
-        var inv_ratio = [];
         var jobs = [];
+        var trs = [];
+        var tds = [];
+        var mrs = [];
+        var mds = [];
+        var chart_task_ratio;
+        var chart_task_distribution;
+        var chart_manpower_ratio;
+        var chart_manpower_distribution;
 
         //Debug Parameters
-        var debug_whs_ratio = false;
-        var debug_inv_ratio = false;
         var debug_job = false;
+        var log_trs = false;
+        var log_tds = false;
+        var log_mrs = false;
+        var log_mds = false;
 
         $(document).ready(async function () {
             await GetJobs();
@@ -81,12 +87,10 @@
 
         $('#btn_analysis').on('click', async function () {
             var job_id = $('#job_id').val();
-            await GetTasksRatio(job_id);
-            await GetPercentInvolve(job_id);
-            GenerateChartTaskRatio();
-            GenerateChartTaskDistribution();
-            GenerateChartManpowerRatio();
-            GenerateChartManpowerDistribution();
+            await GetTaskRatio(job_id);
+            await GetTaskDistribution(job_id);
+            await GetManpowerRatio(job_id);
+            await GetManpowerDistribution(job_id);
         });
 
         async function GetJobs() {
@@ -115,55 +119,37 @@
             $('#job_id').append(job_str);
         }
 
-        async function GetTasksRatio(job_id) {
+        async function GetTaskRatio(job_id) {
             await $.ajax({
                 type: "GET",
-                url: '@Url.Action("GetTasksRatio", "Analysis")',
+                url: '@Url.Action("GetTaskRatio", "Analysis")',
 	            contentType: 'application/x-www-form-urlencoded',
                 data: {
                     job_id
                 },
                 success: function (response) {
-                    whs_ratio = response;
-                    if (debug_whs_ratio) {
-                        console.log("Task Total Working Hours");
-                        console.log(whs_ratio);
+                    trs = response;
+                    if (log_trs) {
+                        console.log("Task Ratio");
+                        console.table(trs);
                     }
+                    GenerateChartTaskRatio();
                 }
             });
         }
 
-        async function GetPercentInvolve(job_id) {
-            await $.ajax({
-                type: "GET",
-                url: '@Url.Action("GetPercentInvolve", "Analysis")',
-	            contentType: 'application/x-www-form-urlencoded',
-                data: {
-                    job_id
-                },
-                success: function (response) {
-                    inv_ratio = response;
-                    if (debug_inv_ratio) {
-                        console.log("Task Total Working Hours");
-                        console.log(inv_ratio);
-                    }
-                }
-            });
-        }
-
-        var chart_task_ratio;
         function GenerateChartTaskRatio() {
 
-            var whr_data = [];
-            for (var i = 0; i < whs_ratio.length; i++) {
-                whr_data.push(
+            var trs_data = [];
+            for (var i = 0; i < trs.length; i++) {
+                trs_data.push(
                     {
-                        y: whs_ratio[i].hours,
-                        indexLabel: whs_ratio[i].hours + " Hours - " + whs_ratio[i].task_name,
+                        y: trs[i].hours,
+                        indexLabel: trs[i].percents.toFixed(2) + " % - " + trs[i].task_name,
                         indexLabelFontSize: 14,
                         indexLabelFontFamily: "san-seriff",
                         indexLabelFontColor: "white",
-                        legendText: whs_ratio[i].task_name,
+                        legendText: trs[i].task_name,
                     }
                 );
             }
@@ -186,25 +172,44 @@
                     backgroundColor: "transparent",
                     data: [{
                         type: "doughnut",
-                        radius: "50%",
+                        radius: "100%",
+                        startAngle: -90,
                         showInLegend: true,
                         toolTipContent: "{y} Hours - {legendText}",
                         legendText: "{legendText}",
-                        dataPoints: whr_data,
+                        dataPoints: trs_data,
                     }],
                 }
             );
             chart_task_ratio.render();
         }
 
-        var chart_task_distribution;
+        async function GetTaskDistribution(job_id) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetTaskDistribution", "Analysis")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    job_id
+                },
+                success: function (response) {
+                    tds = response;
+                    if (log_tds) {
+                        console.log("Task Distribution");
+                        console.table(tds);
+                    }
+                    GenerateChartTaskDistribution();
+                }
+            });
+        }
+
         function GenerateChartTaskDistribution() {
             var task_names = [];
             var hours = [];
 
-            for (var i = 0; i < whs_ratio.length; i++) {
-                task_names.push(whs_ratio[i].task_name);
-                hours.push(whs_ratio[i].hours);
+            for (var i = 0; i < tds.length; i++) {
+                task_names.push(tds[i].task_id + ' - ' + tds[i].task_name);
+                hours.push(tds[i].hours);
             }
 
             if (chart_task_distribution !== undefined) {
@@ -216,48 +221,85 @@
                 type: 'bar',
                 data: {
                     labels: task_names,
-                    datasets: [{
-                        label: "Task Distribution",
-                        data: hours,
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.8)',
-                            'rgba(54, 162, 235, 0.8)',
-                            'rgba(255, 206, 86, 0.8)',
-                            'rgba(75, 192, 192, 0.8)',
-                            'rgba(153, 102, 255, 0.8)',
-                            'rgba(255, 159, 64, 0.8)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
+                    datasets: [
+                        {
+                            label: 'Hours',
+                            data: hours,
+                            backgroundColor: ['rgba(255, 99, 132, 0.8)'],
+                            borderColor: ['rgba(255, 99, 132, 1)'],
+                            borderWidth: 1
+                        }
+                    ]
                 },
                 options: {
                     indexAxis: 'y',
                     maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: 'rgba(255,255,255,0.8)',
+                            },
+                            title: {
+                                text: 'Hour(s)',
+                                color: 'rgba(255,255,255,0.8)',
+                                display: true
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: 'rgba(255,255,255,0.8)',
+                                align: 'left',
+                            },
+                            title: {
+                                text: 'Tasks',
+                                color: 'rgba(255,255,255,0.8)',
+                                display: true,
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: 'rgba(255,255,255,0.8)'
+                            },
+                            display: false
+                        }
+                    }
                 }
             });
         }
 
-        var chart_manpower_ratio;
-        function GenerateChartManpowerRatio() {
+        async function GetManpowerRatio(job_id) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetManpowerRatio", "Analysis")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    job_id
+                },
+                success: function (response) {
+                    mrs = response;
+                    if (log_mrs) {
+                        console.log("Manpower Ratio");
+                        console.table(mrs);
+                    }
+                    GenerateChartManpowerRatio();
+                }
+            });
+        }
 
-            var inv_data = [];
-            for (var i = 0; i < inv_ratio.length; i++) {
-                inv_data.push(
+        function GenerateChartManpowerRatio() {
+            var mrs_data = [];
+            for (var i = 0; i < mrs.length; i++) {
+                mrs_data.push(
                     {
-                        y: inv_ratio[i].hours,
-                        indexLabel: inv_ratio[i].hours + " Hours - " + inv_ratio[i].user_name,
+                        y: mrs[i].hours,
+                        indexLabel: mrs[i].percents.toFixed(2) + " % - " + mrs[i].user_name,
                         indexLabelFontSize: 14,
                         indexLabelFontFamily: "san-seriff",
                         indexLabelFontColor: "white",
-                        legendText: inv_ratio[i].user_name,
+                        legendText: mrs[i].user_name,
                     }
                 );
             }
@@ -280,26 +322,57 @@
                     backgroundColor: "transparent",
                     data: [{
                         type: "doughnut",
-                        radius: "50%",
+                        radius: "100%",
+                        startAngle: -90,
                         showInLegend: true,
                         toolTipContent: "{y} Hours - {legendText}",
                         legendText: "{legendText}",
-                        dataPoints: inv_data,
+                        dataPoints: mrs_data,
                     }],
                 }
             );
             chart_manpower_ratio.render();
         }
 
-        var chart_manpower_distribution;
-        function GenerateChartManpowerDistribution() {
-            var user_names = [];
-            var hours = [];
+        async function GetManpowerDistribution(job_id) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetManpowerDistribution", "Analysis")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    job_id
+                },
+                success: function (response) {
+                    mds = response;
+                    if (log_mds) {
+                        console.log("Manpower Distribution");
+                        console.table(mds);
+                    }
+                    GenerateChartManpowerDistribution();
+                }
+            });
+        }
 
-            for (var i = 0; i < inv_ratio.length; i++) {
-                user_names.push(inv_ratio[i].user_name);
-                hours.push(inv_ratio[i].hours);
+        function GenerateChartManpowerDistribution() {
+            var users = mds.map(m => m.user_id);
+            users = [...new Set(users)];
+
+            var tasks = mds.map(m => m.task_id);
+            tasks = [...new Set(tasks)];
+
+            var user_task = [];
+            var hours = [];
+            for (var i = 0; i < users.length; i++) {
+                for (var j = 0; j < tasks.length; j++) {
+                    hours[i].push()
+                }
             }
+
+            for (var i = 0; i < user_task.length; i++) {
+
+            }
+
+            console.table(user_task);
 
             if (chart_manpower_distribution !== undefined) {
                 chart_manpower_distribution.destroy();
@@ -309,32 +382,52 @@
             chart_manpower_distribution = new Chart(ctx4, {
                 type: 'bar',
                 data: {
-                    labels: user_names,
-                    datasets: [{
-                        label: 'Manpower Distribution',
-                        data: hours,
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.8)',
-                            'rgba(54, 162, 235, 0.8)',
-                            'rgba(255, 206, 86, 0.8)',
-                            'rgba(75, 192, 192, 0.8)',
-                            'rgba(153, 102, 255, 0.8)',
-                            'rgba(255, 159, 64, 0.8)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
+                    labels: users,
+                    datasets: [
+                        {
+                            label: 'Manpower Distribution',
+                            data: 1,
+                            backgroundColor: ['rgba(255, 99, 132, 0.8)',],
+                            borderColor: ['rgba(255, 99, 132, 1)',],
+                            borderWidth: 1
+                        }
+                    ]
                 },
                 options: {
                     indexAxis: 'y',
                     maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: 'rgba(255,255,255,0.8)'
+                            },
+                            title: {
+                                text: 'Hour(s)',
+                                color: 'rgba(255,255,255,0.8)',
+                                display: true,
+
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: 'rgba(255,255,255,0.8)'
+                            },
+                            title: {
+                                text: 'Name',
+                                color: 'rgba(255,255,255,0.8)',
+                                display: true,
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'right',
+                            labels: {
+                                color: 'rgba(255,255,255,0.8)'
+                            }
+                        }
+                    }
                 }
             });
         }

@@ -8,7 +8,9 @@ namespace WebForecastReport.Interfaces.MPR
 {
     interface IAnalysis
     {
-        List<TaskTotalHoursModel> GetTasksWorkingHours(string job_id);
-        List<JobInvolveModel> GetPercentsInvolve(string job_id);
+        List<TaskRatioModel> GetTaskRatio(string job_id);
+        List<TaskDistributionModel> GetTaskDistribution(string job_id);
+        List<ManpowerRatioModel> GetManpowerRatio(string job_id);
+        List<ManpowerDistributionModel> GetManpowerDistribution(string job_id);
     }
 }
