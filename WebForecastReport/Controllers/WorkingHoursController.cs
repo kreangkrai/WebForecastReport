@@ -152,7 +152,7 @@ namespace WebForecastReport.Controllers
                             }
                         }
 
-                        if(ot15 > substraction)
+                        if(ot15 > substraction && (isHoliday || isWeekend))
                         {
                             ot3 += ot15 - substraction;
                             ot15 -= ot15 - substraction;
