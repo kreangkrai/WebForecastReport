@@ -1639,8 +1639,8 @@ namespace WebForecastReport.Service
 														cast(sum(sub_sub_type.product_nogo_mb) / count(sub_sub_type.product_nogo_mb) as decimal(10, 2)) as product_nogo_mb,
 														sum(sub_sub_type.product_pending_cnt) / count(sub_sub_type.product_pending_cnt) as product_pending_cnt ,
 														cast(sum(sub_sub_type.product_pending_mb) / count(sub_sub_type.product_pending_mb) as decimal(10, 2)) as product_pending_mb,
-														sum(case when Quotation.product_type = 'product' and (stages is not null and stages <> '') then 1 else 0 end) as product_cnt,
-														sum(case when Quotation.product_type = 'product' and (stages is not null and stages <> '') then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as product_mb,
+														sum(case when Quotation.product_type = 'product'  then 1 else 0 end) as product_cnt,
+														sum(case when Quotation.product_type = 'product'  then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as product_mb,
 
 														sum(sub_sub_type.project_won_cnt) / count(sub_sub_type.project_won_cnt) as project_won_cnt ,
 														cast(sum(sub_sub_type.project_won_mb) / count(sub_sub_type.project_won_mb) as decimal(10, 2)) as project_won_mb,
@@ -1650,8 +1650,8 @@ namespace WebForecastReport.Service
 														cast(sum(sub_sub_type.project_nogo_mb) / count(sub_sub_type.project_nogo_mb) as decimal(10, 2)) as project_nogo_mb,
 														sum(sub_sub_type.project_pending_cnt) / count(sub_sub_type.project_pending_cnt) as project_pending_cnt ,
 														cast(sum(sub_sub_type.project_pending_mb) / count(sub_sub_type.project_pending_mb) as decimal(10, 2)) as project_pending_mb,
-														sum(case when Quotation.product_type = 'project' and (stages is not null and stages <> '') then 1 else 0 end) as project_cnt,
-														sum(case when Quotation.product_type = 'project' and (stages is not null and stages <> '') then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as project_mb,
+														sum(case when Quotation.product_type = 'project' then 1 else 0 end) as project_cnt,
+														sum(case when Quotation.product_type = 'project' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as project_mb,
 
 														sum(sub_sub_type.service_won_cnt) / count(sub_sub_type.service_won_cnt) as service_won_cnt ,
 														cast(sum(sub_sub_type.service_won_mb) / count(sub_sub_type.service_won_mb) as decimal(10, 2)) as service_won_mb,
@@ -1661,8 +1661,8 @@ namespace WebForecastReport.Service
 														cast(sum(sub_sub_type.service_nogo_mb) / count(sub_sub_type.service_nogo_mb) as decimal(10, 2))as service_nogo_mb,
 														sum(sub_sub_type.service_pending_cnt) / count(sub_sub_type.service_pending_cnt) as service_pending_cnt ,
 														cast(sum(sub_sub_type.service_pending_mb) / count(sub_sub_type.service_pending_mb)as decimal(10, 2)) as service_pending_mb,
-														sum(case when Quotation.product_type = 'service' and (stages is not null and stages <> '') then 1 else 0 end) as service_cnt,
-														sum(case when Quotation.product_type = 'service' and (stages is not null and stages <> '') then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as service_mb,
+														sum(case when Quotation.product_type = 'service' then 1 else 0 end) as service_cnt,
+														sum(case when Quotation.product_type = 'service' then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as service_mb,
                                                     
 														sum(sub_sub_stages.won_product_cnt) / count(sub_sub_stages.won_product_cnt) as won_product_cnt,
 														cast(sum(sub_sub_stages.won_product_mb) / count(sub_sub_stages.won_product_mb) as decimal(10, 2)) as won_product_mb,
@@ -1697,8 +1697,8 @@ namespace WebForecastReport.Service
 														cast(sum(sub_sub_pending.pending_project_mb) / count(sub_sub_pending.pending_project_mb) as decimal(10, 2)) as pending_project_mb,
 														sum(sub_sub_pending.pending_service_cnt) / count(sub_sub_pending.pending_service_cnt) as pending_service_cnt,
 														cast(sum(sub_sub_pending.pending_service_mb) / count(sub_sub_pending.pending_service_mb) as decimal(10, 2)) as pending_service_mb,
-														sum(case when stages is not null and stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as pending_quo_cnt,
-														sum(case when stages is not null and stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as pending_mb
+														sum(case when stages is not null and stages not in ('Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as pending_quo_cnt,
+														sum(case when stages is not null and stages not in ('Closed(Won)', 'Closed(Lost)', 'No go') then cast(cast(replace(quoted_price, ',', '') as float) / @million as decimal(10, 2)) else 0 end) as pending_mb
                                                     from Quotation
                                                     left join (
 														select
@@ -1740,11 +1740,11 @@ namespace WebForecastReport.Service
 																cast(sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as decimal(10, 2)) as type_lost_mb,
 																sum(case when stages = 'No go' then 1 else 0 end) as type_nogo_cnt,
 																cast(sum(case when stages = 'No go' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as decimal(10, 2)) as type_nogo_mb,
-																sum(case when stages is not null and stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as type_pending_cnt,
-																cast(sum(case when stages is not null and stages not in ('', 'Closed(Won)', 'Closed(Lost)', 'No go') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as decimal(10, 2)) as type_pending_mb
+																sum(case when stages is not null and stages not in ('Closed(Won)', 'Closed(Lost)', 'No go') then 1 else 0 end) as type_pending_cnt,
+																cast(sum(case when stages is not null and stages not in ('Closed(Won)', 'Closed(Lost)', 'No go') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as decimal(10, 2)) as type_pending_mb
 
                                                             from Quotation
-                                                            where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year AND (exclude_quote is null or exclude_quote = 0)
+                                                            where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year AND (exclude_quote is null or exclude_quote = 0) and product_type <> '' and product_type is not null
 															group by date,product_type having date like '{year}%' ) as sub_type
 
                                                         group by sub_type.month
@@ -1788,7 +1788,7 @@ namespace WebForecastReport.Service
 																sum(case when product_type = 'Service' then 1 else 0 end) as stages_service_cnt,
 																cast(sum(case when product_type = 'Service' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as decimal(10, 2)) as stages_service_mb
                                                              from Quotation
-                                                             where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year and stages in('Closed(Won)','Closed(Lost)','No go') AND (exclude_quote is null or exclude_quote = 0)
+                                                             where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year and stages in('Closed(Won)','Closed(Lost)','No go') AND (exclude_quote is null or exclude_quote = 0) and product_type <> '' and product_type is not null
                                                              group by date,stages having date like '{year}%') as sub_stages
 
                                                         group by sub_stages.month
@@ -1824,15 +1824,15 @@ namespace WebForecastReport.Service
 
 																	from Quotation
 
-																	where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year and stages<> '' AND (exclude_quote is null or exclude_quote = 0)
-																	group by date, product_type, stages having date like '{year}%' and stages is not null and stages not in ('','Closed(Won)','Closed(Lost)','No go')) as sub_stages
+																	where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year and stages<> '' AND (exclude_quote is null or exclude_quote = 0) and product_type <> '' and product_type is not null
+																	group by date, product_type, stages having date like '{year}%' and stages is not null and stages not in ('Closed(Won)','Closed(Lost)','No go')) as sub_stages
 																group by sub_stages.month, sub_stages.product_type) as sub_pending
                                                         group by sub_pending.month
 													) as sub_sub_pending
 
                                                     ON CAST(YEAR(date) AS VARCHAR(4)) + '-' + right('00' + CAST(MONTH(date) AS VARCHAR(2)), 2) = sub_sub_pending.month
 													
-                                                    where Quotation.department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year AND (exclude_quote is null or exclude_quote = 0)
+                                                    where Quotation.department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year AND (exclude_quote is null or exclude_quote = 0) and product_type <> '' and product_type is not null
 													group by date having date like '{year}%'
 													)as sub_main
 													  

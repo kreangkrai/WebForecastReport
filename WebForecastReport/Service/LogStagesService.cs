@@ -15,7 +15,7 @@ namespace WebForecastReport.Service
             try
             {
                 List<Log_StagesModel> logs = new List<Log_StagesModel>();
-                string command = string.Format($@"select * from Log_Stages where convert(VARCHAR,date_edit,121) like'{year}%'");
+                string command = string.Format($@"select * from Log_Stages where convert(VARCHAR,date_edit,121) like'{year}%' order by date_edit desc");
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
