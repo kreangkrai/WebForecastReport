@@ -124,16 +124,16 @@
     var statepage = false;
 
     var check_last_status = "";
-    var check_last_stages = "";
-    var check_last_stages_update_date = "";
+    //var check_last_stages = "";
+    //var check_last_stages_update_date = "";
     var state_status = false;
-    var state_stages = false;
+    //var state_stages = false;
 
     var status_changed = "";
-    var stages_changed = "";
+    //var stages_changed = "";
 
     var reason_status = "";
-    var reason_stages = "";
+    //var reason_stages = "";
 
 
     $(document).ready(function () {
@@ -603,11 +603,11 @@
             document.getElementById("edit_stages").disabled = false;
 
             state_status = false;
-            state_stages = false;
+            //state_stages = false;
             status_changed = "";
-            stages_changed = "";
+            //stages_changed = "";
             reason_status = "";
-            reason_stages = "";
+            //reason_stages = "";
 
             $('#types').empty();
 
@@ -701,8 +701,8 @@
 
             //get last status,stages 
             check_last_status = document.getElementById("edit_status").value;
-            check_last_stages = document.getElementById("edit_stages").value;
-            check_last_stages_update_date = document.getElementById("edit_stages_update_date").value;
+            //check_last_stages = document.getElementById("edit_stages").value;
+            //check_last_stages_update_date = document.getElementById("edit_stages_update_date").value;
             
 
             //exclude quote
@@ -883,7 +883,7 @@
             data: {
                 user,quotation, revision, date, customer, enduser, project_name, site_location, product_type, type,brand, part_no, spec, quantity, supplier_quotation_no,
                 total_value, unit, quoted_price, expected_order_date, old_expected_order_date, required_onsite_date, proposer, expected_date, status, stages, stages_update_date, how_to_support, competitor,
-                competitor_description, competitor_price, sale_name, department, detail, engineer_in_charge, engineer_department,exclude_quote,status_changed,stages_changed,check_last_status,check_last_stages,reason_status,reason_stages
+                competitor_description, competitor_price, sale_name, department, detail, engineer_in_charge, engineer_department,exclude_quote,status_changed,check_last_status,reason_status
             },
             success: function (response) {
                 //get state page
@@ -1118,12 +1118,12 @@
             $('#ShowStatusChangedModal').modal();
          }
     });
-    $('#edit_stages').on('change',function(){        
+   @* $('#edit_stages').on('change',function(){        
         if (check_last_stages !== ""){
             stages_changed = document.getElementById("edit_stages").value;
             $('#ShowStagesChangedModal').modal();
          }
-    });
+    });*@
 
     $('#ShowStatusChangedModal').on('hidden.bs.modal', function () {
         if (!state_status){
@@ -1131,12 +1131,12 @@
         }
     });
 
-    $('#ShowStagesChangedModal').on('hidden.bs.modal', function () {
+   @* $('#ShowStagesChangedModal').on('hidden.bs.modal', function () {
         if (!state_stages){
             document.getElementById("edit_stages").value = check_last_stages;
             document.getElementById("edit_stages_update_date").value = check_last_stages_update_date;
         }
-    });
+    });*@
 
     $('#StatusChangedConfirm').on('click',function(){
         reason_status = document.getElementById("edit_status_reason").value;
@@ -1146,14 +1146,15 @@
             $('#ShowStatusChangedModal').modal('hide');
         }
     });
-    $('#StagesChangedConfirm').on('click',function(){
+
+    @*$('#StagesChangedConfirm').on('click',function(){
         reason_stages = document.getElementById("edit_stages_reason").value;
         if (reason_stages.trim() !==""){
             document.getElementById("edit_stages").disabled = true;
             state_stages = true;
             $('#ShowStagesChangedModal').modal('hide');
         }
-    });
+    });*@
 
     ////
     function add_info(arr){
@@ -1406,23 +1407,22 @@
                     document.getElementById("types").options[0].disabled = true;
                 }
     };
-    function add_engineer_in_charge(name, department) {
-                    
-            var chkName = false;
-            for (var i = 0; i < arrEngineer.length; i++) {
-                if (arrEngineer[i][0].engineer == name) {
-                    chkName = true;
-                    break;
-                }
+    function add_engineer_in_charge(name, department) {           
+        var chkName = false;
+        for (var i = 0; i < arrEngineer.length; i++) {
+            if (arrEngineer[i][0].engineer == name) {
+                chkName = true;
+                break;
             }
-            if (chkName === false && name !== "") {
-                arrEngineer.push([{
-                    "delete": "",
-                    "engineer": name,
-                    "department": department
-                }]);
+        }
+        if (chkName === false && name !== "") {
+            arrEngineer.push([{
+                "delete": "",
+                "engineer": name,
+                "department": department
+            }]);
                 //init table engineer
-                init_engineer_edit();
+            init_engineer_edit();
         }
     };
     </script>
