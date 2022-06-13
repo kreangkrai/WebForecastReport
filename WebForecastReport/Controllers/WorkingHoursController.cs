@@ -127,7 +127,7 @@ namespace WebForecastReport.Controllers
                         }
                         else
                         {
-                            if(wh.start_time < evening && wh.stop_time > end_evening)
+                            if(wh.start_time < evening && wh.stop_time > evening)
                             {
                                 regular += evening - wh.start_time;
                                 ot15 += wh.stop_time - evening;
