@@ -9,7 +9,7 @@
         cursor: pointer;
     }
 
-    #table_proposal_edit tr td:nth-of-type(1) {
+    #table_engineer_edit tr td:nth-of-type(1) {
         cursor: pointer;
     }
 </style>
@@ -32,46 +32,46 @@
 {
 <script type="text/javascript">
 
-    var quotation_no = "";
-    var quotation_craeted_date = "";
-    var customer = "";
-    var enduser = "";
-    var project_name = "";
-    var project_location = "";
-    var product_type = "";
-    var types = "";
-    var brands = "";
-    var total_value = "";
-    var Product_Types = [];
-    var Types = [];
-    var Brands = [];
-    var Total_Values = [];
-    var expected_order_date = "";
-    var required_onsite = "";
-    var propose_by = "";
-    var proposal_expected_date = "";
-    var proposal_request_date = "";
-    var proposal_status = "";
-    var revision = "";
-    var propose_cost = "";
-    var quoted_price = "";
-    var gp = "";
-    var finish_date = "";
-    var engineer_in_charge = "";
-    var engineer_department = "";
-    var man_hours = "";
+        var quotation_no = "";
+        var quotation_craeted_date = "";
+        var customer = "";
+        var enduser = "";
+        var project_name = "";
+        var project_location = "";
+        var product_type = "";
+        var types = "";
+        var brands = "";
+        var total_value = "";
+        var Product_Types = [];
+        var Types = [];
+        var Brands = [];
+        var Total_Values = [];
+        var expected_order_date = "";
+        var required_onsite = "";
+        var propose_by = "";
+        var proposal_expected_date = "";
+        var proposal_request_date = "";
+        var proposal_status = "";
+        var revision = "";
+        var propose_cost = "";
+        var quoted_price = "";
+        var gp = "";
+        var finish_date = "";
+        var engineer_in_charge = "";
+        var engineer_department = "";
+        var man_hours = "";
 
-    var Proposal_Status = ["In Progress","Finish","Cancel"];
-    var Persons = [];
-    var Users = [];
-    var person_name = [];
-    var person_department = [];
-    var person_man_hours = [];
+        var Proposal_Status = ["In Progress","Finish","Cancel"];
+
+        var Departments = [];
+        var arrDepartment = [];
+        var Engineers = [];
+        var arrEngineer = [];
 
         $(document).ready(function () {
            init();
         });
-         function init() {
+        function init() {
             var name = '@Model.name';
             var role = '@Model.role';
             $.ajax({
@@ -83,8 +83,10 @@
                 },
                 success: function (response) {
                     var datas = response.proposals;
-                    //var users =response.users;
 
+                    //add engineer department
+                    Departments = add_engineer_department(response.engineers);
+                    Engineers = response.engineers;
                     var dataSet = [];
                      for (var i = 0; i < datas.length; i++) {
                         var data = ["",
@@ -121,23 +123,14 @@
             });
         };
 
-        function init_person(){
+        function init_engineer_edit() {
             var dataSet = [];
-            for (var i = 0;i<person_name.length;i++){
-                var data = ["",person_name[i],person_department[i],person_man_hours[i]];
 
+            for (var i = 0; i < arrEngineer.length; i++) {
+                var data = [arrEngineer[i][0].delete, arrEngineer[i][0].engineer, arrEngineer[i][0].department,arrEngineer[i][0].manhours];
                 dataSet.push(data);
             }
-            table_person(dataSet);
-        };
-
-        function init_view_person(){
-            var dataSet = [];
-            for (var i = 0;i<person_name.length;i++){
-                var data = [person_name[i],person_department[i],person_man_hours[i]];
-                dataSet.push(data);
-            }
-            table_view_person(dataSet);
+            table_engineer_edit(dataSet);
         };
 
         function init_type(){
@@ -215,12 +208,12 @@
             $(tables.table().body()).addClass('text-dark');
         };
 
-        var tables_person;
-        function table_person(dataSet){
+        var tables_engineer_edit;
+        function table_engineer_edit(dataSet){
             setTimeout(function () {
-            if (tables_person !== undefined)
-                tables_person.destroy();
-                tables_person = $('#table_proposal_edit').DataTable({
+            if (tables_engineer_edit !== undefined)
+                tables_engineer_edit.destroy();
+                tables_engineer_edit = $('#table_engineer_edit').DataTable({
                 data: dataSet,
                 columns: [
                     { title: ""},
@@ -242,16 +235,16 @@
                 "searching": false,
                 "bInfo": false,
             });
-            $(tables_person.table().body()).addClass('text-dark');
+            $(tables_engineer_edit.table().body()).addClass('text-dark');
             },300);
         };
 
-        var tables_view_person;
-        function table_view_person(dataSet){
+        var tables_view_engineer;
+        function table_engineer_view(dataSet){
             setTimeout(function () {
-                if (tables_view_person !== undefined)
-                    tables_view_person.destroy();
-                    tables_view_person = $('#table_proposal_view').DataTable({
+                if (tables_view_engineer !== undefined)
+                    tables_view_engineer.destroy();
+                    tables_view_engineer = $('#table_engineer_view').DataTable({
                     data: dataSet,
                     columns: [
                         { title: "Engineer"},
@@ -265,7 +258,7 @@
                     "searching": false,
                     "bInfo": false,
                 });
-                $(tables_view_person.table().body()).addClass('text-dark');
+                $(tables_view_engineer.table().body()).addClass('text-dark');
             },300);
         };
         var tables_type;
@@ -320,7 +313,6 @@
             },300);
         };
 
-
         $('#table_proposal').on('click','tbody td',function(){
              var cell = tables.cell(this);
              var column = cell[0][0].column;
@@ -349,53 +341,68 @@
              engineer_department = cell.data()[24];
              man_hours = cell.data()[25];
 
+             arrEngineer = [];
+
+             var count_engineer = (engineer_in_charge.match(/\|/g) || []).length;
+             for (var i = 0; i <= count_engineer; i++) {
+                if (engineer_in_charge != "") {
+                    var _engineer_in_charge = engineer_in_charge.split('|')[i];
+                    var _engineer_department = engineer_department.split('|')[i];
+                    var _manhours = man_hours.split('|')[i];
+                    arrEngineer.push([{
+                        "delete": "",
+                        "engineer": _engineer_in_charge,
+                        "department": _engineer_department,
+                        "manhours": _manhours
+                    }]);
+                }
+             }
 
              if(column == 0){  //edit
 
-                 document.getElementById("edit_quotation_quotation_no").value = quotation_no;
-                 document.getElementById("edit_quotation_quotation_craeted_date").value = quotation_craeted_date;
-                 document.getElementById("edit_customer").value = customer;
-                 document.getElementById("edit_quotation_enduser").value = enduser;
-                 document.getElementById("edit_quotation_project_name").value = project_name ;
-                 document.getElementById("edit_quotation_project_location").value = project_location;
-                 document.getElementById("edit_quotation_expected_order_date").value = expected_order_date;
-                 document.getElementById("edit_quotation_request_onsite").value = required_onsite;
-                 document.getElementById("edit_quotation_proposed_by").value = propose_by;
-                 document.getElementById("edit_quotation_proposal_expected_date").value = proposal_expected_date;
-                 document.getElementById("edit_request_date").value = proposal_request_date;
+                     document.getElementById("edit_quotation_quotation_no").value = quotation_no;
+                     document.getElementById("edit_quotation_quotation_craeted_date").value = quotation_craeted_date;
+                     document.getElementById("edit_customer").value = customer;
+                     document.getElementById("edit_quotation_enduser").value = enduser;
+                     document.getElementById("edit_quotation_project_name").value = project_name ;
+                     document.getElementById("edit_quotation_project_location").value = project_location;
+                     document.getElementById("edit_quotation_expected_order_date").value = expected_order_date;
+                     document.getElementById("edit_quotation_request_onsite").value = required_onsite;
+                     document.getElementById("edit_quotation_proposed_by").value = propose_by;
+                     document.getElementById("edit_quotation_proposal_expected_date").value = proposal_expected_date;
+                     document.getElementById("edit_request_date").value = proposal_request_date;
 
-                 document.getElementById("edit_proposal_status").value = proposal_status;
-                 var index_proposal_status = Proposal_Status.indexOf(proposal_status);
-                 document.getElementById('edit_proposal_status').selectedIndex = index_proposal_status;
+                     document.getElementById("edit_proposal_status").value = proposal_status;
+                     var index_proposal_status = Proposal_Status.indexOf(proposal_status);
+                     document.getElementById('edit_proposal_status').selectedIndex = index_proposal_status;
 
-                 document.getElementById("edit_quotation_revision").value = revision;
-                 document.getElementById("edit_propose_cost").value = propose_cost;
-                 document.getElementById("edit_quotation_quoted_price").value = quoted_price;
-                 document.getElementById("edit_gp").value = gp;
-                 document.getElementById("edit_finish_date").value = finish_date;
+                     document.getElementById("edit_quotation_revision").value = revision;
+                     document.getElementById("edit_propose_cost").value = propose_cost;
+                     document.getElementById("edit_quotation_quoted_price").value = quoted_price;
+                     document.getElementById("edit_gp").value = gp;
+                     document.getElementById("edit_finish_date").value = finish_date;
 
-                 document.getElementById("edit_department").value = "";
-                 document.getElementById("add_person").disabled = true;
+                     document.getElementById("add_engineer").disabled = true;
+                     document.getElementById("select_engineer_in_charge").value = "";
+                     document.getElementById("select_engineer_in_charge").disabled = true;
 
-                 //Add Person
-                 init_engineer();
 
-                     person_name = [];
-                     person_department = [];
-                     person_man_hours = [];
                      Product_Types = [];
                      Types = [];
                      Brands = [];
                      Total_Values = [];
 
-                    var count = (engineer_in_charge.match(/\|/g) || []).length;
-                    for (var i = 0; i <= count; i++) {
-                        if (engineer_in_charge != "") {
-                            person_name.push(engineer_in_charge.split('|')[i]);
-                            person_department.push(engineer_department.split('|')[i]);
-                            person_man_hours.push(man_hours.split('|')[i]);
-                        }
+                    // add select engineer department
+                    $('#select_engineer_in_charge_department').empty();
+                    var selectEngineerDepartment = document.getElementById('select_engineer_in_charge_department');
+                    selectEngineerDepartment.options.add(new Option("Please Select", "Please Select", true));
+                    for (var i = 0, l = Departments.length; i < l; i++) {
+                        var option = Departments[i];
+                        selectEngineerDepartment.options.add(new Option(option.text, option.value, option.selected));
                     }
+                    document.getElementById('select_engineer_in_charge_department').selectedIndex = 0;
+                    document.getElementById("select_engineer_in_charge_department").options[0].disabled = true;
+
 
                     var count_brand = (brands.match(/\|/g) || []).length;
                     for (var i=0;i<=count_brand;i++){
@@ -409,8 +416,9 @@
 
                     //init table type
                     init_type();
-                    // init table person
-                    init_person();
+
+                    // init table engineer in charge
+                    init_engineer_edit();
 
                  $('#modal_proposal').modal('show');
              }
@@ -437,22 +445,10 @@
                  document.getElementById("view_gp").value = gp;
                  document.getElementById("view_finish_date").value = finish_date;
 
-                 person_name = [];
-                 person_department = [];
-                 person_man_hours = [];
                  Product_Types = [];
                  Types = [];
                  Brands = [];
                  Total_Values = [];
-
-                 var count = (engineer_in_charge.match(/\|/g) || []).length;
-                 for (var i = 0; i <= count; i++) {
-                     if (engineer_in_charge != "") {
-                         person_name.push(engineer_in_charge.split('|')[i]);
-                         person_department.push(engineer_department.split('|')[i]);
-                         person_man_hours.push(man_hours.split('|')[i]);
-                     }
-                 }
 
                  var count_brand = (brands.match(/\|/g) || []).length;
                  for (var i=0;i<=count_brand;i++){
@@ -466,44 +462,29 @@
 
                  //init table view type
                  init_view_type();
-                 // init table view person
-                 init_view_person();
+                 // init table view engineer
+                 init_engineer_view();
                  $('#modal_view_proposal').modal('show');
              }
         });
-        $('#table_proposal_edit').on('click','tbody td',function(){
-             var cell = tables_person.cell(this);
+        $('#table_engineer_edit').on('click','tbody td',function(){
+             var cell = tables_engineer_edit.cell(this);
              var column = cell[0][0].column;
 
              if (column == 0){
-                 var person = cell.data()[1];
-                 var index = person_name.indexOf(person);
-                 romove_person(index);
-
-                 //init table person
-                 init_person();
+                 var name = cell.data()[1];
+                 arrEngineer = arrEngineer.filter(function (obj) {
+                    return obj[0].engineer !== name;
+                });
+                //init table engineer
+                init_engineer_edit();
              }
         });
-        $('#select_persons').on('change',function(){
-            document.getElementById("add_person").disabled = false;
-            var name = document.getElementById("select_persons").value;
-            $.ajax({
-                url: '@Url.Action("GetDepartment", "Proposal")',
-                type: "post",
-                contentType: 'application/x-www-form-urlencoded',
-                data: {
-                    name
-                },
-                success: function (response) {
-                    document.getElementById("edit_department").value = response;
-                }
-            });
-        });
-        $('#add_person').on('click',function(){
-            var name = document.getElementById("select_persons").value;
-            var department = document.getElementById("edit_department").value;
+        $('#add_engineer').on('click',function(){
+            var name = document.getElementById("select_engineer_in_charge").value;
+            var department = document.getElementById("select_engineer_in_charge_department").value;
             var man_hour = "-";
-            add_person_in_charge(name,department,man_hour);
+            add_engineer_in_charge(name,department,man_hour);
         });
 
         $('#edit_propose_cost').on('change',function(){
@@ -517,7 +498,7 @@
             document.getElementById('edit_quotation_quoted_price').value = newVal;
         });
 
-        $('#editProposalConfirm').on('click',function(){
+        $('#editEngineerConfirm').on('click',function(){
              var quotation = document.getElementById("edit_quotation_quotation_no").value;
              var request_date = document.getElementById("edit_request_date").value;
              var proposal_status = document.getElementById("edit_proposal_status").value;
@@ -527,9 +508,23 @@
              var gp = document.getElementById("edit_gp").value;
              var finish_date = document.getElementById("edit_finish_date").value;
 
-             var personname = person_name.join('|');
-             var persondepartment = person_department.join('|');
-             var manhour = person_man_hours.join('|');
+
+             // data engineer in charge
+             var arrengineer_in_charge = [];
+             var arrengineer_department = [];
+             var arrman_hours = [];
+             var engineer_in_charge = "";
+             var engineer_department = "";
+             var man_hours = "";
+
+             for (var i = 0; i < arrEngineer.length; i++) {
+                arrengineer_in_charge.push(arrEngineer[i][0].engineer);
+                arrengineer_department.push(arrEngineer[i][0].department);
+                arrman_hours.push(arrEngineer[i][0].manhours);
+             }
+             engineer_in_charge = arrengineer_in_charge.join('|');
+             engineer_department = arrengineer_department.join('|');
+             man_hours = arrman_hours.join('|');
 
              $.ajax({
                 url: '@Url.Action("Update", "Proposal")',
@@ -537,12 +532,12 @@
                 contentType: 'application/x-www-form-urlencoded',
                 data: {
                     quotation,request_date,proposal_status,revision,propose_cost,quoted_price,
-                    gp,finish_date,personname,persondepartment,manhour
+                    gp,finish_date,engineer_in_charge,engineer_department,man_hours
                 },
                 success: function (response) {
                     if (response == "Update Success") {
-                    toastr.success("Update Success");
-                    location.reload(); //reload page
+                        toastr.success("Update Success");
+                        location.reload(); //reload page
                     } else {
                         toastr.error("Update Failed");
                     }
@@ -551,57 +546,78 @@
               $('#modal_proposal').modal('hide');
         });
 
-        function add_person(persons) {
-            var data_persons = [];
-            for (var i = 0; i < persons.length; i++) {
-                var data =
-                {
-                    "text": persons[i],
-                    "value": persons[i]
-                }
-                data_persons.push(data);
-            }
+        $('#select_engineer_in_charge_department').on('change', function () {
+            document.getElementById("select_engineer_in_charge").disabled = false;
+            var department = document.getElementById("select_engineer_in_charge_department").value;
+            var engineer = Engineers.filter(f => f.department === department).map(m => m.name);
+      
+            var engineers = add_engineer(engineer);
 
-            return data_persons;
-        };
-        function romove_person(index){
-            person_name.splice(index, 1);
-            person_department.splice(index, 1);
-            person_man_hours.splice(index, 1);
-        };
-        function add_person_in_charge(name,department,man_hour){
-            var chkName = person_name.indexOf(name);
-            if (chkName == -1 && name !== ""){
-                person_name.push(name);
-                person_department.push(department);
-                person_man_hours.push(man_hour);
-                //init table person
-                init_person();
+            // add select engineer department
+            $('#select_engineer_in_charge').empty();
+            var selectEngineer = document.getElementById('select_engineer_in_charge');
+            for (var i = 0, l = engineers.length; i < l; i++) {
+                 var option = engineers[i];
+                    selectEngineer.options.add(new Option(option.text, option.value, option.selected));
             }
-        };
+            document.getElementById('select_engineer_in_charge').selectedIndex = 0;
+            document.getElementById("add_engineer").disabled = false;         
+        });
         function numberWithCommas(x) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").trim();
         };
-        function init_engineer(){
-            $.ajax({
-                url: '@Url.Action("GetUserEngineering", "Proposal")',
-                type: "post",
-                contentType: 'application/x-www-form-urlencoded',
-                data: {
-                },
-                success: function (response) {
-                    Persons = add_person(response);
-
-                    $('#select_persons').empty();
-                    var selectPerson = document.getElementById('select_persons');
-                    for (var i = 0, l = Persons.length; i < l; i++) {
-                        var option = Persons[i];
-                        selectPerson.options.add(new Option(option.text, option.value, option.selected));
-                    }
-                    document.getElementById("select_persons").options[0].disabled = true;
-                    document.getElementById('select_persons').selectedIndex = 0;
+        function add_engineer_department(departments) {
+            var data_departments = [];
+            for (var i = 0; i < departments.length; i++) {
+                var data =
+                {
+                    "text": departments[i].department,
+                    "value": departments[i].department
                 }
-            });
+                data_departments.push(data);
+            }
+
+            return data_departments;
+        };
+        function add_engineer(engineers) {
+            var data_engineers = [];
+            for (var i = 0; i < engineers[0].length; i++) {
+                var data =
+                {
+                    "text": engineers[0][i],
+                    "value": engineers[0][i]
+                }
+                data_engineers.push(data);
+            }
+            return data_engineers;
+        };
+        function add_engineer_in_charge(name, department,manhours) {           
+            var chkName = false;
+            for (var i = 0; i < arrEngineer.length; i++) {
+                if (arrEngineer[i][0].engineer == name) {
+                    chkName = true;
+                    break;
+                }
+            }
+            if (chkName === false && name !== "") {
+                arrEngineer.push([{
+                    "delete": "",
+                    "engineer": name,
+                    "department": department,
+                    "manhours" : manhours
+                }]);
+                //init table engineer
+                init_engineer_edit();
+            }
+        };
+         function init_engineer_view() {
+            var dataSet = [];
+
+            for (var i = 0; i < arrEngineer.length; i++) {
+                var data = [arrEngineer[i][0].engineer, arrEngineer[i][0].department,arrEngineer[i][0].manhours];
+                dataSet.push(data);
+            }
+            table_engineer_view(dataSet);
         };
 
 </script>

@@ -132,19 +132,20 @@
                         <div class="col-12">
                             <label for="table_proposal_edit">Engineering In Charge</label>
                             <div class="form-group row">
-                                <div class="col-md-3 col-xl-3 pt-1">
-                                    <select class="form-control" id="select_persons">
+                                <div class="col-md-2 col-xl-2 pt-1">                                   
+                                    <select class="form-control" id="select_engineer_in_charge_department">
                                         <option value="" disabled>Please Select</option>
                                     </select>
                                 </div>
-                                <div class="col-md-2 col-xl-2 pt-1">
-                                    <input type="text" id="edit_department" class="form-control" disabled />
+                                <div class="col-md-3 col-xl-3 pt-1">
+                                    <select class="form-control" id="select_engineer_in_charge">
+                                    </select>
                                 </div>
                                 <div class="col-md-2 col-xl-2 pt-1">
-                                    <input type="button" class="btn btn-success form-control" id="add_person" value="ADD" disabled />
+                                    <input type="button" class="btn btn-success form-control" id="add_engineer" value="ADD" disabled />
                                 </div>
                             </div>
-                            <table class="table table-md cell-border table-dark display responsive nowrap" id="table_proposal_edit" style="width:100%;overflow-x:auto">
+                            <table class="table table-md cell-border table-dark display responsive nowrap" id="table_engineer_edit" style="width:100%;overflow-x:auto">
                             </table>
                         </div>
                     </div>
@@ -152,7 +153,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="editProposalConfirm">Save changes</button>
+                <button type="button" class="btn btn-primary" id="editEngineerConfirm">Save changes</button>
             </div>
         </div>
     </div>
@@ -286,8 +287,8 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-md-12 col-xl-12">
-                            <label for="table_proposal_view">Engineering In Charge</label>
-                            <table class="table table-md cell-border table-dark display responsive nowrap" id="table_proposal_view" style="width:100%;overflow-x:auto">
+                            <label for="table_engineer_view">Engineering In Charge</label>
+                            <table class="table table-md cell-border table-dark display responsive nowrap" id="table_engineer_view" style="width:100%;overflow-x:auto">
                             </table>
                         </div>
                     </div>

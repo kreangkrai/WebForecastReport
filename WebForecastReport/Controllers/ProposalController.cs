@@ -83,13 +83,19 @@ namespace WebForecastReport.Controllers
             proposals = Proposal.getProposals(name, role);
 
             // get user engineer
-            List<string> users = new List<string>();
-            users.Add("Please Select");
-            //users.AddRange(Accessory.getAllUser().Where(w => w.groups == "Engineer").Select(s => s.name).ToList());
-            users.AddRange(Users.GetUsers().Where(w => w.groups.Trim() == "ENG").Select(s => s.name).ToList());
-           
+            List<UserManagementModel> engineer = new List<UserManagementModel>();
+            //engineers.Add(new UserManagementModel() { department = "Please Select"});
+            //engineers.AddRange(Accessory.getAllUser().Where(w => w.groups.Trim() == "Engineer").Select(s => s.name).ToList());
+            engineer = Users.GetUsers().Where(w => w.groups.Trim() == "ENG").ToList();
+            var engineers = engineer.GroupBy(g => g.department)
+                .Select(s =>
+                new {
+                    department = s.Key,
+                    name = engineer.Where(w => w.department == s.Key).Select(a => a.name).ToList()
+                }
+            ).ToList();
 
-            var list = new { proposals = proposals, users = users };
+            var list = new { proposals = proposals, engineers = engineers };
 
             return Json(list);
         }
@@ -102,7 +108,7 @@ namespace WebForecastReport.Controllers
 
         [HttpPost]
         public JsonResult Update(string quotation, string request_date, string proposal_status, string revision, string propose_cost, string quoted_price,
-                    string gp, string finish_date, string personname, string persondepartment, string manhour)
+                    string gp, string finish_date, string engineer_in_charge, string engineer_department, string man_hours)
         {
             ProposalModel proposal = new ProposalModel()
             {
@@ -117,9 +123,9 @@ namespace WebForecastReport.Controllers
                 proposal_quoted_price = quoted_price,
                 gp = gp,
                 finish_date = finish_date,
-                engineer_in_charge = personname,
-                engineer_department = persondepartment,
-                man_hours = manhour
+                engineer_in_charge = engineer_in_charge,
+                engineer_department = engineer_department,
+                man_hours = man_hours
             };
             string message = Proposal.Update(proposal);
             return Json(message);
