@@ -10,6 +10,7 @@ namespace WebForecastReport.Models.MPR
         public int index { get; set; }
         public string user_id { get; set; }
         public string user_name { get; set; }
+        public string department { get; set; }
         public DateTime working_date { get; set; }
         public int week_number { get; set; }
         public string job_id { get; set; }

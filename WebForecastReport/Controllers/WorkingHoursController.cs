@@ -75,6 +75,7 @@ namespace WebForecastReport.Controllers
 
             List<WorkingHoursModel> whs = WorkingHoursService.GetWorkingHours(yy.ToString(), mm.ToString().PadLeft(2,'0'), user_name);
             List<HolidayModel> holidays = HolidayService.GetHolidays(yy.ToString());
+            form_department = whs.Select(s => s.department).FirstOrDefault();
 
             whs = whs.OrderBy(o => o.working_date).ToList();
             int days = DateTime.DaysInMonth(yy, mm);
