@@ -164,7 +164,8 @@ namespace WebForecastReport.Services.MPR
                         quotation_no,
                         customer
                     FROM Quotation
-                    WHERE quotation_no Like 'Q{year}%'");
+                    WHERE quotation_no Like 'Q{year}%' OR 
+                    quotation_no Like 'Q{Convert.ToInt32(year) - 1}%'");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
