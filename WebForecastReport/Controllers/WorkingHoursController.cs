@@ -254,8 +254,10 @@ namespace WebForecastReport.Controllers
                 else
                 {
                     data.location = monthly[i].task_id.Substring(0, 1) == "O" ? "Office" : "Site";
-                    data.start_time = monthly[i].start_time.ToString().Substring(0,5) != "00:00" ? monthly[i].start_time.ToString().Substring(0, 5) : "";
-                    data.stop_time = monthly[i].stop_time.ToString().Substring(0, 5) != "00:00" ? monthly[i].stop_time.ToString().Substring(0, 5) : "";
+                    data.start_time = monthly[i].start_time.ToString().Substring(0,5) != "00:00" || monthly[i].stop_time.ToString().Substring(0, 5) != "00:00" ? 
+                        monthly[i].start_time.ToString().Substring(0, 5) : "";
+                    data.stop_time = monthly[i].stop_time.ToString().Substring(0, 5) != "00:00" || monthly[i].start_time.ToString().Substring(0, 5) != "00:00" ? 
+                        monthly[i].stop_time.ToString().Substring(0, 5) : "";
                     data.normal = monthly[i].normal.ToString().Substring(0, 5) != "00:00" ? monthly[i].normal.ToString().Substring(0, 5) : "";
                     data.ot1_5 = monthly[i].ot1_5.ToString().Substring(0, 5) != "00:00" ? monthly[i].ot1_5.ToString().Substring(0, 5) : "";
                     data.ot3_0 = monthly[i].ot3_0.ToString().Substring(0, 5) != "00:00" ? monthly[i].ot3_0.ToString().Substring(0, 5) : "";

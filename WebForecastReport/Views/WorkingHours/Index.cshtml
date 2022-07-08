@@ -334,11 +334,8 @@
 
                     $('td:eq(3)', row).addClass('text-left');
 
-                    if (data[4] === "00:00") {
+                    if (data[4] === "00:00" && data[5] === "00:00") {
                         $('td:eq(4)', row).html("");
-                    }
-
-                    if (data[5] === "00:00") {
                         $('td:eq(5)', row).html("");
                     }
 
