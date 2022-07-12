@@ -329,7 +329,9 @@
                     }
 
                     if (data[2] !== "") {
-                        data[2].substring(0, 1) === "O" ? $('td:eq(2)', row).html("Office") : $('td:eq(2)', row).html("Site");
+                        data[2].substring(0, 1) === "O" ? $('td:eq(2)', row).html("Office") :
+                        data[2].substring(0, 1) === "S" ? $('td:eq(2)', row).html("Site") :
+                        $('td:eq(2)', row).html("Travel");
                     }
 
                     $('td:eq(3)', row).addClass('text-left');
