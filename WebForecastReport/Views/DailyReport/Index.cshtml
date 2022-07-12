@@ -1,77 +1,76 @@
-﻿@{
+﻿@model WebForecastReport.Models.UserModel;
+@{
     ViewData["Title"] = "Daily Report";
 }
-<div class="row p-3">
-    <div class="col-xl-12">
-        <div class="card card-dark">
-            <div class="card-header">
-                <span class="card-title">Total Reports</span>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                </div>
-            </div>
-            <div class="card-body">
-                <table id="table_total" class="table table-sm table-bordered text-center w-100">
-                    <thead>
-                        <tr>
-                            <th>Month</th>
-                            <th>Job</th>
-                            <th>Records</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-    </div>
+<div class="row p-4" style="row-gap:20px">
     <div class="col-xl-12">
         <div class="card card-dark">
             <div class="card-header">
                 <span class="card-title">Daily Reports</span>
-                <div class="card-tools">
-                    <button id="btn_add" type="button" class="btn btn-primary btn-sm elevation-1">
-                        <i class="fas fa-plus"></i> Add Record
-                    </button>
-                </div>
             </div>
             <div class="card-body">
                 <form>
-                    <div class="form-group row">
-                        <div class="col-xl-4">
-                            <label for="sel_job_id">Job</label>
-                            <select id="sel_job_id" class="form-control"></select>
+                    <div class="form-group row" style="row-gap:20px">
+                        @if (Model.role == "Admin")
+                        {
+                            <div class="col-xl-3">
+                                <select id="user_name" class="form-control">
+                                    <option value="" selected disabled>Please Select User</option>
+                                </select>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-xl-3" hidden>
+                                <select id="user_name" class="form-control">
+                                    <option value="" selected disabled>Please Select User</option>
+                                </select>
+                            </div>
+                        }
+                        <div class="col-xl-1 d-flex align-items-center">
+                            <span>Start Date</span>
                         </div>
-                        <div class="col-xl-4">
-                            <label for="sel_month">Month</label>
-                            <input id="sel_month" type="month" class="form-control" />
+                        <div class="col-xl-2">
+                            <input id="start_date" type="date" class="form-control" />
                         </div>
-                        <div class="col-xl-2 d-flex align-items-end">
-                            <button id="btn_load" type="button" class="btn btn-primary form-control elevation-1" disabled>
+                        <div class="col-xl-1 d-flex align-items-center">
+                            <span>Stop Date</span>
+                        </div>
+                        <div class="col-xl-2">
+                            <input id="stop_date" type="date" class="form-control" />
+                        </div>
+                        <div class="col-xl-1">
+                            <button id="btn_load" type="button" class="btn btn-primary form-control elevation-1">
                                 <i class="fas fa-sync"></i> Load
                             </button>
                         </div>
-                        <div class="col-xl-2 d-flex align-items-end">
-                            <button id="btn_export" type="button" class="btn btn-success form-control elevation-1" disabled>
+                        <div class="col-xl-1">
+                            <button id="btn_print" type="button" class="btn btn-primary form-control elevation-1">
+                                <i class="fas fa-print"></i> Print
+                            </button>
+                        </div>
+                        <div class="col-xl-1">
+                            <button id="btn_export" type="button" class="btn btn-success form-control elevation-1">
                                 <i class="fas fa-file-excel"></i> Export
                             </button>
                         </div>
                     </div>
                     <hr />
                     <div class="form-group">
-                        <table id="table_dr" class="table table-sm compact table-bordered table-hover text-center w-100">
+                        <table id="table_activity" class="table table-sm compact table-bordered table-hover text-center w-100">
                             <thead>
                                 <tr>
-                                    <th>Ind</th>
+                                    <th>#</th>
                                     <th>Date</th>
-                                    <th>Start Time</th>
-                                    <th>Stop Time</th>
-                                    <th>Job</th>
-                                    <th>Customer</th>
+                                    <th>Start</th>
+                                    <th>Stop</th>
                                     <th>Activity</th>
                                     <th>Problem</th>
                                     <th>Solution</th>
                                     <th>Tomorrow Plan</th>
+                                    <th>Note</th>
                                     <th>Action By</th>
+                                    <th>Customer</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -83,11 +82,11 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal_dr" tabindex="-1" role="dialog" data-backdrop="static">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+<div class="modal fade" id="modal_activity" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal_dr_title">Add Daily Report</h5>
+                <h5 class="modal-title">Activity</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -95,374 +94,275 @@
             <div class="modal-body">
                 <form>
                     <div class="form-group" hidden>
-                        <input id="index" type="number" class="form-control" />
+                        <span>Index</span>
+                        <input id="ind" type="text" class="form-control" disabled/>
                     </div>
-                    <div class="form-group">
-                        <label for="date">Date</label>
-                        <input id="date" type="date" class="form-control" />
-                        <small>Required</small>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-xl-6">
-                            <label for="start_time">Start</label>
-                            <input id="start_time" type="time" class="form-control" />
-                            <small>Required</small>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Date</span>
+                            <input id="date" type="date" class="form-control" disabled/>
                         </div>
-                        <div class="col-xl-6">
-                            <label for="stop_time">Stop</label>
-                            <input id="stop_time" type="time" class="form-control" />
-                            <small>Required</small>
+                        <div class="col-xl-4">
+                            <span>Start</span>
+                            <input id="start_time" type="time" class="form-control" disabled/>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-xl-6">
-                            <label for="job_id">Job</label>
-                            <select id="job_id" class="form-control"></select>
-                            <small>Required</small>
-                        </div>
-                        <div class="col-xl-6">
-                            <label for="customer">Customer</label>
-                            <input id="customer" type="text" class="form-control" placeholder="Customer" />
+                        <div class="col-xl-4">
+                            <span>Stop</span>
+                            <input id="stop_time" type="time" class="form-control" disabled/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="activity">Activity</label>
-                        <input id="activity" type="text" class="form-control" placeholder="Activity" />
-                        <small>Required</small>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-xl-6">
-                            <label for="problem">Problem</label>
-                            <input id="problem" type="text" class="form-control" placeholder="Problem" />
-                        </div>
-                        <div class="col-xl-6">
-                            <label for="solution">Solution</label>
-                            <input id="solution" type="text" class="form-control" placeholder="Solution" />
-                        </div>
+                        <span>Activity</span>
+                        <input id="activity" type="text" class="form-control" disabled/>
                     </div>
                     <div class="form-group">
-                        <label for="tomorrow_plan">Tomorrow Action Plan</label>
-                        <input id="tomorrow_plan" type="text" class="form-control" placeholder="Tomorrow Plan" />
+                        <span>Problem</span>
+                        <input id="problem" type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <span>Solution</span>
+                        <input id="solution" type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <span>Tomorrow Plan</span>
+                        <input id="tomorrow_plan" type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <span>Note</span>
+                        <input id="note" type="text" class="form-control" disabled/>
+                    </div>
+                    <div class="form-group">
+                        <span>Action By</span>
+                        <input id="action_by" type="text" class="form-control" disabled/>
+                    </div>
+                    <div class="form-group">
+                        <span>Customer</span>
+                        <input id="customer" type="text" class="form-control" />
                     </div>
                 </form>
             </div>
-            <div class="modal-footer d-flex">
-                <button id="btn_delete" type="button" class="btn btn-danger elevation-1 justify-self-start">
-                    <i class="fas fa-trash-alt"></i> Delete
-                </button>
-                <button type="button" class="btn btn-secondary elevation-1" data-dismiss="modal">
-                    <i class="fas fa-times"></i> Close
-                </button>
-                <button id="btn_accept" type="button" class="btn btn-primary elevation-1">
-                    <i class="fas fa-check"></i> Accept
-                </button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btn_save" type="button" class="btn btn-primary">Save</button>
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts 
+@section Scripts
 {
     <script type="text/javascript">
-        //Variable Declaration
-        var jrs;
-        var drs;
-        var table_total;
-        var table_drs;
+        var users;
+        var drs = [];
+        var table;
         var update = false;
-
-        //Debug Variable
-        var debug_jrs = false;
         var debug_drs = false;
 
         $(document).ready(async function () {
-            await GetJobResponsible('@Model.name');
-            GenerateJobSelectOptions();
+            await GetUsers();
+            GenerateUsers();
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = today.getMonth();
+            var start_date = new Date(year, month, 2);
+            var stop_date = new Date(year, month + 1, 1);
+            $('#start_date').val(start_date.toISOString().split("T")[0]);
+            $('#stop_date').val(stop_date.toISOString().split("T")[0]);
+            $('#user_name').val('@Model.fullname.ToLower()');
+            table = $('#table_activity').DataTable();
+            EnablePrint();
+            EnableExport();
         });
 
-        async function GetJobResponsible(user_id) {
+        async function GetUsers() {
             await $.ajax({
                 type: "GET",
-                url: '@Url.Action("GetJobResponsible", "DailyReport")',
+                url: '@Url.Action("GetUsers", "EngUser")',
 	            contentType: 'application/x-www-form-urlencoded',
-                data: { user_id },
+                data: { },
                 success: function (response) {
-                    jrs = response;
-                    if (debug_jrs) {
-                        console.log("Job Responsible");
-                        console.log(jrs);
-                    }
+                    users = response;
                 }
             });
         }
 
-        function GenerateJobSelectOptions() {
-            var job_str = '<option value="" selected disabled>Please Select Job</option>';
-            for (var i = 0; i < jrs.length; i++) {
-                job_str += `<option value="${jrs[i].job_id}">${jrs[i].job_id}: ${jrs[i].job_name}</option>`;
+        function GenerateUsers() {
+            var user_string = '';
+            for (var i = 0; i < users.length; i++) {
+                user_string += `<option value="${users[i].user_name.toLowerCase()}">${users[i].user_name}</option>`;
             }
-            $('#sel_job_id').empty();
-            $('#sel_job_id').append(job_str);
+            $('#user_name').empty();
+            $('#user_name').append(user_string);
         }
 
-        function GenerateJobOptions() {
-            var job_str = '<option value="" selected disabled>Please Select Job</option>';
-            for (var i = 0; i < jrs.length; i++) {
-                job_str += `<option value="${jrs[i].job_id}">${jrs[i].job_id}: ${jrs[i].job_name}</option>`;
-            }
-            $('#job_id').empty();
-            $('#job_id').append(job_str);
+        $('#btn_load').on('click', async function () {
+            var username = $('#user_name').val();
+            var start_date = $('#start_date').val();
+            var stop_date = $('#stop_date').val();
+            await GetDailyActivities(username, start_date, stop_date);
+            EnablePrint();
+            EnableExport();
+            GenerateTableActivity();
+        });
+
+        async function GetDailyActivities(user_name, start_date, stop_date) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetDailyActivities", "DailyReport")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { user_name, start_date, stop_date },
+                success: function (response) {
+                    drs = response;
+                }
+            });
         }
 
-        $('#sel_job_id').on('change', function () {
-            EnableLoadExport();
-        });
+        function EnablePrint() {
+            if (drs.length > 0) {
+                $('#btn_print').attr('disabled', false);
+            } else {
+                $('#btn_print').attr('disabled', true);
+            }
+        }
 
-        $('#sel_month').on('change', function () {
-            EnableLoadExport();
-        });
-
-        function EnableLoadExport() {
-            var sel_job_id = $('#sel_job_id').val();
-            var sel_month = $('#sel_month').val();
-            if (sel_job_id !== "" && sel_month !== "") {
-                $('#btn_load').attr('disabled', false);
+        function EnableExport() {
+            if (drs.length > 0) {
                 $('#btn_export').attr('disabled', false);
-            }
-            else {
-                $('#btn_load').attr('disabled', true);
+            } else {
                 $('#btn_export').attr('disabled', true);
             }
         }
 
-        $('#btn_load').on('click', async function () {
-            var user_id = '@Model.name';
-            var month = $('#sel_month').val();
-            var job_id = $('#sel_job_id').val();
-            await GetDailyReport(user_id, month, job_id);
-            GenerateTableDailyReport();
-        });
-
-        async function GetDailyReport(user_id, month, job_id) {
-            await $.ajax({
-                type: "GET",
-                url: '@Url.Action("GetDailyReport", "DailyReport")',
-	            contentType: 'application/x-www-form-urlencoded',
-                data: { user_id, month, job_id },
-                success: function (response) {
-                    drs = response;
-                    if (debug_drs) {
-                        console.log("Daily Report");
-                        console.log(drs);
-                    }
-                }
-            });
-        }
-
-        $('#btn_export').on('click', function () {
-            alert("Btn Export Click");
-        });
-
-        function GenerateTableTotal() {
-            $('#table_total').DataTable();
-        }
-
-        function GenerateTableDailyReport() {
+        function GenerateTableActivity() {
             var datas = [];
 
             for (var i = 0; i < drs.length; i++) {
                 datas.push([
-                    drs[i].index,
+                    drs[i].ind,
                     drs[i].date.split("T")[0],
-                    drs[i].start_time,
-                    drs[i].stop_time,
-                    drs[i].job_id,
-                    drs[i].customer,
-                    drs[i].activity,
+                    drs[i].start_time.substring(0,5),
+                    drs[i].stop_time.substring(0,5),
+                    drs[i].job_id + " " + drs[i].task_name,
                     drs[i].problem,
                     drs[i].solution,
                     drs[i].tomorrow_plan,
-                    drs[i].user_id
+                    drs[i].note,
+                    drs[i].user_id,
+                    drs[i].customer
                 ]);
             }
 
-            if (table_drs !== undefined) {
-                table_drs.destroy();
+            if (table !== undefined) {
+                table.destroy();
             }
 
-            table_drs = $('#table_dr').DataTable({
+            table = $('#table_activity').DataTable({
+                lengthMenu: [[25,50,100,200], [25,50,100,200]],
                 data: datas,
             });
+
+            table.column(0).visible(false);
         }
 
-        $('#table_dr tbody').on('click', 'tr', async function () {
-            await GetJobResponsible('@Model.name');
-            GenerateJobOptions();
-            PrepformEdit(table_drs.row(this).data());
+        $('#table_activity').on('click', 'tr', function () {
+            ViewActivity(table.row(this).data());
         });
 
-        $('#btn_add').on('click', async function () {
-            await GetJobResponsible('@Model.name');
-            GenerateJobOptions();
-            PrepformAdd();
-        });
-
-        function PrepformAdd() {
-            update = false;
-            var today = new Date();
-            $('#index').val(null);
-            $('#date').val(today.toISOString().split("T")[0]);
-            $('#start_time').val(null);
-            $('#stop_time').val(null);
-            $('#job_id').val(null);
-            $('#customer').val(null);
-            $('#activity').val(null);
-            $('#problem').val(null);
-            $('#solution').val(null);
-            $('#tomorrow_plan').val(null);
-            $('#modal_dr').modal();
-            $('#modal_dr_title').text("Add Daily Report");
-            $('#btn_accept').attr('disabled', true);
-        }
-
-        function PrepformEdit(data) {
-            update = true;
-            var index = data[0];
+        function ViewActivity(data) {
+            var ind = data[0];
             var date = data[1];
             var start_time = data[2];
             var stop_time = data[3];
-            var job_id = data[4];
-            var customer = data[5];
-            var activity = data[6];
-            var problem = data[7];
-            var solution = data[8];
-            var tomorrow_plan = data[9];
-            $('#index').val(index);
+            var activity = data[4];
+            var problem = data[5];
+            var solution = data[6];
+            var tomorrow_plan = data[7];
+            var note = data[8];
+            var action_by = data[9];
+            var customer = data[10];
+            $('#ind').val(ind);
             $('#date').val(date);
             $('#start_time').val(start_time);
             $('#stop_time').val(stop_time);
-            $('#job_id').val(job_id);
-            $('#customer').val(customer);
             $('#activity').val(activity);
             $('#problem').val(problem);
             $('#solution').val(solution);
             $('#tomorrow_plan').val(tomorrow_plan);
-            $('#modal_dr').modal();
-            $('#modal_dr_title').text("Edit Daily Report");
+            $('#note').val(note);
+            $('#action_by').val(action_by);
+            $('#customer').val(customer);
+            $('#modal_activity').modal();
         }
 
-        $('#date').on('change', function () {
-            EnableAccept();
-        });
-
-        $('#start_time').on('change', function () {
-            EnableAccept();
-        });
-
-        $('#stop_time').on('change', function () {
-            EnableAccept();
-        });
-
-        $('#job_id').on('change', function () {
-            EnableAccept();
-        });
-
-        $('#activity').on('change', function () {
-            EnableAccept();
-        });
-
-        function EnableAccept() {
-            var enable = 1;
-            enable *= $('#date').val() !== "" ? 1 : 0;
-            enable *= $('#start_time').val() !== "" ? 1 : 0;
-            enable *= $('#stop_time').val() !== "" ? 1 : 0;
-            enable *= $('#job_id').val() !== "" ? 1 : 0;
-            enable *= $('#activity').val() !== "" ? 1 : 0;
-            $('#btn_accept').attr('disabled', !enable);
-        }
-
-        $('#btn_accept').on('click', function () {
-            var index = $('#index').val();
+        $('#btn_save').on('click', async function () {
+            var ind = $('#ind').val();
             var date = $('#date').val();
             var start_time = $('#start_time').val();
             var stop_time = $('#stop_time').val();
-            var job_id = $('#job_id').val();
-            var user_id = '@Model.name';
-            var customer = $('#customer').val();
             var activity = $('#activity').val();
             var problem = $('#problem').val();
             var solution = $('#solution').val();
             var tomorrow_plan = $('#tomorrow_plan').val();
-            var dr_str = JSON.stringify({
-                "index": index,
+            var note = $('#note').val();
+            var action_by = $('#action_by').val();
+            var customer = $('#customer').val();
+            var activity_string = JSON.stringify({
+                "ind": ind,
                 "date": date,
                 "start_time": start_time,
                 "stop_time": stop_time,
-                "job_id": job_id,
-                "user_id": user_id,
-                "customer": customer,
-                "activity": activity,
+                "activity": "",
                 "problem": problem,
                 "solution": solution,
-                "tomorrow_plan": tomorrow_plan
+                "tomorrow_plan": tomorrow_plan,
+                "note": note,
+                "action_by": action_by,
+                "customer": customer
             });
-            if (!update) {
-                AddDailyReport(dr_str);
-            }
-            else {
-                EditDailyReport(dr_str);
-            }
+            await UpdateActivity(activity_string);
         });
 
-        async function AddDailyReport(dr_str) {
-            var dr = JSON.parse(dr_str);
-            var user_id = '@Model.name';
-            var month = dr.date.substring(0, 7);
-            var job_id = dr.job_id;
-            await $.ajax({
-                type: "POST",
-                url: '@Url.Action("AddDailyReport", "DailyReport")',
-                contentType: 'application/x-www-form-urlencoded',
-                data: { dr_str },
-                success: async function (response) {
-                    if (response == "Success") {
-                        $("#modal_dr").modal("toggle");
-                        $('#sel_job_id').val(job_id);
-                        $('#sel_month').val(month);
-                        await GetDailyReport(user_id, month, job_id);
-                        GenerateTableDailyReport();
-                    }
-                    else {
-                        toastr.error(response);
-                    }
-                }
-            });
-        };
-
-        async function EditDailyReport(dr_str) {
-            var dr = JSON.parse(dr_str);
-            var user_id = '@Model.name';
-            var month = dr.date.substring(0, 7);
-            var job_id = dr.job_id;
+        async function UpdateActivity(activity_string) {
             await $.ajax({
                 type: "PATCH",
-                url: '@Url.Action("EditDailyReport", "DailyReport")',
-                contentType: 'application/x-www-form-urlencoded',
-                data: { dr_str },
+                url: '@Url.Action("UpdateActivity", "DailyReport")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { activity_string },
                 success: async function (response) {
-                    if (response == "Success") {
-                        $("#modal_dr").modal("toggle");
-                        $('#sel_job_id').val(job_id);
-                        $('#sel_month').val(month);
-                        await GetDailyReport(user_id, month, job_id);
-                        GenerateTableDailyReport();
+                    if (response === "Success") {
+                        location.reload();
                     }
                     else {
-                        toastr.error(response);
+                        alert(response);
                     }
                 }
             });
-        };
+        }
+
+        $('#btn_print').on('click', function () {
+            var url = '@Url.Action("FormDailyReport", "DailyReport")';
+            window.location.href = url;
+        });
+
+        $('#btn_export').on('click', async function () {
+            alert("This function is under development");
+            @*var username = $('#user_name').val();
+            var start_date = $('#start_date').val();
+            var stop_date = $('#stop_date').val();
+            await ExportAsExcel(username, start_date, stop_date);*@
+        });
+
+        async function ExportAsExcel(user_name, start_date, stop_date) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("Export", "DailyReport")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { user_name, start_date, stop_date },
+                success: function () {
+                    window.location = '@Url.Action("Export", "DailyReport")';
+                }
+            });
+        }
 
     </script>
 }
