@@ -7,7 +7,7 @@ namespace WebForecastReport.Models.MPR
 {
     public class DailyActivityModel
     {
-        public int index { get; set; }
+        public int ind { get; set; }
         public DateTime date { get; set; }
         public TimeSpan start_time { get; set; }
         public TimeSpan stop_time { get; set; }

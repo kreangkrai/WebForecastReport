@@ -8,7 +8,7 @@ using WebForecastReport.Models.MPR;
 
 namespace WebForecastReport.Service.MPR
 {
-    public class DailyReportService : IDRService
+    public class DailyReportService : IDailyReport
     {
         public List<DailyActivityModel> GetDailyActivities(string user_name, DateTime start_date, DateTime stop_date)
         {
@@ -25,6 +25,7 @@ namespace WebForecastReport.Service.MPR
                         Jobs.job_name,
                         WorkingHours.task_id,
                         Tasks.task_name,
+                        activity,
                         problem,
                         solution,
                         tomorrow_plan,
@@ -52,7 +53,7 @@ namespace WebForecastReport.Service.MPR
                     {
                         DailyActivityModel dlr = new DailyActivityModel()
                         {
-                            index = dr["ind"] != DBNull.Value ? Convert.ToInt32(dr["ind"]) : 0,
+                            ind = dr["ind"] != DBNull.Value ? Convert.ToInt32(dr["ind"]) : 0,
                             date = dr["working_date"] != DBNull.Value ? Convert.ToDateTime(dr["working_date"]) : default(DateTime),
                             start_time = dr["start_time"] != DBNull.Value ? TimeSpan.Parse(dr["start_time"].ToString()) : default(TimeSpan),
                             stop_time = dr["stop_time"] != DBNull.Value ? TimeSpan.Parse(dr["stop_time"].ToString()) : default(TimeSpan),
@@ -63,11 +64,11 @@ namespace WebForecastReport.Service.MPR
                             user_id = dr["user_id"] != DBNull.Value ? dr["user_id"].ToString() : "",
                             user_name = dr["user_name"] != DBNull.Value ? dr["user_name"].ToString() : "",
                             note = dr["note"] != DBNull.Value ? dr["note"].ToString() : "",
-                            //activity = dr["activity"] != DBNull.Value ? dr["activity"].ToString() : "",
-                            //problem = dr["problem"] != DBNull.Value ? dr["problem"].ToString() : "",
-                            //solution = dr["solution"] != DBNull.Value ? dr["solution"].ToString() : "",
-                            //tomorrow_plan = dr["tomorrow_plan"] != DBNull.Value ? dr["tomorrow_plan"].ToString() : "",
-                            //customer = dr["customer"] != DBNull.Value ? dr["customer"].ToString() : "",
+                            activity = dr["activity"] != DBNull.Value ? dr["activity"].ToString() : "",
+                            problem = dr["problem"] != DBNull.Value ? dr["problem"].ToString() : "",
+                            solution = dr["solution"] != DBNull.Value ? dr["solution"].ToString() : "",
+                            tomorrow_plan = dr["tomorrow_plan"] != DBNull.Value ? dr["tomorrow_plan"].ToString() : "",
+                            customer = dr["customer"] != DBNull.Value ? dr["customer"].ToString() : "",
                         };
                         dlrs.Add(dlr);
                     }
@@ -84,63 +85,13 @@ namespace WebForecastReport.Service.MPR
             return dlrs;
         }
 
-        public string AddDailyReport(DailyActivityModel dlr)
-        {
-            try
-            {
-                string string_command = string.Format($@"
-                    INSERT INTO ENG_DAILY_REPORTS(
-                        date, start_time, stop_time, job_id, user_id, activity, problem, solution, tomorrow_plan, customer)
-                    VALUES (
-                        @date, @start_time, @stop_time, @job_id, @user_id, @activity, @problem, @solution, @tomorrow_plan, @customer)");
-                using (SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect()))
-                {
-                    cmd.CommandType = System.Data.CommandType.Text;
-                    cmd.Parameters.AddWithValue("@date", dlr.date);
-                    cmd.Parameters.AddWithValue("@start_time", dlr.start_time);
-                    cmd.Parameters.AddWithValue("@stop_time", dlr.stop_time);
-                    cmd.Parameters.AddWithValue("@job_id", dlr.job_id);
-                    cmd.Parameters.AddWithValue("@user_id", dlr.user_id);
-                    cmd.Parameters.AddWithValue("@activity", dlr.activity);
-                    cmd.Parameters.AddWithValue("@problem", dlr.problem);
-                    cmd.Parameters.AddWithValue("@solution", dlr.solution);
-                    cmd.Parameters.AddWithValue("@tomorrow_plan", dlr.tomorrow_plan);
-                    cmd.Parameters.AddWithValue("@customer", dlr.customer);
-                    if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
-                    {
-                        ConnectSQL.CloseConnect();
-                        ConnectSQL.OpenConnect();
-                    }
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-            finally
-            {
-                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
-                {
-                    ConnectSQL.CloseConnect();
-                }
-            }
-            return "Success";
-        }
-
         public string EditDailyReport(DailyActivityModel dlr)
         {
             try
             {
                 string string_command = string.Format($@"
-                    UPDATE ENG_DAILY_REPORTS
+                    UPDATE WorkingHours
                     SET
-                        date = @date,
-                        start_time = @start_time,
-                        stop_time = @stop_time,
-                        job_id = @job_id,
-                        user_id = @user_id,
-                        activity = @activity,
                         problem = @problem,
                         solution = @solution,
                         tomorrow_plan = @tomorrow_plan,
@@ -149,17 +100,11 @@ namespace WebForecastReport.Service.MPR
                 using (SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect()))
                 {
                     cmd.CommandType = System.Data.CommandType.Text;
-                    cmd.Parameters.AddWithValue("@date", dlr.date);
-                    cmd.Parameters.AddWithValue("@start_time", dlr.start_time);
-                    cmd.Parameters.AddWithValue("@stop_time", dlr.stop_time);
-                    cmd.Parameters.AddWithValue("@job_id", dlr.job_id);
-                    cmd.Parameters.AddWithValue("@user_id", dlr.user_id);
-                    cmd.Parameters.AddWithValue("@activity", dlr.activity);
                     cmd.Parameters.AddWithValue("@problem", dlr.problem);
                     cmd.Parameters.AddWithValue("@solution", dlr.solution);
                     cmd.Parameters.AddWithValue("@tomorrow_plan", dlr.tomorrow_plan);
                     cmd.Parameters.AddWithValue("@customer", dlr.customer);
-                    cmd.Parameters.AddWithValue("@ind", dlr.index);
+                    cmd.Parameters.AddWithValue("@ind", dlr.ind);
                     if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                     {
                         ConnectSQL.CloseConnect();

@@ -6,10 +6,9 @@ using WebForecastReport.Models.MPR;
 
 namespace WebForecastReport.Interface.MPR
 {
-    interface IDRService
+    interface IDailyReport
     {
         List<DailyActivityModel> GetDailyActivities(string user_name, DateTime start_date, DateTime stop_date);
-        string AddDailyReport(DailyActivityModel dlr);
         string EditDailyReport(DailyActivityModel dlr);
     }
 }

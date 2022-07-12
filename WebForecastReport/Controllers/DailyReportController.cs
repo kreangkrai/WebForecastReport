@@ -21,14 +21,14 @@ namespace WebForecastReport.Controllers
     public class DailyReportController : Controller
     {
         readonly IAccessory Accessory;
-        readonly IDRService DRService;
+        readonly IDailyReport DailyReport;
 
         static Form_DailyReportModel form_model;
 
         public DailyReportController()
         {
             Accessory = new AccessoryService();
-            DRService = new DailyReportService();
+            DailyReport = new DailyReportService();
         }
 
         public IActionResult Index()
@@ -58,7 +58,7 @@ namespace WebForecastReport.Controllers
         [HttpGet]
         public List<DailyActivityModel> GetDailyActivities(string user_name, DateTime start_date, DateTime stop_date)
         {
-            List<DailyActivityModel> drs = DRService.GetDailyActivities(user_name, start_date, stop_date);
+            List<DailyActivityModel> drs = DailyReport.GetDailyActivities(user_name, start_date, stop_date);
             form_model = new Form_DailyReportModel()
             {
                 name = user_name,
@@ -70,10 +70,11 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpPatch]
-        public string UpdateActivity(string activity_string)
+        public JsonResult UpdateActivity(string activity_string)
         {
             DailyActivityModel da = JsonConvert.DeserializeObject<DailyActivityModel>(activity_string);
-            return "Success";
+            var result = DailyReport.EditDailyReport(da);
+            return Json(result);
         }
 
         public IActionResult FormDailyReport(string user_name, DateTime start_date, DateTime stop_date)
@@ -97,7 +98,7 @@ namespace WebForecastReport.Controllers
         [HttpGet]
         public ActionResult Export(string user_name, DateTime start_date, DateTime stop_date)
         {
-            List<DailyActivityModel> drs = DRService.GetDailyActivities(user_name, start_date, stop_date);
+            List<DailyActivityModel> drs = DailyReport.GetDailyActivities(user_name, start_date, stop_date);
             string sFileName = @"DailyReport.xlsx";
 
             IWorkbook workbook = new XSSFWorkbook();
