@@ -8,8 +8,8 @@ namespace WebForecastReport.Interface.MPR
 {
     interface IDRService
     {
-        List<ENG_DailyReportModel> GetDailyReport(string user_id, string month, string job_id);
-        string AddDailyReport(ENG_DailyReportModel dlr);
-        string EditDailyReport(ENG_DailyReportModel dlr);
+        List<DailyActivityModel> GetDailyActivities(string user_name, DateTime start_date, DateTime stop_date);
+        string AddDailyReport(DailyActivityModel dlr);
+        string EditDailyReport(DailyActivityModel dlr);
     }
 }

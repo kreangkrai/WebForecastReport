@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebForecastReport.Models.MPR
 {
-    public class ENG_DailyReportModel
+    public class DailyActivityModel
     {
         public int index { get; set; }
         public DateTime date { get; set; }
@@ -13,6 +13,8 @@ namespace WebForecastReport.Models.MPR
         public TimeSpan stop_time { get; set; }
         public string job_id { get; set; }
         public string job_name { get; set; }
+        public string task_id { get; set; }
+        public string task_name { get; set; }
         public string user_id { get; set; }
         public string user_name { get; set; }
         public string activity { get; set; }
@@ -20,6 +22,6 @@ namespace WebForecastReport.Models.MPR
         public string solution { get; set; }
         public string tomorrow_plan { get; set; }
         public string customer { get; set; }
-        public string status { get; set; }
+        public string note { get; set; }
     }
 }

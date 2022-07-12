@@ -8,30 +8,37 @@ using WebForecastReport.Models.MPR;
 
 namespace WebForecastReport.Service.MPR
 {
-    public class ENG_DailyReportService : IDRService
+    public class DailyReportService : IDRService
     {
-        public List<ENG_DailyReportModel> GetDailyReport(string user_id, string month, string job_id)
+        public List<DailyActivityModel> GetDailyActivities(string user_name, DateTime start_date, DateTime stop_date)
         {
-            List<ENG_DailyReportModel> dlrs = new List<ENG_DailyReportModel>();
+            List<DailyActivityModel> dlrs = new List<DailyActivityModel>();
             try
             {
                 string string_command = string.Format($@"
                     SELECT
-                        ind,
-	                    date,
+	                    ind,
+                        working_date,
                         start_time,
                         stop_time,
-                        job_id,
-                        user_id,
-                        activity,
+                        WorkingHours.job_id,
+                        Jobs.job_name,
+                        WorkingHours.task_id,
+                        Tasks.task_name,
                         problem,
                         solution,
                         tomorrow_plan,
+                        WorkingHours.user_id,
+	                    EngineerUsers.user_name,
                         customer,
-                        status
-                    FROM ENG_DAILY_REPORTS
-                    WHERE user_id = '{user_id}' AND date LIKE '{month}%' AND job_id = '{job_id}'
-                    ORDER BY date, start_time");
+                        note
+                    FROM WorkingHours 
+                    LEFT JOIN EngineerUsers ON WorkingHours.user_id = EngineerUsers.user_id
+                    LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
+                    LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
+                    WHERE EngineerUsers.user_name LIKE '{user_name}'
+                    AND working_date BETWEEN '{start_date.ToString("yyyy-MM-dd")}' AND '{stop_date.ToString("yyyy-MM-dd")}';
+                ");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
@@ -43,22 +50,24 @@ namespace WebForecastReport.Service.MPR
                 {
                     while (dr.Read())
                     {
-                        ENG_DailyReportModel dlr = new ENG_DailyReportModel()
+                        DailyActivityModel dlr = new DailyActivityModel()
                         {
                             index = dr["ind"] != DBNull.Value ? Convert.ToInt32(dr["ind"]) : 0,
-                            date = dr["date"] != DBNull.Value ? Convert.ToDateTime(dr["date"]) : default(DateTime),
+                            date = dr["working_date"] != DBNull.Value ? Convert.ToDateTime(dr["working_date"]) : default(DateTime),
                             start_time = dr["start_time"] != DBNull.Value ? TimeSpan.Parse(dr["start_time"].ToString()) : default(TimeSpan),
                             stop_time = dr["stop_time"] != DBNull.Value ? TimeSpan.Parse(dr["stop_time"].ToString()) : default(TimeSpan),
                             job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
-                            //job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
+                            job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
+                            task_id = dr["task_id"] != DBNull.Value ? dr["task_id"].ToString() : "",
+                            task_name = dr["task_name"] != DBNull.Value ? dr["task_name"].ToString() : "",
                             user_id = dr["user_id"] != DBNull.Value ? dr["user_id"].ToString() : "",
-                            //user_name = dr["user_name"] != DBNull.Value ? dr["user_name"].ToString() : "",
-                            activity = dr["activity"] != DBNull.Value ? dr["activity"].ToString() : "",
-                            problem = dr["problem"] != DBNull.Value ? dr["problem"].ToString() : "",
-                            solution = dr["solution"] != DBNull.Value ? dr["solution"].ToString() : "",
-                            tomorrow_plan = dr["tomorrow_plan"] != DBNull.Value ? dr["tomorrow_plan"].ToString() : "",
-                            customer = dr["customer"] != DBNull.Value ? dr["customer"].ToString() : "",
-                            status = dr["status"] != DBNull.Value ? dr["status"].ToString() : "",
+                            user_name = dr["user_name"] != DBNull.Value ? dr["user_name"].ToString() : "",
+                            note = dr["note"] != DBNull.Value ? dr["note"].ToString() : "",
+                            //activity = dr["activity"] != DBNull.Value ? dr["activity"].ToString() : "",
+                            //problem = dr["problem"] != DBNull.Value ? dr["problem"].ToString() : "",
+                            //solution = dr["solution"] != DBNull.Value ? dr["solution"].ToString() : "",
+                            //tomorrow_plan = dr["tomorrow_plan"] != DBNull.Value ? dr["tomorrow_plan"].ToString() : "",
+                            //customer = dr["customer"] != DBNull.Value ? dr["customer"].ToString() : "",
                         };
                         dlrs.Add(dlr);
                     }
@@ -75,7 +84,7 @@ namespace WebForecastReport.Service.MPR
             return dlrs;
         }
 
-        public string AddDailyReport(ENG_DailyReportModel dlr)
+        public string AddDailyReport(DailyActivityModel dlr)
         {
             try
             {
@@ -119,7 +128,7 @@ namespace WebForecastReport.Service.MPR
             return "Success";
         }
 
-        public string EditDailyReport(ENG_DailyReportModel dlr)
+        public string EditDailyReport(DailyActivityModel dlr)
         {
             try
             {
