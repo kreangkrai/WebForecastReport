@@ -66,6 +66,13 @@ namespace WebForecastReport.Controllers
             return Json(tasks);
         }
 
+        [HttpGet]
+        public JsonResult GetTravelTasks()
+        {
+            List<TaskModel> tasks = TaskService.GetTravelTasks();
+            return Json(tasks);
+        }
+
         [HttpPost]
         public JsonResult AddTask(string task_string)
         {

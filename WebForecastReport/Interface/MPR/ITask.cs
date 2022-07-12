@@ -11,6 +11,7 @@ namespace WebForecastReport.Interfaces.MPR
         List<TaskModel> GetAllTasks();
         List<TaskModel> GetOfficeTasks();
         List<TaskModel> GetSiteTasks();
+        List<TaskModel> GetTravelTasks();
         string CreateTask(TaskModel task);
         string UpdateTask(TaskModel task);
 
