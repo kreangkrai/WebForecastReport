@@ -38,7 +38,8 @@ namespace WebForecastReport.Service.MPR
                     LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
                     LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
                     WHERE EngineerUsers.user_name LIKE '{user_name}'
-                    AND working_date BETWEEN '{start_date.ToString("yyyy-MM-dd")}' AND '{stop_date.ToString("yyyy-MM-dd")}';
+                    AND working_date BETWEEN '{start_date.ToString("yyyy-MM-dd")}' AND '{stop_date.ToString("yyyy-MM-dd")}'
+                    ORDER BY working_date, start_time;
                 ");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
