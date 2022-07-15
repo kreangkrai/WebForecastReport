@@ -35,7 +35,7 @@ namespace WebForecastReport.Service.MPR
                     LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
                     LEFT JOIN Quotation ON Jobs.quotation_no = Quotation.quotation_no
                     LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
-                    WHERE working_date LIKE '{year}%' AND week_number = ${week}
+                    WHERE working_date LIKE '{year}%' AND week_number = {week}
                     ORDER BY user_id, working_date");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
