@@ -2,7 +2,7 @@
     ViewData["Title"] = "Task By Week";
 }
 <style>
-    tr {
+    * {
         vertical-align:middle !important;
     }
 
@@ -20,10 +20,10 @@
                 <form>
                     <div class="form-group">
                         <div class="form-group row">
-                            <div class="col-4">
+                            <div class="col-5">
                                 <input id="week" type="week" class="form-control" />
                             </div>
-                            <div class="col-2">
+                            <div class="col-1">
                                 <button id="btn_load" type="button" class="btn btn-primary form-control elevation-1">
                                     <i class="fas fa-sync"></i> Load
                                 </button>
@@ -34,15 +34,15 @@
                         <table id="table_task" class="table table-sm table-bordered text-center w-100">
                             <thead>
                                 <tr>
-                                    <th rowspan="2" style="vertical-align:middle">Name</th>
-                                    <th rowspan="2" style="vertical-align:middle">Job</th>
-                                    <th>MON</th>
-                                    <th>TUE</th>
-                                    <th>WED</th>
-                                    <th>THU</th>
-                                    <th>FRI</th>
-                                    <th>SAT</th>
-                                    <th>SUN</th>
+                                    <th rowspan="2" style="vertical-align:middle;width:15%">Name</th>
+                                    <th rowspan="2" style="vertical-align:middle;width:15%">Job</th>
+                                    <th style="width:10%">MON</th>
+                                    <th style="width:10%">TUE</th>
+                                    <th style="width:10%">WED</th>
+                                    <th style="width:10%">THU</th>
+                                    <th style="width:10%">FRI</th>
+                                    <th style="width:10%">SAT</th>
+                                    <th style="width:10%">SUN</th>
                                 </tr>
                                 <tr>
                                     <th id="date1">Date 1</th>
@@ -70,7 +70,7 @@
         var dates = [];
 
         //Debug Variable
-        var debug_task = false;
+        var debug_task = true;
 
         $(document).ready(async function () {
             var today = new Date();
@@ -195,6 +195,22 @@
                 ],
                 iDisplayLength: -1,
                 ordering: false,
+                info: false,
+                paging: false,
+                rowCallback: function (row, data) {
+                    var name = tasks.filter(f => f.user_id === data[0]).map(m => m.user_name);
+                    name = [...new Set(name)];
+                    $('td:eq(0)', row).html(`${name[0]}`);
+
+                    var customer = tasks.filter(f => f.job_id === data[1]).map(m => m.customer);
+                    customer = [...new Set(customer)];
+                    if (customer[0] !== "") {
+                        $('td:eq(1)', row).html(`${data[1]} : ${customer[0]}`);
+                    }
+
+                    $('td:eq(0)', row).addClass("text-left");
+                    $('td:eq(1)', row).addClass("text-left");
+                }
             });
         }
 
