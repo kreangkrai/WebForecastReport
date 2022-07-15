@@ -72,6 +72,7 @@
         var chart_task_distribution;
         var chart_manpower_ratio;
         var chart_manpower_distribution;
+        var colors = ['#003f5c', '#444e86', '#955196', '#dd5182', '#ff6e54', '#ffa600', '#28cc9e', '#a6ed8e', '#ffdd83', '#e3f8ff'];
 
         //Debug Parameters
         var debug_job = false;
@@ -114,7 +115,7 @@
             $('#job_id').empty();
             var job_str = '<option value="" selected disabled>Please Select Job</option>';
             for (var i = 0; i < jobs.length; i++) {
-                job_str += '<option value="' + jobs[i].job_id + '">' + jobs[i].job_name + '</option>';
+                job_str += '<option value="' + jobs[i].job_id + '">' + jobs[i].job_id + " " + jobs[i].job_name + '</option>';
             }
             $('#job_id').append(job_str);
         }
@@ -225,8 +226,8 @@
                         {
                             label: 'Hours',
                             data: hours,
-                            backgroundColor: ['rgba(255, 99, 132, 0.8)'],
-                            borderColor: ['rgba(255, 99, 132, 1)'],
+                            backgroundColor: colors,
+                            borderColor: colors,
                             borderWidth: 1
                         }
                     ]
@@ -360,19 +361,31 @@
             var tasks = mds.map(m => m.task_id);
             tasks = [...new Set(tasks)];
 
-            var user_task = [];
             var hours = [];
             for (var i = 0; i < users.length; i++) {
                 for (var j = 0; j < tasks.length; j++) {
-                    hours[i].push()
+                    var hrs = [];
+                    hrs = mds.filter(f => f.user_id === users[i] && f.task_id === tasks[j]).map(m => m.hours);
+                    if (hrs[0] === undefined) {
+                        hrs[0] = 0;
+                    }
+                    hours.push([users[i], tasks[j], hrs[0]]);
                 }
             }
 
-            for (var i = 0; i < user_task.length; i++) {
-
+            var ds = [];
+            for (var i = 0; i < tasks.length; i++) {
+                var hrs = [];
+                hrs = hours.filter(f => f[1] === tasks[i]).map(m => m[2]);
+                var tt = mds.filter(f => f.task_id === tasks[i]);
+                ds.push({
+                    label: tt[0].task_id + " - " + tt[0].task_name,
+                    data: hrs,
+                    backgroundColor: colors[i],
+                    borderColor: colors[i],
+                    borderWidth: 1
+                });
             }
-
-            console.table(user_task);
 
             if (chart_manpower_distribution !== undefined) {
                 chart_manpower_distribution.destroy();
@@ -383,15 +396,7 @@
                 type: 'bar',
                 data: {
                     labels: users,
-                    datasets: [
-                        {
-                            label: 'Manpower Distribution',
-                            data: 1,
-                            backgroundColor: ['rgba(255, 99, 132, 0.8)',],
-                            borderColor: ['rgba(255, 99, 132, 1)',],
-                            borderWidth: 1
-                        }
-                    ]
+                    datasets: ds
                 },
                 options: {
                     indexAxis: 'y',
@@ -405,8 +410,8 @@
                                 text: 'Hour(s)',
                                 color: 'rgba(255,255,255,0.8)',
                                 display: true,
-
-                            }
+                            },
+                            stacked: true
                         },
                         y: {
                             ticks: {
@@ -416,13 +421,14 @@
                                 text: 'Name',
                                 color: 'rgba(255,255,255,0.8)',
                                 display: true,
-                            }
+                            },
+                            stacked: true
                         }
                     },
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'right',
+                            position: 'bottom',
                             labels: {
                                 color: 'rgba(255,255,255,0.8)'
                             }
@@ -431,6 +437,5 @@
                 }
             });
         }
-
     </script>
 }
