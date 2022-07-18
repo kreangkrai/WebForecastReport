@@ -22,5 +22,10 @@ namespace WebForecastReport.Interface
 
         List<HittingRateModel> GetHittingRateByDepartment(string year,string department);
         List<HittingRateModel> GetHittingRateByName(string year,string name);
+
+        TargetIndividual GetTargetIndividual(string year, string name);
+        TargetDepartment GetTargetDepartment(string year, string department);
+        PendingIndividualModel GetPendingIndividual(string year, string name);
+        PendingDepartmentModel GetPendingDepartment(string year, string department);
     }
 }

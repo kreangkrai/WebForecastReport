@@ -570,6 +570,117 @@ namespace WebForecastReport.Service
             }
         }
 
+        public PendingDepartmentModel GetPendingDepartment(string year, string department)
+        {
+            try
+            {
+                PendingDepartmentModel pending = new PendingDepartmentModel();
+                string command = "";
+                if (department == "ALL")
+                {
+                    command = string.Format($@" DECLARE @million as float
+                                                 SET @million = 1000000
+
+                                                select 'ALL' as department,
+	                                                cast(sum(case when product_type='Product' and status='IN' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as product_in,
+	                                                cast(sum(case when product_type='Project' and status='IN' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as project_in,
+	                                                cast(sum(case when product_type='Service' and status='IN' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as service_in,
+	                                                cast(sum(case when product_type='Product' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as product_all,
+	                                                cast(sum(case when product_type='Project' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as project_all,
+	                                                cast(sum(case when product_type='Service' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as service_all
+                                                from Quotation
+                                                where stages in ('','Negotiation/Review','Proposal/Quote for Order','Prospecting') and expected_order_date like '{year}%'");
+                }
+                else
+                {
+                    command = string.Format($@" DECLARE @million as float
+                                                     SET @million = 1000000
+
+                                                    select department,
+	                                                    cast(sum(case when product_type='Product' and status='IN' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as product_in,
+	                                                    cast(sum(case when product_type='Project' and status='IN' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as project_in,
+	                                                    cast(sum(case when product_type='Service' and status='IN' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as service_in,
+	                                                    cast(sum(case when product_type='Product' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as product_all,
+	                                                    cast(sum(case when product_type='Project' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as project_all,
+	                                                    cast(sum(case when product_type='Service' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as service_all
+                                                    from Quotation
+                                                    where stages in ('','Negotiation/Review','Proposal/Quote for Order','Prospecting') and department='{department}' and expected_order_date like '{year}%'
+                                                    group by department");
+                }
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        pending.department = dr["department"].ToString();
+                        pending.product_in = dr["product_in"].ToString();
+                        pending.project_in = dr["project_in"].ToString();
+                        pending.service_in = dr["service_in"].ToString();
+                        pending.product_all = dr["product_all"].ToString();
+                        pending.project_all = dr["project_all"].ToString();
+                        pending.service_all = dr["service_all"].ToString();
+                    }
+                    dr.Close();
+                }
+                ConnectSQL.CloseConnect();
+                return pending;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public PendingIndividualModel GetPendingIndividual(string year, string name)
+        {
+            try
+            {
+                PendingIndividualModel pending = new PendingIndividualModel();
+                string command = string.Format($@" DECLARE @million as float
+                                                 SET @million = 1000000
+
+                                                select sale_name,
+	                                                cast(sum(case when product_type='Product' and status='IN' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as product_in,
+	                                                cast(sum(case when product_type='Project' and status='IN' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as project_in,
+	                                                cast(sum(case when product_type='Service' and status='IN' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as service_in,
+	                                                cast(sum(case when product_type='Product' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as product_all,
+	                                                cast(sum(case when product_type='Project' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as project_all,
+	                                                cast(sum(case when product_type='Service' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as service_all
+                                                from Quotation
+                                                where stages in ('','Negotiation/Review','Proposal/Quote for Order','Prospecting') and sale_name='{name}' and expected_order_date like '{year}%'
+                                                group by sale_name");
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        pending.sale_name = dr["sale_name"].ToString();
+                        pending.product_in = dr["product_in"].ToString();
+                        pending.project_in = dr["project_in"].ToString();
+                        pending.service_in = dr["service_in"].ToString();
+                        pending.product_all = dr["product_all"].ToString();
+                        pending.project_all = dr["project_all"].ToString();
+                        pending.service_all = dr["service_all"].ToString();
+                    }
+                    dr.Close();
+                }
+                ConnectSQL.CloseConnect();
+                return pending;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
         public List<PerformanceModel> getPerformance(string year, string department)
         {
             try
@@ -692,6 +803,86 @@ namespace WebForecastReport.Service
                     dr.Close();
                 }
                 return targetPerformances;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public TargetDepartment GetTargetDepartment(string year, string department)
+        {
+            try
+            {
+                TargetDepartment target = new TargetDepartment();
+
+                string command = "";
+                if (department == "ALL")
+                {
+                    command = string.Format($@"select 'ALL' as department,
+                                                sum(cast(product as float)) as product,
+                                                sum(cast(project as float)) as project,
+                                                sum(cast(service as float)) as service
+                                               from Target");
+                }
+                else
+                {
+                    command = string.Format($@"select department,
+	                                                sum(cast(product as float)) as product,
+	                                                sum(cast(project as float)) as project,
+	                                                sum(cast(service as float)) as service
+                                                from Target group by department,year having department='{department}' and year='{year}'");
+                }
+                
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        target.department = dr["department"].ToString();
+                        target.product = dr["product"].ToString();
+                        target.project = dr["project"].ToString();
+                        target.service = dr["service"].ToString();
+                    }
+                    dr.Close();
+                }
+                ConnectSQL.CloseConnect();
+                return target;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public TargetIndividual GetTargetIndividual(string year, string name)
+        {
+            try
+            {
+                TargetIndividual target = new TargetIndividual();
+                string command = string.Format($@"select * from Target where sale_name='{name}' and year='{year}'");
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        target.sale_name = dr["sale_name"].ToString();
+                        target.product = dr["product"].ToString();
+                        target.project = dr["project"].ToString();
+                        target.service = dr["service"].ToString();                                              
+                    }
+                    dr.Close();
+                }
+                ConnectSQL.CloseConnect();
+                return target;
             }
             finally
             {

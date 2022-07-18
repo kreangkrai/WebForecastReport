@@ -97,7 +97,13 @@ namespace WebForecastReport.Controllers
             List<HittingRateModel> hittingRates = new List<HittingRateModel>();
             hittingRates = Home.GetHittingRateByName(year,name);
 
-            var list = new { datas = datas, stages = stages, day = day, hittingrates = hittingRates };
+            TargetIndividual target = new TargetIndividual();
+            target = Home.GetTargetIndividual(year, name);
+
+            PendingIndividualModel pending = new PendingIndividualModel();
+            pending = Home.GetPendingIndividual(year, name);
+
+            var list = new { datas = datas, stages = stages, day = day, hittingrates = hittingRates, target = target, pending = pending };
 
             return Json(list);
         }
@@ -117,7 +123,13 @@ namespace WebForecastReport.Controllers
             List<HittingRateModel> hittingRates = new List<HittingRateModel>();
             hittingRates = Home.GetHittingRateByDepartment(year,department);
 
-            var list = new { datas = datas, stages = stages, day = day, hittingrates = hittingRates };
+            TargetDepartment target = new TargetDepartment();
+            target = Home.GetTargetDepartment(year, department);
+
+            PendingDepartmentModel pending = new PendingDepartmentModel();
+            pending = Home.GetPendingDepartment(year, department);
+
+            var list = new { datas = datas, stages = stages, day = day, hittingrates = hittingRates, target = target, pending = pending };
 
             return Json(list);
         }

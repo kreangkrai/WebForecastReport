@@ -197,7 +197,7 @@ namespace WebForecastReport.Service
             try
             {
                 List<SaleModel> sales = new List<SaleModel>();
-                SqlCommand cmd = new SqlCommand("select DISTINCT Login,Department2 from Sale_User where [Group] ='Sale' order by Login", ConnectSQL.Open_db_gps_Connect());
+                SqlCommand cmd = new SqlCommand("select DISTINCT Login,Department2 from Sale_User where [Group]='Sale' order by Login", ConnectSQL.Open_db_gps_Connect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {

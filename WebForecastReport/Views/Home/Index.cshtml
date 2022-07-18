@@ -54,24 +54,24 @@
                 <div class="col-md-12 col-xl-12">
                     <div class="row">
                         <div class="col-md-4 col-xl-4">
-                            <div class="card bg-dark" style="height:600px">
+                            <div class="card" style="height:600px">
                                 <div class="card-header">
-                                    <span class="card-title">Type-Hitting Rate</span>
+                                    <span class="card-title">Quotation-Target</span>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-xl-12 d-flex justify-content-center">
                                             <div class="w-100" id="pie_chart_type" style="width:100%;height:250px"></div>
                                         </div>
-                                        <div class="col-xl-12 d-flex justify-content-center">
-                                            <canvas id="chart_hitting_rate" style="width:250px;height:250px"></canvas>
+                                       <div class="col-md-12 col-xl-12">
+                                            <div id="pie_chart_target" style="width:100%;height:250px"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4 col-xl-4">
-                            <div class="card bg-dark" style="height:600px">
+                            <div class="card" style="height:600px">
                                 <div class="card-header">
                                     <span class="card-title">Won-Lost</span>
                                 </div>
@@ -88,7 +88,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 col-xl-4">
-                            <div class="card bg-dark" style="height:600px">
+                            <div class="card" style="height:600px">
                                 <div class="card-header">
                                     <span class="card-title">No go - Pending</span>
                                 </div>
@@ -110,7 +110,7 @@
                 <div class="col-md-12 col-xl-12">
                     <div class="row">
                         <div class="col-md-4 col-xl-4">
-                            <div class="card bg-dark" style="height:600px">
+                            <div class="card" style="height:600px">
                                 <div class="card-header">
                                     <span class="card-title">Stages</span>
                                 </div>
@@ -124,7 +124,7 @@
                             </div>
                         </div>
                         <div class="col-md-8 col-xl-8">
-                            <div class="card bg-dark " style="height:auto">
+                            <div class="card" style="height:auto">
                                 <div class="card-header">
                                     <span class="card-title">Last Update</span>
                                 </div>
@@ -144,6 +144,64 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-xl-12">
+                    <div class="row">
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card" style="height:600px">
+                                <div class="card-header">
+                                    <span class="card-title">Target VS WON</span>
+                                </div>
+                                <div class="card-body">                
+                                     <div id="chart_target_won" style="height:100%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card" style="height:600px">
+                                 <div class="card-header">
+                                    <span class="card-title">Target VS Quotation</span>
+                                </div>
+                                <div class="card-body">
+                                     <div id="chart_target_quotation" style="height:100%"></div>                                      
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card" style="height:600px">
+                                <div class="card-header">
+                                    <span class="card-title">Pending All VS Pending In</span>
+                                </div>
+                                <div class="card-body">
+                                     <div id="chart_pendingall_pendingin" style="height:100%"></div>                                            
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-xl-12">
+                    <div class="row">
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card" style="height:600px">
+                                <div class="card-header">
+                                    <span class="card-title">Hitting Rate</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row d-flex align-items-center" style="height:100%">                                        
+                                         <div class="col-xl-12">
+                                            <canvas id="chart_hitting_rate"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                           
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            
                         </div>
                     </div>
                 </div>
@@ -185,7 +243,7 @@
                             </div>
                         </div>
                         <div class="col-md-6 col-xl-6">
-                            <div class="card bg-dark" style="height:500px">
+                            <div class="card" style="height:500px">
                                 <div class="card-header">
                                     <span class="card-title"></span>
                                 </div>
@@ -212,7 +270,7 @@
                     </div>
                 </div>
                 <div class="col-md-12 col-xl-12 pt-2">
-                    <div class="card bg-dark" style="height:500px">
+                    <div class="card" style="height:500px">
                         <div class="card-header">
                             <span class="card-title"></span>
                         </div>
@@ -243,7 +301,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>               
             </div>
         </div>
         <div class="tab-pane fade" id="dashboard_c" role="tabpanel" aria-labelledby="home-tab">
@@ -268,24 +326,24 @@
                 <div class="col-md-12 col-xl-12">
                     <div class="row">
                         <div class="col-md-4 col-xl-4">
-                            <div class="card bg-dark" style="height:600px">
+                            <div class="card" style="height:600px">
                                 <div class="card-header">
-                                    <span class="card-title">Type-Hitting Rate</span>
+                                    <span class="card-title">Quotation-Target</span>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-xl-12 d-flex justify-content-center">
                                             <div class="w-100" id="pie_chart_type_department" style="width:100%;height:250px"></div>
                                         </div>
-                                        <div class="col-xl-12 d-flex justify-content-center">
-                                            <canvas id="chart_hitting_rate_department" style="width:250px;height:250px"></canvas>
+                                        <div class="col-md-12 col-xl-12">
+                                            <div id="pie_chart_target_department" style="width:100%;height:250px"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4 col-xl-4">
-                            <div class="card bg-dark" style="height:600px">
+                            <div class="card" style="height:600px">
                                 <div class="card-header">
                                     <span class="card-title">Won - Lost</span>
                                 </div>
@@ -302,7 +360,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 col-xl-4">
-                            <div class="card bg-dark" style="height:600px">
+                            <div class="card" style="height:600px">
                                 <div class="card-header">
                                     <span class="card-title">No go - Pending</span>
                                 </div>
@@ -324,7 +382,7 @@
                 <div class="col-md-12 col-xl-12">
                     <div class="row">
                         <div class="col-md-4 col-xl-4">
-                            <div class="card bg-dark" style="height:600px">
+                            <div class="card" style="height:600px">
                                 <div class="card-header">
                                     <span class="card-title">Stages</span>
                                 </div>
@@ -338,7 +396,7 @@
                             </div>
                         </div>
                         <div class="col-md-8 col-xl-8">
-                            <div class="card bg-dark " style="height:auto">
+                            <div class="card" style="height:auto">
                                 <div class="card-header">
                                     <span class="card-title">Last Update</span>
                                 </div>
@@ -361,6 +419,63 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-12 col-xl-12">
+                    <div class="row">
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card" style="height:600px">
+                                <div class="card-header">
+                                    <span class="card-title">Target VS WON</span>
+                                </div>
+                                <div class="card-body">
+                                    <div id="chart_target_won_department" style="height:100%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card" style="height:600px">
+                                 <div class="card-header">
+                                    <span class="card-title">Target VS Quotation</span>
+                                </div>
+                                <div class="card-body">
+                                     <div id="chart_target_quotation_department" style="height:100%"></div>                                      
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card" style="height:600px">
+                                <div class="card-header">
+                                    <span class="card-title">Pending All VS Pending In</span>
+                                </div>
+                                <div class="card-body">
+                                     <div id="chart_pendingall_pendingin_department" style="height:100%"></div>                                            
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-xl-12">
+                    <div class="row">
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card" style="height:600px">
+                                <div class="card-header">
+                                    <span class="card-title">Hitting Rate</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row d-flex align-items-center" style="height:100%"> 
+                                        <div class="col-xl-12">
+                                            <canvas id="chart_hitting_rate_department"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                           
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -375,7 +490,9 @@
         var Datas = [];
         var Data_Stages = [];
         var Data_Stages_Day = [];
-   
+        var Data_Target = [];
+        var Data_Pending = [];
+
         var pie_chart_type;
         var pie_chart_won;
         var bar_chart_stages;     
@@ -587,6 +704,9 @@
                      Datas = response.datas;
                      Data_Stages = response.stages;
                      Data_Stages_Day = response.day;
+                     Data_Target = response.target;
+                     Data_Pending = response.pending;
+
                      var Hitting_Rates = response.hittingrates;
 
                      var product = "0";
@@ -606,7 +726,48 @@
                          service = _service.mb;
                      }
                      UpdatePieChartType(product,project,service,"pie_chart_type");
+                   
+                     //draw target
 
+                     var target_product = "0";
+                     var target_project = "0";
+                     var target_service = "0";
+                     if (Data_Target.sale_name !== null){
+                          target_product = Data_Target.product;
+                          target_project = Data_Target.project;
+                          target_service = Data_Target.service;
+                     }
+                      UpdatePieChartTarget(target_product,target_project,target_service,"pie_chart_target");
+
+                      //draw target vs quotation
+                     var target = {};
+                     var quotation = {};
+                     var label_target = ["Tar. Product","Tar Project","Tar. Service"];
+                     var label_quotation = ["Quo. Product","Quo. Project","Quo. Service"];
+                     target.product = target_product;
+                     target.project = target_project;
+                     target.service = target_service;
+                     quotation.product = product; 
+                     quotation.project = project; 
+                     quotation.service = service; 
+                     chart_nestPie('chart_target_quotation',target,quotation,label_target,label_quotation,'Target','Quotation');
+
+                     //draw penging all vs pending in
+                     var pending_in = {};
+                     var pending_all = {};
+                     var label_pending_in = ["Product In","Project In","Service In"];
+                     var label_pending_all = ["Product All","Project All","Service All"];
+
+                     pending_in.product = Data_Pending.product_in;
+                     pending_in.project = Data_Pending.project_in;
+                     pending_in.service = Data_Pending.service_in;
+                     pending_all.product = Data_Pending.product_all;
+                     pending_all.project = Data_Pending.project_all;
+                     pending_all.service = Data_Pending.service_all;
+
+                     chart_nestPie('chart_pendingall_pendingin',pending_all,pending_in,label_pending_all,label_pending_in,'Pending All','Pending In');
+
+                     
                      // draw Won
                      var won_product = "0";
                      var won_project = "0";
@@ -627,6 +788,14 @@
                          won_service = _won_service.mb;
                      }
                      UpdatePieChartWon(won_product,won_project,won_service,"pie_chart_won");
+
+                     //draw target vs won
+                     var won = {};
+                     var label_won = ["WON Product","WON Project","WON Service"];
+                     won.product = won_product;
+                     won.project = won_project;
+                     won.service = won_service;
+                     chart_nestPie('chart_target_won',target,won,label_target,label_won,'Target','WON');
 
                      //draw lost
                      var lost_product = "0";
@@ -748,8 +917,22 @@
                      Datas = response.datas;
                      Data_Stages = response.stages;
                      DataLastUpdateDepartment = response.day;
+                     Data_Target = response.target;
+                     Data_Pending = response.pending;
+
                      var Hitting_Rates = response.hittingrates;
                     
+                     //draw target
+                     var target_product = "0";
+                     var target_project = "0";
+                     var target_service = "0";
+                     if (Data_Target.sale_name !== null){
+                          target_product = Data_Target.product;
+                          target_project = Data_Target.project;
+                          target_service = Data_Target.service;
+                     }
+                     UpdatePieChartTarget(target_product,target_project,target_service,"pie_chart_target_department");
+
                      // type
                      var product_department = "0";
                      var project_department = "0";
@@ -769,6 +952,35 @@
                      }
                      UpdatePieChartType(product_department,project_department,service_department,"pie_chart_type_department");
                     
+                      //draw target vs quotation
+                     var target = {};
+                     var quotation = {};
+                     var label_target = ["Tar. Product","Tar Project","Tar. Service"];
+                     var label_quotation = ["Quo. Product","Quo. Project","Quo. Service"];
+                     target.product = target_product;
+                     target.project = target_project;
+                     target.service = target_service;
+                     quotation.product = product_department; 
+                     quotation.project = project_department; 
+                     quotation.service = service_department; 
+                     chart_nestPie('chart_target_quotation_department',target,quotation,label_target,label_quotation,'Target','Quotation');
+
+                     //draw penging all vs pending in
+                     var pending_in = {};
+                     var pending_all = {};
+                     var label_pending_in = ["Product In","Project In","Service In"];
+                     var label_pending_all = ["Product All","Project All","Service All"];
+
+                     pending_in.product = Data_Pending.product_in;
+                     pending_in.project = Data_Pending.project_in;
+                     pending_in.service = Data_Pending.service_in;
+                     pending_all.product = Data_Pending.product_all;
+                     pending_all.project = Data_Pending.project_all;
+                     pending_all.service = Data_Pending.service_all;
+
+                     chart_nestPie('chart_pendingall_pendingin_department',pending_all,pending_in,label_pending_all,label_pending_in,'Pending All','Pending In');
+
+
                      // draw Won
 
                      var won_product = "0";
@@ -790,6 +1002,17 @@
                          won_service = _won_service.mb;
                      }
                      UpdatePieChartWon(won_product,won_project,won_service,"pie_chart_won_department");
+
+                     //draw target vs won
+
+                     var won = {};
+                     var label_won = ["WON Product","WON Project","WON Service"];
+                     won.product = won_product;
+                     won.project = won_project;
+                     won.service = won_service;
+                     chart_nestPie('chart_target_won_department',target,won,label_target,label_won,'Target','WON');
+
+
 
                      //draw lost
 
@@ -905,6 +1128,50 @@
              });           
         };
 
+        function UpdatePieChartTarget(product,project,service,chart_name){
+           var sum = parseFloat(product) + parseFloat(project) + parseFloat(service);
+           var percent_product = (parseFloat(product) / sum  * 100).toFixed(2);
+           var percent_project = (parseFloat(project) / sum  * 100).toFixed(2);
+           var percent_service = (parseFloat(service) / sum  * 100).toFixed(2);
+           var datas = [
+			        {y: product, percent:percent_product, label: "Product", legendText: "Product", color:"#41384D"},
+			        {y: project,percent:percent_project, label: "Project", legendText: "Project", color:"#725A7A"},
+			        {y: service,percent:percent_service, label: "Service", legendText: "Service", color:"#B8AAC3"},
+		            ];
+
+            // filter value more than 0
+            datas = datas.filter(x => x.y > 0);
+
+            var pie_chart_type = new CanvasJS.Chart(chart_name, {
+	        animationEnabled: true,
+            backgroundColor: "transparent",
+	        title: {
+		        text: "Target",
+                fontColor: "black",
+                fontSize: "24",
+                fontStyle: "normal",
+                fontFamily: "angsana-new"
+	        },
+	        data: [{
+		        type: "pie",
+                showInLegend: true,
+		        startAngle: 240,
+		        yValueFormatString: "##0.00\"\"",
+		        indexLabel: "{label} : {y} MB , {percent} %",
+                indexLabelFontColor: "black",
+                toolTipContent: "{label} : {y} MB , {percent} %",
+		        dataPoints: datas,
+	        }],
+            legend: {
+                horizontalAlign: "center",
+                verticalAlign: "bottom",
+                fontStyle: "normal",
+                fontColor: "black",
+            }
+            });
+            pie_chart_type.render();           
+        };
+
         function UpdatePieChartType(product,project,service,chart_name){
            var sum = parseFloat(product) + parseFloat(project) + parseFloat(service);
            var percent_product = (parseFloat(product) / sum  * 100).toFixed(2);
@@ -923,8 +1190,8 @@
 	        animationEnabled: true,
             backgroundColor: "transparent",
 	        title: {
-		        text: "Type",
-                fontColor: "white",
+		        text: "Quotation",
+                fontColor: "black",
                 fontSize: "24",
                 fontStyle: "normal",
                 fontFamily: "angsana-new"
@@ -935,7 +1202,7 @@
 		        startAngle: 240,
 		        yValueFormatString: "##0.00\"\"",
 		        indexLabel: "{label} : {y} MB , {percent} %",
-                indexLabelFontColor: "white",
+                indexLabelFontColor: "black",
                 toolTipContent: "{label} : {y} MB , {percent} %",
 		        dataPoints: datas,
 	        }],
@@ -943,7 +1210,7 @@
                 horizontalAlign: "center",
                 verticalAlign: "bottom",
                 fontStyle: "normal",
-                fontColor: "white",
+                fontColor: "black",
             }
             });
             pie_chart_type.render();           
@@ -967,7 +1234,7 @@
             backgroundColor: "transparent",
 	        title: {
 		        text: "Won",
-                fontColor: "white",
+                fontColor: "black",
                 fontSize: "24",
                 fontStyle: "normal",
                 fontFamily: "angsana-new"
@@ -978,7 +1245,7 @@
 		        startAngle: 240,
 		        yValueFormatString: "##0.00\"\"",
 		        indexLabel: "{label} : {y} MB , {percent} %",
-                indexLabelFontColor: "white",
+                indexLabelFontColor: "black",
                 toolTipContent: "{label} : {y} MB , {percent} %",
 		        dataPoints: datas,
 	        }],
@@ -986,7 +1253,7 @@
                 horizontalAlign: "center",
                 verticalAlign: "bottom",
                 fontStyle: "normal",
-                fontColor: "white",
+                fontColor: "black",
             }
             });
             pie_chart.render();
@@ -1010,7 +1277,7 @@
             backgroundColor: "transparent",
 	        title: {
 		        text: "Lost",
-                fontColor: "white",
+                fontColor: "black",
                 fontSize: "24",
                 fontStyle: "normal",
                 fontFamily: "angsana-new"
@@ -1021,7 +1288,7 @@
 		        startAngle: 240,
 		        yValueFormatString: "##0.00\"\"",
 		        indexLabel: "{label} : {y} MB , {percent} %",
-                indexLabelFontColor: "white",
+                indexLabelFontColor: "black",
                 toolTipContent: "{label} : {y} MB , {percent} %",
 		        dataPoints: datas,
 	        }],
@@ -1029,7 +1296,7 @@
                 horizontalAlign: "center",
                 verticalAlign: "bottom",
                 fontStyle: "normal",
-                fontColor: "white",
+                fontColor: "black",
             }
             });
             pie_chart.render();           
@@ -1054,7 +1321,7 @@
             backgroundColor: "transparent",
 	        title: {
 		        text: "No go",
-                fontColor: "white",
+                fontColor: "black",
                 fontSize: "24",
                 fontStyle: "normal",
                 fontFamily: "angsana-new"
@@ -1065,7 +1332,7 @@
 		        startAngle: 240,
 		        yValueFormatString: "##0.00\"\"",
 		        indexLabel: "{label} : {y} MB , {percent} %",
-                indexLabelFontColor: "white",
+                indexLabelFontColor: "black",
                 toolTipContent: "{label} : {y} MB , {percent} %",
 		        dataPoints: datas,
 	        }],
@@ -1073,7 +1340,7 @@
                 horizontalAlign: "center",
                 verticalAlign: "bottom",
                 fontStyle: "normal",
-                fontColor: "white",
+                fontColor: "black",
             }
             });
             pie_chart.render();  
@@ -1098,7 +1365,7 @@
             backgroundColor: "transparent",
 	        title: {
 		        text: "Pending",
-                fontColor: "white",
+                fontColor: "black",
                 fontSize: "24",
                 fontStyle: "normal",
                 fontFamily: "angsana-new"
@@ -1109,7 +1376,7 @@
 		        startAngle: 240,
 		        yValueFormatString: "##0.00\"\"",
 		        indexLabel: "{label} : {y} MB , {percent} %",
-                indexLabelFontColor: "white",
+                indexLabelFontColor: "black",
                 toolTipContent: "{label} : {y} MB , {percent} %",
 		        dataPoints: datas,
 	        }],
@@ -1117,7 +1384,7 @@
                 horizontalAlign: "center",
                 verticalAlign: "bottom",
                 fontStyle: "normal",
-                fontColor: "white",
+                fontColor: "black",
             }
             });
             pie_chart.render();           
@@ -1151,7 +1418,7 @@
             backgroundColor: "transparent",
 	        title: {
 		        text: "Stages",
-                fontColor: "white",
+                fontColor: "black",
                 fontSize: "24",
                 fontStyle: "normal",
                 fontFamily: "angsana-new"
@@ -1163,7 +1430,7 @@
                 radius: "75%",
 		        yValueFormatString: "##0.00\"\"",
 		        indexLabel: "{label} : {y} MB , {percent} %",
-                indexLabelFontColor: "white",
+                indexLabelFontColor: "black",
                 toolTipContent: "{label} : {y} MB , {percent} %",
 		        dataPoints: datas,
 	        }],
@@ -1171,7 +1438,7 @@
                 horizontalAlign: "center",
                 verticalAlign: "bottom",
                 fontStyle: "normal",
-                fontColor: "white",
+                fontColor: "black",
             },
             toolTip:{
                 fontColor: "black",
@@ -1343,9 +1610,9 @@
                             position: 'left',
                             type: 'linear',
                             scaleLabel: { display: true, labelString: 'Count' },
-                            gridLines: { display: true, color:'#FFFFFFC8'},
+                            gridLines: { display: true, color:'#000000C8'},
                             ticks: { min: 0, beginAtZero: true,
-                                color: '#FFFFFFC8',
+                                color: '#000000C8',
                                 font: {
                                     size: 14
                                 },
@@ -1354,7 +1621,7 @@
                         xAxes: {
                             ticks: {
                                 min: 0, beginAtZero: true,
-                                color: '#FFFFFFC8',
+                                color: '#000000C8',
                                 font: {
                                     size: 14
                                 },
@@ -1367,7 +1634,7 @@
                         title: {
                             display: true,
                             text: "Pending Quotation",
-                            color: '#FFFFFFC8',
+                            color: '#000000C8',
                             font: {
                                 size: 20
                             },
@@ -1376,7 +1643,7 @@
                             position: 'top',
                             display: false,
                             labels: {
-                                color: '#FFFFFFC8',
+                                color: '#000000C8',
                                 font: {
                                     size: 14
                                 }
@@ -1483,7 +1750,7 @@
                         title: {
                             display: true,
                             text: 'Hitting Rate',
-                            color: '#FFFFFFC8',
+                            color: '#000000C8',
                             font: {
                                 size: 24
                             },
@@ -1492,7 +1759,7 @@
                             position: 'right',
                             display: true,
                             labels: {
-                                color: '#FFFFFFC8',
+                                color: '#000000C8',
                                 font: {
                                     size: 14
                                 }
@@ -1514,10 +1781,10 @@
                     scales: {
                         r: {
                             pointLabels: {
-                                color: 'rgba(255,255,255,0.8)',
+                                color: 'rgba(0,0,0,0.8)',
                             },
                             grid: {
-                                    color: 'rgba(255,255,255,0.8)'
+                                    color: 'rgba(0,0,0,0.8)'
                             },
                             angleLines: {
                                     color: "gray"
@@ -1576,7 +1843,7 @@
                         title: {
                             display: true,
                             text: 'Hitting Rate',
-                            color: '#FFFFFFC8',
+                            color: '#000000FC8',
                             font: {
                                 size: 24
                             },
@@ -1585,7 +1852,7 @@
                             position: 'right',
                             display: true,
                             labels: {
-                                color: '#FFFFFFC8',
+                                color: '#000000FC8',
                                 font: {
                                     size: 14
                                 }
@@ -1607,10 +1874,10 @@
                     scales: {
                         r: {
                             pointLabels: {
-                                color: 'rgba(255,255,255,0.8)',
+                                color: 'rgba(0,0,0,0.8)',
                             },
                             grid: {
-                                    color: 'rgba(255,255,255,0.8)'
+                                    color: 'rgba(0,0,0,0.8)'
                             },
                             angleLines: {
                                     color: "gray"
@@ -1620,6 +1887,142 @@
                 }
             });
         };
+
+        function chart_nestPie(chart_name,target,quotation,label1,label2,name1,name2){
+            var dom = document.getElementById(chart_name);
+            var myChart = echarts.init(dom, null, {
+              renderer: 'canvas',
+              useDirtyRect: false
+            });
+            var app = {};
+    
+            var option;
+
+                option = {
+              tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b}: {c} ({d}%)',
+                show:true
+              },
+              legend: {
+                data: [
+                  label1[0],
+                  label1[1],
+                  label1[2],
+                  label2[0],
+                  label2[1],
+                  label2[2],
+                ]
+              },
+              series: [
+                {
+                  name: name1,
+                  type: 'pie',
+                  //selectedMode: 'single',
+                  radius: [0, '16%'],
+                  label: {
+                    formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c} M {per|{d}%}  ',
+                    backgroundColor: '#F6F8FC',
+                    borderColor: '#8C8D8E',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    rich: {
+                      a: {
+                        color: '#6E7079',
+                        lineHeight: 10,
+                        align: 'center',
+                        fontWeight: 'bold',
+                      },
+                      hr: {
+                        borderColor: '#8C8D8E',
+                        width: '100%',
+                        borderWidth: 1,
+                        height: 0
+                      },
+                      b: {
+                        color: '#4C5058',
+                        fontSize: 10,                      
+                        lineHeight: 20,
+                        fontWeight: 'bold',
+                      },
+                      per: {
+                        color: '#fff',
+                        fontSize: 10,
+                        backgroundColor: '#4C5058',
+                        padding: [3, 4],
+                        borderRadius: 4
+                      }
+                    }
+                  },
+                  labelLine: {
+                    show: true,
+                    length: 50
+                  },
+                  data: [
+                    { value: target.product, name: label1[0] },
+                    { value: target.project, name: label1[1] },
+                    { value: target.service, name: label1[2] }
+                  ]
+                },
+                {
+                  name: name2,
+                  type: 'pie',
+                  //selectedMode: 'single',
+                  radius: ['17%', '38%'],
+                  labelLine: {
+                    length: 25
+                  },
+                  label: {
+                    formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c} M  {per|{d}%}  ',
+                    backgroundColor: '#F6F8FC',
+                    borderColor: '#8C8D8E',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    rich: {
+                      a: {
+                        color: '#6E7079',
+                        lineHeight: 16,
+                        align: 'center',
+                        fontWeight: 'bold',
+                      },
+                      hr: {
+                        borderColor: '#8C8D8E',
+                        width: '100%',
+                        borderWidth: 1,
+                        height: 0,
+                      },
+                      b: {
+                        color: '#4C5058',
+                        fontSize: 10,
+                        lineHeight: 20,
+                        fontWeight: 'bold'
+                      },
+                      per: {
+                        color: '#fff',
+                        fontSize: 10,
+                        backgroundColor: '#4C5058',
+                        padding: [3, 4],
+                        borderRadius: 4
+                      }
+                    }
+                  },
+                  data: [
+                    { value: quotation.product, name: label2[0] },
+                    { value: quotation.project, name: label2[1] },
+                    { value: quotation.service, name: label2[2] },
+                  ]
+                }
+              ]
+            };
+
+            if (option && typeof option === 'object') {
+              myChart.setOption(option);
+            }
+            myChart.on('click', function(params) {
+                console.log(params.data);
+            });
+            window.addEventListener('resize', myChart.resize);
+        }
         // Dashboard Department
 
         var stages_department_stack;
@@ -1643,7 +2046,7 @@
 
             var department = document.getElementById("department_name").value;
             if (department === "ALL"){
-                fontsize = 9;
+                fontsize = 8;
             }
 
             //get datas
@@ -1700,7 +2103,7 @@
                                 title: {
                                   display: true,
                                   text: 'Pending Quotation',
-                                  color: '#FFFFFFC8',
+                                  color: '#000000C8',
                                   font: {
                                         size: 16
                                     }
@@ -1721,7 +2124,7 @@
                                 },
                                 legend: {
                                     labels: {
-                                        color: '#FFFFFFC8',
+                                        color: '#000000C8',
                                         font: {
                                             size: 14
                                         },
@@ -1738,25 +2141,25 @@
                                 x: {
                                   stacked: true,
                                   ticks: {
-                                    color: '#FFFFFFC8',
+                                    color: '#000000C8',
                                     font: {
                                         size: fontsize
                                     },
                                   },
                                   grid: {
-                                      color: '#FFFFFF88'
+                                      color: '#00000088'
                                   }
                                 },
                                 y: {
                                   stacked: true,
                                   ticks: {
-                                    color: '#FFFFFFC8',
+                                    color: '#000000C8',
                                     font: {
                                         size: fontsize
                                     },
                                   },
                                   grid: {
-                                      color: '#FFFFFF88'
+                                      color: '#00000088'
                                   }
                                 }
                               },
