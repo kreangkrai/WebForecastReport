@@ -154,5 +154,20 @@ namespace WebForecastReport.Controllers
             quotations = Home.getDataQuotationMoreDay(year, name, day);
             return Json(quotations);
         }     
+
+        [HttpPost]
+        public JsonResult GetDataNestedPieIndividual(string year, string name, string type)
+        {
+            List<SubQuotationModel> datas = new List<SubQuotationModel>();
+            datas = Home.GetDataSubQuotationIndividual(year, name, type);
+            return Json(datas);
+        }
+        [HttpPost]
+        public JsonResult GetDataNestedPieDepartment(string year, string department, string type)
+        {
+            List<SubQuotationModel> datas = new List<SubQuotationModel>();
+            datas = Home.GetDataSubQuotationDepartment(year, department, type);
+            return Json(datas);
+        }
     }
 }

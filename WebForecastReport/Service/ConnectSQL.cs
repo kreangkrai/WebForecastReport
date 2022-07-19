@@ -15,7 +15,9 @@ namespace WebForecastReport.Service
             con = new SqlConnection("Data Source = 192.168.15.202, 1433; Initial Catalog = MES; User Id = sa; Password = p@ssw0rd; Timeout = 120");
             //con = new SqlConnection("Data Source = 192.168.15.202, 1433; Initial Catalog = MES_TEST; User Id = sa; Password = p@ssw0rd; Timeout = 120");
             //con = new SqlConnection(@"Data Source=DESKTOP-BMFLGER\SA;Initial Catalog=MES_TEST;Integrated Security=True");
+            
             con.Open();
+            
             return con;
         }
         public static SqlConnection CloseConnect()

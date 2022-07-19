@@ -26,10 +26,15 @@ namespace WebForecastReport.Service
 
                                                   select s1.[group],s1.name,s1.product_type,'Pending' as stages, sum(cast(s1.mb as float)) as mb
                                                   from (select 'Stages' as [group],sale_name as name,product_type,stages,format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as mb
-                                                        from Quotation where sale_name='{name}' and stages_update_date like '{year}%'
+                                                        from Quotation where sale_name='{name}' and stages_update_date like '{year}%' and (exclude_quote is null or exclude_quote = 0)
                                                         group by sale_name,stages,product_type
-                                                        having product_type <>'' and stages not in('Closed(Won)','Closed(Lost)','No go')) as s1
-                                                  group by s1.[group],s1.name,s1.product_type");
+                                                        having product_type <>'' and stages not in('Closed(Won)','Closed(Lost)','No go','Quote for Budget')) as s1
+                                                  group by s1.[group],s1.name,s1.product_type union all
+                                                
+                                                  select 'Stages' as [group],sale_name as name,product_type,stages,format(sum(cast(replace(quoted_price,',','') as float))/1000000,'N2') as mb
+                                                  from Quotation where sale_name='{name}' and stages_update_date like '{year}%' and (exclude_quote is null or exclude_quote = 0)
+                                                  group by sale_name,stages,product_type
+                                                  having product_type <>'' and stages in('Quote for Budget')");
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
@@ -80,10 +85,15 @@ namespace WebForecastReport.Service
 
                                                   select s1.[group],s1.product_type,'' as name,'Pending' as stages, sum(cast(s1.mb as float)) as mb
                                                   from (select 'Stages' as [group],product_type,stages,cast(sum(cast(replace(quoted_price,',','') as float))/@million as decimal(10,2)) as mb
-                                                        from Quotation where stages_update_date like '{year}%'
+                                                        from Quotation where stages_update_date like '{year}%' and (exclude_quote is null or exclude_quote = 0)
                                                         group by stages,product_type
-                                                        having product_type <>'' and stages not in('Closed(Won)','Closed(Lost)','No go')) as s1
-                                                  group by s1.[group],s1.product_type");
+                                                        having product_type <>'' and stages not in('Closed(Won)','Closed(Lost)','No go','Quote for Budget')) as s1
+                                                  group by s1.[group],s1.product_type union all
+
+                                                  select 'Stages' as [group],product_type,'' as name,stages,cast(sum(cast(replace(quoted_price,',','') as float))/@million as decimal(10,2)) as mb
+                                                        from Quotation where stages_update_date like '{year}%' and (exclude_quote is null or exclude_quote = 0)
+                                                        group by stages,product_type
+                                                        having product_type <>'' and stages in('Quote for Budget')");
                 }
                 else
                 {
@@ -100,10 +110,15 @@ namespace WebForecastReport.Service
 
                                                   select s1.[group],s1.name,s1.product_type,'Pending' as stages, sum(cast(s1.mb as float)) as mb
                                                   from (select 'Stages' as [group],department as name,product_type,stages,cast(sum(cast(replace(quoted_price,',','') as float))/@million as decimal(10,2)) as mb
-                                                        from Quotation where department='{department}' and stages_update_date like '{year}%'
+                                                        from Quotation where department='{department}' and stages_update_date like '{year}%' and (exclude_quote is null or exclude_quote = 0)
                                                         group by department,stages,product_type
-                                                        having product_type <>'' and stages not in('Closed(Won)','Closed(Lost)','No go')) as s1
-                                                  group by s1.[group],s1.name,s1.product_type");
+                                                        having product_type <>'' and stages not in('Closed(Won)','Closed(Lost)','No go','Quote for Budget')) as s1
+                                                  group by s1.[group],s1.name,s1.product_type union all
+
+                                                  select 'Stages' as [group],department as name,product_type,stages,cast(sum(cast(replace(quoted_price,',','') as float))/@million as decimal(10,2)) as mb
+                                                        from Quotation where department='{department}' and stages_update_date like '{year}%' and (exclude_quote is null or exclude_quote = 0)
+                                                        group by department,stages,product_type
+                                                        having product_type <>'' and stages in('Quote for Budget')");
                 }
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -432,6 +447,349 @@ namespace WebForecastReport.Service
             }
         }
 
+        public List<SubQuotationModel> GetDataSubQuotationDepartment(string year, string department, string type)
+        {
+            try
+            {
+                List<SubQuotationModel> datas = new List<SubQuotationModel>();
+
+                string command = "";
+                if (type == "Quo. Product")
+                {
+                    if (department == "ALL")
+                    {
+                        command = string.Format($@"select * from Quotation
+                                            where product_type='Product' and
+                                            stages_update_date like '{year}%' AND
+                                            (exclude_quote is null or exclude_quote = 0)");
+                    }
+                    else
+                    {
+                        command = string.Format($@"select * from Quotation
+                                            where department='{department}' and
+                                            product_type='Product' and
+                                            stages_update_date like '{year}%' AND
+                                            (exclude_quote is null or exclude_quote = 0)");
+                    }
+                    
+                }
+                else if (type == "Quo. Project")
+                {
+                    if (department == "ALL")
+                    {
+                        command = string.Format($@"select * from Quotation
+                                            where product_type='Project' and
+                                            stages_update_date like '{year}%' AND
+                                            (exclude_quote is null or exclude_quote = 0)");
+                    }
+                    else
+                    {
+                        command = string.Format($@"select * from Quotation
+                                            where department='{department}' and
+                                            product_type='Project' and
+                                            stages_update_date like '{year}%' AND
+                                            (exclude_quote is null or exclude_quote = 0)");
+                    }
+                }
+                else if (type == "Quo. Service")
+                {
+                    if (department == "ALL")
+                    {
+                        command = string.Format($@"select * from Quotation
+                                            where product_type='Service' and
+                                            stages_update_date like '{year}%' AND
+                                            (exclude_quote is null or exclude_quote = 0)");
+                    }
+                    else
+                    {
+                        command = string.Format($@"select * from Quotation
+                                            where department='{department}' and
+                                            product_type='Service' and
+                                            stages_update_date like '{year}%' AND
+                                            (exclude_quote is null or exclude_quote = 0)");
+                    }
+                }
+                else if (type == "WON Product")
+                {
+                    if (department == "ALL")
+                    {
+                        command = string.Format($@"select * from Quotation
+                                                where product_type='Product' and
+                                                stages = 'Closed(Won)' and
+                                                stages_update_date like '{year}%' AND
+                                                (exclude_quote is null or exclude_quote = 0)");
+                    }
+                    else
+                    {
+                        command = string.Format($@"select * from Quotation
+                                                where department='{department}' and
+                                                product_type='Product' and
+                                                stages = 'Closed(Won)' and
+                                                stages_update_date like '{year}%' AND
+                                                (exclude_quote is null or exclude_quote = 0)");
+                    }
+                }
+                else if (type == "WON Project")
+                {
+                    if (department == "ALL")
+                    {
+                        command = string.Format($@"select * from Quotation
+                                                where product_type='Project' and
+                                                stages = 'Closed(Won)' and
+                                                stages_update_date like '{year}%' AND
+                                                (exclude_quote is null or exclude_quote = 0)");
+                    }
+                    else
+                    {
+                        command = string.Format($@"select * from Quotation
+                                                where department='{department}' and
+                                                product_type='Project' and
+                                                stages = 'Closed(Won)' and
+                                                stages_update_date like '{year}%' AND
+                                                (exclude_quote is null or exclude_quote = 0)");
+                    }
+                }
+                else if (type == "WON Service")
+                {
+                    if (department == "ALL")
+                    {
+                        command = string.Format($@"select * from Quotation
+                                                where product_type='Service' and
+                                                stages = 'Closed(Won)' and
+                                                stages_update_date like '{year}%' AND
+                                                (exclude_quote is null or exclude_quote = 0)");
+                    }
+                    else
+                    {
+                        command = string.Format($@"select * from Quotation
+                                                where department='{department}' and
+                                                product_type='Service' and
+                                                stages = 'Closed(Won)' and
+                                                stages_update_date like '{year}%' AND
+                                                (exclude_quote is null or exclude_quote = 0)");
+                    }
+                }
+                else if (type == "Product In")
+                {
+                    if (department == "ALL")
+                    {
+                        command = string.Format($@"select * from Quotation
+                                                where product_type='Product' and
+                                                status = 'IN' and
+                                                stages_update_date like '{year}%' AND
+                                                (exclude_quote is null or exclude_quote = 0)");
+                    }
+                    else
+                    {
+                        command = string.Format($@"select * from Quotation
+                                                where department='{department}' and
+                                                product_type='Product' and
+                                                status = 'IN' and
+                                                stages_update_date like '{year}%' AND
+                                                (exclude_quote is null or exclude_quote = 0)");
+                    }
+                }
+                else if (type == "Project In")
+                {
+                    if (department == "ALL")
+                    {
+                        command = string.Format($@"select * from Quotation
+                                                where product_type='Project' and
+                                                status = 'IN' and
+                                                stages_update_date like '{year}%' AND
+                                                (exclude_quote is null or exclude_quote = 0)");
+                    }
+                    else
+                    {
+                        command = string.Format($@"select * from Quotation
+                                                where department='{department}' and
+                                                product_type='Project' and
+                                                status = 'IN' and
+                                                stages_update_date like '{year}%' AND
+                                                (exclude_quote is null or exclude_quote = 0)");
+                    }
+                }
+                else if (type == "Service In")
+                {
+                    if (department == "ALL")
+                    {
+                        command = string.Format($@"select * from Quotation
+                                                where product_type='Service' and
+                                                status = 'IN' and
+                                                stages_update_date like '{year}%' AND
+                                                (exclude_quote is null or exclude_quote = 0)");
+                    }
+                    else
+                    {
+                        command = string.Format($@"select * from Quotation
+                                                where department='{department}' and
+                                                product_type='Service' and
+                                                status = 'IN' and
+                                                stages_update_date like '{year}%' AND
+                                                (exclude_quote is null or exclude_quote = 0)");
+                    }
+                }
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        SubQuotationModel s = new SubQuotationModel()
+                        {
+                            sale_name = dr["sale_name"].ToString(),
+                            department = dr["department"].ToString(),
+                            quotation_no = dr["quotation_no"].ToString(),
+                            //customer = dr["customer"].ToString(),
+                            //project_name = dr["project_name"].ToString(),
+                            product_type = dr["product_type"].ToString(),
+                            quoted_price = dr["quoted_price"].ToString(),
+                            status = dr["status"].ToString(),
+                            stages = dr["stages"].ToString()
+                        };
+                        datas.Add(s);
+                    }
+                    dr.Close();
+                }
+                ConnectSQL.CloseConnect();
+                return datas;
+            }
+            catch
+            {
+                return new List<SubQuotationModel>() { };
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public List<SubQuotationModel> GetDataSubQuotationIndividual(string year, string name, string type)
+        {
+            try
+            {
+                List<SubQuotationModel> datas = new List<SubQuotationModel>();
+
+                string command = "";
+                if (type == "Quo. Product")
+                {
+                    command = string.Format($@"select * from Quotation
+                                            where sale_name='{name}' and
+                                            product_type='Product' and
+                                            stages_update_date like '{year}%' AND
+                                            (exclude_quote is null or exclude_quote = 0)");
+                }
+                else if(type == "Quo. Project")
+                {
+                    command = string.Format($@"select * from Quotation
+                                            where sale_name='{name}' and
+                                            product_type='Project' and
+                                            stages_update_date like '{year}%' AND
+                                            (exclude_quote is null or exclude_quote = 0)");
+                }
+                else if (type == "Quo. Service")
+                {
+                    command = string.Format($@"select * from Quotation
+                                            where sale_name='{name}' and
+                                            product_type='Service' and
+                                            stages_update_date like '{year}%' AND
+                                            (exclude_quote is null or exclude_quote = 0)");
+                }
+                else if (type == "WON Product")
+                {
+                    command = string.Format($@"select * from Quotation 
+                                            where sale_name='{name}' and
+                                             product_type='Product' and
+                                             stages = 'Closed(Won)' and
+                                             stages_update_date like '{year}%' AND
+                                             (exclude_quote is null or exclude_quote = 0)");
+                }
+                else if (type == "WON Project")
+                {
+                    command = string.Format($@"select * from Quotation 
+                                            where sale_name='{name}' and
+                                             product_type='Project' and
+                                             stages = 'Closed(Won)' and
+                                             stages_update_date like '{year}%' AND
+                                             (exclude_quote is null or exclude_quote = 0)");
+                }
+                else if (type == "WON Service")
+                {
+                    command = string.Format($@"select * from Quotation 
+                                            where sale_name='{name}' and
+                                             product_type='Service' and
+                                             stages = 'Closed(Won)' and
+                                             stages_update_date like '{year}%' AND
+                                             (exclude_quote is null or exclude_quote = 0)");
+                }
+                else if (type == "Product In")
+                {
+                    command = string.Format($@"select * from Quotation 
+                                                where sale_name='{name}' and
+                                                 product_type='Product' and
+                                                 status = 'IN' and
+                                                 stages_update_date like '{year}%' AND
+                                                 (exclude_quote is null or exclude_quote = 0)");
+                }
+                else if (type == "Project In")
+                {
+                    command = string.Format($@"select * from Quotation 
+                                                where sale_name='{name}' and
+                                                 product_type='Project' and
+                                                 status = 'IN' and
+                                                 stages_update_date like '{year}%' AND
+                                                 (exclude_quote is null or exclude_quote = 0)");
+                }
+                else if (type == "Service In")
+                {
+                    command = string.Format($@"select * from Quotation 
+                                                where sale_name='{name}' and
+                                                 product_type='Service' and
+                                                 status = 'IN' and
+                                                 stages_update_date like '{year}%' AND
+                                                 (exclude_quote is null or exclude_quote = 0)");
+                }
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        SubQuotationModel s = new SubQuotationModel()
+                        {
+                            sale_name = dr["sale_name"].ToString(),
+                            department = dr["department"].ToString(),
+                            quotation_no = dr["quotation_no"].ToString(),
+                            //customer = dr["customer"].ToString(),
+                            //project_name = dr["project_name"].ToString(),
+                            product_type = dr["product_type"].ToString(),
+                            quoted_price = dr["quoted_price"].ToString(),
+                            status = dr["status"].ToString(),
+                            stages = dr["stages"].ToString()
+                        };
+                        datas.Add(s);
+                    }
+                    dr.Close();
+                }
+                ConnectSQL.CloseConnect();
+                return datas;
+            }
+            catch
+            {
+                return new List<SubQuotationModel>() { };
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
         public List<HittingRateModel> GetHittingRateByDepartment(string year,string department)
         {
             try
@@ -589,7 +947,7 @@ namespace WebForecastReport.Service
 	                                                cast(sum(case when product_type='Project' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as project_all,
 	                                                cast(sum(case when product_type='Service' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as service_all
                                                 from Quotation
-                                                where stages in ('','Negotiation/Review','Proposal/Quote for Order','Prospecting') and expected_order_date like '{year}%'");
+                                                where stages in ('','Negotiation/Review','Proposal/Quote for Order','Prospecting') and stages_update_date like '{year}%' and (exclude_quote is null or exclude_quote = 0)");
                 }
                 else
                 {
@@ -604,7 +962,7 @@ namespace WebForecastReport.Service
 	                                                    cast(sum(case when product_type='Project' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as project_all,
 	                                                    cast(sum(case when product_type='Service' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as service_all
                                                     from Quotation
-                                                    where stages in ('','Negotiation/Review','Proposal/Quote for Order','Prospecting') and department='{department}' and expected_order_date like '{year}%'
+                                                    where stages in ('','Negotiation/Review','Proposal/Quote for Order','Prospecting') and department='{department}' and stages_update_date like '{year}%' and  (exclude_quote is null or exclude_quote = 0)
                                                     group by department");
                 }
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
@@ -651,7 +1009,7 @@ namespace WebForecastReport.Service
 	                                                cast(sum(case when product_type='Project' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as project_all,
 	                                                cast(sum(case when product_type='Service' then cast(replace(quoted_price,',','') as float)/@million else 0 end) as decimal(10,2)) as service_all
                                                 from Quotation
-                                                where stages in ('','Negotiation/Review','Proposal/Quote for Order','Prospecting') and sale_name='{name}' and expected_order_date like '{year}%'
+                                                where stages in ('','Negotiation/Review','Proposal/Quote for Order','Prospecting') and sale_name='{name}' and stages_update_date like '{year}%' and (exclude_quote is null or exclude_quote = 0)
                                                 group by sale_name");
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();

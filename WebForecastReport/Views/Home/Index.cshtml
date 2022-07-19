@@ -10,6 +10,12 @@
     .dataTables_scrollHeadInner, .table {
         width: 100% !important;
     }
+
+    tr, th {
+        word-wrap:unset;
+        white-space:nowrap;
+    }
+
 </style>
 <div class="row pt-3">
     <div class="col-md-12 col-xl-12">
@@ -106,47 +112,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="col-md-12 col-xl-12">
-                    <div class="row">
-                        <div class="col-md-4 col-xl-4">
-                            <div class="card" style="height:600px">
-                                <div class="card-header">
-                                    <span class="card-title">Stages</span>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-12 col-xl-12">
-                                            <div id="pie_chart_stages"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-8 col-xl-8">
-                            <div class="card" style="height:auto">
-                                <div class="card-header">
-                                    <span class="card-title">Last Update</span>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6 col-xl-6 pt-3">
-                                            <div class="w-100">
-                                                <canvas id="bar_chart_stages" style="height:450px"></canvas>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-xl-6 pt-2">
-                                            <div style="overflow:auto; height:500px">
-                                                <table id="table_stages" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="col-md-12 col-xl-12">
                     <div class="row">
                         <div class="col-md-4 col-xl-4">
@@ -186,6 +151,34 @@
                         <div class="col-md-4 col-xl-4">
                             <div class="card" style="height:600px">
                                 <div class="card-header">
+                                    <span class="card-title">Stages</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-xl-12">
+                                            <div id="pie_chart_stages"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                       
+                        <div class="col-md-4 col-xl-4">
+                           <div class="card" style="height:600px">
+                                <div class="card-header">
+                                    <span class="card-title">Quote For Budget</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-xl-12">
+                                            <div id="pie_chart_quotebudget"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card" style="height:600px">
+                                <div class="card-header">
                                     <span class="card-title">Hitting Rate</span>
                                 </div>
                                 <div class="card-body">
@@ -197,11 +190,34 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 col-xl-4">
-                           
+                    </div>
+                </div>               
+                <div class="col-md-12 col-xl-12">
+                    <div class="row">                        
+                        <div class="col-md-8 col-xl-8">
+                            <div class="card" style="height:auto">
+                                <div class="card-header">
+                                    <span class="card-title">Last Update</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 col-xl-6 pt-3">
+                                            <div class="w-100">
+                                                <canvas id="bar_chart_stages" style="height:450px"></canvas>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6 pt-2">
+                                            <div style="overflow:auto; height:500px">
+                                                <table id="table_stages" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-4 col-xl-4">
-                            
+                           
                         </div>
                     </div>
                 </div>
@@ -378,48 +394,7 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="col-md-12 col-xl-12">
-                    <div class="row">
-                        <div class="col-md-4 col-xl-4">
-                            <div class="card" style="height:600px">
-                                <div class="card-header">
-                                    <span class="card-title">Stages</span>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-12 col-xl-12">
-                                            <div id="pie_chart_stages_department"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-8 col-xl-8">
-                            <div class="card" style="height:auto">
-                                <div class="card-header">
-                                    <span class="card-title">Last Update</span>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6 col-xl-6 pt-3">
-                                            <div class="w-100">
-                                                <canvas id="bar_chart_stages_department" style="height:450px"></canvas>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-xl-6 pt-2">
-                                            <div style="overflow:auto; height:500px">
-                                                <table id="table_stages_department" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12 col-xl-12">
+                 <div class="col-md-12 col-xl-12">
                     <div class="row">
                         <div class="col-md-4 col-xl-4">
                             <div class="card" style="height:600px">
@@ -458,6 +433,34 @@
                         <div class="col-md-4 col-xl-4">
                             <div class="card" style="height:600px">
                                 <div class="card-header">
+                                    <span class="card-title">Stages</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-xl-12">
+                                            <div id="pie_chart_stages_department"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                           <div class="card" style="height:600px">
+                                <div class="card-header">
+                                    <span class="card-title">Quote For Budget</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-xl-12">
+                                            <div id="pie_chart_quotebudget_department"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card" style="height:600px">
+                                <div class="card-header">
                                     <span class="card-title">Hitting Rate</span>
                                 </div>
                                 <div class="card-body">
@@ -469,17 +472,42 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 col-xl-4">
-                            
+                    </div>
+                </div>              
+                <div class="col-md-12 col-xl-12">
+                    <div class="row">                        
+                        <div class="col-md-8 col-xl-8">
+                            <div class="card" style="height:auto">
+                                <div class="card-header">
+                                    <span class="card-title">Last Update</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 col-xl-6 pt-3">
+                                            <div class="w-100">
+                                                <canvas id="bar_chart_stages_department" style="height:450px"></canvas>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6 pt-2">
+                                            <div style="overflow:auto; height:500px">
+                                                <table id="table_stages_department" class="table table-sm cell-border  table-dark  table-bordered display responsive nowrap" style="width:100%;">
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-4 col-xl-4">
-                           
+                            
+                        </div>                       
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<partial name="Modal" />
 @section Scripts
 {
     <script type="text/javascript">
@@ -500,6 +528,7 @@
         var DataLastUpdateDepartment = [];
         var last_dashboard_deprtment_index = 0;
         var last_perfomance_deprtment_index = 0;
+
         $(document).ready(function () {
             init();
         });
@@ -750,7 +779,7 @@
                      quotation.product = product; 
                      quotation.project = project; 
                      quotation.service = service; 
-                     chart_nestPie('chart_target_quotation',target,quotation,label_target,label_quotation,'Target','Quotation');
+                     chart_nestPie_Individual('chart_target_quotation',target,quotation,label_target,label_quotation,'Target','Quotation');
 
                      //draw penging all vs pending in
                      var pending_in = {};
@@ -765,7 +794,7 @@
                      pending_all.project = Data_Pending.project_all;
                      pending_all.service = Data_Pending.service_all;
 
-                     chart_nestPie('chart_pendingall_pendingin',pending_all,pending_in,label_pending_all,label_pending_in,'Pending All','Pending In');
+                     chart_nestPie_Individual('chart_pendingall_pendingin',pending_all,pending_in,label_pending_all,label_pending_in,'Pending All','Pending In');
 
                      
                      // draw Won
@@ -795,7 +824,7 @@
                      won.product = won_product;
                      won.project = won_project;
                      won.service = won_service;
-                     chart_nestPie('chart_target_won',target,won,label_target,label_won,'Target','WON');
+                     chart_nestPie_Individual('chart_target_won',target,won,label_target,label_won,'Target','WON');
 
                      //draw lost
                      var lost_product = "0";
@@ -901,6 +930,26 @@
                                         
                      PopulateDataBarChart(Data_Stages_Day);
                      UpdateChartHittingRateIndividual(Hitting_Rates,"chart_hitting_rate");
+
+                     //draw stage Quote for Budget
+                     var quote_product = "0";
+                     var quote_project = "0";
+                     var quote_service = "0";
+
+                     var _quote_product = Datas.find(x => x.type === "Product" && x.stages === "Quote for Budget");
+                     var _quote_project = Datas.find(x => x.type === "Project" && x.stages === "Quote for Budget");
+                     var _quote_service = Datas.find(x => x.type === "Service" && x.stages === "Quote for Budget");
+
+                     if (typeof _quote_product !== 'undefined') {
+                         quote_product = _quote_product.mb;
+                     }
+                     if (typeof _quote_project !== 'undefined') {
+                         quote_project = _quote_project.mb;
+                     }
+                     if (typeof _quote_service !== 'undefined') {
+                         quote_service = _quote_service.mb;
+                     }
+                     UpdatePieChartQuoteForBudget(quote_product,quote_project,quote_service,"pie_chart_quotebudget");
                  }
              });           
         };
@@ -963,7 +1012,7 @@
                      quotation.product = product_department; 
                      quotation.project = project_department; 
                      quotation.service = service_department; 
-                     chart_nestPie('chart_target_quotation_department',target,quotation,label_target,label_quotation,'Target','Quotation');
+                     chart_nestPie_Department('chart_target_quotation_department',target,quotation,label_target,label_quotation,'Target','Quotation');
 
                      //draw penging all vs pending in
                      var pending_in = {};
@@ -978,7 +1027,7 @@
                      pending_all.project = Data_Pending.project_all;
                      pending_all.service = Data_Pending.service_all;
 
-                     chart_nestPie('chart_pendingall_pendingin_department',pending_all,pending_in,label_pending_all,label_pending_in,'Pending All','Pending In');
+                     chart_nestPie_Department('chart_pendingall_pendingin_department',pending_all,pending_in,label_pending_all,label_pending_in,'Pending All','Pending In');
 
 
                      // draw Won
@@ -1010,7 +1059,7 @@
                      won.product = won_product;
                      won.project = won_project;
                      won.service = won_service;
-                     chart_nestPie('chart_target_won_department',target,won,label_target,label_won,'Target','WON');
+                     chart_nestPie_Department('chart_target_won_department',target,won,label_target,label_won,'Target','WON');
 
 
 
@@ -1123,6 +1172,26 @@
 
                      //stack bar
                      UpdateDepartmentStack(DataLastUpdateDepartment);
+
+                     //draw stage Quote for Budget
+                     var quote_product = "0";
+                     var quote_project = "0";
+                     var quote_service = "0";
+
+                     var _quote_product = Datas.find(x => x.type === "Product" && x.stages === "Quote for Budget");
+                     var _quote_project = Datas.find(x => x.type === "Project" && x.stages === "Quote for Budget");
+                     var _quote_service = Datas.find(x => x.type === "Service" && x.stages === "Quote for Budget");
+
+                     if (typeof _quote_product !== 'undefined') {
+                         quote_product = _quote_product.mb;
+                     }
+                     if (typeof _quote_project !== 'undefined') {
+                         quote_project = _quote_project.mb;
+                     }
+                     if (typeof _quote_service !== 'undefined') {
+                         quote_service = _quote_service.mb;
+                     }
+                     UpdatePieChartQuoteForBudget(quote_product,quote_project,quote_service,"pie_chart_quotebudget_department");
                  
                  }
              });           
@@ -1389,7 +1458,49 @@
             });
             pie_chart.render();           
         };
+        function UpdatePieChartQuoteForBudget(product,project,service,chart_name) {
+           var sum = parseFloat(product) + parseFloat(project) + parseFloat(service);
+           var percent_product = (parseFloat(product) / sum  * 100).toFixed(2);
+           var percent_project = (parseFloat(project) / sum  * 100).toFixed(2);
+           var percent_service = (parseFloat(service) / sum  * 100).toFixed(2);
+           var datas = [
+			        {y: product, percent:percent_product, label: "Product", legendText: "Product", color:"#C78B05"},
+			        {y: project,percent:percent_project, label: "Project", legendText: "Project", color:"#FFC000"},
+			        {y: service,percent:percent_service, label: "Service", legendText: "Service", color:"#F8E07E"},
+		            ];
 
+            // filter value more than 0
+            datas = datas.filter(x => x.y > 0);
+
+            var pie_chart = new CanvasJS.Chart(chart_name, {
+	        animationEnabled: true,
+            backgroundColor: "transparent",
+	        title: {
+		        text: "Quote For Budget",
+                fontColor: "black",
+                fontSize: "24",
+                fontStyle: "normal",
+                fontFamily: "angsana-new"
+	        },
+	        data: [{
+		        type: "pie",
+                showInLegend: true,
+		        startAngle: 240,
+		        yValueFormatString: "##0.00\"\"",
+		        indexLabel: "{label} : {y} MB , {percent} %",
+                indexLabelFontColor: "black",
+                toolTipContent: "{label} : {y} MB , {percent} %",
+		        dataPoints: datas,
+	        }],
+            legend: {
+                horizontalAlign: "center",
+                verticalAlign: "bottom",
+                fontStyle: "normal",
+                fontColor: "black",
+            }
+            });
+            pie_chart.render();           
+        };
         function UpdatePieChartStages(stages_quote_for_budget,stages_negotiation_review,stages_proposal,stages_prospectng,stages_won,stages_lost,stages_nogo,chart_name) {
            var sum = parseFloat(stages_quote_for_budget) + parseFloat(stages_negotiation_review) + parseFloat(stages_proposal)
            + parseFloat(stages_prospectng) + parseFloat(stages_won) + parseFloat(stages_lost) + parseFloat(stages_nogo);
@@ -1756,7 +1867,7 @@
                             },
                         },
                         legend: {
-                            position: 'right',
+                            position: 'bottom',
                             display: true,
                             labels: {
                                 color: '#000000C8',
@@ -1849,7 +1960,7 @@
                             },
                         },
                         legend: {
-                            position: 'right',
+                            position: 'bottom',
                             display: true,
                             labels: {
                                 color: '#000000FC8',
@@ -1888,9 +1999,9 @@
             });
         };
 
-        function chart_nestPie(chart_name,target,quotation,label1,label2,name1,name2){
+        function chart_nestPie_Individual(chart_name,target,quotation,label1,label2,name1,name2){
             var dom = document.getElementById(chart_name);
-            var myChart = echarts.init(dom, null, {
+            var myChartNestedPie = echarts.init(dom, null, {
               renderer: 'canvas',
               useDirtyRect: false
             });
@@ -1941,7 +2052,7 @@
                       },
                       b: {
                         color: '#4C5058',
-                        fontSize: 10,                      
+                        fontSize: 12,                      
                         lineHeight: 20,
                         fontWeight: 'bold',
                       },
@@ -1993,7 +2104,7 @@
                       },
                       b: {
                         color: '#4C5058',
-                        fontSize: 10,
+                        fontSize: 12,
                         lineHeight: 20,
                         fontWeight: 'bold'
                       },
@@ -2016,13 +2127,267 @@
             };
 
             if (option && typeof option === 'object') {
-              myChart.setOption(option);
+              myChartNestedPie.setOption(option);
             }
-            myChart.on('click', function(params) {
-                console.log(params.data);
+            myChartNestedPie.on('click',function(params) {
+                
+                console.log(params);
+                var name = document.getElementById("sale_name").value;
+                var year = document.getElementById("years_dashboard").value;
+                var type = params.name;
+
+                document.getElementById("title").innerHTML = type;  
+                document.getElementById("title").style.fontWeight = "bold";
+
+                if (params.name === "WON Product" || params.name === "WON Project" || params.name === "WON Service"
+                   || params.name === "Quo. Product" || params.name === "Quo. Project" || params.name === "Quo. Service"
+                   || params.name === "Product In" || params.name === "Project In" || params.name === "Service In"){
+
+                    var percent = 0.0;
+                        if (params.name.includes("Product")){
+                            if (target.product > 0.0){
+                                percent = (quotation.product / target.product) * 100;
+                           }
+                        }
+                        if (params.name.includes("Project")){
+                            if (target.project > 0.0){
+                                percent = (quotation.project / target.project) * 100;
+                            }
+                        }
+                        if (params.name.includes("Service")){
+                            if (target.service > 0.0){
+                                percent = (quotation.service / target.service) * 100;
+                            }
+                        }               
+                        document.getElementById("percent").innerHTML = percent.toFixed(2) + " % of Target"; 
+                    
+
+                     $.ajax({
+                        url: '@Url.Action("GetDataNestedPieIndividual", "Home")',
+                        type: "post",
+                        contentType: 'application/x-www-form-urlencoded',
+                        data: {
+                            name,year,type
+                        },
+                        success: function (response) {
+                           //console.log(response);
+                           var datas = [];
+                           for(var i = 0;i<response.length;i++){
+                                datas.push([
+                                    response[i].sale_name,
+                                    response[i].department,
+                                    response[i].quotation_no,
+                                    //response[i].customer,
+                                    //response[i].project_name,
+                                    response[i].product_type,
+                                    response[i].quoted_price,
+                                    response[i].status,
+                                    response[i].stages,
+                                ]);
+                            }
+                            setTimeout(()=>{
+                                table_modal(datas);
+                            },200);
+                             $('#ShowModal').modal('show');
+                        }
+                    });
+                }
             });
-            window.addEventListener('resize', myChart.resize);
-        }
+            window.addEventListener('resize', myChartNestedPie.resize);
+        };
+        function chart_nestPie_Department(chart_name,target,quotation,label1,label2,name1,name2){
+            var dom = document.getElementById(chart_name);
+            var myChartNestedPie = echarts.init(dom, null, {
+              renderer: 'canvas',
+              useDirtyRect: false
+            });
+            var app = {};
+    
+            var option;
+
+                option = {
+              tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b}: {c} ({d}%)',
+                show:true
+              },
+              legend: {
+                data: [
+                  label1[0],
+                  label1[1],
+                  label1[2],
+                  label2[0],
+                  label2[1],
+                  label2[2],
+                ]
+              },
+              series: [
+                {
+                  name: name1,
+                  type: 'pie',
+                  //selectedMode: 'single',
+                  radius: [0, '16%'],
+                  label: {
+                    formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c} M {per|{d}%}  ',
+                    backgroundColor: '#F6F8FC',
+                    borderColor: '#8C8D8E',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    rich: {
+                      a: {
+                        color: '#6E7079',
+                        lineHeight: 10,
+                        align: 'center',
+                        fontWeight: 'bold',
+                      },
+                      hr: {
+                        borderColor: '#8C8D8E',
+                        width: '100%',
+                        borderWidth: 1,
+                        height: 0
+                      },
+                      b: {
+                        color: '#4C5058',
+                        fontSize: 12,                      
+                        lineHeight: 20,
+                        fontWeight: 'bold',
+                      },
+                      per: {
+                        color: '#fff',
+                        fontSize: 10,
+                        backgroundColor: '#4C5058',
+                        padding: [3, 4],
+                        borderRadius: 4
+                      }
+                    }
+                  },
+                  labelLine: {
+                    show: true,
+                    length: 50
+                  },
+                  data: [
+                    { value: target.product, name: label1[0] },
+                    { value: target.project, name: label1[1] },
+                    { value: target.service, name: label1[2] }
+                  ]
+                },
+                {
+                  name: name2,
+                  type: 'pie',
+                  //selectedMode: 'single',
+                  radius: ['17%', '38%'],
+                  labelLine: {
+                    length: 25
+                  },
+                  label: {
+                    formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c} M  {per|{d}%}  ',
+                    backgroundColor: '#F6F8FC',
+                    borderColor: '#8C8D8E',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    rich: {
+                      a: {
+                        color: '#6E7079',
+                        lineHeight: 16,
+                        align: 'center',
+                        fontWeight: 'bold',
+                      },
+                      hr: {
+                        borderColor: '#8C8D8E',
+                        width: '100%',
+                        borderWidth: 1,
+                        height: 0,
+                      },
+                      b: {
+                        color: '#4C5058',
+                        fontSize: 12,
+                        lineHeight: 20,
+                        fontWeight: 'bold'
+                      },
+                      per: {
+                        color: '#fff',
+                        fontSize: 10,
+                        backgroundColor: '#4C5058',
+                        padding: [3, 4],
+                        borderRadius: 4
+                      }
+                    }
+                  },
+                  data: [
+                    { value: quotation.product, name: label2[0] },
+                    { value: quotation.project, name: label2[1] },
+                    { value: quotation.service, name: label2[2] },
+                  ]
+                }
+              ]
+            };
+
+            if (option && typeof option === 'object') {
+              myChartNestedPie.setOption(option);
+            }
+            myChartNestedPie.on('click', function(params) {
+               
+                var department = document.getElementById("department_name").value;
+                var year = document.getElementById("years_dashboard_department").value;
+                var type = params.name;
+
+                document.getElementById("title").innerHTML = type;  
+                document.getElementById("title").style.fontWeight = "bold";
+                if (params.name === "WON Product" || params.name === "WON Project" || params.name === "WON Service"
+                   || params.name === "Quo. Product" || params.name === "Quo. Project" || params.name === "Quo. Service"
+                   || params.name === "Product In" || params.name === "Project In" || params.name === "Service In"){
+
+                       var percent = 0.0;
+                        if (params.name.includes("Product")){
+                            if (target.product > 0.0){
+                                percent = (quotation.product / target.product) * 100;
+                           }
+                        }
+                        if (params.name.includes("Project")){
+                            if (target.project > 0.0){
+                                percent = (quotation.project / target.project) * 100;
+                            }
+                        }
+                        if (params.name.includes("Service")){
+                            if (target.service > 0.0){
+                                percent = (quotation.service / target.service) * 100;
+                            }
+                        }               
+                        document.getElementById("percent").innerHTML = percent.toFixed(2) + " % of Target";  
+
+                     $.ajax({
+                        url: '@Url.Action("GetDataNestedPieDepartment", "Home")',
+                        type: "post",
+                        contentType: 'application/x-www-form-urlencoded',
+                        data: {
+                            department,year,type
+                        },
+                        success: function (response) {
+                           //console.log(response);
+                           var datas = [];
+                           for(var i = 0;i<response.length;i++){
+                                datas.push([
+                                    response[i].sale_name,
+                                    response[i].department,
+                                    response[i].quotation_no,
+                                    //response[i].customer,
+                                    //response[i].project_name,
+                                    response[i].product_type,
+                                    response[i].quoted_price,
+                                    response[i].status,
+                                    response[i].stages,
+                                ]);
+                            }
+                            setTimeout(()=>{
+                                table_modal(datas);
+                            },200);
+                            $('#ShowModal').modal('show');
+                        }
+                    });
+                }
+            });
+            window.addEventListener('resize', myChartNestedPie.resize);
+        };
         // Dashboard Department
 
         var stages_department_stack;
@@ -2277,24 +2642,24 @@
                 if (tables_performance !== undefined)
                     tables_performance.destroy();
                 tables_performance = $('#table_performance').DataTable({
-                data: dataSet,
-                "columnDefs": [
-                    {
-                        "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-                        "className": "text-center",
+                    data: dataSet,
+                    "columnDefs": [
+                        {
+                            "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                            "className": "text-center",
+                        },
+                    ],
+                    "createdRow": function (row, data, index) {
+                        if (data[0] === "Total") {
+                            $('td', row).css('background-color', '#E3C871');
+                            $('td', row).addClass('highlight');
+                        }
                     },
-                ],
-                "createdRow": function (row, data, index) {
-                    if (data[0] === "Total") {
-                        $('td', row).css('background-color', '#E3C871');
-                        $('td', row).addClass('highlight');
-                    }
-                },
-                "paging": false,
-                "searching": false,
-                "bInfo": false,
-                "scrollX": true,
-                "ordering":false,
+                    "paging": false,
+                    "searching": false,
+                    "bInfo": false,
+                    "scrollX": true,
+                    "ordering":false,
             });
 
             $(tables_performance.table().body()).addClass('text-dark');
@@ -2354,6 +2719,43 @@
             $(tables_performance_stack.table().body()).addClass('text-dark');
             },100);
         };
+
+        var tables_modal;
+        function table_modal(dataSet) {
+            
+                if (tables_modal !== undefined) {
+                    tables_modal.destroy();
+                }
+                        
+                tables_modal = $('#table_modal').DataTable({
+                    data: dataSet,
+                    @*columns: [
+                        { title: "Sale Name"},
+                        { title: "Department"},
+                        { title: "Quotation" },
+                        { title: "Customer"},
+                        { title: "Project Name"},
+                        { title: "Type" },
+                        { title: "Quoted Price"},
+                        { title: "Status"},
+                        { title: "Stages" },
+                    ],*@
+                    @*"columnDefs": [
+                        {
+                            "targets": [0,1,2,3,4,5,6,7,8],
+                            "className": "dt-center",
+
+                        },
+                    ],*@
+                    @*paging: true,
+                    ordering: true,
+                    searching: true,
+                    
+                    info: false,*@
+                    scrollX: true,
+                });
+                $(tables_modal.table().body()).addClass('text-dark');
+        }
 
         function add_department(departments) {
                 var data_departments = [];
