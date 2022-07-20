@@ -8,9 +8,9 @@ namespace WebForecastReport.Interface
 {
     interface IHome
     {
-        List<Home_DataModel> getData(string year, string name);
+        List<Home_DataModel> getDataByIndividual(string year, string name);
         List<Home_DataModel> getDataByDepartment(string year, string department);
-        List<Home_StagesModel> getDataStages(string year, string name);
+        List<Home_StagesModel> getDataStagesByIndividual(string year, string name);
         List<Home_StagesModel> getDataStagesByDepartment(string year, string department);
         Home_DayModel getDataDay(string year, string name);
         List<Home_DayModel> getDataDayByDepartment(string year, string department);
@@ -25,9 +25,6 @@ namespace WebForecastReport.Interface
 
         TargetIndividual GetTargetIndividual(string year, string name);
         TargetDepartment GetTargetDepartment(string year, string department);
-        PendingIndividualModel GetPendingIndividual(string year, string name);
-        PendingDepartmentModel GetPendingDepartment(string year, string department);
-
         List<SubQuotationModel> GetDataSubQuotationIndividual(string year, string name, string type);
         List<SubQuotationModel> GetDataSubQuotationDepartment(string year, string department, string type);
     }

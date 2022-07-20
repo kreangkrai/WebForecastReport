@@ -10,5 +10,6 @@ namespace WebForecastReport.Models
         public string name { get; set; }
         public string stages { get; set; }
         public string mb { get; set; }
+        public string cnt { get; set; }
     }
 }

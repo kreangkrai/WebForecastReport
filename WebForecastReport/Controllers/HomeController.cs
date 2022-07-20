@@ -83,13 +83,13 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetData(string year, string name)
+        public JsonResult GetDataByIndividual(string year, string name)
         {
             List<Home_DataModel> datas = new List<Home_DataModel>();
-            datas = Home.getData(year, name);
+            datas = Home.getDataByIndividual(year, name);
 
             List<Home_StagesModel> stages = new List<Home_StagesModel>();
-            stages = Home.getDataStages(year, name);
+            stages = Home.getDataStagesByIndividual(year, name);
 
             Home_DayModel day = new Home_DayModel();
             day = Home.getDataDay(year, name);
@@ -100,10 +100,7 @@ namespace WebForecastReport.Controllers
             TargetIndividual target = new TargetIndividual();
             target = Home.GetTargetIndividual(year, name);
 
-            PendingIndividualModel pending = new PendingIndividualModel();
-            pending = Home.GetPendingIndividual(year, name);
-
-            var list = new { datas = datas, stages = stages, day = day, hittingrates = hittingRates, target = target, pending = pending };
+            var list = new { datas = datas, stages = stages, day = day, hittingrates = hittingRates, target = target };
 
             return Json(list);
         }
@@ -126,10 +123,7 @@ namespace WebForecastReport.Controllers
             TargetDepartment target = new TargetDepartment();
             target = Home.GetTargetDepartment(year, department);
 
-            PendingDepartmentModel pending = new PendingDepartmentModel();
-            pending = Home.GetPendingDepartment(year, department);
-
-            var list = new { datas = datas, stages = stages, day = day, hittingrates = hittingRates, target = target, pending = pending };
+            var list = new { datas = datas, stages = stages, day = day, hittingrates = hittingRates, target = target };
 
             return Json(list);
         }

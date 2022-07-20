@@ -19,6 +19,8 @@ namespace WebForecastReport.Models
         public string product_nogo_mb { get; set; }
         public string product_pending_cnt { get; set; }
         public string product_pending_mb { get; set; }
+        public string product_quote_cnt { get; set; }
+        public string product_quote_mb { get; set; }
         public string product_cnt { get; set; }
         public string product_mb { get; set; }
 
@@ -30,6 +32,8 @@ namespace WebForecastReport.Models
         public string project_nogo_mb { get; set; }
         public string project_pending_cnt { get; set; }
         public string project_pending_mb { get; set; }
+        public string project_quote_cnt { get; set; }
+        public string project_quote_mb { get; set; }
         public string project_cnt { get; set; }
         public string project_mb { get; set; }
 
@@ -41,6 +45,8 @@ namespace WebForecastReport.Models
         public string service_nogo_mb { get; set; }
         public string service_pending_cnt { get; set; }
         public string service_pending_mb { get; set; }
+        public string service_quote_cnt { get; set; }
+        public string service_quote_mb { get; set; }
         public string service_cnt { get; set; }
         public string service_mb { get; set; }
 
@@ -79,5 +85,14 @@ namespace WebForecastReport.Models
         public string pending_service_mb { get; set; }
         public string pending_quo_cnt { get; set; }
         public string pending_mb { get; set; }
+
+        public string quote_product_cnt { get; set; }
+        public string quote_product_mb { get; set; }
+        public string quote_project_cnt { get; set; }
+        public string quote_project_mb { get; set; }
+        public string quote_service_cnt { get; set; }
+        public string quote_service_mb { get; set; }
+        public string quote_quo_cnt { get; set; }
+        public string quote_mb { get; set; }
     }
 }
