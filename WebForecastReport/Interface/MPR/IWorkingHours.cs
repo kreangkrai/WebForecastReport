@@ -17,5 +17,6 @@ namespace WebForecastReport.Interfaces.MPR
         string UpdateRestTime(WorkingHoursModel wh);
         string DeleteWorkingHours(WorkingHoursModel wh);
         List<JobWeeklyWorkingHoursModel> GetAllJobWorkingHours(int year, int week);
+        List<EngWeeklyWorkingHoursModel> GetAllEngWorkingHours(int year, int week);
     }
 }

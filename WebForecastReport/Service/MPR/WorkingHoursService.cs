@@ -537,5 +537,61 @@ namespace WebForecastReport.Services.MPR
             }
             return whs;
         }
+
+        public List<EngWeeklyWorkingHoursModel> GetAllEngWorkingHours(int year, int week)
+        {
+            List<EngWeeklyWorkingHoursModel> whs = new List<EngWeeklyWorkingHoursModel>();
+            try
+            {
+                string string_command = string.Format($@"
+                    SELECT 
+	                    DISTINCT user_id,
+	                    {week} as week_number,
+	                    {year} as year,
+	                    ISNULL(a.hours, 0) AS hours
+                    FROM (
+	                    SELECT 
+		                    user_id, 
+		                    SUM(CASE 
+				                    WHEN DATEDIFF(HOUR,start_time,stop_time) > 0
+				                    THEN DATEDIFF(HOUR,start_time,stop_time)
+				                    ELSE DATEDIFF(HOUR,start_time,stop_time) * -1
+			                    END) AS hours
+	                    FROM WorkingHours
+	                    WHERE working_date LIKE '{year}%' AND week_number = {week}
+	                    GROUP BY user_id) AS a
+                    ");
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        EngWeeklyWorkingHoursModel wh = new EngWeeklyWorkingHoursModel()
+                        {
+                            user_id = dr["user_id"] != DBNull.Value ? dr["user_id"].ToString() : "",
+                            year = dr["year"] != DBNull.Value ? Convert.ToInt32(dr["year"]) : 0,
+                            week = dr["week_number"] != DBNull.Value ? Convert.ToInt32(dr["week_number"]) : 0,
+                            hours = dr["hours"] != DBNull.Value ? Convert.ToInt32(dr["hours"]) : 0
+                        };
+                        whs.Add(wh);
+                    }
+                    dr.Close();
+                }
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+            return whs;
+        }
     }
 }
