@@ -14,15 +14,15 @@ using WebForecastReport.Services.MPR;
 
 namespace WebForecastReport.Controllers
 {
-    public class JobWorkingHoursController : Controller
+    public class EngWorkingHoursController : Controller
     {
         readonly IAccessory Accessory;
         readonly IWorkingHours WorkingHours;
 
-        public JobWorkingHoursController()
+        public EngWorkingHoursController()
         {
-            Accessory = new AccessoryService();
-            WorkingHours = new WorkingHoursService();
+            this.Accessory = new AccessoryService();
+            this.WorkingHours = new WorkingHoursService();
         }
 
         public IActionResult Index()
@@ -49,10 +49,10 @@ namespace WebForecastReport.Controllers
         public JsonResult GetWorkingHours(string weeks)
         {
             List<WeekModel> ww = JsonConvert.DeserializeObject<List<WeekModel>>(weeks);
-            List<JobWeeklyWorkingHoursModel> whs = new List<JobWeeklyWorkingHoursModel>();
-            for(int i = 0;i<ww.Count;i++)
+            List<EngWeeklyWorkingHoursModel> whs = new List<EngWeeklyWorkingHoursModel>();
+            for (int i = 0; i < ww.Count; i++)
             {
-                whs.AddRange(WorkingHours.GetAllJobWorkingHours(Convert.ToInt32(ww[i].year), Convert.ToInt32(ww[i].week)));
+                whs.AddRange(WorkingHours.GetAllEngWorkingHours(Convert.ToInt32(ww[i].year), Convert.ToInt32(ww[i].week)));
             }
             return Json(whs);
         }

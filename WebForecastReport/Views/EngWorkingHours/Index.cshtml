@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["title"] = "Job Weekly WorkingHours";
+    ViewData["title"] = "Engineer Weekly WorkingHours";
 }
 <style>
     th, td {
@@ -16,7 +16,7 @@
         </button>
     </div>
     <div class="col-xl-1">
-        <button id="btn_next" type="button" class="btn btn-primary form-control" disabled>
+        <button id="btn_next" type="button" class="btn btn-primary form-control">
             <i class="fas fa-chevron-right"></i>
         </button>
     </div>
@@ -37,15 +37,13 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-header">
-                <span class="card-title">Jobs Working Hours</span>
+                <span class="card-title">Engineers Working Hours</span>
             </div>
             <div class="card-body">
                 <table id="table" class="table table-sm table-bordered text-center w-100">
                     <thead>
                         <tr>
-                            <th>Job</th>
                             <th>Name</th>
-                            <th>Customer</th>
                             <th id="week8">Week 1</th>
                             <th id="week7">Week 2</th>
                             <th id="week6">Week 3</th>
@@ -62,12 +60,11 @@
         </div>
     </div>
 </div>
-
 @section Scripts
 {
     <script type="text/javascript">
         var table;
-        var myChart;
+        var chart;
         var whs = [];
 
         $(document).ready(async function () {
@@ -76,7 +73,7 @@
             var first_jan = new Date(year, 0, 1);
             var days = Math.floor((today - first_jan) / (24 * 60 * 60 * 1000));
             var week = Math.ceil((today.getDay() + 1 + days) / 7);
-            var week_str = `${year}-W${week-1}`;
+            var week_str = `${year}-W${week - 1}`;
             $('#week').val(week_str);
             var weeks = await GetWeeksNumber();
             await GetWorkingHours(JSON.stringify(weeks));
@@ -84,12 +81,35 @@
             GenerateTable();
         });
 
-        $('#btn_load').on('click', async function () {
-            var weeks = await GetWeeksNumber();
-            await GetWorkingHours(JSON.stringify(weeks));
-            GenerateChart();
-            GenerateTable();
-        });
+        function GetWeeksNumber() {
+            var weeks = [];
+            var week = $('#week').val().split("W")[1];
+            var year = $('#week').val().split("-")[0];
+            for (var i = 0; i < 8; i++) {
+                var ww = week - i;
+                var yy = parseInt(year);
+                if (ww < 1) {
+                    yy = yy - 1;
+                    ww = (week - i) + 52;
+                }
+                weeks.push({
+                    year: yy,
+                    week: ww
+                });
+            }
+            return weeks;
+        }
+
+        async function GetWorkingHours(weeks) {
+            await $.ajax({
+                method: "GET",
+                url: '@Url.Action("GetWorkingHours", "EngWorkingHours")',
+                data: { weeks },
+                success: function(response) {
+                    whs = response;
+                }
+            });
+        }
 
         $('#btn_prev').on('click', async function () {
             var week = parseInt($('#week').val().split("W")[1]);
@@ -133,105 +153,20 @@
             GenerateTable();
         });
 
-        function GetWeeksNumber() {
-            var weeks = [];
-            var week = $('#week').val().split("W")[1];
-            var year = $('#week').val().split("-")[0];
-            for (var i = 0; i < 8; i++) {
-                var ww = week - i;
-                var yy = parseInt(year);
-                if (ww < 1) {
-                    yy = yy - 1;
-                    ww = (week - i) + 52;
-                }
-                weeks.push({
-                    year: yy,
-                    week: ww
-                });
-            }
-            return weeks;
-        }
-
-        async function GetWorkingHours(weeks) {
-            await $.ajax({
-                method: "GET",
-                url: '@Url.Action("GetWorkingHours", "JobWorkingHours")',
-                data: { weeks },
-                success: function(response) {
-                    whs = response;
-                }
-            });
-        }
-
-        function GenerateTable() {
-            var datas = [];
-
-            var jobs = [];
-            var weeks = [];
-
-            jobs = whs.map(m => m.job_id);
-            jobs = [...new Set(jobs)];
-
-            weeks = whs.map(m => m.week);
-            weeks = [...new Set(weeks)];
-
-            $('#week8').text(weeks[7] + "-" + whs.filter(f => f.week == weeks[7]).map(m => m.year)[0]);
-            $('#week7').text(weeks[6] + "-" + whs.filter(f => f.week == weeks[7]).map(m => m.year)[0]);
-            $('#week6').text(weeks[5] + "-" + whs.filter(f => f.week == weeks[7]).map(m => m.year)[0]);
-            $('#week5').text(weeks[4] + "-" + whs.filter(f => f.week == weeks[7]).map(m => m.year)[0]);
-            $('#week4').text(weeks[3] + "-" + whs.filter(f => f.week == weeks[7]).map(m => m.year)[0]);
-            $('#week3').text(weeks[2] + "-" + whs.filter(f => f.week == weeks[7]).map(m => m.year)[0]);
-            $('#week2').text(weeks[1] + "-" + whs.filter(f => f.week == weeks[7]).map(m => m.year)[0]);
-            $('#week1').text(weeks[0] + "-" + whs.filter(f => f.week == weeks[7]).map(m => m.year)[0]);
-
-            for (var i = 0; i < jobs.length; i++) {
-                datas.push([
-                    jobs[i],
-                    whs.filter(f => f.job_id == jobs[i]).map(m => m.job_name)[0],
-                    whs.filter(f => f.job_id == jobs[i]).map(m => m.customer)[0],
-                    whs.filter(f => f.job_id == jobs[i] && f.week == weeks[7]).map(m => m.hours),
-                    whs.filter(f => f.job_id == jobs[i] && f.week == weeks[6]).map(m => m.hours),
-                    whs.filter(f => f.job_id == jobs[i] && f.week == weeks[5]).map(m => m.hours),
-                    whs.filter(f => f.job_id == jobs[i] && f.week == weeks[4]).map(m => m.hours),
-                    whs.filter(f => f.job_id == jobs[i] && f.week == weeks[3]).map(m => m.hours),
-                    whs.filter(f => f.job_id == jobs[i] && f.week == weeks[2]).map(m => m.hours),
-                    whs.filter(f => f.job_id == jobs[i] && f.week == weeks[1]).map(m => m.hours),
-                    whs.filter(f => f.job_id == jobs[i] && f.week == weeks[0]).map(m => m.hours)
-                ]);
-            }
-
-            if (table !== undefined) {
-                table.destroy();
-            }
-
-            table = $('#table').DataTable({
-                data: datas,
-                fixedHeader: true,
-                rowCallback: function (row, data) {
-                    $('td:eq(1)', row).addClass("text-left");
-                    $('td:eq(2)', row).addClass("text-left");
-
-                    if (parseInt(data[3]) == 0) $('td:eq(3)', row).html('');
-                    if (parseInt(data[4]) == 0) $('td:eq(4)', row).html('');
-                    if (parseInt(data[5]) == 0) $('td:eq(5)', row).html('');
-                    if (parseInt(data[6]) == 0) $('td:eq(6)', row).html('');
-                    if (parseInt(data[7]) == 0) $('td:eq(7)', row).html('');
-                    if (parseInt(data[8]) == 0) $('td:eq(8)', row).html('');
-                    if (parseInt(data[9]) == 0) $('td:eq(9)', row).html('');
-                    if (parseInt(data[10]) == 0) $('td:eq(10)', row).html('');
-                },
-            });
-        }
+        $('#btn_load').on('click', async function () {
+            var weeks = await GetWeeksNumber();
+            await GetWorkingHours(JSON.stringify(weeks));
+            GenerateChart();
+            GenerateTable();
+        });
 
         function GenerateChart() {
-            var ds = [];
-            var jobs = whs.map(m => m.job_id);
-            jobs = [...new Set(jobs)];
+            var weeks = whs.map(m => m.week);
+            weeks = [...new Set(weeks)].reverse();
 
-            var weeks = [];
-            weeks = whs.map(m => m.week);
-            weeks = [...new Set(weeks)];
-            weeks.reverse();
+            var engineers = whs.map(m => m.user_id);
+            engineers = [...new Set(engineers)];
+
             var colors = [
                 '#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5',  //A500 RED, PINK, PURPLE, DEEP PURPLE, INDIGO
                 '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50',  //A500 BLUE, LIGHT BLUE, CYAN, TEAL, GREEN
@@ -243,56 +178,113 @@
                 '#ff7043', '#8d6e63', '#bdbdbd', '#78909c'              //A400 DEEP ORANGE, BROWN, GREY, BLUE GREY
             ];
 
-            for (var i = 0; i < jobs.length; i++) {
+            var ds = [];
+            for (var i = 0; i < engineers.length; i++) {
                 ds.push({
-                    label: jobs[i],
-                    data: whs.filter(f => f.job_id == jobs[i]).map(m => m.hours).reverse(),
+                    label: whs.filter(f => f.user_id === engineers[i]).map(m => m.user_id)[0],
+                    data: whs.filter(f => f.user_id === engineers[i]).map(m => m.hours).reverse(),
                     backgroundColor: colors[i],
                     borderColor: colors[i],
-                    borderWidth: 1,
-                    barPercentage: 0.5
+                    borderWidth: 1
                 });
             }
 
-            if (myChart !== undefined) {
-                myChart.destroy();
+            if (chart !== undefined) {
+                chart.destroy();
             }
-
+            
             const ctx = document.getElementById('chart').getContext('2d');
-            myChart = new Chart(ctx, {
+            chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: weeks,
-                    datasets: ds
+                    datasets: ds,
                 },
                 options: {
                     scales: {
                         y: {
                             beginAtZero: true,
-                            stacked: true,
+                            stacked: false,
                             title: {
-                                text: 'Hours',
+                                text: "Hours",
                                 display: true
                             }
                         },
                         x: {
-                            stacked: true,
+                            stacked: false,
                             title: {
-                                text: 'Week Number',
+                                text: "Week",
                                 display: true
                             }
                         }
                     },
                     plugins: {
-                        title: {
-                            display: true,
-                            text: 'Job WorkingHours by Week'
-                        },
                         legend: {
                             position: 'bottom'
+                        },
+                        title: {
+                            text: "Engineer Working Hours (Weekly)",
+                            display: true
                         }
                     },
                     maintainAspectRatio: false
+                }
+            });
+        }
+
+        function GenerateTable() {
+            var datas = [];
+
+            var engineers = [];
+            engineers = whs.map(m => m.user_id);
+            engineers = [...new Set(engineers)];
+
+            var weeks = [];
+            weeks = whs.map(m => m.week);
+            weeks = [...new Set(weeks)];
+
+            $('#week1').text(weeks[0] + "-" + whs.filter(f => f.week == weeks[0]).map(m => m.year)[0]);
+            $('#week2').text(weeks[1] + "-" + whs.filter(f => f.week == weeks[1]).map(m => m.year)[0]);
+            $('#week3').text(weeks[2] + "-" + whs.filter(f => f.week == weeks[2]).map(m => m.year)[0]);
+            $('#week4').text(weeks[3] + "-" + whs.filter(f => f.week == weeks[3]).map(m => m.year)[0]);
+            $('#week5').text(weeks[4] + "-" + whs.filter(f => f.week == weeks[4]).map(m => m.year)[0]);
+            $('#week6').text(weeks[5] + "-" + whs.filter(f => f.week == weeks[5]).map(m => m.year)[0]);
+            $('#week7').text(weeks[6] + "-" + whs.filter(f => f.week == weeks[6]).map(m => m.year)[0]);
+            $('#week8').text(weeks[7] + "-" + whs.filter(f => f.week == weeks[7]).map(m => m.year)[0]);
+
+            for (var i = 0; i < engineers.length; i++) {
+                datas.push([
+                    engineers[i],
+                    whs.filter(f => f.user_id == engineers[i] && f.week == weeks[7]).map(m => m.hours),
+                    whs.filter(f => f.user_id == engineers[i] && f.week == weeks[6]).map(m => m.hours),
+                    whs.filter(f => f.user_id == engineers[i] && f.week == weeks[5]).map(m => m.hours),
+                    whs.filter(f => f.user_id == engineers[i] && f.week == weeks[4]).map(m => m.hours),
+                    whs.filter(f => f.user_id == engineers[i] && f.week == weeks[3]).map(m => m.hours),
+                    whs.filter(f => f.user_id == engineers[i] && f.week == weeks[2]).map(m => m.hours),
+                    whs.filter(f => f.user_id == engineers[i] && f.week == weeks[1]).map(m => m.hours),
+                    whs.filter(f => f.user_id == engineers[i] && f.week == weeks[0]).map(m => m.hours)
+                ]);
+            }
+
+            if (table !== undefined) {
+                table.destroy();
+            }
+
+            table = $('#table').DataTable({
+                data: datas,
+                info: false,
+                paging: false,
+                rowCallback: function (row, data) {
+                    $('td:eq(0)', row).addClass("text-left");
+                    for (var i = 1; i < 9; i++) {
+                        if (data[i] < 41) {
+                            $('td:eq(' + i + ')', row).addClass("text-success");
+                        } else if (data[i] > 40 && data[i] < 61) {
+                            $('td:eq(' + i + ')', row).addClass("text-warning");
+                        } else {
+                            $('td:eq(' + i + ')', row).addClass("text-danger");
+                        }
+                    }
                 }
             });
         }
