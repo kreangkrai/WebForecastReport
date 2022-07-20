@@ -14,14 +14,6 @@ using WebForecastReport.Services.MPR;
 
 namespace WebForecastReport.Controllers
 {
-    class Week
-    {
-        [JsonProperty("year")]
-        public string year { get; set; }
-        [JsonProperty("week")]
-        public string week { get; set; }
-    }
-
     public class JobWorkingHoursController : Controller
     {
         readonly IAccessory Accessory;
@@ -56,7 +48,7 @@ namespace WebForecastReport.Controllers
         [HttpGet]
         public JsonResult GetWorkingHours(string weeks)
         {
-            List<Week> ww = JsonConvert.DeserializeObject<List<Week>>(weeks);
+            List<WeekModel> ww = JsonConvert.DeserializeObject<List<WeekModel>>(weeks);
             List<JobWeeklyWorkingHoursModel> whs = new List<JobWeeklyWorkingHoursModel>();
             for(int i = 0;i<ww.Count;i++)
             {
