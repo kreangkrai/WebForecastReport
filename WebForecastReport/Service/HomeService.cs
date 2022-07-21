@@ -296,7 +296,7 @@ namespace WebForecastReport.Service
 		                                            stages,
 		                                            DATEDIFF(Day, stages_update_date,getDate()) as day
 	                                            from Quotation 
-	                                            where sale_name = '{name}' and stages_update_date like '{year}%' and stages not in ('Closed(Won)','Closed(Lost)','No go')) as s1 
+	                                            where sale_name = '{name}' and stages_update_date like '{year}%' and stages not in ('Closed(Won)','Closed(Lost)','No go','Quote for Budget')) as s1 
                                                 group by s1.sale_name"), ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
@@ -353,7 +353,7 @@ namespace WebForecastReport.Service
 					                                                where sale_name <>'' and date like '{year}%'
 					                                                group by department,sale_name) as s2
 					                                                ON s2.sale_name = Quotation.sale_name
-		                                                where Quotation.sale_name <>'' and stages_update_date like '{year}%' and stages not in ('Closed(Won)','Closed(Lost)','No go')) as s1 
+		                                                where Quotation.sale_name <>'' and stages_update_date like '{year}%' and stages not in ('Closed(Won)','Closed(Lost)','No go','Quote for Budget')) as s1 
 	                                                group by s1.department,s1.sale_name
 	                                                order by s1.sale_name");
                 }
@@ -380,7 +380,7 @@ namespace WebForecastReport.Service
 					                                                where department = '{department}' and sale_name <>'' and date like '{year}%'
 					                                                group by department,sale_name) as s2
 					                                                ON s2.sale_name = Quotation.sale_name
-		                                                where Quotation.department = '{department}' and Quotation.sale_name <>'' and stages_update_date like '{year}%' and stages not in ('Closed(Won)','Closed(Lost)','No go')) as s1 
+		                                                where Quotation.department = '{department}' and Quotation.sale_name <>'' and stages_update_date like '{year}%' and stages not in ('Closed(Won)','Closed(Lost)','No go','Quote for Budget')) as s1 
 	                                            group by s1.department,s1.sale_name");
                 }
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
@@ -434,7 +434,7 @@ namespace WebForecastReport.Service
                                                     stages,
                                                     stages_update_date 
                                                     from Quotation 
-                                                    where sale_name = '{sale_name}' and stages_update_date like '{year}%' and stages not in ('','Closed(Won)','Closed(Lost)','No go') and DATEDIFF(day,stages_update_date,getDate()) {day} order by quotation_no");
+                                                    where sale_name = '{sale_name}' and stages_update_date like '{year}%' and stages not in ('','Closed(Won)','Closed(Lost)','No go','Quote for Budget') and DATEDIFF(day,stages_update_date,getDate()) {day} order by quotation_no");
                 }
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -1031,10 +1031,10 @@ namespace WebForecastReport.Service
 		                                                    where sale_name= '{name}' and stages_update_date like '{year}%' and product_type <>'' and product_type is not null and stages in ('Closed(Won)','Closed(Lost)','No go') AND (exclude_quote is null or exclude_quote = 0)
 	                                                    )
 	                                                    select main.product_type as type,
-	                                                    cast(((main.win / main.total)*100)as decimal(10, 1)) as hitting_rate
+	                                                    cast((case when main.total <> 0 then (main.win / main.total)*100 else 0 end) as decimal(10, 1)) as hitting_rate
 	                                                    from main union all
 	                                                    select 'Total' as type,
-	                                                    cast(((sub.win / sub.total)*100)as decimal(10, 1)) as hitting_rate
+	                                                    cast((case when sub.total <> 0 then (sub.win / sub.total)*100 else 0 end) as decimal(10, 1)) as hitting_rate
 	                                                    from sub");
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
