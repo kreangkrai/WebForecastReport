@@ -100,53 +100,59 @@
                                             <input type="checkbox" id="chkService_department" />
                                             <label>Service</label>
                                         </div>
+                                        <div class="col-md-2 col-xl-2">
+                                            <input type="checkbox" id="chkBudget_department" />
+                                            <label>Quote for Budget</label>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-2 col-xl-2">
-                                                <input type="checkbox" id="chkWon_department" />
-                                                <label>Won</label>
-                                            </div>
-                                            <div class="col-md-2 col-xl-2">
-                                                <input type="checkbox" id="chkLoss_department" />
-                                                <label>Loss</label>
-                                            </div>
-                                            <div class="col-md-2 col-xl-2">
-                                                <input type="checkbox" id="chkNogo_department" />
-                                                <label>No go</label>
-                                            </div>
-                                            <div class="col-md-2 col-xl-2">
-                                                <input type="checkbox" id="chkPending_department" />
-                                                <label>Pending</label>
-                                            </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2 col-xl-2">
+                                            <input type="checkbox" id="chkWon_department" />
+                                            <label>Won</label>
+                                        </div>
+                                        <div class="col-md-2 col-xl-2">
+                                            <input type="checkbox" id="chkLoss_department" />
+                                            <label>Loss</label>
+                                        </div>
+                                        <div class="col-md-2 col-xl-2">
+                                            <input type="checkbox" id="chkNogo_department" />
+                                            <label>No go</label>
+                                        </div>
+                                        <div class="col-md-2 col-xl-2">
+                                            <input type="checkbox" id="chkPending_department" />
+                                            <label>Pending</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12">
+                        </div>
+                        <div class="col-12">
                                 <table id="table_department" class="table table-xl cell-border table-dark table-bordered display text-center responsive nowrap" style="width:100%">
                                     <thead style="color:black;background-color:#71C6F7">
                                         <tr>
                                             <th colspan="2" rowspan="3" style="text-align:center;vertical-align:middle;">Sales</th>
                                             <th colspan="2" style="text-align:center;vertical-align:middle;">Quotation</th>
-                                            <th colspan="30" style="text-align:center;vertical-align:middle;">Description</th>
-                                            <th colspan="32" style="text-align:center;vertical-align:middle;">Status Quotation</th>
+                                            <th colspan="36" style="text-align:center;vertical-align:middle;">Description</th>
+                                            <th colspan="40" style="text-align:center;vertical-align:middle;">Status Quotation</th>
                                         </tr>
                                         <tr>
                                             <th rowspan="3" style="text-align:center;vertical-align:middle;">Total Quo.</th>
                                             <th rowspan="3" style="text-align:center;vertical-align:middle;">Total MB</th>
-                                            <th colspan="10" style="text-align:center;vertical-align:middle;">Project</th>
-                                            <th colspan="10" style="text-align:center;vertical-align:middle;">Product</th>
-                                            <th colspan="10" style="text-align:center;vertical-align:middle;">Service</th>
+                                            <th colspan="12" style="text-align:center;vertical-align:middle;">Project</th>
+                                            <th colspan="12" style="text-align:center;vertical-align:middle;">Product</th>
+                                            <th colspan="12" style="text-align:center;vertical-align:middle;">Service</th>
                                             <th colspan="8" style="text-align:center;vertical-align:middle;">Won</th>
                                             <th colspan="8" style="text-align:center;vertical-align:middle;">Loss</th>
                                             <th colspan="8" style="text-align:center;vertical-align:middle;">No go</th>
                                             <th colspan="8" style="text-align:center;vertical-align:middle;">Pending</th>
+                                            <th colspan="8" style="text-align:center;vertical-align:middle;">Quote for Budget</th>
                                         </tr>
                                         <tr>
                                             <th colspan="2" style="text-align:center;vertical-align:middle;">Won</th>
                                             <th colspan="2" style="text-align:center;vertical-align:middle;">Loss</th>
                                             <th colspan="2" style="text-align:center;vertical-align:middle;">No go</th>
                                             <th colspan="2" style="text-align:center;vertical-align:middle;">Pending</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Budget</th>
                                             <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
                                             <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
 
@@ -154,6 +160,7 @@
                                             <th colspan="2" style="text-align:center;vertical-align:middle;">Loss</th>
                                             <th colspan="2" style="text-align:center;vertical-align:middle;">No go</th>
                                             <th colspan="2" style="text-align:center;vertical-align:middle;">Pending</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Budget</th>
                                             <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
                                             <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
 
@@ -161,6 +168,13 @@
                                             <th colspan="2" style="text-align:center;vertical-align:middle;">Loss</th>
                                             <th colspan="2" style="text-align:center;vertical-align:middle;">No go</th>
                                             <th colspan="2" style="text-align:center;vertical-align:middle;">Pending</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Budget</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
+
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Project</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Product</th>
+                                            <th colspan="2" style="text-align:center;vertical-align:middle;">Service</th>
                                             <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
                                             <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
 
@@ -191,6 +205,9 @@
                                         <tr>
                                             <th style="text-align:center;vertical-align:middle;">Department</th>
                                             <th style="text-align:center;vertical-align:middle;">Sales Name</th>
+
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
                                             <th style="text-align:center;vertical-align:middle;">Quo.</th>
                                             <th style="text-align:center;vertical-align:middle;">MB</th>
                                             <th style="text-align:center;vertical-align:middle;">Quo.</th>
@@ -208,9 +225,20 @@
                                             <th style="text-align:center;vertical-align:middle;">MB</th>
                                             <th style="text-align:center;vertical-align:middle;">Quo.</th>
                                             <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
 
                                             <th style="text-align:center;vertical-align:middle;">Quo.</th>
                                             <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+                                            <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                            <th style="text-align:center;vertical-align:middle;">MB</th>
+
                                             <th style="text-align:center;vertical-align:middle;">Quo.</th>
                                             <th style="text-align:center;vertical-align:middle;">MB</th>
                                             <th style="text-align:center;vertical-align:middle;">Quo.</th>
@@ -248,7 +276,7 @@
                                         </tr>
                                     </thead>
                                 </table>
-                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -275,6 +303,7 @@
                                             <div class="col-md-3 col-xl-3 pb-3">
                                                 <select id="quarter_stages" class="form-control">
                                                     <option value="Pending">Pending</option>
+                                                    <option value="Budgetary">Budgetary</option>
                                                     <option value="Win">Win</option>
                                                     <option value="Lose">Lose</option>
                                                     <option value="No go">No go</option>
@@ -740,16 +769,16 @@
     var columnTotalIN = [34];
     var columnTotalOUT = [35];
     var temp_dataset_quarter = [];
-    //var hide_column = columnQ1.concat(columnQ2).concat(columnQ3).concat(columnQ4).concat(columnOUTQ1).concat(columnOUTQ2).concat(columnOUTQ3).concat(columnOUTQ4);
     var hide_column = columnQ1.concat(columnQ2).concat(columnQ3).concat(columnQ4);
 
-    var department_columnProject = [4,5,6,7,8,9,10,11];
-    var department_columnProduct = [14,15,16,17,18,19,20,21];
-    var department_columnService = [24,25,26,27,28,29,30,31];
-    var department_columnWon = [34,35,36,37,38,39];
-    var department_columnLoss = [42,43,44,45,46,47];
-    var department_columnNogo = [50,51,52,53,54,55];
-    var department_columnPending = [58,59,60,61,62,63];
+    var department_columnProject = [4,5,6,7,8,9,10,11,12,13];
+    var department_columnProduct = [16,17,18,19,20,21,22,23,24,25];
+    var department_columnService = [28,29,30,31,32,33,34,35,36,37];
+    var department_columnWon = [40,41,42,43,44,45];
+    var department_columnLoss = [48,49,50,51,52,53];
+    var department_columnNogo = [56,57,58,59,60,61];
+    var department_columnPending = [64,65,66,67,68,69];
+    var department_columnBudget = [72,73,74,75,76,77];
     var temp_dataset_department = [];
     var hide_column_department = department_columnProject.
                                     concat(department_columnProduct).
@@ -757,7 +786,8 @@
                                     concat(department_columnWon).
                                     concat(department_columnLoss).
                                     concat(department_columnNogo).
-                                    concat(department_columnPending);
+                                    concat(department_columnPending).
+                                    concat(department_columnBudget);
 
     var year_columnProject = [3,4,5,6,7,8,9,10];
     var year_columnProduct = [13,14,15,16,17,18,19,20];
@@ -819,6 +849,8 @@
                                datas[i].project_nogo_mb,
                                datas[i].project_pending_cnt,
                                datas[i].project_pending_mb,
+                               datas[i].project_quote_cnt,
+                               datas[i].project_quote_mb,
                                datas[i].project_cnt,
                                datas[i].project_mb,
                                datas[i].product_won_cnt,
@@ -829,6 +861,8 @@
                                datas[i].product_nogo_mb,
                                datas[i].product_pending_cnt,
                                datas[i].product_pending_mb,
+                               datas[i].product_quote_cnt,
+                               datas[i].product_quote_mb,
                                datas[i].product_cnt,
                                datas[i].product_mb,
                                datas[i].service_won_cnt,
@@ -839,6 +873,8 @@
                                datas[i].service_nogo_mb,
                                datas[i].service_pending_cnt,
                                datas[i].service_pending_mb,
+                               datas[i].service_quote_cnt,
+                               datas[i].service_quote_mb,
                                datas[i].service_cnt,
                                datas[i].service_mb,
                                datas[i].won_project_cnt,
@@ -872,7 +908,15 @@
                                datas[i].pending_service_cnt,
                                datas[i].pending_service_mb,
                                datas[i].pending_quo_cnt,
-                               datas[i].pending_mb];
+                               datas[i].pending_mb,
+                               datas[i].quote_project_cnt,
+                               datas[i].quote_project_mb,
+                               datas[i].quote_product_cnt,
+                               datas[i].quote_product_mb,
+                               datas[i].quote_service_cnt,
+                               datas[i].quote_service_mb,
+                               datas[i].quote_quo_cnt,
+                               datas[i].quote_mb];
 
                            dataSet.push(data);
                        }
@@ -972,22 +1016,25 @@
            $('#chkProject_department').on('change',function(){
                hide_columnDepartment();
            });
-            $('#chkProduct_department').on('change',function(){
+           $('#chkProduct_department').on('change',function(){
                hide_columnDepartment();
            });
-            $('#chkService_department').on('change',function(){
+           $('#chkService_department').on('change',function(){
                hide_columnDepartment();
            });
-            $('#chkWon_department').on('change',function(){
+           $('#chkWon_department').on('change',function(){
                hide_columnDepartment();
            });
-            $('#chkLoss_department').on('change',function(){
+           $('#chkLoss_department').on('change',function(){
                hide_columnDepartment();
            });
-            $('#chkNogo_department').on('change',function(){
+           $('#chkNogo_department').on('change',function(){
                hide_columnDepartment();
            });
-            $('#chkPending_department').on('change',function(){
+           $('#chkPending_department').on('change',function(){
+               hide_columnDepartment();
+           });
+           $('#chkBudget_department').on('change',function(){
                hide_columnDepartment();
            });
 
@@ -1392,7 +1439,7 @@
                 data: dataSet,
                 "columnDefs": [
                      {
-                         "targets" : [2,3,12,13,22,23,32,33,40,41,48,49,56,57,64,65],
+                         "targets" : [2,3,14,15,26,27,38,39,46,47,54,55,62,63,70,71,78,79],
                          "class": "index_department",
                      },
 
@@ -1745,6 +1792,7 @@
                var chkLoss = document.getElementById("chkLoss_department").checked;
                var chkNogo = document.getElementById("chkNogo_department").checked;
                var chkPending = document.getElementById("chkPending_department").checked;
+               var chkBudget = document.getElementById("chkBudget_department").checked;
 
                if(chkProject == false){
                   hide_column_department =  hide_column_department.concat(department_columnProject);
@@ -1764,8 +1812,11 @@
                 if(chkNogo == false){
                   hide_column_department =  hide_column_department.concat(department_columnNogo);
                }
-                if(chkPending == false){
+               if(chkPending == false){
                   hide_column_department =  hide_column_department.concat(department_columnPending);
+               }
+               if(chkBudget == false){
+                  hide_column_department =  hide_column_department.concat(department_columnBudget);
                }
 
                // show column
