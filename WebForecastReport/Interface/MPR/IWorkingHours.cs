@@ -18,5 +18,6 @@ namespace WebForecastReport.Interfaces.MPR
         string DeleteWorkingHours(WorkingHoursModel wh);
         List<JobWeeklyWorkingHoursModel> GetAllJobWorkingHours(int year, int week);
         List<EngWeeklyWorkingHoursModel> GetAllEngWorkingHours(int year, int week);
+        List<WorkingHoursModel> GetWorkingHours(int year, int week);
     }
 }
