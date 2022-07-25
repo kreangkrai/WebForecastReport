@@ -74,7 +74,7 @@
                 <span class="card-title">Weekly Summary</span>
             </div>
             <div class="card-body">
-                <table id="table" class="table table-sm compact text-center w-100">
+                <table id="table" class="table table-bordered table-sm compact text-center w-100">
                     <thead>
                         <tr>
                             <th>Engineer ID</th>
@@ -83,6 +83,14 @@
                             <th>Hours</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -192,7 +200,7 @@
                             display: true
                         },
                         legend: {
-                            position: 'right',
+                            position: 'bottom',
                             display: true
                         }
                     },
@@ -271,7 +279,7 @@
                             display: true
                         },
                         legend: {
-                            position: 'right'
+                            position: 'bottom'
                         }
                     },
                     maintainAspectRatio: false
@@ -280,13 +288,34 @@
         }
 
         function GenerateTable() {
-            if (table !== undefined) {
-                table.destroy();
+            var engs = summaries.map(m => m.user_id);
+            engs = [...new Set(engs)];
+
+            $('#table tbody').empty();
+            for (var i = 0; i < engs.length; i++) {
+                var whs = summaries.filter(f => f.user_id === engs[i] && f.hours > 0);
+                for (var j = 0; j < whs.length; j++) {
+                    var str = '<tr>';
+                    if (j === 0) {
+                        str += '<td rowspan="' + (whs.length + 1) + '" style="vertical-align:middle">' + engs[i] + '</td>';
+                        str += '<td style="text-align:left">' + whs[j].job_id + " - " + whs[j].job_name + '</td>';
+                        str += '<td style="text-align:left">' + whs[j].task_id + " - " + whs[j].task_name + '</td>';
+                        str += '<td>' + whs[j].hours + '</td>';
+                    } else {
+                        str += '<td style="text-align:left">' + whs[j].job_id + " - " + whs[j].job_name + '</td>';
+                        str += '<td style="text-align:left">' + whs[j].task_id + " - " + whs[j].task_name + '</td>';
+                        str += '<td>' + whs[j].hours + '</td>';
+                    }
+                    str += '</tr>';
+                    if (j === (whs.length - 1)) {
+                        str += '<tr class="bg-secondary">';
+                        str += '<td colspan="2"><b>Total</b></td>';
+                        str += '<td><b>' + whs.map(m => m.hours).reduce((a, b) => a + b, 0) + '</b></td>';
+                        str += '</tr>';
+                    }
+                    $('#table tbody').append(str);
+                }
             }
-
-            table = $('#table').DataTable({
-
-            });
         }
 
         function GenerateNote() {
