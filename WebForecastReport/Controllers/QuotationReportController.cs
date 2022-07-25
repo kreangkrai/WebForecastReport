@@ -145,5 +145,12 @@ namespace WebForecastReport.Controllers
             var stream = Export.ExportQuotation_Report_Quarter(templateFileInfo, department, year, stages);
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "quotation_report_quarter_" + DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss") + ".xlsx");
         }
+        public IActionResult DownloadXlsxReportYear(string department, string year)
+        {
+            //Download Excel
+            var templateFileInfo = new FileInfo(Path.Combine(_hostingEnvironment.ContentRootPath, "./wwwroot/template", "Quotation_report_year.xlsx"));
+            var stream = Export.ExportQuotation_Report_Year(templateFileInfo, department, year);
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Quotation_report_year_" + DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss") + ".xlsx");
+        }
     }
 }

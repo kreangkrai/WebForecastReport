@@ -471,5 +471,109 @@ namespace WebForecastReport.Service
             }
             return stream;
         }
+
+        public Stream ExportQuotation_Report_Year(FileInfo path, string department, string year)
+        {
+            Stream stream = new MemoryStream();
+            List<Quotation_Report_YearModel> reports = new List<Quotation_Report_YearModel>();
+            if (path.Exists)
+            {
+
+                reports = Quotation_Report.GetReportYear(department, year);
+                using (ExcelPackage p = new ExcelPackage(path))
+                {
+                    ExcelWorksheet worksheet = p.Workbook.Worksheets["Report"];
+
+                    int startRows = 6;
+                    for (int i = 0; i < reports.Count; i++)
+                    {
+                        worksheet.Cells["A" + (i + startRows)].Value = reports[i].month != null ? reports[i].month.ToString() : "";
+                        worksheet.Cells["B" + (i + startRows)].Value = reports[i].quo_cnt != null ? reports[i].quo_cnt.ToString() : "";
+                        worksheet.Cells["C" + (i + startRows)].Value = reports[i].quo_mb != null ? reports[i].quo_mb.ToString() : "";
+                        worksheet.Cells["D" + (i + startRows)].Value = reports[i].project_won_cnt != null ? reports[i].project_won_cnt.ToString() : "";
+                        worksheet.Cells["E" + (i + startRows)].Value = reports[i].project_won_mb != null ? reports[i].project_won_mb.ToString() : "";
+                        worksheet.Cells["F" + (i + startRows)].Value = reports[i].project_lost_cnt != null ? reports[i].project_lost_cnt.ToString() : "";
+                        worksheet.Cells["G" + (i + startRows)].Value = reports[i].project_lost_mb != null ? reports[i].project_lost_mb.ToString() : "";
+                        worksheet.Cells["H" + (i + startRows)].Value = reports[i].project_nogo_cnt != null ? reports[i].project_nogo_cnt.ToString() : "";
+                        worksheet.Cells["I" + (i + startRows)].Value = reports[i].project_nogo_mb != null ? reports[i].project_nogo_mb.ToString() : "";
+                        worksheet.Cells["J" + (i + startRows)].Value = reports[i].project_pending_cnt != null ? reports[i].project_pending_cnt.ToString() : "";
+                        worksheet.Cells["K" + (i + startRows)].Value = reports[i].project_pending_mb != null ? reports[i].project_pending_mb.ToString() : "";
+                        worksheet.Cells["L" + (i + startRows)].Value = reports[i].project_quote_cnt != null ? reports[i].project_quote_cnt.ToString() : "";
+                        worksheet.Cells["M" + (i + startRows)].Value = reports[i].project_quote_mb != null ? reports[i].project_quote_mb.ToString() : "";
+                        worksheet.Cells["N" + (i + startRows)].Value = reports[i].project_cnt != null ? reports[i].project_cnt.ToString() : "";
+                        worksheet.Cells["O" + (i + startRows)].Value = reports[i].project_mb != null ? reports[i].project_mb.ToString() : "";
+                        worksheet.Cells["P" + (i + startRows)].Value = reports[i].product_won_cnt != null ? reports[i].product_won_cnt.ToString() : "";
+                        worksheet.Cells["Q" + (i + startRows)].Value = reports[i].product_won_mb != null ? reports[i].product_won_mb.ToString() : "";
+                        worksheet.Cells["R" + (i + startRows)].Value = reports[i].product_lost_cnt != null ? reports[i].product_lost_cnt.ToString() : "";
+                        worksheet.Cells["S" + (i + startRows)].Value = reports[i].product_lost_mb != null ? reports[i].product_lost_mb.ToString() : "";
+                        worksheet.Cells["T" + (i + startRows)].Value = reports[i].product_nogo_cnt != null ? reports[i].product_nogo_cnt.ToString() : "";
+                        worksheet.Cells["U" + (i + startRows)].Value = reports[i].product_nogo_mb != null ? reports[i].product_nogo_mb.ToString() : "";
+                        worksheet.Cells["V" + (i + startRows)].Value = reports[i].product_pending_cnt != null ? reports[i].product_pending_cnt.ToString() : "";
+                        worksheet.Cells["W" + (i + startRows)].Value = reports[i].product_pending_mb != null ? reports[i].product_pending_mb.ToString() : "";
+                        worksheet.Cells["X" + (i + startRows)].Value = reports[i].product_quote_cnt != null ? reports[i].product_quote_cnt.ToString() : "";
+                        worksheet.Cells["Y" + (i + startRows)].Value = reports[i].product_quote_mb != null ? reports[i].product_quote_mb.ToString() : "";
+                        worksheet.Cells["Z" + (i + startRows)].Value = reports[i].product_cnt != null ? reports[i].product_cnt.ToString() : "";
+                        worksheet.Cells["AA" + (i + startRows)].Value = reports[i].product_mb != null ? reports[i].product_mb.ToString() : "";
+                        worksheet.Cells["AB" + (i + startRows)].Value = reports[i].service_won_cnt != null ? reports[i].service_won_cnt.ToString() : "";
+                        worksheet.Cells["AC" + (i + startRows)].Value = reports[i].service_won_mb != null ? reports[i].service_won_mb.ToString() : "";
+                        worksheet.Cells["AD" + (i + startRows)].Value = reports[i].service_lost_cnt != null ? reports[i].service_lost_cnt.ToString() : "";
+                        worksheet.Cells["AE" + (i + startRows)].Value = reports[i].service_lost_mb != null ? reports[i].service_lost_mb.ToString() : "";
+                        worksheet.Cells["AF" + (i + startRows)].Value = reports[i].service_nogo_cnt != null ? reports[i].service_nogo_cnt.ToString() : "";
+                        worksheet.Cells["AG" + (i + startRows)].Value = reports[i].service_nogo_mb != null ? reports[i].service_nogo_mb.ToString() : "";
+                        worksheet.Cells["AH" + (i + startRows)].Value = reports[i].service_pending_cnt != null ? reports[i].service_pending_cnt.ToString() : "";
+                        worksheet.Cells["AI" + (i + startRows)].Value = reports[i].service_pending_mb != null ? reports[i].service_pending_mb.ToString() : "";
+                        worksheet.Cells["AJ" + (i + startRows)].Value = reports[i].service_quote_cnt != null ? reports[i].service_quote_cnt.ToString() : "";
+                        worksheet.Cells["AK" + (i + startRows)].Value = reports[i].service_quote_mb != null ? reports[i].service_quote_mb.ToString() : "";
+                        worksheet.Cells["AL" + (i + startRows)].Value = reports[i].service_cnt != null ? reports[i].service_cnt.ToString() : "";
+                        worksheet.Cells["AM" + (i + startRows)].Value = reports[i].service_mb != null ? reports[i].service_mb.ToString() : "";
+                        worksheet.Cells["AN" + (i + startRows)].Value = reports[i].won_project_cnt != null ? reports[i].won_project_cnt.ToString() : "";
+                        worksheet.Cells["AO" + (i + startRows)].Value = reports[i].won_project_mb != null ? reports[i].won_project_mb.ToString() : "";
+                        worksheet.Cells["AP" + (i + startRows)].Value = reports[i].won_product_cnt != null ? reports[i].won_product_cnt.ToString() : "";
+                        worksheet.Cells["AQ" + (i + startRows)].Value = reports[i].won_product_mb != null ? reports[i].won_product_mb.ToString() : "";
+                        worksheet.Cells["AR" + (i + startRows)].Value = reports[i].won_service_cnt != null ? reports[i].won_service_cnt.ToString() : "";
+                        worksheet.Cells["AS" + (i + startRows)].Value = reports[i].won_service_mb != null ? reports[i].won_service_mb.ToString() : "";
+                        worksheet.Cells["AT" + (i + startRows)].Value = reports[i].won_quo_cnt != null ? reports[i].won_quo_cnt.ToString() : "";
+                        worksheet.Cells["AU" + (i + startRows)].Value = reports[i].won_mb != null ? reports[i].won_mb.ToString() : "";
+                        worksheet.Cells["AV" + (i + startRows)].Value = reports[i].lost_project_cnt != null ? reports[i].lost_project_cnt.ToString() : "";
+                        worksheet.Cells["AW" + (i + startRows)].Value = reports[i].lost_project_mb != null ? reports[i].lost_project_mb.ToString() : "";
+                        worksheet.Cells["AX" + (i + startRows)].Value = reports[i].lost_product_cnt != null ? reports[i].lost_product_cnt.ToString() : "";
+                        worksheet.Cells["AY" + (i + startRows)].Value = reports[i].lost_product_mb != null ? reports[i].lost_product_mb.ToString() : "";
+                        worksheet.Cells["AZ" + (i + startRows)].Value = reports[i].lost_service_cnt != null ? reports[i].lost_service_cnt.ToString() : "";
+                        worksheet.Cells["BA" + (i + startRows)].Value = reports[i].lost_service_mb != null ? reports[i].lost_service_mb.ToString() : "";
+                        worksheet.Cells["BB" + (i + startRows)].Value = reports[i].loss_quo_cnt != null ? reports[i].loss_quo_cnt.ToString() : "";
+                        worksheet.Cells["BC" + (i + startRows)].Value = reports[i].loss_mb != null ? reports[i].loss_mb.ToString() : "";
+                        worksheet.Cells["BD" + (i + startRows)].Value = reports[i].nogo_project_cnt != null ? reports[i].nogo_project_cnt.ToString() : "";
+                        worksheet.Cells["BE" + (i + startRows)].Value = reports[i].nogo_project_mb != null ? reports[i].nogo_project_mb.ToString() : "";
+                        worksheet.Cells["BF" + (i + startRows)].Value = reports[i].nogo_product_cnt != null ? reports[i].nogo_product_cnt.ToString() : "";
+                        worksheet.Cells["BG" + (i + startRows)].Value = reports[i].nogo_product_mb != null ? reports[i].nogo_product_mb.ToString() : "";
+                        worksheet.Cells["BH" + (i + startRows)].Value = reports[i].nogo_service_cnt != null ? reports[i].nogo_service_cnt.ToString() : "";
+                        worksheet.Cells["BI" + (i + startRows)].Value = reports[i].nogo_service_mb != null ? reports[i].nogo_service_mb.ToString() : "";
+                        worksheet.Cells["BJ" + (i + startRows)].Value = reports[i].nogo_quo_cnt != null ? reports[i].nogo_quo_cnt.ToString() : "";
+                        worksheet.Cells["BK" + (i + startRows)].Value = reports[i].nogo_mb != null ? reports[i].nogo_mb.ToString() : "";
+                        worksheet.Cells["BL" + (i + startRows)].Value = reports[i].pending_project_cnt != null ? reports[i].pending_project_cnt.ToString() : "";
+                        worksheet.Cells["BM" + (i + startRows)].Value = reports[i].pending_project_mb != null ? reports[i].pending_project_mb.ToString() : "";
+                        worksheet.Cells["BN" + (i + startRows)].Value = reports[i].pending_product_cnt != null ? reports[i].pending_product_cnt.ToString() : "";
+                        worksheet.Cells["BO" + (i + startRows)].Value = reports[i].pending_product_mb != null ? reports[i].pending_product_mb.ToString() : "";
+                        worksheet.Cells["BP" + (i + startRows)].Value = reports[i].pending_service_cnt != null ? reports[i].pending_service_cnt.ToString() : "";
+                        worksheet.Cells["BQ" + (i + startRows)].Value = reports[i].pending_service_mb != null ? reports[i].pending_service_mb.ToString() : "";
+                        worksheet.Cells["BR" + (i + startRows)].Value = reports[i].pending_quo_cnt != null ? reports[i].pending_quo_cnt.ToString() : "";
+                        worksheet.Cells["BS" + (i + startRows)].Value = reports[i].pending_mb != null ? reports[i].pending_mb.ToString() : "";
+                        worksheet.Cells["BT" + (i + startRows)].Value = reports[i].quote_project_cnt != null ? reports[i].quote_project_cnt.ToString() : "";
+                        worksheet.Cells["BU" + (i + startRows)].Value = reports[i].quote_project_mb != null ? reports[i].quote_project_mb.ToString() : "";
+                        worksheet.Cells["BV" + (i + startRows)].Value = reports[i].quote_product_cnt != null ? reports[i].quote_product_cnt.ToString() : "";
+                        worksheet.Cells["BW" + (i + startRows)].Value = reports[i].quote_product_mb != null ? reports[i].quote_product_mb.ToString() : "";
+                        worksheet.Cells["BX" + (i + startRows)].Value = reports[i].quote_service_cnt != null ? reports[i].quote_service_cnt.ToString() : "";
+                        worksheet.Cells["BY" + (i + startRows)].Value = reports[i].quote_service_mb != null ? reports[i].quote_service_mb.ToString() : "";
+                        worksheet.Cells["BZ" + (i + startRows)].Value = reports[i].quote_quo_cnt != null ? reports[i].quote_quo_cnt.ToString() : "";
+                        worksheet.Cells["CA" + (i + startRows)].Value = reports[i].quote_mb != null ? reports[i].quote_mb.ToString() : "";
+                    }
+                    worksheet.Cells["B1"].Value = year;
+                    worksheet.Cells["D1"].Value = department;
+                    p.SaveAs(stream);
+                    stream.Position = 0;
+                }
+            }
+            return stream;
+        }
     }
 }

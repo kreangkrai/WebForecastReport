@@ -2023,7 +2023,7 @@
                         for (var i = 0; i < datas.length; i++) {
                             var data = [
                                 datas[i].quotation_no,
-                                datas[i].stages,
+                                datas[i].quote_price,
                                 datas[i].stages_update_date];
                             dataSet.push(data);
                         }
@@ -3057,7 +3057,7 @@
                         for (var i = 0; i < datas.length; i++) {
                             var data = [
                                 datas[i].quotation_no,
-                                datas[i].stages,
+                                datas[i].quote_price,
                                 datas[i].stages_update_date];
                             dataSet.push(data);
                         }
@@ -3729,20 +3729,20 @@
                 data: dataSet,
                 columns: [
                     { title: "Quotation"},
-                    { title: "Stages Name"},
+                    { title: "Value(MB)"},
                     { title: "Last Update (Day)" },
                 ],
                 "columnDefs": [
                     {
                         "targets": [0, 1, 2],
                         "className": "dt-center",
-
                     },
                 ],
                 "paging": false,
                 "searching": false,
                 "bInfo": false,
                 "scrollX": true,
+                "ordering":false,
                 "fixedHeader":true,
             });
             $(tables.table().body()).addClass('text-dark');
@@ -3756,7 +3756,7 @@
                 data: dataSet,
                 columns: [
                     { title: "Quotation"},
-                    { title: "Stages Name"},
+                    { title: "Value(MB)"},
                     { title: "Last Update (Day)" },
                 ],
                 "columnDefs": [
@@ -3770,6 +3770,7 @@
                 "searching": false,
                 "bInfo": false,
                 "scrollX": true,
+                 "ordering":false,
                 "fixedHeader":true,
             });
             $(tables_Lastupdate_department.table().body()).addClass('text-dark');

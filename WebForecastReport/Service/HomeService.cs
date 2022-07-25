@@ -422,19 +422,19 @@ namespace WebForecastReport.Service
                 if (day == "no data")
                 {
                     command = string.Format($@"select quotation_no, project_name,
-                                               stages,
+                                               format(cast(replace(quoted_price,',','') as float)/1000000,'N2') as quote_price,
                                                stages_update_date
                                                from Quotation 
-                                               where sale_name = '{sale_name}' and (stages is null or stages = '')");
+                                               where sale_name = '{sale_name}' and (stages is null or stages = '') order by quote_price desc");
                 }
                 else
                 {
                     command = string.Format($@"select quotation_no,
                                                     project_name,
-                                                    stages,
+                                                    format(cast(replace(quoted_price,',','') as float)/1000000,'N2') as quote_price,
                                                     stages_update_date 
                                                     from Quotation 
-                                                    where sale_name = '{sale_name}' and stages_update_date like '{year}%' and stages not in ('','Closed(Won)','Closed(Lost)','No go','Quote for Budget') and DATEDIFF(day,stages_update_date,getDate()) {day} order by quotation_no");
+                                                    where sale_name = '{sale_name}' and stages_update_date like '{year}%' and stages not in ('','Closed(Won)','Closed(Lost)','No go','Quote for Budget') and DATEDIFF(day,stages_update_date,getDate()) {day} order by quote_price desc");
                 }
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -446,7 +446,7 @@ namespace WebForecastReport.Service
 
                         p.quotation_no = dr["quotation_no"].ToString();
                         p.project_name = dr["project_name"].ToString();
-                        p.stages = dr["stages"].ToString();
+                        p.quote_price = dr["quote_price"].ToString();
                         var date = dr["stages_update_date"] != DBNull.Value ? Convert.ToDateTime(dr["stages_update_date"].ToString()).ToString("yyyy-MM-dd") : "";
                         if (date != "")
                         {                           

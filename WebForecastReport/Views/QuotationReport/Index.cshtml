@@ -510,9 +510,9 @@
                     <div class="card-body">
                         <div class="col-md-12 col-xl-12">
                             <div class="row d-flex justify-content-between">
-                                <div class="col-md-6 col-xl-6 pb-3">
+                                <div class="col-md-8 col-xl-8 pb-3">
                                     <div class="row">
-                                        <div class="col-md-4 col-xl-4 pb-3">
+                                        <div class="col-md-3 col-xl-3 pb-3">
                                             <select id="year_department" class="form-control">
                                             </select>
                                         </div>
@@ -522,8 +522,11 @@
                                         </div>
                                         <div class="col-md-3 col-xl-3 pb-3">
                                             <button type="button" id="btnyear_OK" class="btn btn-primary form-control">OK</button>
-                                        </div>
-                                    </div>
+                                        </div>                                      
+                                    </div>                                   
+                                </div>
+                                <div class="col-md-2 col-xl-2 pb-3">
+                                   <button type="button" id="export_year" class="btn btn-success form-control">Export</button>
                                 </div>
                             </div>
                         </div>
@@ -542,6 +545,10 @@
                                         <div class="col-md-2 col-xl-2">
                                             <input type="checkbox" id="chkService_year" />
                                             <label>Service</label>
+                                        </div>
+                                        <div class="col-md-2 col-xl-2">
+                                            <input type="checkbox" id="chkBudget_year" />
+                                            <label>Quote for Budget</label>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -571,25 +578,27 @@
                                     <tr>
                                         <th rowspan="4" style="text-align:center;vertical-align:middle;">Area Sales</th>
                                         <th colspan="2" style="text-align:center;vertical-align:middle;">Quotation</th>
-                                        <th colspan="30" style="text-align:center;vertical-align:middle;">Description</th>
-                                        <th colspan="32" style="text-align:center;vertical-align:middle;">Status Quotation</th>
+                                        <th colspan="36" style="text-align:center;vertical-align:middle;">Description</th>
+                                        <th colspan="40" style="text-align:center;vertical-align:middle;">Status Quotation</th>
                                     </tr>
                                     <tr>
                                         <th rowspan="3" style="text-align:center;vertical-align:middle;">Total Quo.</th>
                                         <th rowspan="3" style="text-align:center;vertical-align:middle;">Total MB</th>
-                                        <th colspan="10" style="text-align:center;vertical-align:middle;">Project</th>
-                                        <th colspan="10" style="text-align:center;vertical-align:middle;">Product</th>
-                                        <th colspan="10" style="text-align:center;vertical-align:middle;">Service</th>
+                                        <th colspan="12" style="text-align:center;vertical-align:middle;">Project</th>
+                                        <th colspan="12" style="text-align:center;vertical-align:middle;">Product</th>
+                                        <th colspan="12" style="text-align:center;vertical-align:middle;">Service</th>
                                         <th colspan="8" style="text-align:center;vertical-align:middle;">Won</th>
                                         <th colspan="8" style="text-align:center;vertical-align:middle;">Loss</th>
                                         <th colspan="8" style="text-align:center;vertical-align:middle;">No go</th>
                                         <th colspan="8" style="text-align:center;vertical-align:middle;">Pending</th>
+                                        <th colspan="8" style="text-align:center;vertical-align:middle;">Quote for Budget</th>
                                     </tr>
                                     <tr>
                                         <th colspan="2" style="text-align:center;vertical-align:middle;">Won</th>
                                         <th colspan="2" style="text-align:center;vertical-align:middle;">Loss</th>
                                         <th colspan="2" style="text-align:center;vertical-align:middle;">No go</th>
                                         <th colspan="2" style="text-align:center;vertical-align:middle;">Pending</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Budget</th>
                                         <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
                                         <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
 
@@ -597,6 +606,7 @@
                                         <th colspan="2" style="text-align:center;vertical-align:middle;">Loss</th>
                                         <th colspan="2" style="text-align:center;vertical-align:middle;">No go</th>
                                         <th colspan="2" style="text-align:center;vertical-align:middle;">Pending</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Budget</th>
                                         <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
                                         <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
 
@@ -604,6 +614,13 @@
                                         <th colspan="2" style="text-align:center;vertical-align:middle;">Loss</th>
                                         <th colspan="2" style="text-align:center;vertical-align:middle;">No go</th>
                                         <th colspan="2" style="text-align:center;vertical-align:middle;">Pending</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Budget</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
+                                        <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
+
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Project</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Product</th>
+                                        <th colspan="2" style="text-align:center;vertical-align:middle;">Service</th>
                                         <th rowspan="2" style="text-align:center;vertical-align:middle;">Quo.</th>
                                         <th rowspan="2" style="text-align:center;vertical-align:middle;">MB</th>
 
@@ -640,6 +657,19 @@
                                         <th style="text-align:center;vertical-align:middle;">MB</th>
                                         <th style="text-align:center;vertical-align:middle;">Quo.</th>
                                         <th style="text-align:center;vertical-align:middle;">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;">MB</th>
+
+                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;">MB</th>
+                                        <th style="text-align:center;vertical-align:middle;">Quo.</th>
+                                        <th style="text-align:center;vertical-align:middle;">MB</th>
 
                                         <th style="text-align:center;vertical-align:middle;">Quo.</th>
                                         <th style="text-align:center;vertical-align:middle;">MB</th>
@@ -649,9 +679,9 @@
                                         <th style="text-align:center;vertical-align:middle;">MB</th>
                                         <th style="text-align:center;vertical-align:middle;">Quo.</th>
                                         <th style="text-align:center;vertical-align:middle;">MB</th>
-
                                         <th style="text-align:center;vertical-align:middle;">Quo.</th>
                                         <th style="text-align:center;vertical-align:middle;">MB</th>
+
                                         <th style="text-align:center;vertical-align:middle;">Quo.</th>
                                         <th style="text-align:center;vertical-align:middle;">MB</th>
                                         <th style="text-align:center;vertical-align:middle;">Quo.</th>
@@ -789,13 +819,14 @@
                                     concat(department_columnPending).
                                     concat(department_columnBudget);
 
-    var year_columnProject = [3,4,5,6,7,8,9,10];
-    var year_columnProduct = [13,14,15,16,17,18,19,20];
-    var year_columnService = [23,24,25,26,27,28,29,30];
-    var year_columnWon = [33,34,35,36,37,38];
-    var year_columnLoss = [41,42,43,44,45,46];
-    var year_columnNogo = [49,50,51,52,53,54];
-    var year_columnPending = [57,58,59,60,61,62];
+    var year_columnProject = [3,4,5,6,7,8,9,10,11,12];
+    var year_columnProduct = [15,16,17,18,19,20,21,22,23,24];
+    var year_columnService = [27,28,29,30,31,32,33,34,35,36];
+    var year_columnWon = [39,40,41,42,43,44];
+    var year_columnLoss = [47,48,49,50,51,52];
+    var year_columnNogo = [55,56,57,58,59,60];
+    var year_columnPending = [63,64,65,66,67,68];
+    var year_columnBudget = [71,72,73,74,75,76];
     var temp_dataset_year = [];
     var hide_column_year = year_columnProject.
                                     concat(year_columnProduct).
@@ -803,7 +834,8 @@
                                     concat(year_columnWon).
                                     concat(year_columnLoss).
                                     concat(year_columnNogo).
-                                    concat(year_columnPending);
+                                    concat(year_columnPending).
+                                    concat(year_columnBudget);
 
     $(document).ready(function () {
         init();
@@ -1000,6 +1032,12 @@
                var stages = document.getElementById("quarter_stages").value;
                location.href = '@Url.Action("DownloadXlsxReportQuarter", "QuotationReport")?department='+department+'&year='+year+'&stages='+stages;
            });
+
+           $('#export_year').on('click',function(){
+               var year  = document.getElementById("year_year").value;
+               var department = document.getElementById("year_department").value;
+               location.href = '@Url.Action("DownloadXlsxReportYear", "QuotationReport")?department='+department+'&year='+year;
+           });
            $('#chkQ1').on('change',function(){
                hide_column_quarter();
            });
@@ -1056,7 +1094,10 @@
             $('#chkNogo_year').on('change',function(){
                hide_columnYear();
            });
-            $('#chkPending_year').on('change',function(){
+           $('#chkPending_year').on('change',function(){
+               hide_columnYear();
+           });
+            $('#chkBudget_year').on('change',function(){
                hide_columnYear();
            });
 
@@ -1119,6 +1160,8 @@
                                datas[i].project_nogo_mb,
                                datas[i].project_pending_cnt,
                                datas[i].project_pending_mb,
+                               datas[i].project_quote_cnt,
+                               datas[i].project_quote_mb,
                                datas[i].project_cnt,
                                datas[i].project_mb,
                                datas[i].product_won_cnt,
@@ -1129,6 +1172,8 @@
                                datas[i].product_nogo_mb,
                                datas[i].product_pending_cnt,
                                datas[i].product_pending_mb,
+                               datas[i].product_quote_cnt,
+                               datas[i].product_quote_mb,
                                datas[i].product_cnt,
                                datas[i].product_mb,
                                datas[i].service_won_cnt,
@@ -1139,6 +1184,8 @@
                                datas[i].service_nogo_mb,
                                datas[i].service_pending_cnt,
                                datas[i].service_pending_mb,
+                               datas[i].service_quote_cnt,
+                               datas[i].service_quote_mb,
                                datas[i].service_cnt,
                                datas[i].service_mb,
                                datas[i].won_project_cnt,
@@ -1172,7 +1219,15 @@
                                datas[i].pending_service_cnt,
                                datas[i].pending_service_mb,
                                datas[i].pending_quo_cnt,
-                               datas[i].pending_mb];
+                               datas[i].pending_mb,
+                               datas[i].quote_project_cnt,
+                               datas[i].quote_project_mb,
+                               datas[i].quote_product_cnt,
+                               datas[i].quote_product_mb,
+                               datas[i].quote_service_cnt,
+                               datas[i].quote_service_mb,
+                               datas[i].quote_quo_cnt,
+                               datas[i].quote_mb];
 
                            dataSet.push(data);
                        }
@@ -1588,7 +1643,7 @@
                 data: dataSet,
                 "columnDefs": [
                     {
-                         "targets" : [1,2,11,12,21,22,31,32,39,40,47,48,55,56,63,64],
+                         "targets" : [1,2,13,14,25,26,37,38,45,46,53,54,61,62,,69,70,77,78],
                          "class": "index_year",
                     },
                     {
@@ -1832,6 +1887,7 @@
                var chkLoss = document.getElementById("chkLoss_year").checked;
                var chkNogo = document.getElementById("chkNogo_year").checked;
                var chkPending = document.getElementById("chkPending_year").checked;
+               var chkBudget = document.getElementById("chkBudget_year").checked;
 
                if(chkProject == false){
                   hide_column_year =  hide_column_year.concat(year_columnProject);
@@ -1851,8 +1907,11 @@
                 if(chkNogo == false){
                   hide_column_year =  hide_column_year.concat(year_columnNogo);
                }
-                if(chkPending == false){
+               if(chkPending == false){
                   hide_column_year =  hide_column_year.concat(year_columnPending);
+               }
+               if(chkBudget == false){
+                  hide_column_year =  hide_column_year.concat(year_columnBudget);
                }
 
                // show column

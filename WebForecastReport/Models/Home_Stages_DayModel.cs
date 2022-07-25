@@ -9,7 +9,7 @@ namespace WebForecastReport.Models
     {
         public string quotation_no { get; set; }
         public string project_name { get; set; }
-        public string stages { get; set; }
+        public string quote_price { get; set; }
         public string stages_update_date { get; set; }
     }
 }

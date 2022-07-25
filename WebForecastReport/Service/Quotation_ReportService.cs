@@ -1732,9 +1732,9 @@ namespace WebForecastReport.Service
                 string command = string.Format($@"	DECLARE @department as VARCHAR(10)
 													DECLARE @million as float
 													DECLARE @year as VARCHAR(10)
-													SET @department = 'ARD';
+													SET @department = '{department}';
 													SET @million = 1000000;	
-													SET @year = '2022';
+													SET @year = '{year}';
 								
 													with main As(
 													select sub_main.month,
@@ -1965,7 +1965,7 @@ namespace WebForecastReport.Service
 
                                                             from Quotation
                                                             where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year AND (exclude_quote is null or exclude_quote = 0) and product_type <> '' and product_type is not null
-															group by date,product_type having date like '2022%' ) as sub_type
+															group by date,product_type having date like '{year}%' ) as sub_type
 
                                                         group by sub_type.month
                                                         
@@ -2009,7 +2009,7 @@ namespace WebForecastReport.Service
 																cast(sum(case when product_type = 'Service' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as decimal(10, 2)) as stages_service_mb
                                                              from Quotation
                                                              where department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year and stages in('Closed(Won)','Closed(Lost)','No go') AND (exclude_quote is null or exclude_quote = 0) and product_type <> '' and product_type is not null
-                                                             group by date,stages having date like '2022%') as sub_stages
+                                                             group by date,stages having date like '{year}%') as sub_stages
 
                                                         group by sub_stages.month
 													) as sub_sub_stages
@@ -2064,7 +2064,7 @@ namespace WebForecastReport.Service
 																									
 
                                                     where Quotation.department = @department and CAST(YEAR(date) AS VARCHAR(4)) = @year AND (exclude_quote is null or exclude_quote = 0) and product_type <> '' and product_type is not null
-													group by date having date like '2022%'
+													group by date having date like '{year}%'
 													)as sub_main
 													  
 													group by sub_main.month )
@@ -2171,74 +2171,88 @@ namespace WebForecastReport.Service
                 {
                     while (dr.Read())
                     {
-                        Quotation_Report_YearModel r = new Quotation_Report_YearModel()
-                        {
-                            month = dr["month"].ToString(),
-                            quo_mb = dr["quo_mb"].ToString(),
-                            quo_cnt = dr["quo_cnt"].ToString(),
-                            product_won_cnt = dr["product_won_cnt"].ToString(),
-                            product_won_mb = dr["product_won_mb"].ToString(),
-                            product_lost_cnt = dr["product_lost_cnt"].ToString(),
-                            product_lost_mb = dr["product_lost_mb"].ToString(),
-                            product_nogo_cnt = dr["product_nogo_cnt"].ToString(),
-                            product_nogo_mb = dr["product_nogo_mb"].ToString(),
-                            product_pending_cnt = dr["product_pending_cnt"].ToString(),
-                            product_pending_mb = dr["product_pending_mb"].ToString(),
-                            product_cnt = dr["product_cnt"].ToString(),
-                            product_mb = dr["product_mb"].ToString(),
-                            project_won_cnt = dr["project_won_cnt"].ToString(),
-                            project_won_mb = dr["project_won_mb"].ToString(),
-                            project_lost_cnt = dr["project_lost_cnt"].ToString(),
-                            project_lost_mb = dr["project_lost_mb"].ToString(),
-                            project_nogo_cnt = dr["project_nogo_cnt"].ToString(),
-                            project_nogo_mb = dr["project_nogo_mb"].ToString(),
-                            project_pending_cnt = dr["project_pending_cnt"].ToString(),
-                            project_pending_mb = dr["project_pending_mb"].ToString(),
-                            project_cnt = dr["project_cnt"].ToString(),
-                            project_mb = dr["project_mb"].ToString(),
-                            service_won_cnt = dr["service_won_cnt"].ToString(),
-                            service_won_mb = dr["service_won_mb"].ToString(),
-                            service_lost_cnt = dr["service_lost_cnt"].ToString(),
-                            service_lost_mb = dr["service_lost_mb"].ToString(),
-                            service_nogo_cnt = dr["service_nogo_cnt"].ToString(),
-                            service_nogo_mb = dr["service_nogo_mb"].ToString(),
-                            service_pending_cnt = dr["service_pending_cnt"].ToString(),
-                            service_pending_mb = dr["service_pending_mb"].ToString(),
-                            service_cnt = dr["service_cnt"].ToString(),
-                            service_mb = dr["service_mb"].ToString(),
-                            won_product_cnt = dr["won_product_cnt"].ToString(),
-                            won_product_mb = dr["won_product_mb"].ToString(),
-                            won_project_cnt = dr["won_project_cnt"].ToString(),
-                            won_project_mb = dr["won_project_mb"].ToString(),
-                            won_service_cnt = dr["won_service_cnt"].ToString(),
-                            won_service_mb = dr["won_service_mb"].ToString(),
-                            won_quo_cnt = dr["won_quo_cnt"].ToString(),
-                            won_mb = dr["won_mb"].ToString(),
-                            lost_product_cnt = dr["lost_product_cnt"].ToString(),
-                            lost_product_mb = dr["lost_product_mb"].ToString(),
-                            lost_project_cnt = dr["lost_project_cnt"].ToString(),
-                            lost_project_mb = dr["lost_project_mb"].ToString(),
-                            lost_service_cnt = dr["lost_service_cnt"].ToString(),
-                            lost_service_mb = dr["lost_service_mb"].ToString(),
-                            loss_quo_cnt = dr["loss_quo_cnt"].ToString(),
-                            loss_mb = dr["loss_mb"].ToString(),
-                            nogo_product_cnt = dr["nogo_product_cnt"].ToString(),
-                            nogo_product_mb = dr["nogo_product_mb"].ToString(),
-                            nogo_project_cnt = dr["nogo_project_cnt"].ToString(),
-                            nogo_project_mb = dr["nogo_project_mb"].ToString(),
-                            nogo_service_cnt = dr["nogo_service_cnt"].ToString(),
-                            nogo_service_mb = dr["nogo_service_mb"].ToString(),
-                            nogo_quo_cnt = dr["nogo_quo_cnt"].ToString(),
-                            nogo_mb = dr["nogo_mb"].ToString(),
-                            pending_product_cnt = dr["pending_product_cnt"].ToString(),
-                            pending_product_mb = dr["pending_product_mb"].ToString(),
-                            pending_project_cnt = dr["pending_project_cnt"].ToString(),
-                            pending_project_mb = dr["pending_project_mb"].ToString(),
-                            pending_service_cnt = dr["pending_service_cnt"].ToString(),
-                            pending_service_mb = dr["pending_service_mb"].ToString(),
-                            pending_quo_cnt = dr["pending_quo_cnt"].ToString(),
-                            pending_mb = dr["pending_mb"].ToString()
-                        };
+						Quotation_Report_YearModel r = new Quotation_Report_YearModel()
+						{
+							month = dr["month"].ToString(),
+							quo_mb = dr["quo_mb"].ToString(),
+							quo_cnt = dr["quo_cnt"].ToString(),
+							product_won_cnt = dr["product_won_cnt"].ToString(),
+							product_won_mb = dr["product_won_mb"].ToString(),
+							product_lost_cnt = dr["product_lost_cnt"].ToString(),
+							product_lost_mb = dr["product_lost_mb"].ToString(),
+							product_nogo_cnt = dr["product_nogo_cnt"].ToString(),
+							product_nogo_mb = dr["product_nogo_mb"].ToString(),
+							product_pending_cnt = dr["product_pending_cnt"].ToString(),
+							product_pending_mb = dr["product_pending_mb"].ToString(),
+							product_quote_cnt = dr["product_quote_cnt"].ToString(),
+							product_quote_mb = dr["product_quote_mb"].ToString(),
+							product_cnt = dr["product_cnt"].ToString(),
+							product_mb = dr["product_mb"].ToString(),
+							project_won_cnt = dr["project_won_cnt"].ToString(),
+							project_won_mb = dr["project_won_mb"].ToString(),
+							project_lost_cnt = dr["project_lost_cnt"].ToString(),
+							project_lost_mb = dr["project_lost_mb"].ToString(),
+							project_nogo_cnt = dr["project_nogo_cnt"].ToString(),
+							project_nogo_mb = dr["project_nogo_mb"].ToString(),
+							project_pending_cnt = dr["project_pending_cnt"].ToString(),
+							project_pending_mb = dr["project_pending_mb"].ToString(),
+							project_quote_cnt = dr["project_quote_cnt"].ToString(),
+							project_quote_mb = dr["project_quote_mb"].ToString(),
+							project_cnt = dr["project_cnt"].ToString(),
+							project_mb = dr["project_mb"].ToString(),
+							service_won_cnt = dr["service_won_cnt"].ToString(),
+							service_won_mb = dr["service_won_mb"].ToString(),
+							service_lost_cnt = dr["service_lost_cnt"].ToString(),
+							service_lost_mb = dr["service_lost_mb"].ToString(),
+							service_nogo_cnt = dr["service_nogo_cnt"].ToString(),
+							service_nogo_mb = dr["service_nogo_mb"].ToString(),
+							service_pending_cnt = dr["service_pending_cnt"].ToString(),
+							service_pending_mb = dr["service_pending_mb"].ToString(),
+							service_quote_cnt = dr["service_quote_cnt"].ToString(),
+							service_quote_mb = dr["service_quote_mb"].ToString(),
+							service_cnt = dr["service_cnt"].ToString(),
+							service_mb = dr["service_mb"].ToString(),
+							won_product_cnt = dr["won_product_cnt"].ToString(),
+							won_product_mb = dr["won_product_mb"].ToString(),
+							won_project_cnt = dr["won_project_cnt"].ToString(),
+							won_project_mb = dr["won_project_mb"].ToString(),
+							won_service_cnt = dr["won_service_cnt"].ToString(),
+							won_service_mb = dr["won_service_mb"].ToString(),
+							won_quo_cnt = dr["won_quo_cnt"].ToString(),
+							won_mb = dr["won_mb"].ToString(),
+							lost_product_cnt = dr["lost_product_cnt"].ToString(),
+							lost_product_mb = dr["lost_product_mb"].ToString(),
+							lost_project_cnt = dr["lost_project_cnt"].ToString(),
+							lost_project_mb = dr["lost_project_mb"].ToString(),
+							lost_service_cnt = dr["lost_service_cnt"].ToString(),
+							lost_service_mb = dr["lost_service_mb"].ToString(),
+							loss_quo_cnt = dr["loss_quo_cnt"].ToString(),
+							loss_mb = dr["loss_mb"].ToString(),
+							nogo_product_cnt = dr["nogo_product_cnt"].ToString(),
+							nogo_product_mb = dr["nogo_product_mb"].ToString(),
+							nogo_project_cnt = dr["nogo_project_cnt"].ToString(),
+							nogo_project_mb = dr["nogo_project_mb"].ToString(),
+							nogo_service_cnt = dr["nogo_service_cnt"].ToString(),
+							nogo_service_mb = dr["nogo_service_mb"].ToString(),
+							nogo_quo_cnt = dr["nogo_quo_cnt"].ToString(),
+							nogo_mb = dr["nogo_mb"].ToString(),
+							pending_product_cnt = dr["pending_product_cnt"].ToString(),
+							pending_product_mb = dr["pending_product_mb"].ToString(),
+							pending_project_cnt = dr["pending_project_cnt"].ToString(),
+							pending_project_mb = dr["pending_project_mb"].ToString(),
+							pending_service_cnt = dr["pending_service_cnt"].ToString(),
+							pending_service_mb = dr["pending_service_mb"].ToString(),
+							pending_quo_cnt = dr["pending_quo_cnt"].ToString(),
+							pending_mb = dr["pending_mb"].ToString(),
+							quote_product_cnt = dr["quote_product_cnt"].ToString(),
+							quote_product_mb = dr["quote_product_mb"].ToString(),
+							quote_project_cnt = dr["quote_project_cnt"].ToString(),
+							quote_project_mb = dr["quote_project_mb"].ToString(),
+							quote_service_cnt = dr["quote_service_cnt"].ToString(),
+							quote_service_mb = dr["quote_service_mb"].ToString(),
+							quote_quo_cnt = dr["quote_quo_cnt"].ToString(),
+							quote_mb = dr["quote_mb"].ToString()
+						};
                         reports.Add(r);
                     }
                     dr.Close();
