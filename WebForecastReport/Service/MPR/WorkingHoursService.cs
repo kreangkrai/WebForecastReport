@@ -612,7 +612,10 @@ namespace WebForecastReport.Services.MPR
                         WorkingHours.task_id,
                         Tasks.task_name,
                         WorkingHours.start_time,
-                        WorkingHours.stop_time,
+                        CASE 
+                            WHEN WorkingHours.stop_time LIKE '00:00:00%' THEN '23:59:59'
+                            ELSE WorkingHours.stop_time
+                        END as stop_time,
                         WorkingHours.lunch,
                         WorkingHours.dinner,
                         WorkingHours.note

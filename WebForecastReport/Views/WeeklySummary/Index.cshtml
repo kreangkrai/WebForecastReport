@@ -1,0 +1,321 @@
+﻿@{ 
+    ViewData["title"] = "Weekly Summary";
+}
+<div class="row p-4 d-flex justify-content-end" style="row-gap:20px">
+    <div class="col-xl-2">
+        <input id="week" type="week" class="form-control" />
+    </div>
+    <div class="col-xl-1">
+        <button id="btn_prev" type="button" class="btn btn-primary form-control">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </div>
+    <div class="col-xl-1">
+        <button id="btn_next" type="button" class="btn btn-primary form-control">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+    <div class="col-xl-1">
+        <button id="btn_load" type="button" class="btn btn-primary form-control">
+            <i class="fas fa-sync"></i>
+        </button>
+    </div>
+    <div class="col-xl-9">
+        <div class="card">
+            <div class="card-body">
+                <canvas id="chart" style="height:350px" />
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div>
+                    <canvas id="chart1" style="height:350px" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span class="card-title">Engineers' Note</span>
+                <div>
+                    <span>Total Notes: </span>
+                    <span id="note_count" class="badge badge-danger float-right"></span>
+                </div>
+            </div>
+            <div id="engineer_note" class="card-body" style="height:745px;overflow-y:scroll">
+                <div class="card-comment d-flex align-items-center">
+                    <div class="comment-text">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-bold">Engineer</span>
+                            <span>Job: J99-9999</span>
+                            <span>Task: Test-Run</span>
+                        </div>
+                        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"</p>
+                    </div>
+                </div>
+                <hr />
+                <div class="card-comment d-flex align-items-center">
+                    <div class="comment-text">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-bold">Engineer</span>
+                            <span>Job: J99-9999</span>
+                            <span>Task: Test-Run</span>
+                        </div>
+                        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">Weekly Summary</span>
+            </div>
+            <div class="card-body">
+                <table id="table" class="table table-sm compact text-center w-100">
+                    <thead>
+                        <tr>
+                            <th>Engineer ID</th>
+                            <th>Job ID</th>
+                            <th>Task ID</th>
+                            <th>Hours</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        var table;
+        var chart_jobs;
+        var chart_engineers;
+        var summaries = [];
+
+        $(document).ready(async function () {
+            var today = new Date();
+            var year = today.getFullYear();
+            var first_jan = new Date(year, 0, 1);
+            var days = Math.floor((today - first_jan) / (24 * 60 * 60 * 1000));
+            var week = Math.ceil((today.getDay() + 1 + days) / 7) - 1;
+            var week_str = `${year}-W${week}`;
+            $('#week').val(week_str);
+            await GetWorkingHours($('#week').val());
+            GenerateChartJobs(year, week);
+            GenerateChartEngineers(year, week);
+            GenerateTable();
+            //GenerateNote();
+        });
+
+        async function GetWorkingHours(week) {
+            await $.ajax({
+                method: "GET",
+                url: '@Url.Action("GetWorkingHours", "WeeklySummary")',
+                data: { week },
+                success: function(response) {
+                    summaries = response;
+                }
+            });
+        }
+
+        function GenerateChartJobs(year, week) {
+            var ds = [];
+            var jobs = [];
+            var tasks = [];
+            jobs = summaries.map(m => m.job_id);
+            jobs = [...new Set(jobs)];
+
+            tasks = summaries.map(m => m.task_id);
+            tasks = [...new Set(tasks)];
+
+            var colors = [
+                '#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5',  //A500 RED, PINK, PURPLE, DEEP PURPLE, INDIGO
+                '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50',  //A500 BLUE, LIGHT BLUE, CYAN, TEAL, GREEN
+                '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800',  //A500 LIGHT GREEN, LIME, YELLOW, AMBER, ORANGE
+                '#ff5722', '#795548', '#9e9e9e', '#607d8b',             //A500 DEEP ORANGE, BROWN, GREY, BLUE GREY
+                '#ef5350', '#ec407a', '#ab47bc', '#7e57c2', '#5c6bc0',  //A400 RED, PINK, PURPLE, DEEP PURPLE, INDIGO
+                '#42a5f5', '#29b6f6', '#26c6da', '#26a69a', '#66bb6a',  //A400 BLUE, LIGHT BLUE, CYAN, TEAL, GREEN
+                '#9ccc65', '#d4e157', '#ffee58', '#ffca28', '#ffa726',  //A400 LIGHT GREEN, LIME, YELLOW, AMBER, ORANGE
+                '#ff7043', '#8d6e63', '#bdbdbd', '#78909c'              //A400 DEEP ORANGE, BROWN, GREY, BLUE GREY
+            ];
+
+            if (chart_jobs !== undefined) {
+                chart_jobs.destroy();
+            }
+
+            for (var i = 0; i < tasks.length; i++) {
+                var datas = [];
+                for (var j = 0; j < jobs.length; j++) {
+                    var hours = summaries.filter(f => f.task_id === tasks[i] && f.job_id === jobs[j]).map(m => m.hours).reduce((a, b) => a + b, 0);
+                    datas.push(hours);
+                };
+                ds.push({
+                    label: tasks[i] + " - " + summaries.filter(f => f.task_id === tasks[i]).map(m => m.task_name)[0],
+                    data: datas,
+                    backgroundColor: colors[i],
+                    borderColor: colors[i]
+                });
+            }
+
+            const ctx = document.getElementById('chart').getContext('2d');
+            chart_jobs = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: jobs,
+                    datasets: ds
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                text: "Jobs",
+                                display: true
+                            },
+                            stacked: true
+                        },
+                        y: {
+                            title: {
+                                text: "Hours",
+                                display: true
+                            },
+                            stacked: true,
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            text: `Job Tasks Distribution Week ${week} - ${year}`,
+                            display: true
+                        },
+                        legend: {
+                            position: 'right',
+                            display: true
+                        }
+                    },
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function GenerateChartEngineers(year, week) {
+            var ds = [];
+            var engineers = [];
+            var tasks = [];
+            engineers = summaries.map(m => m.user_id);
+            engineers = [...new Set(engineers)];
+
+            tasks = summaries.map(m => m.task_id);
+            tasks = [...new Set(tasks)];
+
+            var colors = [
+                '#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5',  //A500 RED, PINK, PURPLE, DEEP PURPLE, INDIGO
+                '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50',  //A500 BLUE, LIGHT BLUE, CYAN, TEAL, GREEN
+                '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800',  //A500 LIGHT GREEN, LIME, YELLOW, AMBER, ORANGE
+                '#ff5722', '#795548', '#9e9e9e', '#607d8b',             //A500 DEEP ORANGE, BROWN, GREY, BLUE GREY
+                '#ef5350', '#ec407a', '#ab47bc', '#7e57c2', '#5c6bc0',  //A400 RED, PINK, PURPLE, DEEP PURPLE, INDIGO
+                '#42a5f5', '#29b6f6', '#26c6da', '#26a69a', '#66bb6a',  //A400 BLUE, LIGHT BLUE, CYAN, TEAL, GREEN
+                '#9ccc65', '#d4e157', '#ffee58', '#ffca28', '#ffa726',  //A400 LIGHT GREEN, LIME, YELLOW, AMBER, ORANGE
+                '#ff7043', '#8d6e63', '#bdbdbd', '#78909c'              //A400 DEEP ORANGE, BROWN, GREY, BLUE GREY
+            ];
+
+            if (chart_engineers !== undefined) {
+                chart_engineers.destroy();
+            }
+
+            for (var i = 0; i < tasks.length; i++) {
+                var datas = [];
+                for (var j = 0; j < engineers.length; j++) {
+                    var hours = summaries.filter(f => f.task_id === tasks[i] && f.user_id === engineers[j]).map(m => m.hours).reduce((a, b) => a + b, 0);
+                    datas.push(hours);
+                }
+                ds.push({
+                    label: tasks[i] + " - " + summaries.filter(f => f.task_id === tasks[i]).map(m => m.task_name)[0],
+                    data: datas,
+                    backgroundColor: colors[i],
+                    borderColor: colors[i]
+                });
+            }
+
+            const ctx = document.getElementById('chart1').getContext('2d');
+            chart_engineers = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: engineers,
+                    datasets: ds
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                text: "Engineers",
+                                display: true
+                            },
+                            stacked: true
+                        },
+                        y: {
+                            title: {
+                                text: "Hours",
+                                display: true
+                            },
+                            stacked: true,
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            text: `Engineer Tasks Distribution Week ${week} - ${year}`,
+                            display: true
+                        },
+                        legend: {
+                            position: 'right'
+                        }
+                    },
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function GenerateTable() {
+            if (table !== undefined) {
+                table.destroy();
+            }
+
+            table = $('#table').DataTable({
+
+            });
+        }
+
+        function GenerateNote() {
+            var notes = [];
+            notes = whs.filter(f => f.note != "");
+
+            $('#note_count').html(notes.length);
+
+            $('#engineer_note').empty();
+            for (var i = 0; i < notes.length; i++) {
+                var str = `
+                <div class="card-comment">
+                    <div class="comment-text">
+                        <div class="d-flex justify-content-end">
+                            <span class="text-muted">${notes[i].working_date.split("T")[0]}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-bold">${notes[i].user_name}</span>
+                            <span>${notes[i].task_id}: ${notes[i].task_name}</span>
+                        </div>
+                        <span class="text-sm">${notes[i].job_id}: ${notes[i].job_name}</span>
+                        <p class="text-sm">${notes[i].note}</p>
+                    </div>
+                </div>`;
+                if (i < notes.length - 1) {
+                    str += "<hr></hr>";
+                }
+                $('#engineer_note').append(str);
+            }
+        }
+    </script>
+}

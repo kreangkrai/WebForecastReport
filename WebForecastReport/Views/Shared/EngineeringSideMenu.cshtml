@@ -9,6 +9,15 @@
         <nav class="mt-2">
             <ul class="nav nav-legacy nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
+                @if(@Model.name == "Korakod.P")
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Test" asp-action="Index">
+                            <p>TEST</p>
+                        </a>
+                    </li>
+                }
+
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="Calendar" asp-action="Index">
                         <i class="nav-icon fas fa-calendar-alt"></i>
@@ -72,6 +81,12 @@
                                 <a class="nav-link" asp-controller="TasksByWeek" asp-action="Index">
                                     <i class="nav-icon fas fa-calendar-week"></i>
                                     <p>TASKS BY WEEK</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="WeeklySummary" asp-action="Index">
+                                    <i class="nav-icon fas fa-chart-bar"></i>
+                                    <p>WEEKLY SUMMARY</p>
                                 </a>
                             </li>
                             <li class="nav-item">
