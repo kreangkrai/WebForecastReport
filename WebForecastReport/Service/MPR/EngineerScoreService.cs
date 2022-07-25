@@ -64,7 +64,7 @@ namespace WebForecastReport.Service.MPR
                         cost,
 	                    md_rate AS md_rate,
 	                    pd_rate AS pd_rate,
-	                    (md_rate + pd_rate) AS factor,						
+	                    (md_rate * pd_rate) AS factor,						
 	                    t2.total_manpower AS total_manpower,
 	                    (cost / t2.total_manpower) AS cost_per_tmp,
 	                    t3.working_hours AS manpower,
