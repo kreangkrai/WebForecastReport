@@ -64,7 +64,7 @@
                 <span class="card-title">Scores</span>
             </div>
             <div class="card-body">
-                <table id="table_jobs" class="table table-sm table-striped table-hover text-center">
+                <table id="table_jobs" class="table table-sm table-striped table-hover text-center w-100">
                     <thead>
                         <tr>
                             <th>Job ID</th>
@@ -73,10 +73,10 @@
                             <th>MD</th>
                             <th>PD</th>
                             <th>Factor</th>
-                            <th>Total Manpower</th>
-                            <th>Cost Per Manpower</th>
-                            <th>Manpower</th>
-                            <th>Manpower Per Total</th>
+                            <th>Total Manhours</th>
+                            <th>Cost Per Hour</th>
+                            <th id="name1">Manpower</th>
+                            <th>% Participation</th>
                             <th>Score</th>
                         </tr>
                     </thead>
@@ -88,10 +88,10 @@
                             <th>MD</th>
                             <th>PD</th>
                             <th>Factor</th>
-                            <th>Total Manpower</th>
-                            <th>Cost Per Manpower</th>
-                            <th>Manpower</th>
-                            <th>Manpower Per Total</th>
+                            <th>Total Manhours</th>
+                            <th>Cost Per Hour</th>
+                            <th id="name2">Manpower</th>
+                            <th>% Participation</th>
                             <th>Score</th>
                         </tr>
                     </tfoot>
@@ -123,6 +123,8 @@
             var year = $('#year').val();
             await GetScores(user_id,year);
             GenerateTable();
+            $('#name1').html(user_id + " Manpower");
+            $('#name2').html(user_id + " Manpower");
         });
 
         async function GetEngineers() {
@@ -179,7 +181,7 @@
                     scores[i].total_manpower,
                     scores[i].cost_per_tmp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     scores[i].manpower,
-                    scores[i].manpower_per_tmp.toFixed(2),
+                    parseInt(scores[i].manpower_per_tmp * 100),
                     scores[i].score.toFixed(2)
                 ]);
             }
@@ -222,8 +224,10 @@
         $('#btn_filter').on('click', async function () {
             var user_id = $('#user_id').val();
             var year = $('#year').val();
-            await GetScores(user_id,year);
+            await GetScores(user_id, year);
             await GenerateTable();
+            $('#name1').html(user_id + " Manpower");
+            $('#name2').html(user_id + " Manpower");
         });
 
     </script>
