@@ -16,13 +16,12 @@ namespace WebForecastReport.Controllers
     public class WeeklySummaryController : Controller
     {
         readonly IAccessory Accessory;
-        readonly ITask Task;
         readonly IWorkingHours WorkingHours;
+        static List<WorkingHoursModel> whs;
 
         public WeeklySummaryController()
         {
             this.Accessory = new AccessoryService();
-            this.Task = new TaskService();
             this.WorkingHours = new WorkingHoursService();
         }
         
@@ -49,7 +48,7 @@ namespace WebForecastReport.Controllers
         [HttpGet]
         public JsonResult GetWorkingHours(string week)
         {
-            List<WorkingHoursModel> whs = WorkingHours.GetWorkingHours(Convert.ToInt32(week.Split("-")[0]), Convert.ToInt32(week.Split("W")[1]));
+            whs = WorkingHours.GetWorkingHours(Convert.ToInt32(week.Split("-")[0]), Convert.ToInt32(week.Split("W")[1]));
             string[] engineers = whs.OrderBy(o => o.user_id).Select(s => s.user_id).Distinct().ToArray();
             string[] jobs = whs.OrderBy(o => o.job_id).Select(s => s.job_id).Distinct().ToArray();
             string[] tasks = whs.OrderBy(o => o.task_id).Select(s => s.task_id).Distinct().ToArray();
@@ -81,6 +80,12 @@ namespace WebForecastReport.Controllers
                 }
             }
             return Json(weekly);
+        }
+
+        [HttpGet]
+        public JsonResult GetNotes()
+        {
+            return Json(whs);
         }
     }
 }

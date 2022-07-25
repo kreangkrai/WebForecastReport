@@ -2,7 +2,7 @@
     ViewData["title"] = "Weekly Summary";
 }
 <div class="row p-4 d-flex justify-content-end" style="row-gap:20px">
-    <div class="col-xl-2">
+    <div class="col-xl-3">
         <input id="week" type="week" class="form-control" />
     </div>
     <div class="col-xl-1">
@@ -15,12 +15,7 @@
             <i class="fas fa-chevron-right"></i>
         </button>
     </div>
-    <div class="col-xl-1">
-        <button id="btn_load" type="button" class="btn btn-primary form-control">
-            <i class="fas fa-sync"></i>
-        </button>
-    </div>
-    <div class="col-xl-9">
+    <div class="col-xl-8">
         <div class="card">
             <div class="card-body">
                 <canvas id="chart" style="height:350px" />
@@ -34,14 +29,10 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-3">
+    <div class="col-xl-4">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <span class="card-title">Engineers' Note</span>
-                <div>
-                    <span>Total Notes: </span>
-                    <span id="note_count" class="badge badge-danger float-right"></span>
-                </div>
             </div>
             <div id="engineer_note" class="card-body" style="height:745px;overflow-y:scroll">
                 <div class="card-comment d-flex align-items-center">
@@ -103,6 +94,7 @@
         var chart_jobs;
         var chart_engineers;
         var summaries = [];
+        var notes = [];
 
         $(document).ready(async function () {
             var today = new Date();
@@ -116,7 +108,8 @@
             GenerateChartJobs(year, week);
             GenerateChartEngineers(year, week);
             GenerateTable();
-            //GenerateNote();
+            await GetNotes();
+            GenerateNote();
         });
 
         async function GetWorkingHours(week) {
@@ -126,6 +119,17 @@
                 data: { week },
                 success: function(response) {
                     summaries = response;
+                }
+            });
+        }
+
+        async function GetNotes() {
+            await $.ajax({
+                method: "GET",
+                url: '@Url.Action("GetNotes", "WeeklySummary")',
+                data: { },
+                success: function(response) {
+                    notes = response;
                 }
             });
         }
@@ -319,10 +323,7 @@
         }
 
         function GenerateNote() {
-            var notes = [];
-            notes = whs.filter(f => f.note != "");
-
-            $('#note_count').html(notes.length);
+            notes = notes.filter(f => f.note != "");
 
             $('#engineer_note').empty();
             for (var i = 0; i < notes.length; i++) {
@@ -346,5 +347,50 @@
                 $('#engineer_note').append(str);
             }
         }
+
+        $('#btn_prev').on('click', async function () {
+            var week = parseInt($('#week').val().split("W")[1]);
+            var year = parseInt($('#week').val().split("-")[0]);
+            week = week - 1;
+            if (week < 1) {
+                week = 52;
+                year = year - 1;
+            }
+            $('#week').val(`${year}-W${week.toString().padStart(2, '0')}`);
+            $('#btn_next').attr('disabled', false);
+            await GetWorkingHours($('#week').val());
+            GenerateChartJobs(year, week);
+            GenerateChartEngineers(year, week);
+            GenerateTable();
+            await GetNotes();
+            GenerateNote();
+        });
+
+        $('#btn_next').on('click', async function () {
+            var today = new Date();
+            var yy = today.getFullYear();
+            var first_jan = new Date(yy, 0, 1);
+            var days = Math.floor((today - first_jan) / (24 * 60 * 60 * 1000));
+            var ww = Math.ceil((today.getDay() + 1 + days) / 7);
+            var week = parseInt($('#week').val().split("W")[1]);
+            var year = parseInt($('#week').val().split("-")[0]);
+            if (week < ww && year <= yy) {
+                week = week + 1;
+                if (week > 52) {
+                    week = 1;
+                    year = year + 1;
+                }
+            }
+            if (week >= ww && year >= yy) {
+                $('#btn_next').attr('disabled', true);
+            }
+            $('#week').val(`${year}-W${week.toString().padStart(2, '0')}`);
+            await GetWorkingHours($('#week').val());
+            GenerateChartJobs(year, week);
+            GenerateChartEngineers(year, week);
+            GenerateTable();
+            await GetNotes();
+            GenerateNote();
+        });
     </script>
 }
