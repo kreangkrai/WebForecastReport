@@ -738,7 +738,6 @@
                 selectsale.options.add(new Option(name, name, null));
                 document.getElementById('sale_name').selectedIndex = 0;
             }
-
         };
         function initDepartment(role,Departments){
             //Department
@@ -927,18 +926,14 @@
                      //draw quotation vs target
 
                      var chart_name = "chart_quotation_target";
-                     var datas1 = [product.mb,project.mb,service.mb];
-                     var datas2 = [target.product,target.project,target.service];
+                     var quotation = {product,project,service};
 
-                     UpdateChartBarQuotation_Target(datas1,datas2,chart_name);
+                     UpdateChartBarQuotation_Target(quotation,target,chart_name);
 
                      //draw pending all vs pending in
-                     
                      var chart_name = "chart_pending_all_pending_in";                    
-                     var datas1 = [pending_all.product.mb,pending_all.project.mb,pending_all.service.mb];
-                     var datas2 = [pending_in.product.mb,pending_in.project.mb,pending_in.service.mb];
 
-                     UpdateChartBarPending_all_Pending_In(datas1,datas2,chart_name);
+                     UpdateChartBarPending_all_Pending_In(pending_all,pending_in,chart_name);
 
                      
                      // draw Won
@@ -964,10 +959,9 @@
 
                      //draw target vs won
                      var chart_name = "chart_target_won";
-                     var datas1 = [target.product,target.project,target.service];
-                     var datas2 = [won_product.mb,won_project.mb,won_service.mb];
+                     var won = {'product': won_product,'project':won_project,'service':won_service};
 
-                     UpdateChartBarTarget_Won(datas1,datas2,chart_name);
+                     UpdateChartBarTarget_Won(target,won,chart_name);
                      
                      //draw reamin target vs pending in
 
@@ -975,10 +969,9 @@
                      var remain_target_product = (target.product - won_product.mb).toFixed(2);
                      var remain_target_project = (target.project - won_project.mb).toFixed(2);
                      var remain_target_service = (target.service - won_service.mb).toFixed(2);
+                     var remain_target = {'product':remain_target_product,'project':remain_target_project,'service':remain_target_service};
 
-                     var datas1 = [remain_target_product,remain_target_project,remain_target_service];
-                     var datas2 = [pending_in.product.mb,pending_in.project.mb,pending_in.service.mb];
-                     UpdateChartBarRemainTarget_PendingIn(datas1,datas2,chart_name);
+                     UpdateChartBarRemainTarget_PendingIn(remain_target,pending_in,chart_name);
 
                      //draw lost
                      var lost_product = {};
@@ -1002,9 +995,10 @@
 
                      //draw won vs lost
                      var chart_name = "chart_won_lost";
-                     var datas1 = [won_product.mb,won_project.mb,won_service.mb];
-                     var datas2 = [lost_product.mb,lost_project.mb,lost_service.mb];
-                     UpdateChartBarWon_Lost(datas1,datas2,chart_name);
+                     var won = {'product':won_product,'project':won_project,'service':won_service};
+                     var lost = {'product':lost_product,'project':lost_project,'service':lost_service};
+
+                     UpdateChartBarWon_Lost(won,lost,chart_name);
 
                      // draw nogo
                      var nogo_product = {};
@@ -1099,14 +1093,14 @@
                      // draw won & lost VS No go  | draw won & lost vs no go & budget
 
                      var chart_name = "chart_stack_wonlost_nogo";
-                     var wons = [won_product.mb,won_project.mb,won_service.mb];
-                     var losts = [lost_product.mb,lost_project.mb,lost_service.mb];
-                     var nogos = [nogo_product.mb,nogo_project.mb,nogo_service.mb];
-                     var budgets = [quote_product.mb,quote_project.mb,quote_service.mb];
+                     var won = {'product':won_product,'project':won_project,'service':won_service};
+                     var lost = {'product':lost_product,'project':lost_project,'service':lost_service};
+                     var nogo = {'product':nogo_product,'project':nogo_project,'service':nogo_service};
+                     var budget = {'product':quote_product,'project':quote_project,'service':quote_service};
 
                      var chart_name1 = "chart_stack_wonlost_nogobudget";
-                     UpdateChartStackWonLost_NOGO(wons,losts,nogos,chart_name);
-                     UpdateChartStackWonLost_NOGOBudget(wons,losts,nogos,budgets,chart_name1);
+                     UpdateChartStackWonLost_NOGO(won,lost,nogo,chart_name);
+                     UpdateChartStackWonLost_NOGOBudget(won,lost,nogo,budget,chart_name1);
                  }
              });           
         };
@@ -1221,18 +1215,15 @@
                       //draw quotation vs target
 
                      var chart_name = "chart_quotation_target_department";
-                     var datas1 = [product_department.mb,project_department.mb,service_department.mb];
-                     var datas2 = [target.product,target.project,target.service];
+                     var quotation = {product_department,project_department,service_department};
 
-                     UpdateChartBarQuotation_Target_Department(datas1,datas2,chart_name);
+                     UpdateChartBarQuotation_Target_Department(quotation,target,chart_name);
 
                      //draw pending all vs pending in
                      
                      var chart_name = "chart_pending_all_pending_in_department";                    
-                     var datas1 = [pending_all.product.mb,pending_all.project.mb,pending_all.service.mb];
-                     var datas2 = [pending_in.product.mb,pending_in.project.mb,pending_in.service.mb];
 
-                     UpdateChartBarPending_all_Pending_In_Department(datas1,datas2,chart_name);
+                     UpdateChartBarPending_all_Pending_In_Department(pending_all,pending_in,chart_name);
 
                      // draw quotation
                      
@@ -1262,10 +1253,8 @@
                      //draw target vs won
 
                      var chart_name = "chart_target_won_department";
-                     var datas1 = [target.product,target.project,target.service];
-                     var datas2 = [won_product.mb,won_project.mb,won_service.mb];
-
-                     UpdateChartBarTarget_Won_Department(datas1,datas2,chart_name);
+                     var won = {'product': won_product,'project': won_project,'service': won_service};
+                     UpdateChartBarTarget_Won_Department(target,won,chart_name);
 
                      //draw reamin target vs pending in
 
@@ -1273,10 +1262,9 @@
                      var remain_target_product = (target.product - won_product.mb).toFixed(2);
                      var remain_target_project = (target.project - won_project.mb).toFixed(2);
                      var remain_target_service = (target.service - won_service.mb).toFixed(2);
+                     var remain_target = {'product':remain_target_product,'project':remain_target_project,'service':remain_target_service};
 
-                     var datas1 = [remain_target_product,remain_target_project,remain_target_service];
-                     var datas2 = [pending_in.product.mb,pending_in.project.mb,pending_in.service.mb];
-                     UpdateChartBarRemainTarget_PendingIn_Department(datas1,datas2,chart_name);
+                     UpdateChartBarRemainTarget_PendingIn_Department(remain_target,pending_in,chart_name);
 
                      //draw lost
 
@@ -1301,9 +1289,10 @@
                     
                      //draw won vs lost
                      var chart_name = "chart_won_lost_department";
-                     var datas1 = [won_product.mb,won_project.mb,won_service.mb];
-                     var datas2 = [lost_product.mb,lost_project.mb,lost_service.mb];
-                     UpdateChartBarWon_Lost_Department(datas1,datas2,chart_name);
+                     var won = {'product':won_product,'project':won_project,'service':won_service};
+                     var lost = {'product':lost_product,'project':lost_project,'service':lost_service};
+
+                     UpdateChartBarWon_Lost_Department(won,lost,chart_name);
 
                      // draw nogo
 
@@ -1402,14 +1391,14 @@
                      // draw won & lost VS No go  | draw won & lost vs no go & budget
 
                      var chart_name = "chart_stack_wonlost_nogo_department";
-                     var wons = [won_product.mb,won_project.mb,won_service.mb];
-                     var losts = [lost_product.mb,lost_project.mb,lost_service.mb];
-                     var nogos = [nogo_product.mb,nogo_project.mb,nogo_service.mb];
-                     var budgets = [quote_product.mb,quote_project.mb,quote_service.mb];
+                     var won = {'product':won_product,'project':won_project,'service':won_service};
+                     var lost = {'product':lost_product,'project':lost_project,'service':lost_service};
+                     var nogo = {'product':nogo_product,'project':nogo_project,'service':nogo_service};
+                     var budget = {'product':quote_product,'project':quote_project,'service':quote_service};
 
                      var chart_name1 = "chart_stack_wonlost_nogobudget_department";
-                     UpdateChartStackWonLost_NOGO_Department(wons,losts,nogos,chart_name);
-                     UpdateChartStackWonLost_NOGOBudget_Department(wons,losts,nogos,budgets,chart_name1);
+                     UpdateChartStackWonLost_NOGO_Department(won,lost,nogo,chart_name);
+                     UpdateChartStackWonLost_NOGOBudget_Department(won,lost,nogo,budget,chart_name1);
                  
                  }
              });           
@@ -1537,8 +1526,8 @@
         function UpdatePieChartLost(lost_product,lost_project,lost_service,chart_name) {
            var datas = [
 			        {y: lost_product.mb, count:lost_product.cnt, label: "Product", legendText: "Product", color:"#7E0306"},
-			        {y: lost_project.mb, count:lost_product.cnt, label: "Project", legendText: "Project", color:"#D53E0F"},
-			        {y: lost_service.mb, count:lost_product.cnt, label: "Service", legendText: "Service", color:"#FA8744"},
+			        {y: lost_project.mb, count:lost_project.cnt, label: "Project", legendText: "Project", color:"#D53E0F"},
+			        {y: lost_service.mb, count:lost_service.cnt, label: "Service", legendText: "Service", color:"#FA8744"},
 		            ];
             // filter value more than 0
             datas = datas.filter(x => x.y > 0);
@@ -2220,7 +2209,7 @@
         };
 
         var chartbar_pending_all_pending_in;
-        function UpdateChartBarPending_all_Pending_In(datas1,datas2,chart_name){           
+        function UpdateChartBarPending_all_Pending_In(pending_all,pending_in,chart_name){           
             if (chartbar_pending_all_pending_in != null){
                 chartbar_pending_all_pending_in.destroy();
             }
@@ -2229,13 +2218,13 @@
                               labels: ["Product","Project","Service"],
                               datasets: [{
                                 type: 'bar',                               
-                                data: datas1,
+                                data: [pending_all.product.mb,pending_all.project.mb,pending_all.service.mb],
                                 label: "Pending ALL",
                                 borderColor: 'rgb(216, 174, 80)',
                                 backgroundColor: 'rgba(216, 174, 80,0.8)'
                               }, {
                                 type: 'bar',                              
-                                data: datas2,
+                                data: [pending_in.product.mb,pending_in.project.mb,pending_in.service.mb],
                                 label: "Pending IN",
                                 fill: false,
                                 borderColor: 'rgb(255, 211, 77)',
@@ -2262,7 +2251,23 @@
                                                     label += ' : ';
                                                 }
                                                 if (context.parsed.y !== null) {
-                                                    label += context.parsed.y + ' MB';
+                                                    if (context.dataset.label === "Pending ALL"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + pending_all.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + pending_all.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + pending_all.service.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "Pending IN"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + pending_in.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + pending_in.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + pending_in.service.cnt + ' Quo.';
+                                                        }
+                                                    }                                                    
                                                 }
                                                 return label;
                                         }
@@ -2306,11 +2311,12 @@
                                 }
                               }
                         };
+                            
                         chartbar_pending_all_pending_in = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
    
         var chartbar_quotation_target;
-        function UpdateChartBarQuotation_Target(datas1,datas2,chart_name){           
+        function UpdateChartBarQuotation_Target(quotation,target,chart_name){           
             if (chartbar_quotation_target != null){
                 chartbar_quotation_target.destroy();
             }
@@ -2319,13 +2325,13 @@
                               labels: ["Product","Project","Service"],
                               datasets: [{
                                 type: 'bar',                               
-                                data: datas1,
+                                data: [quotation.product.mb,quotation.project.mb,quotation.service.mb],
                                 label: "Quotation",
                                 borderColor: 'rgb(81, 68, 85)',
                                 backgroundColor: 'rgba(81, 68, 85,0.8)'
                               }, {
                                 type: 'bar',                              
-                                data: datas2,
+                                data: [target.product,target.project,target.service],
                                 label: "Target",
                                 fill: false,
                                 borderColor: 'rgb(196, 77, 255)',
@@ -2352,7 +2358,23 @@
                                                     label += ' : ';
                                                 }
                                                 if (context.parsed.y !== null) {
-                                                    label += context.parsed.y + ' MB';
+                                                    if (context.dataset.label === "Quotation"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + quotation.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + quotation.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + quotation.service.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "Target"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }
+                                                    }        
                                                 }
                                                 return label;
                                         }
@@ -2400,7 +2422,7 @@
         };
 
         var chartbar_target_won;
-        function UpdateChartBarTarget_Won(datas1,datas2,chart_name){           
+        function UpdateChartBarTarget_Won(target,won,chart_name){           
             if (chartbar_target_won != null){
                 chartbar_target_won.destroy();
             }
@@ -2409,13 +2431,13 @@
                               labels: ["Product","Project","Service"],
                               datasets: [{
                                 type: 'bar',                               
-                                data: datas1,
+                                data: [target.product,target.project,target.service],
                                 label: "Target",
                                 borderColor: 'rgb(196, 77, 255)',
                                 backgroundColor: 'rgba(196, 77, 255,0.8)'
                               }, {
                                 type: 'bar',                              
-                                data: datas2,
+                                data: [won.product.mb,won.project.mb,won.service.mb],
                                 label: "Won",
                                 fill: false,
                                 borderColor: 'rgb(0, 153, 0)',
@@ -2442,7 +2464,23 @@
                                                     label += ' : ';
                                                 }
                                                 if (context.parsed.y !== null) {
-                                                    label += context.parsed.y + ' MB';
+                                                    if (context.dataset.label === "Target"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }
+                                                    }else if (context.dataset.label === "Won"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + won.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + won.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + won.service.cnt + ' Quo.';
+                                                        }
+                                                    }        
                                                 }
                                                 return label;
                                         }
@@ -2490,7 +2528,7 @@
         };
 
         var chartbar_remaintarget_pendingin;
-        function UpdateChartBarRemainTarget_PendingIn(datas1,datas2,chart_name){           
+        function UpdateChartBarRemainTarget_PendingIn(remain_target,pending_in,chart_name){           
             if (chartbar_remaintarget_pendingin != null){
                 chartbar_remaintarget_pendingin.destroy();
             }
@@ -2499,13 +2537,13 @@
                               labels: ["Product","Project","Service"],
                               datasets: [{
                                 type: 'bar',                               
-                                data: datas1,
+                                data: [remain_target.product,remain_target.project,remain_target.service],
                                 label: "Remain Target",
                                 borderColor: 'rgb(196, 77, 255)',
                                 backgroundColor: 'rgba(196, 77, 255,0.8)'
                               }, {
                                 type: 'bar',                              
-                                data: datas2,
+                                data: [pending_in.product.mb,pending_in.project.mb,pending_in.service.mb],
                                 label: "Pending IN",
                                 fill: false,
                                 borderColor: 'rgb(255, 211, 77)',
@@ -2532,7 +2570,23 @@
                                                     label += ' : ';
                                                 }
                                                 if (context.parsed.y !== null) {
-                                                    label += context.parsed.y + ' MB';
+                                                    if (context.dataset.label === "Remain Target"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }
+                                                    }else if (context.dataset.label === "Pending IN"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + pending_in.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + pending_in.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + pending_in.service.cnt + ' Quo.';
+                                                        }
+                                                    }        
                                                 }
                                                 return label;
                                         }
@@ -2580,7 +2634,7 @@
         };
 
         var chartbar_won_lost;
-        function UpdateChartBarWon_Lost(datas1,datas2,chart_name){           
+        function UpdateChartBarWon_Lost(won,lost,chart_name){           
             if (chartbar_won_lost != null){
                 chartbar_won_lost.destroy();
             }
@@ -2589,13 +2643,13 @@
                               labels: ["Product","Project","Service"],
                               datasets: [{
                                 type: 'bar',                               
-                                data: datas1,
+                                data: [won.product.mb,won.project.mb,won.service.mb],
                                 label: "Won",
                                 borderColor: 'rgb(0, 153, 0)',
                                 backgroundColor: 'rgba(0, 153, 0,0.8)'
                               }, {
                                 type: 'bar',                              
-                                data: datas2,
+                                data: [lost.product.mb,lost.project.mb,lost.service.mb],
                                 label: "Lost",
                                 fill: false,
                                 borderColor: 'rgb(226, 120, 87)',
@@ -2622,7 +2676,23 @@
                                                     label += ' : ';
                                                 }
                                                 if (context.parsed.y !== null) {
-                                                    label += context.parsed.y + ' MB';
+                                                    if (context.dataset.label === "Won"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + won.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + won.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + won.service.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "Lost"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + lost.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + lost.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + lost.service.cnt + ' Quo.';
+                                                        }
+                                                    }        
                                                 }
                                                 return label;
                                         }
@@ -2670,7 +2740,7 @@
         };
 
         var chart_stack_wonlost_nogo;
-        function UpdateChartStackWonLost_NOGO(wons,losts,nogos,chart_name){
+        function UpdateChartStackWonLost_NOGO(won,lost,nogo,chart_name){
             if (chart_stack_wonlost_nogo != null){
                 chart_stack_wonlost_nogo.destroy();
             }
@@ -2681,19 +2751,19 @@
                               datasets: [
                                 {
                                   label: 'Won',
-                                  data: wons,
+                                  data: [won.product.mb,won.project.mb,won.service.mb],
                                   backgroundColor: 'rgb(0, 153, 0)',
                                   stack: 'Stack 0',
                                 },
                                 {
                                   label: 'Lost',
-                                  data: losts,
+                                  data: [lost.product.mb,lost.project.mb,lost.service.mb],
                                   backgroundColor: 'rgb(226, 120, 87)',
                                   stack: 'Stack 0',
                                 },
                                 {
                                   label: 'No go',
-                                  data: nogos,
+                                  data: [nogo.product.mb,nogo.project.mb,nogo.service.mb],
                                   backgroundColor: 'rgb(204, 204, 204)',
                                   stack: 'Stack 1',
                                 },
@@ -2719,7 +2789,31 @@
                                                     label += ' : ';
                                                 }
                                                 if (context.parsed.y !== null) {
-                                                    label += context.parsed.y + ' MB';
+                                                    if (context.dataset.label === "Won"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + won.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + won.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + won.service.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "Lost"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + lost.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + lost.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + lost.service.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "No go"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + nogo.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + nogo.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + nogo.service.cnt + ' Quo.';
+                                                        }
+                                                    }         
                                                 }
                                                 return label;
                                         }
@@ -2769,7 +2863,7 @@
         };
 
         var chart_stack_wonlost_nogobudget;
-        function UpdateChartStackWonLost_NOGOBudget(wons,losts,nogos,budgets,chart_name){
+        function UpdateChartStackWonLost_NOGOBudget(won,lost,nogo,budget,chart_name){
             if (chart_stack_wonlost_nogobudget != null){
                 chart_stack_wonlost_nogobudget.destroy();
             }
@@ -2780,25 +2874,25 @@
                               datasets: [
                                 {
                                   label: 'Won',
-                                  data: wons,
+                                  data: [won.product.mb,won.project.mb,won.service.mb],
                                   backgroundColor: 'rgb(0, 153, 0)',
                                   stack: 'Stack 0',
                                 },
                                 {
                                   label: 'Lost',
-                                  data: losts,
+                                  data: [lost.product.mb,lost.project.mb,lost.service.mb],
                                   backgroundColor: 'rgb(226, 120, 87)',
                                   stack: 'Stack 0',
                                 },
                                 {
                                   label: 'No go',
-                                  data: nogos,
+                                  data: [nogo.product.mb,nogo.project.mb,nogo.service.mb],
                                   backgroundColor: 'rgb(204, 204, 204)',
                                   stack: 'Stack 1',
                                 },
                                 {
                                   label: 'Budget',
-                                  data: budgets,
+                                  data: [budget.product.mb,budget.project.mb,budget.service.mb],
                                   backgroundColor: 'rgb(0, 92, 230)',
                                   stack: 'Stack 1',
                                 },
@@ -2824,7 +2918,39 @@
                                                     label += ' : ';
                                                 }
                                                 if (context.parsed.y !== null) {
-                                                    label += context.parsed.y + ' MB';
+                                                    if (context.dataset.label === "Won"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + won.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + won.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + won.service.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "Lost"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + lost.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + lost.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + lost.service.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "No go"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + nogo.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + nogo.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + nogo.service.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "Budget"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + budget.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + budget.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + budget.service.cnt + ' Quo.';
+                                                        }
+                                                    }      
                                                 }
                                                 return label;
                                         }
@@ -3068,7 +3194,7 @@
         };
 
         var chartbar_pending_all_pending_in_department;
-        function UpdateChartBarPending_all_Pending_In_Department(datas1,datas2,chart_name){           
+        function UpdateChartBarPending_all_Pending_In_Department(pending_all,pending_in,chart_name){           
             if (chartbar_pending_all_pending_in_department != null){
                 chartbar_pending_all_pending_in_department.destroy();
             }
@@ -3077,13 +3203,13 @@
                               labels: ["Product","Project","Service"],
                               datasets: [{
                                 type: 'bar',                               
-                                data: datas1,
+                                data: [pending_all.product.mb,pending_all.project.mb,pending_all.service.mb],
                                 label: "Pending ALL",
                                 borderColor: 'rgb(216, 174, 80)',
                                 backgroundColor: 'rgba(216, 174, 80,0.8)'
                               }, {
                                 type: 'bar',                              
-                                data: datas2,
+                                data: [pending_in.product.mb,pending_in.project.mb,pending_in.service.mb],
                                 label: "Pending IN",
                                 fill: false,
                                 borderColor: 'rgb(255, 211, 77)',
@@ -3110,7 +3236,23 @@
                                                     label += ' : ';
                                                 }
                                                 if (context.parsed.y !== null) {
-                                                    label += context.parsed.y + ' MB';
+                                                    if (context.dataset.label === "Pending ALL"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + pending_all.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + pending_all.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + pending_all.service.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "Pending IN"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + pending_in.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + pending_in.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + pending_in.service.cnt + ' Quo.';
+                                                        }
+                                                    }         
                                                 }
                                                 return label;
                                         }
@@ -3158,7 +3300,7 @@
         };
    
         var chartbar_quotation_target_department;
-        function UpdateChartBarQuotation_Target_Department(datas1,datas2,chart_name){           
+        function UpdateChartBarQuotation_Target_Department(quotation,target,chart_name){           
             if (chartbar_quotation_target_department != null){
                 chartbar_quotation_target_department.destroy();
             }
@@ -3167,13 +3309,13 @@
                               labels: ["Product","Project","Service"],
                               datasets: [{
                                 type: 'bar',                               
-                                data: datas1,
+                                data: [quotation.product_department.mb,quotation.project_department.mb,quotation.service_department.mb],
                                 label: "Quotation",
                                 borderColor: 'rgb(81, 68, 85)',
                                 backgroundColor: 'rgba(81, 68, 85,0.8)'
                               }, {
                                 type: 'bar',                              
-                                data: datas2,
+                                data: [target.product,target.project,target.service],
                                 label: "Target",
                                 fill: false,
                                 borderColor: 'rgb(196, 77, 255)',
@@ -3200,7 +3342,23 @@
                                                     label += ' : ';
                                                 }
                                                 if (context.parsed.y !== null) {
-                                                    label += context.parsed.y + ' MB';
+                                                    if (context.dataset.label === "Quotation"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + quotation.product_department.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + quotation.project_department.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + quotation.service_department.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "Target"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }
+                                                    }        
                                                 }
                                                 return label;
                                         }
@@ -3248,7 +3406,7 @@
         };
 
         var chartbar_target_won_department;
-        function UpdateChartBarTarget_Won_Department(datas1,datas2,chart_name){           
+        function UpdateChartBarTarget_Won_Department(target,won,chart_name){           
             if (chartbar_target_won_department != null){
                 chartbar_target_won_department.destroy();
             }
@@ -3257,13 +3415,13 @@
                               labels: ["Product","Project","Service"],
                               datasets: [{
                                 type: 'bar',                               
-                                data: datas1,
+                                data: [target.product,target.project,target.service],
                                 label: "Target",
                                 borderColor: 'rgb(196, 77, 255)',
                                 backgroundColor: 'rgba(196, 77, 255,0.8)'
                               }, {
                                 type: 'bar',                              
-                                data: datas2,
+                                data: [won.product.mb,won.project.mb,won.service.mb],
                                 label: "Won",
                                 fill: false,
                                 borderColor: 'rgb(0, 153, 0)',
@@ -3290,7 +3448,23 @@
                                                     label += ' : ';
                                                 }
                                                 if (context.parsed.y !== null) {
-                                                    label += context.parsed.y + ' MB';
+                                                    if (context.dataset.label === "Target"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }
+                                                    }else if (context.dataset.label === "Won"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + won.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + won.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + won.service.cnt + ' Quo.';
+                                                        }
+                                                    }      
                                                 }
                                                 return label;
                                         }
@@ -3338,7 +3512,7 @@
         };
 
         var chartbar_remaintarget_pendingin_department;
-        function UpdateChartBarRemainTarget_PendingIn_Department(datas1,datas2,chart_name){           
+        function UpdateChartBarRemainTarget_PendingIn_Department(remain_target,pending_in,chart_name){           
             if (chartbar_remaintarget_pendingin_department != null){
                 chartbar_remaintarget_pendingin_department.destroy();
             }
@@ -3347,13 +3521,13 @@
                               labels: ["Product","Project","Service"],
                               datasets: [{
                                 type: 'bar',                               
-                                data: datas1,
+                                data: [remain_target.product,remain_target.project,remain_target.service],
                                 label: "Remain Target",
                                 borderColor: 'rgb(196, 77, 255)',
                                 backgroundColor: 'rgba(196, 77, 255,0.8)'
                               }, {
                                 type: 'bar',                              
-                                data: datas2,
+                                data: [pending_in.product.mb,pending_in.project.mb,pending_in.service.mb],
                                 label: "Pending IN",
                                 fill: false,
                                 borderColor: 'rgb(255, 211, 77)',
@@ -3380,7 +3554,23 @@
                                                     label += ' : ';
                                                 }
                                                 if (context.parsed.y !== null) {
-                                                    label += context.parsed.y + ' MB';
+                                                    if (context.dataset.label === "Remain Target"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB';
+                                                        }
+                                                    }else if (context.dataset.label === "Pending IN"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + pending_in.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + pending_in.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + pending_in.service.cnt + ' Quo.';
+                                                        }
+                                                    }        
                                                 }
                                                 return label;
                                         }
@@ -3428,7 +3618,7 @@
         };
 
         var chartbar_won_lost_department;
-        function UpdateChartBarWon_Lost_Department(datas1,datas2,chart_name){           
+        function UpdateChartBarWon_Lost_Department(won,lost,chart_name){           
             if (chartbar_won_lost_department != null){
                 chartbar_won_lost_department.destroy();
             }
@@ -3437,13 +3627,13 @@
                               labels: ["Product","Project","Service"],
                               datasets: [{
                                 type: 'bar',                               
-                                data: datas1,
+                                data: [won.product.mb,won.project.mb,won.service.mb],
                                 label: "Won",
                                 borderColor: 'rgb(0, 153, 0)',
                                 backgroundColor: 'rgba(0, 153, 0,0.8)'
                               }, {
                                 type: 'bar',                              
-                                data: datas2,
+                                data: [lost.product.mb,lost.project.mb,lost.service.mb],
                                 label: "Lost",
                                 fill: false,
                                 borderColor: 'rgb(226, 120, 87)',
@@ -3470,7 +3660,23 @@
                                                     label += ' : ';
                                                 }
                                                 if (context.parsed.y !== null) {
-                                                    label += context.parsed.y + ' MB';
+                                                    if (context.dataset.label === "Won"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + won.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + won.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + won.service.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "Lost"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + lost.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + lost.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + lost.service.cnt + ' Quo.';
+                                                        }
+                                                    }        
                                                 }
                                                 return label;
                                         }
@@ -3518,7 +3724,7 @@
         };
 
         var chart_stack_wonlost_nogo_department;
-        function UpdateChartStackWonLost_NOGO_Department(wons,losts,nogos,chart_name){
+        function UpdateChartStackWonLost_NOGO_Department(won,lost,nogo,chart_name){
             if (chart_stack_wonlost_nogo_department != null){
                 chart_stack_wonlost_nogo_department.destroy();
             }
@@ -3529,19 +3735,19 @@
                               datasets: [
                                 {
                                   label: 'Won',
-                                  data: wons,
+                                  data: [won.product.mb,won.project.mb,won.service.mb],
                                   backgroundColor: 'rgb(0, 153, 0)',
                                   stack: 'Stack 0',
                                 },
                                 {
                                   label: 'Lost',
-                                  data: losts,
+                                  data: [lost.product.mb,lost.project.mb,lost.service.mb],
                                   backgroundColor: 'rgb(226, 120, 87)',
                                   stack: 'Stack 0',
                                 },
                                 {
                                   label: 'No go',
-                                  data: nogos,
+                                  data: [nogo.product.mb,nogo.project.mb,nogo.service.mb],
                                   backgroundColor: 'rgb(204, 204, 204)',
                                   stack: 'Stack 1',
                                 },
@@ -3567,7 +3773,31 @@
                                                     label += ' : ';
                                                 }
                                                 if (context.parsed.y !== null) {
-                                                    label += context.parsed.y + ' MB';
+                                                    if (context.dataset.label === "Won"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + won.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + won.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + won.service.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "Lost"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + lost.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + lost.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + lost.service.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "No go"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + nogo.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + nogo.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + nogo.service.cnt + ' Quo.';
+                                                        }
+                                                    }
                                                 }
                                                 return label;
                                         }
@@ -3617,7 +3847,7 @@
         };
 
         var chart_stack_wonlost_nogobudget_department;
-        function UpdateChartStackWonLost_NOGOBudget_Department(wons,losts,nogos,budgets,chart_name){
+        function UpdateChartStackWonLost_NOGOBudget_Department(won,lost,nogo,budget,chart_name){
             if (chart_stack_wonlost_nogobudget_department != null){
                 chart_stack_wonlost_nogobudget_department.destroy();
             }
@@ -3628,25 +3858,25 @@
                               datasets: [
                                 {
                                   label: 'Won',
-                                  data: wons,
+                                  data: [won.product.mb,won.project.mb,won.service.mb],
                                   backgroundColor: 'rgb(0, 153, 0)',
                                   stack: 'Stack 0',
                                 },
                                 {
                                   label: 'Lost',
-                                  data: losts,
+                                  data: [lost.product.mb,lost.project.mb,lost.service.mb],
                                   backgroundColor: 'rgb(226, 120, 87)',
                                   stack: 'Stack 0',
                                 },
                                 {
                                   label: 'No go',
-                                  data: nogos,
+                                  data: [nogo.product.mb,nogo.project.mb,nogo.service.mb],
                                   backgroundColor: 'rgb(204, 204, 204)',
                                   stack: 'Stack 1',
                                 },
                                 {
                                   label: 'Budget',
-                                  data: budgets,
+                                  data: [budget.product.mb,budget.project.mb,budget.service.mb],
                                   backgroundColor: 'rgb(0, 92, 230)',
                                   stack: 'Stack 1',
                                 },
@@ -3672,7 +3902,39 @@
                                                     label += ' : ';
                                                 }
                                                 if (context.parsed.y !== null) {
-                                                    label += context.parsed.y + ' MB';
+                                                    if (context.dataset.label === "Won"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + won.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + won.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + won.service.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "Lost"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + lost.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + lost.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + lost.service.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "No go"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + nogo.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + nogo.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + nogo.service.cnt + ' Quo.';
+                                                        }
+                                                    }else if (context.dataset.label === "Budget"){
+                                                        if (context.label === "Product"){
+                                                            label += context.parsed.y + ' MB , ' + budget.product.cnt + ' Quo.';
+                                                        }else if(context.label === "Project"){
+                                                            label += context.parsed.y + ' MB , ' + budget.project.cnt + ' Quo.';
+                                                        }else if(context.label === "Service"){
+                                                            label += context.parsed.y + ' MB , ' + budget.service.cnt + ' Quo.';
+                                                        }
+                                                    }
                                                 }
                                                 return label;
                                         }
@@ -3729,7 +3991,7 @@
                 data: dataSet,
                 columns: [
                     { title: "Quotation"},
-                    { title: "Value(MB)"},
+                    { title: "Value (MB)"},
                     { title: "Last Update (Day)" },
                 ],
                 "columnDefs": [
@@ -3756,7 +4018,7 @@
                 data: dataSet,
                 columns: [
                     { title: "Quotation"},
-                    { title: "Value(MB)"},
+                    { title: "Value (MB)"},
                     { title: "Last Update (Day)" },
                 ],
                 "columnDefs": [

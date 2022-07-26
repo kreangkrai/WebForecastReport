@@ -403,7 +403,7 @@ namespace WebForecastReport.Service
                 string command = "";
                 if (role != "Admin")
                 {
-                    command = "select * from Quotation where sale_name='" + name + "' order by date desc";
+                    command = "select * from Quotation where proposer='" + name + "' order by date desc";
                 }
 
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
