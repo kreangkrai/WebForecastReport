@@ -74,8 +74,8 @@
                             <th>PD</th>
                             <th>Factor</th>
                             <th>Total Manhours</th>
-                            <th>Cost Per Hour</th>
-                            <th id="name1">Manpower</th>
+                            <th>Cost Per Day</th>
+                            <th id="name1">Manhours</th>
                             <th>% Participation</th>
                             <th>Score</th>
                         </tr>
@@ -89,8 +89,8 @@
                             <th>PD</th>
                             <th>Factor</th>
                             <th>Total Manhours</th>
-                            <th>Cost Per Hour</th>
-                            <th id="name2">Manpower</th>
+                            <th>Cost Per Day</th>
+                            <th id="name2">Manhours</th>
                             <th>% Participation</th>
                             <th>Score</th>
                         </tr>
@@ -179,7 +179,7 @@
                     scores[i].pd_rate,
                     scores[i].factor,
                     scores[i].total_manpower,
-                    scores[i].cost_per_tmp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    (scores[i].cost_per_tmp / 8).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     scores[i].manpower,
                     parseInt(scores[i].manpower_per_tmp * 100),
                     scores[i].score.toFixed(2)
