@@ -27,5 +27,8 @@ namespace WebForecastReport.Interface
         TargetDepartment GetTargetDepartment(string year, string department);
         List<SubQuotationModel> GetDataSubQuotationIndividual(string year, string name, string type);
         List<SubQuotationModel> GetDataSubQuotationDepartment(string year, string department, string type);
+        QuotationModel GetViewQuotationByNo(string quotation);
+        List<QuotationModel> GetQuotationByIndividual(string year, string name, string type,string data);
+        List<QuotationModel> GetQuotationByDepartment(string year, string department, string type,string data);
     }
 }

@@ -1,0 +1,166 @@
+﻿<div class="modal fade" id="ShowDataModal" tabindex="-1" role="dialog" style="overflow-y:auto">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row w-100">
+                    <div class="col-md-2 col-xl-2 ml-2">
+                        <h4 class="modal-title"><b>Quotation</b></h4>
+                    </div>
+                    <div class="col-md-5 col-xl-5 ml-2">
+                        <input id="sale_name_view" class="form-control" style="width:100%" disabled />
+                    </div>
+                    <div class="col-md-3 col-xl-3 ml-2">
+                        <div class="row">
+                            <div class="col-md-12 col-xl-12">
+                                <div class="row">
+                                    <div class="col-md-10 col-xl-10" style="text-align:center">
+                                        <h4 style="width:100%"><b>Department :</b></h4>
+                                    </div>
+                                    <div class="col-md-2 col-xl-2" style="text-align:center">
+                                        <h4 id="department_view" style="width:100%;font-weight:bold"></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row m-0">
+                        <div class="col-md-2 col-xl-2">
+                            <label>Quotation No</label>
+                            <input id="quotation_no" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-1 col-xl-1">
+                            <label>Revision</label>
+                            <input id="revision" type="number" class="form-control" disabled />
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Quotation Created Date</label>
+                            <input id="date" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Customer</label>
+                            <input id="customer" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>End User</label>
+                            <input id="enduser" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-3 col-xl-3">
+                            <label>Project Name</label>
+                            <input id="project_name" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Site Location</label>
+                            <input id="site_location" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-1 col-xl-1">
+                            <label>Status</label>
+                            <input id="status" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Stages</label>
+                            <input id="stages" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-2 col-xl-2 d-flex align-items-end">
+                            <input id="stages_update_date" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row m-0">
+                        <div class="col-md-3 col-xl-3">
+                            <label>Expected Order Date</label>
+                            <input id="expected_order_date" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Required Onsite Date</label>
+                            <input id="required_onsite_date" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+
+                        <div class="col-md-3 col-xl-3">
+                            <label>Proposel Created By</label>
+                            <input id="proposer" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label>Proposal Expected Date</label>
+                            <input id="expected_date" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-12 col-xl-12">
+                            <label for="table_engineer_in_charge_view">Engineering In Charge</label>
+                            <table class="table table-md cell-border table-dark display responsive nowrap" id="table_engineer_in_charge_view" style="width:100%;overflow-x:auto">
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-3 col-xl-3">
+                            <label>Product Type</label>
+                            <input id="product_type" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                         <div class="col-md-3 col-xl-3 form-inline pt-4">                               
+                            <input type="checkbox" id="view_chk_exclude_quote" style="width:20px;height:20px" disabled/>
+                            <label for="view_chk_exclude_quote" class="form-check-label pl-1" style="font-weight:bold">Duplicate</label>
+                        </div>
+                     </div>                            
+                    <div class="form-group row m-0">
+                        <div class="col-md-12 col-xl-12">
+                            <div id="view_group_types" class="form-group pb-3" style="overflow-x:auto;width:100%">
+                                <label for="view_table_types">Types</label>
+                                <table id="view_table_types" class="table table-xl cell-border table-dark display responsive nowrap" style="width:100%; overflow-x:auto">
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-4 col-xl-4">
+                            <div class="row">
+                                <div class="col-md-12 col-xl-12">
+                                    <label>Quoted Price</label>
+                                    <div class="row">
+                                        <input id="quoted_price" type="text" class="form-control ml-2" style="width:85%" disabled>
+                                        <h5 class="pt-2 pl-1"><b> THB</b></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <label>How supplier support to win this project</label>
+                            <input id="how_to_support" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <label>Competitor</label>
+                            <input id="competitor" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row m-0">
+                        <div class="col-md-4 col-xl-4">
+                            <label>Competitor Description</label>
+                            <input id="competitor_description" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <label>Competitor A Price (THB)</label>
+                            <input id="competitor_price" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <label>Detail Project</label>
+                            <input id="detail" type="text" class="form-control" style="width:100%" disabled>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+

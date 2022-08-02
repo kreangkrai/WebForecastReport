@@ -15,6 +15,11 @@
         word-wrap:unset;
         white-space:nowrap;
     }
+    #table_stages tr td:nth-of-type(1),
+    #table_stages_department tr td:nth-of-type(1),
+    #view_table_quotation tr td:nth-of-type(1){
+        cursor: pointer;
+    }
 
 </style>
 <div class="row pt-3">
@@ -599,6 +604,9 @@
         </div>
     </div>
 </div>
+<partial name="QuotationModal"/>
+<partial name="DataModal"/>
+
 @section Scripts
 {
     <script type="text/javascript">
@@ -717,6 +725,171 @@
             last_dashboard_deprtment_index = document.getElementById("department_name").selectedIndex;
         });
 
+        $('#table_stages').on('click', 'tbody td', function () {
+            var cell = tables.cell(this);
+            var column = cell[0][0].column;  //quotation column
+
+            if (column == 0){
+                var quotation = cell.data();
+                $.ajax({
+                    url: '@Url.Action("GetViewQuotationByNo", "Home")',
+                    type: "post",
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: {
+                        quotation
+                    },
+                    success: function (response) {
+                        viewPendingQuotation(response.quotation);
+                    }
+                });
+            }
+        });
+
+        $('#table_stages_department').on('click', 'tbody td', function () {
+            var cell = tables_Lastupdate_department.cell(this);
+            var column = cell[0][0].column; //quotation column
+
+            if (column == 0){
+                var quotation = cell.data();
+                $.ajax({
+                    url: '@Url.Action("GetViewQuotationByNo", "Home")',
+                    type: "post",
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: {
+                        quotation
+                    },
+                    success: function (response) {
+                        viewPendingQuotation(response.quotation);
+                    }
+                });
+            }
+        });
+
+         $('#view_table_quotation').on('click', 'tbody td', function () {
+            var cell = tables_quotation.cell(this);
+            var column = cell[0][0].column; //quotation column
+
+            if (column == 0){
+                var quotation = cell.data();
+                $.ajax({
+                    url: '@Url.Action("GetViewQuotationByNo", "Home")',
+                    type: "post",
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: {
+                        quotation
+                    },
+                    success: function (response) {
+                        viewPendingQuotation(response.quotation);
+                    }
+                });
+            }
+        });
+
+        function viewPendingQuotation(quotation){
+            var arrProductType = [];
+            var arrEngineer = [];
+
+            var count = (quotation.brand.match(/\|/g) || []).length;
+            for (var i = 0; i <= count; i++) {
+                if (quotation.brand != "") {
+                    var _type = quotation.type.split('|')[i];
+                    var _brand = quotation.brand.split('|')[i];
+                    var _part_no = quotation.part_no.split('|')[i];
+                    var _spec = quotation.spec.split('|')[i];
+                    var _quantity = quotation.quantity.split('|')[i];
+                    var _supplier = quotation.supplier_quotation_no.split('|')[i];
+                    var _total_value = quotation.total_value.split('|')[i];
+                    var _unit = quotation.unit.split('|')[i];
+
+                    arrProductType.push([{"edit":"",
+                                            "delete":"",
+                                            "type":_type,
+                                            "brand":_brand,
+                                            "part_no":_part_no,
+                                            "spec":_spec,
+                                            "quantity":_quantity,
+                                            "supplier_quotation_no":_supplier,
+                                            "total_value":_total_value,
+                                            "unit":_unit}]);
+                }
+            }
+
+            var count_engineer = (quotation.engineer_in_charge.match(/\|/g) || []).length;
+            for (var i = 0; i <= count_engineer; i++) {
+                if (quotation.engineer_in_charge != "") {
+                    var _engineer_in_charge = quotation.engineer_in_charge.split('|')[i];
+                    var _engineer_department = quotation.engineer_department.split('|')[i];
+
+                    arrEngineer.push([{
+                        "delete": "",
+                        "engineer": _engineer_in_charge,
+                        "department": _engineer_department
+                    }]);
+                }
+            }
+
+            document.getElementById('quotation_no').value = quotation.quotation_no;
+            document.getElementById('revision').value = quotation.revision;
+            document.getElementById('date').value = quotation.date;
+            document.getElementById('customer').value = quotation.customer;
+            document.getElementById('enduser').value = quotation.enduser;
+            document.getElementById('project_name').value = quotation.project_name;
+            document.getElementById('site_location').value = quotation.site_location;
+            document.getElementById('product_type').value = quotation.product_type;
+
+            document.getElementById('quoted_price').value = quotation.quoted_price;
+            document.getElementById('expected_order_date').value = quotation.expected_order_date;
+            document.getElementById('required_onsite_date').value = quotation.required_onsite_date;
+            document.getElementById('proposer').value = quotation.proposer;
+            document.getElementById('expected_date').value = quotation.expected_date;
+            document.getElementById('status').value = quotation.status;
+            document.getElementById('stages').value = quotation.stages;
+            document.getElementById('stages_update_date').value = quotation.stages_update_date;
+            document.getElementById('how_to_support').value = quotation.how_to_support;
+            document.getElementById('competitor').value = quotation.competitor;
+            document.getElementById('competitor_description').value = quotation.competitor_description;
+            document.getElementById('competitor_price').value = quotation.competitor_price;
+            document.getElementById('sale_name_view').value = quotation.sale_name;
+
+            document.getElementById('department_view').innerHTML = quotation.department;
+
+            document.getElementById('detail').value = quotation.detail;
+
+            //exclude quote
+            if (quotation.exclude_quote){
+                 document.getElementById("view_chk_exclude_quote").checked = true;
+            }else{
+                 document.getElementById("view_chk_exclude_quote").checked = false;
+            }
+
+            //init data table view
+            //Product type view();
+            var dataSet = [];
+            for (var i = 0; i < arrProductType.length; i++) {
+                var data = [arrProductType[i][0].type,arrProductType[i][0].brand, 
+                arrProductType[i][0].part_no, 
+                arrProductType[i][0].spec, 
+                arrProductType[i][0].quantity, 
+                arrProductType[i][0].supplier_quotation_no, 
+                arrProductType[i][0].total_value, 
+                arrProductType[i][0].unit];
+                dataSet.push(data);
+            }
+            table_view(dataSet);
+
+            //engineer_view;
+
+            var dataSet = [];
+
+            for (var i = 0; i < arrEngineer.length; i++) {
+                var data = [arrEngineer[i][0].engineer, 
+                arrEngineer[i][0].department];
+                dataSet.push(data);
+            }
+            table_engineer_view(dataSet);
+
+            $('#ShowDataModal').modal();
+        };
         function initSale(role,Sales){
             $('#sale_name').empty();
             var name = '@Model.name';
@@ -1432,7 +1605,7 @@
 		        indexLabel: "{label} : {y} MB",
                 indexLabelFontColor: "black",
                 toolTipContent: "{label} : {y} MB",
-		        dataPoints: datas,
+		        dataPoints: datas,               
 	        }],
             legend: {
                 horizontalAlign: "center",
@@ -1455,7 +1628,7 @@
             datas = datas.filter(x => x.y > 0);
 
             var pie_chart_type = new CanvasJS.Chart(chart_name, {
-	        animationEnabled: true,
+	        animationEnabled: false,
             backgroundColor: "transparent",
 	        title: {
 		        text: "Quotation",
@@ -1473,6 +1646,24 @@
                 indexLabelFontColor: "black",
                 toolTipContent: "{label} : {y} MB , {count} Quo.",
 		        dataPoints: datas,
+                cursor: "pointer",
+                explodeOnClick: false,
+                click: function(e){
+
+                    if (chart_name === "pie_chart_type"){
+                        var year = document.getElementById("years_dashboard").value;
+                        var name = document.getElementById("sale_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByIndividual(year,name,type,data);
+                    }else if (chart_name === "pie_chart_type_department"){
+                        var year = document.getElementById("years_dashboard_department").value;
+                        var department = document.getElementById("department_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByDepartment(year,department,type,data);
+                    }
+                },
 	        }],
             legend: {
                 horizontalAlign: "center",
@@ -1512,6 +1703,24 @@
                 indexLabelFontColor: "black",
                 toolTipContent: "{label} : {y} MB , {count} Quo.",
 		        dataPoints: datas,
+                cursor: "pointer",
+                explodeOnClick: false,
+                click: function(e){
+
+                    if (chart_name === "pie_chart_won"){
+                        var year = document.getElementById("years_dashboard").value;
+                        var name = document.getElementById("sale_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByIndividual(year,name,type,data);
+                    }else if (chart_name === "pie_chart_won_department"){
+                        var year = document.getElementById("years_dashboard_department").value;
+                        var department = document.getElementById("department_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByDepartment(year,department,type,data);
+                    }
+                },
 	        }],
             legend: {
                 horizontalAlign: "center",
@@ -1551,6 +1760,24 @@
                 indexLabelFontColor: "black",
                 toolTipContent: "{label} : {y} MB , {count} Quo.",
 		        dataPoints: datas,
+                cursor: "pointer",
+                explodeOnClick: false,
+                click: function(e){
+
+                    if (chart_name === "pie_chart_lost"){
+                        var year = document.getElementById("years_dashboard").value;
+                        var name = document.getElementById("sale_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByIndividual(year,name,type,data);
+                    }else if (chart_name === "pie_chart_lost_department"){
+                        var year = document.getElementById("years_dashboard_department").value;
+                        var department = document.getElementById("department_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByDepartment(year,department,type,data);
+                    }
+                },
 	        }],
             legend: {
                 horizontalAlign: "center",
@@ -1591,6 +1818,24 @@
                 indexLabelFontColor: "black",
                 toolTipContent: "{label} : {y} MB , {count} Quo.",
 		        dataPoints: datas,
+                cursor: "pointer",
+                explodeOnClick: false,
+                click: function(e){
+
+                    if (chart_name === "pie_chart_nogo"){
+                        var year = document.getElementById("years_dashboard").value;
+                        var name = document.getElementById("sale_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByIndividual(year,name,type,data);
+                    }else if (chart_name === "pie_chart_nogo_department"){
+                        var year = document.getElementById("years_dashboard_department").value;
+                        var department = document.getElementById("department_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByDepartment(year,department,type,data);
+                    }
+                },
 	        }],
             legend: {
                 horizontalAlign: "center",
@@ -1631,6 +1876,24 @@
                 indexLabelFontColor: "black",
                 toolTipContent: "{label} : {y} MB , {count} Quo.",
 		        dataPoints: datas,
+                cursor: "pointer",
+                explodeOnClick: false,
+                click: function(e){
+
+                    if (chart_name === "pie_chart_pending"){
+                        var year = document.getElementById("years_dashboard").value;
+                        var name = document.getElementById("sale_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByIndividual(year,name,type,data);
+                    }else if (chart_name === "pie_chart_pending_department"){
+                        var year = document.getElementById("years_dashboard_department").value;
+                        var department = document.getElementById("department_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByDepartment(year,department,type,data);
+                    }
+                },
 	        }],
             legend: {
                 horizontalAlign: "center",
@@ -1670,6 +1933,24 @@
                 indexLabelFontColor: "black",
                 toolTipContent: "{label} : {y} MB , {count} Quo.",
 		        dataPoints: datas,
+                cursor: "pointer",
+                explodeOnClick: false,
+                click: function(e){
+
+                    if (chart_name === "pie_chart_pending_in"){
+                        var year = document.getElementById("years_dashboard").value;
+                        var name = document.getElementById("sale_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByIndividual(year,name,type,data);
+                    }else if (chart_name === "pie_chart_pending_in_department"){
+                        var year = document.getElementById("years_dashboard_department").value;
+                        var department = document.getElementById("department_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByDepartment(year,department,type,data);
+                    }
+                },
 	        }],
             legend: {
                 horizontalAlign: "center",
@@ -1710,6 +1991,24 @@
                 indexLabelFontColor: "black",
                 toolTipContent: "{label} : {y} MB , {count} Quo.",
 		        dataPoints: datas,
+                cursor: "pointer",
+                explodeOnClick: false,
+                click: function(e){
+
+                    if (chart_name === "pie_chart_quotebudget"){
+                        var year = document.getElementById("years_dashboard").value;
+                        var name = document.getElementById("sale_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByIndividual(year,name,type,data);
+                    }else if (chart_name === "pie_chart_quotebudget_department"){
+                        var year = document.getElementById("years_dashboard_department").value;
+                        var department = document.getElementById("department_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByDepartment(year,department,type,data);
+                    }
+                },
 	        }],
             legend: {
                 horizontalAlign: "center",
@@ -1723,11 +2022,11 @@
         function UpdatePieChartStages(stages_quote_for_budget,stages_negotiation_review,stages_proposal,stages_prospectng,stages_won,stages_lost,stages_nogo,chart_name) {
            var datas = [			       			        
                     {y: stages_quote_for_budget.mb, count:stages_quote_for_budget.cnt, label: "Quote for Budget", legendText: "Quote for Budget", color:"#083470"},
-			        {y: stages_negotiation_review.mb, count:stages_negotiation_review.cnt, label: "Negotiation Review", legendText: "Negotiation Review", color:"#1C4C97"},
-			        {y: stages_proposal.mb, count:stages_proposal.cnt, label: "Proposal Qoute for Order", legendText: "Proposal Qoute for Order", color:"#2484C6"},
+			        {y: stages_negotiation_review.mb, count:stages_negotiation_review.cnt, label: "Negotiation/Review", legendText: "Negotiation/Review", color:"#1C4C97"},
+			        {y: stages_proposal.mb, count:stages_proposal.cnt, label: "Proposal/Quote for Order", legendText: "Proposal/Quote for Order", color:"#2484C6"},
                     {y: stages_prospectng.mb, count:stages_prospectng.cnt, label: "Prospecting", legendText: "Prospecting", color:"#84C2ED"},
-                    {y: stages_won.mb, count:stages_won.cnt, label: "Closed (Won)", legendText: "Closed (Won)", color:"#D6D6D6"},
-                    {y: stages_lost.mb, count:stages_lost.cnt, label: "Closed (Lost)", legendText: "Closed (Lost)", color:"#B0B0B0"},
+                    {y: stages_won.mb, count:stages_won.cnt, label: "Closed(Won)", legendText: "Closed(Won)", color:"#D6D6D6"},
+                    {y: stages_lost.mb, count:stages_lost.cnt, label: "Closed(Lost)", legendText: "Closed(Lost)", color:"#B0B0B0"},
 			        {y: stages_nogo.mb, count:stages_nogo.cnt, label: "No go", legendText: "No go", color:"#7D7D7D"},
 		            ];
             // filter value more than 0
@@ -1753,6 +2052,24 @@
                 indexLabelFontColor: "black",
                 toolTipContent: "{label} : {y} MB , {count} Quo.",
 		        dataPoints: datas,
+                cursor: "pointer",
+                explodeOnClick: false,
+                click: function(e){
+
+                    if (chart_name === "pie_chart_stages"){
+                        var year = document.getElementById("years_dashboard").value;
+                        var name = document.getElementById("sale_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByIndividual(year,name,type,data);
+                    }else if (chart_name === "pie_chart_stages_department"){
+                        var year = document.getElementById("years_dashboard_department").value;
+                        var department = document.getElementById("department_name").value;
+                        var type = e.chart.title.text;
+                        var data = e.dataPoint.label;
+                        GetQuotationByDepartment(year,department,type,data);
+                    }
+                },
 	        }],
             legend: {
                 horizontalAlign: "center",
@@ -1946,7 +2263,7 @@
                                     size: 14
                                 },
                             },
-                            scaleLabel: { display: true, labelString: 'Day' },
+                            scaleLabel: { display: true, labelString: 'Quo.' },
                             gridLines: { display: false }
                         },
                     },
@@ -1958,6 +2275,20 @@
                             font: {
                                 size: 20
                             },
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    var label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ' : ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += context.raw + ' Quo.';
+                                        }
+                                    return label;
+                                }
+                            }
                         },
                         legend: {
                             position: 'top',
@@ -2999,6 +3330,32 @@
                         chart_stack_wonlost_nogobudget = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
 
+        function GetQuotationByIndividual(year,name,type,data){
+             $.ajax({
+                 url: '@Url.Action("GetQuotationByIndividual", "Home")',
+                 type: "post",
+                 contentType: 'application/x-www-form-urlencoded',
+                 data: {
+                     year,name,type,data
+                 },
+                 success: function (response) {
+                     var datas = response.quotation;
+                        var dataSet = [];
+                        for (var i = 0; i < datas.length; i++) {
+                            var d = [
+                                datas[i].quotation_no,
+                                datas[i].quoted_price];
+                            dataSet.push(d);
+                        }
+                     tableQuotation(dataSet);
+
+                     document.getElementById("quotation_title").innerHTML = type + "-" + data;
+                     document.getElementById("quotation_title").style.fontWeight = "bold";
+                     $('#ShowQuotationModal').modal();
+                 }
+             });
+        };
+
         // Dashboard Department
 
         var stages_department_stack;
@@ -3092,7 +3449,7 @@
                                                     label += ' : ';
                                                 }
                                                 if (context.parsed.y !== null) {
-                                                    label += context.raw + ' Day';
+                                                    label += context.raw + ' Quo.';
                                                 }
                                             return label;
                                         }
@@ -3983,6 +4340,32 @@
                         chart_stack_wonlost_nogobudget_department = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
 
+        var tables_quotation;
+        function tableQuotation(dataSet) {
+            if (tables_quotation !== undefined)
+                tables_quotation.destroy();
+                tables_quotation = $('#view_table_quotation').DataTable({
+                data: dataSet,
+                columns: [
+                    { title: "Quotation"},
+                    { title: "Value (MB)"},
+                ],
+                "columnDefs": [
+                    {
+                        "targets": [0, 1],
+                        "className": "dt-center",
+                    },
+                ],
+                "paging": false,
+                "searching": false,
+                "bInfo": false,
+                "scrollX": true,
+                "ordering":false,
+                "fixedHeader":true,
+            });
+            $(tables_quotation.table().body()).addClass('text-dark');
+        }
+
         var tables;
         function table(dataSet) {
             if (tables !== undefined)
@@ -4121,6 +4504,82 @@
             $(tables_performance_stack.table().body()).addClass('text-dark');
             },100);
         };
+
+        var tables_engineer_view;
+        function table_engineer_view(dataSet) {
+            setTimeout(function () {
+                if (tables_engineer_view !== undefined)
+                    tables_engineer_view.destroy();
+                tables_engineer_view = $('#table_engineer_in_charge_view').DataTable({
+                    data: dataSet,
+                    columns: [
+                        { title: "Engineer", width: 120 },
+                        { title: "Department", width: 120 },
+                    ],
+                    "columnDefs": [                        
+                    ],
+                    "scrollX": true,
+                    "paging": false,
+                    "searching": false,
+                    "bInfo": false,
+                });
+                $(tables_engineer_view.table().body()).addClass('text-dark');
+            }, 300);
+        };
+
+        var tables_view;
+        function table_view(dataSet) {
+                setTimeout(function () {
+                    if (tables_view !== undefined)
+                        tables_view.destroy();
+                        tables_view = $('#view_table_types').DataTable({
+                        data: dataSet,
+                        columns: [
+                            { title: "Type", width: 80 },
+                            { title: "Brand", width: 80 },
+                            { title: "Part No", width: 80 },
+                            { title: "Spec", width: 80 },
+                            { title: "Quantity", width: 80 },
+                            { title: "Supplier Quotation No", width: 80 },
+                            { title: "Total Value", width: 80 },
+                            { title: "Unit", width: 30 },
+                        ],
+                        "scrollX": true,
+                        "paging": false,
+                        "searching": false,
+                        "bInfo": false,
+
+                    });
+                    $(tables_view.table().body()).addClass('text-dark');
+                }, 300);
+        };
+
+        function GetQuotationByDepartment(year,department,type,data){
+             $.ajax({
+                 url: '@Url.Action("GetQuotationByDepartment", "Home")',
+                 type: "post",
+                 contentType: 'application/x-www-form-urlencoded',
+                 data: {
+                     year,department,type,data
+                 },
+                 success: function (response) {
+                     var datas = response.quotation;
+                        var dataSet = [];
+                        for (var i = 0; i < datas.length; i++) {
+                            var d = [
+                                datas[i].quotation_no,
+                                datas[i].quoted_price];
+                            dataSet.push(d);
+                        }
+                     tableQuotation(dataSet);
+
+                     document.getElementById("quotation_title").innerHTML = type + "-" + data;
+                     document.getElementById("quotation_title").style.fontWeight = "bold";
+                     $('#ShowQuotationModal').modal();
+                 }
+             });
+        };
+
 
         function add_department(departments) {
                 var data_departments = [];
