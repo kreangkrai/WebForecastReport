@@ -1649,19 +1649,18 @@
                 cursor: "pointer",
                 explodeOnClick: false,
                 click: function(e){
-
                     if (chart_name === "pie_chart_type"){
                         var year = document.getElementById("years_dashboard").value;
                         var name = document.getElementById("sale_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByIndividual(year,name,type,data);
+                        GetQuotationByPieIndividual(year,name,type,data);
                     }else if (chart_name === "pie_chart_type_department"){
                         var year = document.getElementById("years_dashboard_department").value;
                         var department = document.getElementById("department_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByDepartment(year,department,type,data);
+                        GetQuotationByPieDepartment(year,department,type,data);
                     }
                 },
 	        }],
@@ -1712,13 +1711,13 @@
                         var name = document.getElementById("sale_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByIndividual(year,name,type,data);
+                        GetQuotationByPieIndividual(year,name,type,data);
                     }else if (chart_name === "pie_chart_won_department"){
                         var year = document.getElementById("years_dashboard_department").value;
                         var department = document.getElementById("department_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByDepartment(year,department,type,data);
+                        GetQuotationByPieDepartment(year,department,type,data);
                     }
                 },
 	        }],
@@ -1769,13 +1768,13 @@
                         var name = document.getElementById("sale_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByIndividual(year,name,type,data);
+                        GetQuotationByPieIndividual(year,name,type,data);
                     }else if (chart_name === "pie_chart_lost_department"){
                         var year = document.getElementById("years_dashboard_department").value;
                         var department = document.getElementById("department_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByDepartment(year,department,type,data);
+                        GetQuotationByPieDepartment(year,department,type,data);
                     }
                 },
 	        }],
@@ -1827,13 +1826,13 @@
                         var name = document.getElementById("sale_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByIndividual(year,name,type,data);
+                        GetQuotationByPieIndividual(year,name,type,data);
                     }else if (chart_name === "pie_chart_nogo_department"){
                         var year = document.getElementById("years_dashboard_department").value;
                         var department = document.getElementById("department_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByDepartment(year,department,type,data);
+                        GetQuotationByPieDepartment(year,department,type,data);
                     }
                 },
 	        }],
@@ -1885,13 +1884,13 @@
                         var name = document.getElementById("sale_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByIndividual(year,name,type,data);
+                        GetQuotationByPieIndividual(year,name,type,data);
                     }else if (chart_name === "pie_chart_pending_department"){
                         var year = document.getElementById("years_dashboard_department").value;
                         var department = document.getElementById("department_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByDepartment(year,department,type,data);
+                        GetQuotationByPieDepartment(year,department,type,data);
                     }
                 },
 	        }],
@@ -1942,13 +1941,13 @@
                         var name = document.getElementById("sale_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByIndividual(year,name,type,data);
+                        GetQuotationByPieIndividual(year,name,type,data);
                     }else if (chart_name === "pie_chart_pending_in_department"){
                         var year = document.getElementById("years_dashboard_department").value;
                         var department = document.getElementById("department_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByDepartment(year,department,type,data);
+                        GetQuotationByPieDepartment(year,department,type,data);
                     }
                 },
 	        }],
@@ -2000,13 +1999,13 @@
                         var name = document.getElementById("sale_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByIndividual(year,name,type,data);
+                        GetQuotationByPieIndividual(year,name,type,data);
                     }else if (chart_name === "pie_chart_quotebudget_department"){
                         var year = document.getElementById("years_dashboard_department").value;
                         var department = document.getElementById("department_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByDepartment(year,department,type,data);
+                        GetQuotationByPieDepartment(year,department,type,data);
                     }
                 },
 	        }],
@@ -2061,13 +2060,13 @@
                         var name = document.getElementById("sale_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByIndividual(year,name,type,data);
+                        GetQuotationByPieIndividual(year,name,type,data);
                     }else if (chart_name === "pie_chart_stages_department"){
                         var year = document.getElementById("years_dashboard_department").value;
                         var department = document.getElementById("department_name").value;
                         var type = e.chart.title.text;
                         var data = e.dataPoint.label;
-                        GetQuotationByDepartment(year,department,type,data);
+                        GetQuotationByPieDepartment(year,department,type,data);
                     }
                 },
 	        }],
@@ -2640,12 +2639,25 @@
                                       display: true
                                   }
                                 }
-                              }
+                              },
+                              onHover: (event, chartElement) => {
+                                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                              },
+                              onClick: function(evt,point){                                
+                                  if (point.length > 0) {
+                                        var title = this.options.plugins.title.text;                                    
+                                        var year = document.getElementById("years_dashboard").value;
+                                        var name = document.getElementById("sale_name").value;
+                                        var type = this.data.labels[point[0].index];
+                                        var data = this.data.datasets[point[0].datasetIndex].label;
+                                        GetQuotationByBarIndividual(year,name,title,type,data);                                     
+                                    }                                 
+                              },
                         };
-                            
+                        
                         chartbar_pending_all_pending_in = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
-   
+
         var chartbar_quotation_target;
         function UpdateChartBarQuotation_Target(quotation,target,chart_name){           
             if (chartbar_quotation_target != null){
@@ -2747,7 +2759,20 @@
                                       display: true
                                   }
                                 }
-                              }
+                              },
+                              onHover: (event, chartElement) => {
+                                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                              },
+                              onClick: function(evt,point){                                
+                                  if (point.length > 0) {
+                                        var title = this.options.plugins.title.text;                                    
+                                        var year = document.getElementById("years_dashboard").value;
+                                        var name = document.getElementById("sale_name").value;
+                                        var type = this.data.labels[point[0].index];
+                                        var data = this.data.datasets[point[0].datasetIndex].label;
+                                        GetQuotationByBarIndividual(year,name,title,type,data);                                     
+                                    }                                 
+                              },
                         };
                         chartbar_quotation_target = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
@@ -2853,7 +2878,20 @@
                                       display: true
                                   }
                                 }
-                              }
+                              },
+                              onHover: (event, chartElement) => {
+                                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                              },
+                              onClick: function(evt,point){                                
+                                  if (point.length > 0) {
+                                        var title = this.options.plugins.title.text;                                    
+                                        var year = document.getElementById("years_dashboard").value;
+                                        var name = document.getElementById("sale_name").value;
+                                        var type = this.data.labels[point[0].index];
+                                        var data = this.data.datasets[point[0].datasetIndex].label;
+                                        GetQuotationByBarIndividual(year,name,title,type,data);                                     
+                                    }                                 
+                              },
                         };
                         chartbar_target_won = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
@@ -2959,7 +2997,20 @@
                                       display: true
                                   }
                                 }
-                              }
+                              },
+                              onHover: (event, chartElement) => {
+                                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                              },
+                              onClick: function(evt,point){                                
+                                  if (point.length > 0) {
+                                        var title = this.options.plugins.title.text;                                    
+                                        var year = document.getElementById("years_dashboard").value;
+                                        var name = document.getElementById("sale_name").value;
+                                        var type = this.data.labels[point[0].index];
+                                        var data = this.data.datasets[point[0].datasetIndex].label;
+                                        GetQuotationByBarIndividual(year,name,title,type,data);                                     
+                                    }                                 
+                              },
                         };
                         chartbar_remaintarget_pendingin = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
@@ -3065,7 +3116,20 @@
                                       display: true
                                   }
                                 }
-                              }
+                              },
+                              onHover: (event, chartElement) => {
+                                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                              },
+                              onClick: function(evt,point){                                
+                                  if (point.length > 0) {
+                                        var title = this.options.plugins.title.text;                                    
+                                        var year = document.getElementById("years_dashboard").value;
+                                        var name = document.getElementById("sale_name").value;
+                                        var type = this.data.labels[point[0].index];
+                                        var data = this.data.datasets[point[0].datasetIndex].label;
+                                        GetQuotationByBarIndividual(year,name,title,type,data);                                     
+                                    }                                 
+                              },
                         };
                         chartbar_won_lost = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
@@ -3187,8 +3251,20 @@
                                   },
                                 },
                                 
-                              }
-
+                              },
+                              onHover: (event, chartElement) => {
+                                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                              },
+                              onClick: function(evt,point){                                
+                                  if (point.length > 0) {
+                                        var title = this.options.plugins.title.text;                                    
+                                        var year = document.getElementById("years_dashboard").value;
+                                        var name = document.getElementById("sale_name").value;
+                                        var type = this.data.labels[point[0].index];
+                                        var data = this.data.datasets[point[0].datasetIndex].label;
+                                        GetQuotationByBarIndividual(year,name,title,type,data);                                     
+                                    }                                 
+                              },
                         };
                         chart_stack_wonlost_nogo = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
@@ -3324,19 +3400,57 @@
                                   },
                                 },
                                 
-                              }
+                              },
+                              onHover: (event, chartElement) => {
+                                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                              },
+                              onClick: function(evt,point){                                
+                                  if (point.length > 0) {
+                                        var title = this.options.plugins.title.text;                                    
+                                        var year = document.getElementById("years_dashboard").value;
+                                        var name = document.getElementById("sale_name").value;
+                                        var type = this.data.labels[point[0].index];
+                                        var data = this.data.datasets[point[0].datasetIndex].label;
+                                        GetQuotationByBarIndividual(year,name,title,type,data);                                     
+                                    }                                 
+                              },
 
                         };
                         chart_stack_wonlost_nogobudget = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
 
-        function GetQuotationByIndividual(year,name,type,data){
+        function GetQuotationByPieIndividual(year,name,type,data){
              $.ajax({
-                 url: '@Url.Action("GetQuotationByIndividual", "Home")',
+                 url: '@Url.Action("GetQuotationByPieIndividual", "Home")',
                  type: "post",
                  contentType: 'application/x-www-form-urlencoded',
                  data: {
                      year,name,type,data
+                 },
+                 success: function (response) {
+                     var datas = response.quotation;
+                        var dataSet = [];
+                        for (var i = 0; i < datas.length; i++) {
+                            var d = [
+                                datas[i].quotation_no,
+                                datas[i].quoted_price];
+                            dataSet.push(d);
+                        }
+                     tableQuotation(dataSet);
+
+                     document.getElementById("quotation_title").innerHTML = type + "-" + data;
+                     document.getElementById("quotation_title").style.fontWeight = "bold";
+                     $('#ShowQuotationModal').modal();
+                 }
+             });
+        };
+        function GetQuotationByBarIndividual(year,name,title,type,data){
+             $.ajax({
+                 url: '@Url.Action("GetQuotationByBarIndividual", "Home")',
+                 type: "post",
+                 contentType: 'application/x-www-form-urlencoded',
+                 data: {
+                     year,name,title,type,data
                  },
                  success: function (response) {
                      var datas = response.quotation;
@@ -3651,7 +3765,20 @@
                                       display: true
                                   }
                                 }
-                              }
+                              },
+                              onHover: (event, chartElement) => {
+                                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                              },
+                              onClick: function(evt,point){                                
+                                  if (point.length > 0) {
+                                        var title = this.options.plugins.title.text;                                                                     
+                                        var year = document.getElementById("years_dashboard_department").value;
+                                        var department = document.getElementById("department_name").value;
+                                        var type = this.data.labels[point[0].index];
+                                        var data = this.data.datasets[point[0].datasetIndex].label;
+                                        GetQuotationByBarDepartment(year,department,title,type,data);
+                                  }                             
+                            },
                         };
                         chartbar_pending_all_pending_in_department = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
@@ -3757,7 +3884,20 @@
                                       display: true
                                   }
                                 }
-                              }
+                              },
+                              onHover: (event, chartElement) => {
+                                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                              },
+                              onClick: function(evt,point){                                
+                                  if (point.length > 0) {
+                                        var title = this.options.plugins.title.text;                                                                     
+                                        var year = document.getElementById("years_dashboard_department").value;
+                                        var department = document.getElementById("department_name").value;
+                                        var type = this.data.labels[point[0].index];
+                                        var data = this.data.datasets[point[0].datasetIndex].label;
+                                        GetQuotationByBarDepartment(year,department,title,type,data);
+                                  }                             
+                            },
                         };
                         chartbar_quotation_target_department = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
@@ -3863,7 +4003,20 @@
                                       display: true
                                   }
                                 }
-                              }
+                              },
+                              onHover: (event, chartElement) => {
+                                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                              },
+                              onClick: function(evt,point){                                
+                                  if (point.length > 0) {
+                                        var title = this.options.plugins.title.text;                                                                     
+                                        var year = document.getElementById("years_dashboard_department").value;
+                                        var department = document.getElementById("department_name").value;
+                                        var type = this.data.labels[point[0].index];
+                                        var data = this.data.datasets[point[0].datasetIndex].label;
+                                        GetQuotationByBarDepartment(year,department,title,type,data);
+                                  }                             
+                            },
                         };
                         chartbar_target_won_department = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
@@ -3969,7 +4122,20 @@
                                       display: true
                                   }
                                 }
-                              }
+                              },
+                              onHover: (event, chartElement) => {
+                                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                              },
+                              onClick: function(evt,point){                                
+                                  if (point.length > 0) {
+                                        var title = this.options.plugins.title.text;                                                                     
+                                        var year = document.getElementById("years_dashboard_department").value;
+                                        var department = document.getElementById("department_name").value;
+                                        var type = this.data.labels[point[0].index];
+                                        var data = this.data.datasets[point[0].datasetIndex].label;
+                                        GetQuotationByBarDepartment(year,department,title,type,data);
+                                  }                             
+                            },
                         };
                         chartbar_remaintarget_pendingin_department = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
@@ -4075,7 +4241,20 @@
                                       display: true
                                   }
                                 }
-                              }
+                              },
+                              onHover: (event, chartElement) => {
+                                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                              },
+                              onClick: function(evt,point){                                
+                                  if (point.length > 0) {
+                                        var title = this.options.plugins.title.text;                                                                     
+                                        var year = document.getElementById("years_dashboard_department").value;
+                                        var department = document.getElementById("department_name").value;
+                                        var type = this.data.labels[point[0].index];
+                                        var data = this.data.datasets[point[0].datasetIndex].label;
+                                        GetQuotationByBarDepartment(year,department,title,type,data);
+                                  }                             
+                            },
                         };
                         chartbar_won_lost_department = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
@@ -4197,8 +4376,20 @@
                                   },
                                 },
                                 
-                              }
-
+                              },
+                              onHover: (event, chartElement) => {
+                                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                              },
+                              onClick: function(evt,point){                                
+                                  if (point.length > 0) {
+                                        var title = this.options.plugins.title.text;                                                                     
+                                        var year = document.getElementById("years_dashboard_department").value;
+                                        var department = document.getElementById("department_name").value;
+                                        var type = this.data.labels[point[0].index];
+                                        var data = this.data.datasets[point[0].datasetIndex].label;
+                                        GetQuotationByBarDepartment(year,department,title,type,data);
+                                  }                             
+                            },
                         };
                         chart_stack_wonlost_nogo_department = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
@@ -4334,8 +4525,20 @@
                                   },
                                 },
                                 
-                              }
-
+                              },
+                              onHover: (event, chartElement) => {
+                                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                              },
+                              onClick: function(evt,point){                                
+                                  if (point.length > 0) {
+                                        var title = this.options.plugins.title.text;                                                                     
+                                        var year = document.getElementById("years_dashboard_department").value;
+                                        var department = document.getElementById("department_name").value;
+                                        var type = this.data.labels[point[0].index];
+                                        var data = this.data.datasets[point[0].datasetIndex].label;
+                                        GetQuotationByBarDepartment(year,department,title,type,data);
+                                  }                             
+                            },
                         };
                         chart_stack_wonlost_nogobudget_department = new Chart(ctx, { type: 'bar', data: data, options: options });
         };
@@ -4554,9 +4757,9 @@
                 }, 300);
         };
 
-        function GetQuotationByDepartment(year,department,type,data){
+        function GetQuotationByPieDepartment(year,department,type,data){
              $.ajax({
-                 url: '@Url.Action("GetQuotationByDepartment", "Home")',
+                 url: '@Url.Action("GetQuotationByPieDepartment", "Home")',
                  type: "post",
                  contentType: 'application/x-www-form-urlencoded',
                  data: {
@@ -4580,6 +4783,31 @@
              });
         };
 
+        function GetQuotationByBarDepartment(year,department,title,type,data){
+             $.ajax({
+                 url: '@Url.Action("GetQuotationByBarDepartment", "Home")',
+                 type: "post",
+                 contentType: 'application/x-www-form-urlencoded',
+                 data: {
+                     year,department,title,type,data
+                 },
+                 success: function (response) {
+                     var datas = response.quotation;
+                        var dataSet = [];
+                        for (var i = 0; i < datas.length; i++) {
+                            var d = [
+                                datas[i].quotation_no,
+                                datas[i].quoted_price];
+                            dataSet.push(d);
+                        }
+                     tableQuotation(dataSet);
+
+                     document.getElementById("quotation_title").innerHTML = type + "-" + data;
+                     document.getElementById("quotation_title").style.fontWeight = "bold";
+                     $('#ShowQuotationModal').modal();
+                 }
+             });
+        };
 
         function add_department(departments) {
                 var data_departments = [];

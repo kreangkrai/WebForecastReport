@@ -1338,14 +1338,14 @@ namespace WebForecastReport.Service
 
         }
 
-        public List<QuotationModel> GetQuotationByIndividual(string year, string name, string type, string data)
+        public List<QuotationModel> GetQuotationByPieIndividual(string year, string name, string type, string data)
         {
             try
             {
                 List<QuotationModel> quotations = new List<QuotationModel>();
                 string command = "";
 
-                if (type == "Quotation")
+                if (type == "Quotation")  //Pie Quotation
                 {
                     command = string.Format($@"select * from Quotation 
                                                   where product_type='{data}' and 
@@ -1354,7 +1354,7 @@ namespace WebForecastReport.Service
 	                                                  (exclude_quote is null or exclude_quote = 0)
                                                   order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
                 }
-                else if (type == "Won")
+                else if (type == "Won")  //Pie Won
                 {
                     command = string.Format($@"select * from Quotation 
                                                   where product_type='{data}' and 
@@ -1364,7 +1364,7 @@ namespace WebForecastReport.Service
 	                                                  (exclude_quote is null or exclude_quote = 0)
                                                   order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
                 }
-                else if (type == "Lost")
+                else if (type == "Lost") //Pie Lost
                 {
                     command = string.Format($@"select * from Quotation 
                                                   where product_type='{data}' and 
@@ -1374,7 +1374,7 @@ namespace WebForecastReport.Service
 	                                                  (exclude_quote is null or exclude_quote = 0)
                                                   order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
                 }
-                else if (type == "No go")
+                else if (type == "No go") //Pie No go
                 {
                     command = string.Format($@"select * from Quotation 
                                                   where product_type='{data}' and 
@@ -1384,7 +1384,7 @@ namespace WebForecastReport.Service
 	                                                  (exclude_quote is null or exclude_quote = 0)
                                                   order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
                 }
-                else if (type == "Quote For Budget")
+                else if (type == "Quote For Budget") //Pie Quoted for Budget
                 {
                     command = string.Format($@"select * from Quotation 
                                                   where product_type='{data}' and 
@@ -1394,7 +1394,7 @@ namespace WebForecastReport.Service
 	                                                  (exclude_quote is null or exclude_quote = 0)
                                                   order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
                 }
-                else if (type == "Pending ALL")
+                else if (type == "Pending ALL") //Pie Pending ALL
                 {
                     command = string.Format($@"select * from Quotation
                                                   where product_type='{data}' and 
@@ -1404,7 +1404,7 @@ namespace WebForecastReport.Service
 	                                                  (exclude_quote is null or exclude_quote = 0)
                                                   order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
                 }
-                else if (type == "Pending In")
+                else if (type == "Pending In")//Pie Pending In
                 {
                     command = string.Format($@"select * from Quotation
                                                   where product_type='{data}' and 
@@ -1415,7 +1415,7 @@ namespace WebForecastReport.Service
 	                                                  (exclude_quote is null or exclude_quote = 0)
                                                   order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
                 }
-                else if (type == "Stages")
+                else if (type == "Stages") //Pie All Stages
                 {
                     command = string.Format($@"select * from Quotation
                                                   where sale_name = '{name}' and 
@@ -1424,7 +1424,7 @@ namespace WebForecastReport.Service
 	                                                  (exclude_quote is null or exclude_quote = 0)
                                                   order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
                 }
-
+                
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
@@ -1484,7 +1484,7 @@ namespace WebForecastReport.Service
             }
         }
 
-        public List<QuotationModel> GetQuotationByDepartment(string year, string department, string type, string data)
+        public List<QuotationModel> GetQuotationByPieDepartment(string year, string department, string type, string data)
         {
             try
             {
@@ -1665,6 +1665,687 @@ namespace WebForecastReport.Service
                                                 order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
                     }
                 }
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        QuotationModel quotation = new QuotationModel()
+                        {
+                            quotation_no = dr["quotation_no"].ToString(),
+                            revision = dr["revision"].ToString(),
+                            date = dr["date"] != DBNull.Value ? Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            customer = dr["customer"].ToString(),
+                            enduser = dr["enduser"].ToString(),
+                            project_name = dr["project_name"].ToString(),
+                            site_location = dr["site_location"].ToString(),
+                            product_type = dr["product_type"].ToString(),
+                            type = dr["type"].ToString(),
+                            brand = dr["brand"].ToString(),
+                            part_no = dr["part_no"].ToString(),
+                            spec = dr["spec"].ToString(),
+                            quantity = dr["quantity"].ToString(),
+                            supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
+                            total_value = dr["total_value"].ToString(),
+                            unit = dr["unit"].ToString(),
+                            quoted_price = dr["quoted_price"].ToString() != "" ? (Convert.ToDouble(dr["quoted_price"].ToString()) / 1_000_000.00).ToString("0.00") : "",
+                            expected_order_date = dr["expected_order_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            required_onsite_date = dr["required_onsite_date"] != DBNull.Value ? Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            proposer = dr["proposer"].ToString(),
+                            expected_date = dr["expected_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            status = dr["status"].ToString(),
+                            stages = dr["stages"].ToString(),
+                            stages_update_date = dr["stages_update_date"] != DBNull.Value ? Convert.ToDateTime(dr["stages_update_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            how_to_support = dr["how_to_support"].ToString(),
+                            competitor = dr["competitor"].ToString(),
+                            competitor_description = dr["competitor_description"].ToString(),
+                            competitor_price = dr["competitor_price"].ToString(),
+                            sale_name = dr["sale_name"].ToString(),
+                            department = dr["department"].ToString(),
+                            detail = dr["detail"].ToString(),
+                            engineer_in_charge = dr["engineer_in_charge"].ToString(),
+                            engineer_department = dr["engineer_department"].ToString(),
+                            exclude_quote = dr["exclude_quote"] != DBNull.Value ? Convert.ToBoolean(dr["exclude_quote"].ToString()) : false
+                        };
+                        quotations.Add(quotation);
+                    }
+                    dr.Close();
+                }
+                ConnectSQL.CloseConnect();
+                return quotations;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public List<QuotationModel> GetQuotationByBarIndividual(string year, string name, string title, string type, string data)
+        {
+            try
+            {
+                List<QuotationModel> quotations = new List<QuotationModel>();
+                string command = "";
+
+                if (title == "Pending ALL VS Pending IN")
+                {
+                    if (data == "Pending ALL")
+                    {
+                        command = string.Format($@"select * from Quotation
+                                                  where product_type='{type}' and 
+	                                                  sale_name = '{name}' and 
+	                                                  stages_update_date like '{year}%' and 
+                                                      stages not in('Closed(Won)','Closed(Lost)','No go','Quote for Budget') and
+	                                                  (exclude_quote is null or exclude_quote = 0)
+                                                  order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                    else if (data == "Pending IN")
+                    {
+                        command = string.Format($@"select * from Quotation
+                                                  where product_type='{type}' and 
+	                                                  sale_name = '{name}' and 
+	                                                  stages_update_date like '{year}%' and 
+                                                      stages not in('Closed(Won)','Closed(Lost)','No go','Quote for Budget') and
+                                                      status = 'IN' and
+	                                                  (exclude_quote is null or exclude_quote = 0)
+                                                  order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                }
+                else if (title == "Quotation VS Target")
+                {
+                    if (data == "Quotation")
+                    {
+                        command = string.Format($@"select * from Quotation 
+                                                  where product_type='{type}' and 
+	                                                  sale_name = '{name}' and 
+	                                                  stages_update_date like '{year}%' and 
+	                                                  (exclude_quote is null or exclude_quote = 0)
+                                                  order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                    else if (data == "Target")  // Null all Column
+                    {
+                        command = string.Format($@"select * from Quotation 
+                                                  where product_type='{data}'
+	                                              order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                }
+                else if (title == "Target VS Won")
+                {
+                    if (data == "Won")
+                    {
+                        command = string.Format($@"select * from Quotation 
+                                                  where product_type='{type}' and 
+	                                                  sale_name = '{name}' and 
+	                                                  stages_update_date like '{year}%' and 
+                                                      stages = 'Closed(Won)' and
+	                                                  (exclude_quote is null or exclude_quote = 0)
+                                                  order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                    else if (data == "Target")  // Null all Column
+                    {
+                        command = string.Format($@"select * from Quotation 
+                                                  where product_type='{data}'
+	                                              order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                }
+                else if (title == "Remain Target VS Pending IN")
+                {
+                    if (data == "Pending IN")
+                    {
+                        command = string.Format($@"select * from Quotation
+                                                  where product_type='{type}' and 
+	                                                  sale_name = '{name}' and 
+	                                                  stages_update_date like '{year}%' and 
+                                                      stages not in('Closed(Won)','Closed(Lost)','No go','Quote for Budget') and
+                                                      status = 'IN' and
+	                                                  (exclude_quote is null or exclude_quote = 0)
+                                                  order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                    else if (data == "Remain Target")  // Null all Column
+                    {
+                        command = string.Format($@"select * from Quotation 
+                                                  where product_type='{data}'
+	                                              order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                }
+                else if (title == "Won VS Lost")
+                {
+                    if (data == "Won")
+                    {
+                        command = string.Format($@"select * from Quotation 
+                                                  where product_type='{type}' and 
+	                                                  sale_name = '{name}' and 
+	                                                  stages_update_date like '{year}%' and 
+                                                      stages = 'Closed(Won)' and
+	                                                  (exclude_quote is null or exclude_quote = 0)
+                                                  order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                    else if (data == "Lost")
+                    {
+                        command = string.Format($@"select * from Quotation 
+                                                  where product_type='{type}' and 
+	                                                  sale_name = '{name}' and 
+	                                                  stages_update_date like '{year}%' and 
+                                                      stages = 'Closed(Lost)' and
+	                                                  (exclude_quote is null or exclude_quote = 0)
+                                                  order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                }
+                else if (title == "Won & Lost VS No Go")
+                {
+                    if (data == "Won")
+                    {
+                        command = string.Format($@"select * from Quotation 
+                                                  where product_type='{type}' and 
+	                                                  sale_name = '{name}' and 
+	                                                  stages_update_date like '{year}%' and 
+                                                      stages = 'Closed(Won)' and
+	                                                  (exclude_quote is null or exclude_quote = 0)
+                                                  order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                    else if (data == "Lost")
+                    {
+                        command = string.Format($@"select * from Quotation 
+                                                  where product_type='{type}' and 
+	                                                  sale_name = '{name}' and 
+	                                                  stages_update_date like '{year}%' and 
+                                                      stages = 'Closed(Lost)' and
+	                                                  (exclude_quote is null or exclude_quote = 0)
+                                                  order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                    else if (data == "No go")
+                    {
+                        command = string.Format($@"select * from Quotation 
+                                                  where product_type='{type}' and 
+	                                                  sale_name = '{name}' and 
+	                                                  stages_update_date like '{year}%' and 
+                                                      stages = 'No go' and
+	                                                  (exclude_quote is null or exclude_quote = 0)
+                                                  order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                }
+                else if (title == "Won & Lost VS No Go & Budget")
+                {
+                    if (data == "Won")
+                    {
+                        command = string.Format($@"select * from Quotation 
+                                                  where product_type='{type}' and 
+	                                                  sale_name = '{name}' and 
+	                                                  stages_update_date like '{year}%' and 
+                                                      stages = 'Closed(Won)' and
+	                                                  (exclude_quote is null or exclude_quote = 0)
+                                                  order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                    else if (data == "Lost")
+                    {
+                        command = string.Format($@"select * from Quotation 
+                                                  where product_type='{type}' and 
+	                                                  sale_name = '{name}' and 
+	                                                  stages_update_date like '{year}%' and 
+                                                      stages = 'Closed(Lost)' and
+	                                                  (exclude_quote is null or exclude_quote = 0)
+                                                  order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                    else if (data == "No go")
+                    {
+                        command = string.Format($@"select * from Quotation 
+                                                  where product_type='{type}' and 
+	                                                  sale_name = '{name}' and 
+	                                                  stages_update_date like '{year}%' and 
+                                                      stages = 'No go' and
+	                                                  (exclude_quote is null or exclude_quote = 0)
+                                                  order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                    else if (data == "Budget")
+                    {
+                        command = string.Format($@"select * from Quotation 
+                                                  where product_type='{type}' and 
+	                                                  sale_name = '{name}' and 
+	                                                  stages_update_date like '{year}%' and 
+                                                      stages = 'Quote for Budget' and
+	                                                  (exclude_quote is null or exclude_quote = 0)
+                                                  order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                    }
+                }
+
+                SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        QuotationModel quotation = new QuotationModel()
+                        {
+                            quotation_no = dr["quotation_no"].ToString(),
+                            revision = dr["revision"].ToString(),
+                            date = dr["date"] != DBNull.Value ? Convert.ToDateTime(dr["date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            customer = dr["customer"].ToString(),
+                            enduser = dr["enduser"].ToString(),
+                            project_name = dr["project_name"].ToString(),
+                            site_location = dr["site_location"].ToString(),
+                            product_type = dr["product_type"].ToString(),
+                            type = dr["type"].ToString(),
+                            brand = dr["brand"].ToString(),
+                            part_no = dr["part_no"].ToString(),
+                            spec = dr["spec"].ToString(),
+                            quantity = dr["quantity"].ToString(),
+                            supplier_quotation_no = dr["supplier_quotation_no"].ToString(),
+                            total_value = dr["total_value"].ToString(),
+                            unit = dr["unit"].ToString(),
+                            quoted_price = dr["quoted_price"].ToString() != "" ? (Convert.ToDouble(dr["quoted_price"].ToString()) / 1_000_000.00).ToString("0.00") : "",
+                            expected_order_date = dr["expected_order_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_order_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            required_onsite_date = dr["required_onsite_date"] != DBNull.Value ? Convert.ToDateTime(dr["required_onsite_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            proposer = dr["proposer"].ToString(),
+                            expected_date = dr["expected_date"] != DBNull.Value ? Convert.ToDateTime(dr["expected_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            status = dr["status"].ToString(),
+                            stages = dr["stages"].ToString(),
+                            stages_update_date = dr["stages_update_date"] != DBNull.Value ? Convert.ToDateTime(dr["stages_update_date"].ToString()).ToString("yyyy-MM-dd") : null,
+                            how_to_support = dr["how_to_support"].ToString(),
+                            competitor = dr["competitor"].ToString(),
+                            competitor_description = dr["competitor_description"].ToString(),
+                            competitor_price = dr["competitor_price"].ToString(),
+                            sale_name = dr["sale_name"].ToString(),
+                            department = dr["department"].ToString(),
+                            detail = dr["detail"].ToString(),
+                            engineer_in_charge = dr["engineer_in_charge"].ToString(),
+                            engineer_department = dr["engineer_department"].ToString(),
+                            exclude_quote = dr["exclude_quote"] != DBNull.Value ? Convert.ToBoolean(dr["exclude_quote"].ToString()) : false
+                        };
+                        quotations.Add(quotation);
+                    }
+                    dr.Close();
+                }
+                ConnectSQL.CloseConnect();
+                return quotations;
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+        }
+
+        public List<QuotationModel> GetQuotationByBarDepartment(string year, string department, string title, string type, string data)
+        {
+            try
+            {
+                List<QuotationModel> quotations = new List<QuotationModel>();
+                string command = "";
+
+                if (title == "Pending ALL VS Pending IN")
+                {
+                    if (department == "ALL")
+                    {
+                        if (data == "Pending ALL")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                stages_update_date like '{year}%' and
+                                                    stages not in('Closed(Won)','Closed(Lost)','No go','Quote for Budget') and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Pending IN")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                stages_update_date like '{year}%' and
+                                                    stages not in('Closed(Won)','Closed(Lost)','No go','Quote for Budget') and
+                                                    status = 'IN' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                    }
+                    else
+                    {
+                        if (data == "Pending ALL")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                department = '{department}' and 
+	                                                stages_update_date like '{year}%' and 
+                                                    stages not in('Closed(Won)','Closed(Lost)','No go','Quote for Budget') and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Pending IN")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                department = '{department}' and 
+	                                                stages_update_date like '{year}%' and 
+                                                    stages not in('Closed(Won)','Closed(Lost)','No go','Quote for Budget') and
+                                                    status = 'IN' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                    }
+                }
+                else if (title == "Quotation VS Target")
+                {
+                    if (department == "ALL")
+                    {
+                        if (data == "Quotation")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                stages_update_date like '{year}%' and 
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Target")  // Null all Column
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                  where product_type='{data}'
+	                                              order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                    }
+                    else
+                    {
+                        if (data == "Quotation")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                department = '{department}' and 
+	                                                stages_update_date like '{year}%' and 
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Target")  // Null all Column
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                  where product_type='{data}'
+	                                              order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                    }
+                }
+                else if (title == "Target VS Won")
+                {
+                    if (department == "ALL")
+                    {
+                        if (data == "Won")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                stages_update_date like '{year}%' and
+                                                    stages = 'Closed(Won)' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Target")  // Null all Column
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                  where product_type='{data}'
+	                                              order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                    }
+                    else
+                    {
+                        if (data == "Won")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                department = '{department}' and 
+	                                                stages_update_date like '{year}%' and 
+                                                    stages = 'Closed(Won)' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Target")  // Null all Column
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                  where product_type='{data}'
+	                                              order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                    }
+                }
+                else if (title == "Remain Target VS Pending IN")
+                {
+                    if (department == "ALL")
+                    {
+                        if (data == "Pending IN")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                stages_update_date like '{year}%' and
+                                                    stages not in('Closed(Won)','Closed(Lost)','No go','Quote for Budget') and
+                                                    status = 'IN' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Remain Target")  // Null all Column
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                  where product_type='{data}'
+	                                              order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                    }
+                    else
+                    {
+                        if (data == "Pending IN")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                department = '{department}' and 
+	                                                stages_update_date like '{year}%' and 
+                                                    stages not in('Closed(Won)','Closed(Lost)','No go','Quote for Budget') and
+                                                    status = 'IN' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Remain Target")  // Null all Column
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                  where product_type='{data}'
+	                                              order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                    }
+                }
+                else if (title == "Won VS Lost")
+                {
+                    if (department == "ALL")
+                    {
+                        if (data == "Won")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                stages_update_date like '{year}%' and
+                                                    stages = 'Closed(Won)' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Lost")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                stages_update_date like '{year}%' and
+                                                    stages = 'Closed(Lost)' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                    }
+                    else
+                    {
+                        if (data == "Won")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                department = '{department}' and 
+	                                                stages_update_date like '{year}%' and 
+                                                    stages = 'Closed(Won)' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Lost")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                department = '{department}' and 
+	                                                stages_update_date like '{year}%' and 
+                                                    stages = 'Closed(Lost)' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                    }
+                }
+                else if (title == "Won & Lost VS No Go")
+                {
+                    if (department == "ALL")
+                    {
+                        if (data == "Won")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                stages_update_date like '{year}%' and
+                                                    stages = 'Closed(Won)' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Lost")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                stages_update_date like '{year}%' and
+                                                    stages = 'Closed(Lost)' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "No go")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                stages_update_date like '{year}%' and
+                                                    stages = 'No go' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                    }
+                    else
+                    {
+                        if (data == "Won")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                department = '{department}' and 
+	                                                stages_update_date like '{year}%' and 
+                                                    stages = 'Closed(Won)' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Lost")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                department = '{department}' and 
+	                                                stages_update_date like '{year}%' and 
+                                                    stages = 'Closed(Lost)' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "No go")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                department = '{department}' and 
+	                                                stages_update_date like '{year}%' and 
+                                                    stages = 'No go' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                    }
+                }
+                else if (title == "Won & Lost VS No Go & Budget")
+                {
+                    if (department == "ALL")
+                    {
+                        if (data == "Won")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                stages_update_date like '{year}%' and
+                                                    stages = 'Closed(Won)' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Lost")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                stages_update_date like '{year}%' and
+                                                    stages = 'Closed(Lost)' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "No go")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                stages_update_date like '{year}%' and
+                                                    stages = 'No go' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Budget")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                stages_update_date like '{year}%' and
+                                                    stages = 'Quote for Budget' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                    }
+                    else
+                    {
+                        if (data == "Won")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                department = '{department}' and 
+	                                                stages_update_date like '{year}%' and 
+                                                    stages = 'Closed(Won)' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Lost")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                department = '{department}' and 
+	                                                stages_update_date like '{year}%' and 
+                                                    stages = 'Closed(Lost)' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "No go")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                department = '{department}' and 
+	                                                stages_update_date like '{year}%' and 
+                                                    stages = 'No go' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                        else if (data == "Budget")
+                        {
+                            command = string.Format($@"select * from Quotation 
+                                                where product_type='{type}' and 
+	                                                department = '{department}' and 
+	                                                stages_update_date like '{year}%' and 
+                                                    stages = 'Quote for Budget' and
+	                                                (exclude_quote is null or exclude_quote = 0)
+                                                order by cast(cast(replace(quoted_price,',','') as float)/1000000 as decimal(10,2)) desc");
+                        }
+                    }
+                }
+
                 SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)

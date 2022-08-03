@@ -173,19 +173,36 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetQuotationByIndividual(string year,string name,string type,string data)
+        public JsonResult GetQuotationByPieIndividual(string year,string name,string type,string data)
         {
             List<QuotationModel> quotations = new List<QuotationModel>();
-            quotations = Home.GetQuotationByIndividual(year, name, type, data);
+            quotations = Home.GetQuotationByPieIndividual(year, name, type, data);
 
             return Json(new { quotation = quotations });
         }
 
         [HttpPost]
-        public JsonResult GetQuotationByDepartment(string year,string department, string type, string data)
+        public JsonResult GetQuotationByPieDepartment(string year,string department, string type, string data)
         {
             List<QuotationModel> quotations = new List<QuotationModel>();
-            quotations = Home.GetQuotationByDepartment(year, department, type, data);
+            quotations = Home.GetQuotationByPieDepartment(year, department, type, data);
+
+            return Json(new { quotation = quotations });
+        }
+        [HttpPost]
+        public JsonResult GetQuotationByBarIndividual(string year, string name,string title, string type, string data)
+        {
+            List<QuotationModel> quotations = new List<QuotationModel>();
+            quotations = Home.GetQuotationByBarIndividual(year, name,title, type, data);
+
+            return Json(new { quotation = quotations });
+        }
+
+        [HttpPost]
+        public JsonResult GetQuotationByBarDepartment(string year, string department, string title,string type, string data)
+        {
+            List<QuotationModel> quotations = new List<QuotationModel>();
+            quotations = Home.GetQuotationByBarDepartment(year, department, title, type, data);
 
             return Json(new { quotation = quotations });
         }
