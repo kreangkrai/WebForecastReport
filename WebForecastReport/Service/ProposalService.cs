@@ -11,24 +11,27 @@ namespace WebForecastReport.Service
 {
     public class ProposalService : IProposal
     {
-        public List<string> chkForUpdate(string name, string role)
+        public List<string> chkForUpdate(string name, string role, string department)
         {
             List<string> proposals = new List<string>();
             if (role != "Admin")
             {
                 try
                 {
-                    SqlCommand cmd = new SqlCommand(@"select quotation_no as quotation,proposal_created_by as proposal_by from Proposal except
-                                                      select quotation_no as quotation,proposer from Quotation where proposer ='" + name + "'", ConnectSQL.OpenConnect());
-                    SqlDataReader dr = cmd.ExecuteReader();
-                    if (dr.HasRows)
+                    if (department == "PSM")
                     {
-                        while (dr.Read())
+                        string command = string.Format($@"select quotation_no as quotation,proposer from Quotation where proposer ='{name}' except
+                                                          select quotation_no as quotation,proposal_created_by as proposal_by from Proposal");
+                        SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                        SqlDataReader dr = cmd.ExecuteReader();
+                        if (dr.HasRows)
                         {
-
-                            proposals.Add(dr["quotation"].ToString());
-                        }
-                        dr.Close();
+                            while (dr.Read())
+                            {
+                                proposals.Add(dr["quotation"].ToString());
+                            }
+                            dr.Close();
+                        }                      
                     }
                     return proposals;
                 }
@@ -46,38 +49,39 @@ namespace WebForecastReport.Service
             }
         }
 
-        public List<string> chkQuotation(string name, string role)
+        public List<string> chkQuotation(string name, string role, string department)
         {
             List<string> quotations = new List<string>();
+
             if (role != "Admin")
             {
-                try
+                if (department == "PSM")
                 {
-                    SqlCommand cmd = new SqlCommand(@"select quotation_no from Quotation where proposer ='" + name + "' except " +
-                                                     "select quotation_no from Proposal", ConnectSQL.OpenConnect());
-                    SqlDataReader dr = cmd.ExecuteReader();
-                    if (dr.HasRows)
+                    try
                     {
-                        while (dr.Read())
+                        SqlCommand cmd = new SqlCommand(@"select quotation_no from Quotation where proposer ='" + name + "' except " +
+                                                         "select quotation_no from Proposal", ConnectSQL.OpenConnect());
+                        SqlDataReader dr = cmd.ExecuteReader();
+                        if (dr.HasRows)
                         {
-                            quotations.Add(dr["quotation_no"].ToString());
+                            while (dr.Read())
+                            {
+                                quotations.Add(dr["quotation_no"].ToString());
+                            }
+                            dr.Close();
                         }
-                        dr.Close();
+                        return quotations;
                     }
-                    return quotations;
-                }
-                finally
-                {
-                    if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                    finally
                     {
-                        ConnectSQL.CloseConnect();
+                        if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                        {
+                            ConnectSQL.CloseConnect();
+                        }
                     }
-                }
+                }               
             }
-            else
-            {
-                return quotations;
-            }
+            return quotations;
         }
 
         public List<ProposalModel> getProposals(string name, string role)
@@ -85,6 +89,7 @@ namespace WebForecastReport.Service
             try
             {
                 List<ProposalModel> proposals = new List<ProposalModel>();
+
                 string command = "";
                 if (role == "Admin")
                 {
@@ -158,6 +163,7 @@ namespace WebForecastReport.Service
                     }
                     dr.Close();
                 }
+
                 return proposals;
             }
             finally

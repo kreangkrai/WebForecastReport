@@ -39,7 +39,7 @@ namespace WebForecastReport.Controllers
                 if (u.role != "Admin")  //  add propersal
                 {
                     List<string> quotations = new List<string>();
-                    quotations = Proposal.chkQuotation(u.name, u.role);
+                    quotations = Proposal.chkQuotation(u.name, u.role,u.department);
 
                     //insert
                     if (quotations.Count > 0) //
@@ -52,7 +52,7 @@ namespace WebForecastReport.Controllers
 
                     //update
                     List<string> quotation = new List<string>();
-                    quotation = Proposal.chkForUpdate(u.name, u.role);
+                    quotation = Proposal.chkForUpdate(u.name, u.role,u.department);
                     if (quotation.Count > 0)
                     {
                         Proposal.UpdateName(quotation, u.name);
@@ -85,7 +85,7 @@ namespace WebForecastReport.Controllers
             // get user engineer
             List<UserManagementModel> engineer = new List<UserManagementModel>();
             //engineers.Add(new UserManagementModel() { department = "Please Select"});
-            //engineers.AddRange(Accessory.getAllUser().Where(w => w.groups.Trim() == "Engineer").Select(s => s.name).ToList());
+            //engineers.AddRange(Accessory.getAllUser().Where(w => w.groups.Trim() == "Engineer").Select(s => s.name).ToList());   
             engineer = Users.GetUsers().Where(w => w.groups.Trim() == "ENG").ToList();
             var engineers = engineer.GroupBy(g => g.department)
                 .Select(s =>
