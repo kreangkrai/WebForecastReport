@@ -11,28 +11,26 @@ namespace WebForecastReport.Service
 {
     public class ProposalService : IProposal
     {
-        public List<string> chkForUpdate(string name, string role, string department)
+        public List<string> chkForUpdate(string name, string role)
         {
             List<string> proposals = new List<string>();
             if (role != "Admin")
             {
                 try
                 {
-                    if (department == "PSM")
-                    {
-                        string command = string.Format($@"select quotation_no as quotation,proposer from Quotation where proposer ='{name}' except
+                    string command = string.Format($@"select quotation_no as quotation,proposer from Quotation where proposer ='{name}' except
                                                           select quotation_no as quotation,proposal_created_by as proposal_by from Proposal");
-                        SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
-                        SqlDataReader dr = cmd.ExecuteReader();
-                        if (dr.HasRows)
+                    SqlCommand cmd = new SqlCommand(command, ConnectSQL.OpenConnect());
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
                         {
-                            while (dr.Read())
-                            {
-                                proposals.Add(dr["quotation"].ToString());
-                            }
-                            dr.Close();
-                        }                      
+                            proposals.Add(dr["quotation"].ToString());
+                        }
+                        dr.Close();
                     }
+
                     return proposals;
                 }
                 finally
@@ -49,37 +47,34 @@ namespace WebForecastReport.Service
             }
         }
 
-        public List<string> chkQuotation(string name, string role, string department)
+        public List<string> chkQuotation(string name, string role)
         {
             List<string> quotations = new List<string>();
 
             if (role != "Admin")
             {
-                if (department == "PSM")
+                try
                 {
-                    try
+                    SqlCommand cmd = new SqlCommand(@"select quotation_no from Quotation where proposer ='" + name + "' except " +
+                                                     "select quotation_no from Proposal", ConnectSQL.OpenConnect());
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
                     {
-                        SqlCommand cmd = new SqlCommand(@"select quotation_no from Quotation where proposer ='" + name + "' except " +
-                                                         "select quotation_no from Proposal", ConnectSQL.OpenConnect());
-                        SqlDataReader dr = cmd.ExecuteReader();
-                        if (dr.HasRows)
+                        while (dr.Read())
                         {
-                            while (dr.Read())
-                            {
-                                quotations.Add(dr["quotation_no"].ToString());
-                            }
-                            dr.Close();
+                            quotations.Add(dr["quotation_no"].ToString());
                         }
-                        return quotations;
+                        dr.Close();
                     }
-                    finally
+                    return quotations;
+                }
+                finally
+                {
+                    if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
                     {
-                        if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
-                        {
-                            ConnectSQL.CloseConnect();
-                        }
+                        ConnectSQL.CloseConnect();
                     }
-                }               
+                }
             }
             return quotations;
         }

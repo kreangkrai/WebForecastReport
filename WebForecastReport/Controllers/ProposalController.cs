@@ -39,7 +39,7 @@ namespace WebForecastReport.Controllers
                 if (u.role != "Admin")  //  add propersal
                 {
                     List<string> quotations = new List<string>();
-                    quotations = Proposal.chkQuotation(u.name, u.role,u.department);
+                    quotations = Proposal.chkQuotation(u.name, u.role);
 
                     //insert
                     if (quotations.Count > 0) //
@@ -52,7 +52,7 @@ namespace WebForecastReport.Controllers
 
                     //update
                     List<string> quotation = new List<string>();
-                    quotation = Proposal.chkForUpdate(u.name, u.role,u.department);
+                    quotation = Proposal.chkForUpdate(u.name, u.role);
                     if (quotation.Count > 0)
                     {
                         Proposal.UpdateName(quotation, u.name);
