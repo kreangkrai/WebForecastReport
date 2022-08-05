@@ -179,7 +179,7 @@
                     scores[i].pd_rate,
                     scores[i].factor,
                     scores[i].total_manpower,
-                    (scores[i].cost_per_tmp / 8).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    (scores[i].cost_per_tmp * 8).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     scores[i].manpower,
                     parseInt(scores[i].manpower_per_tmp * 100),
                     scores[i].score.toFixed(2)
