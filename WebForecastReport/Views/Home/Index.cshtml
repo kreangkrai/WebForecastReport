@@ -2544,6 +2544,14 @@
                 chartbar_pending_all_pending_in.destroy();
             }
             var ctx = document.getElementById(chart_name).getContext('2d');
+            var temp = [(typeof pending_all.product.mb !== 'undefined' ? parseFloat(pending_all.product.mb) : 0.0),
+                                (typeof pending_all.project.mb !== 'undefined' ? parseFloat(pending_all.project.mb) : 0.0),
+                                (typeof pending_all.service.mb !== 'undefined' ? parseFloat(pending_all.service.mb) : 0.0),
+                                (typeof pending_in.product.mb !== 'undefined' ? parseFloat(pending_in.product.mb) : 0.0),
+                                (typeof pending_in.project.mb !== 'undefined' ? parseFloat(pending_in.project.mb) : 0.0),
+                                (typeof pending_in.service.mb !== 'undefined' ? parseFloat(pending_in.service.mb) : 0.0)];
+            var max = Math.max(...temp);
+            var min = Math.min(...temp);
             const data = {
                               labels: ["Product","Project","Service"],
                               datasets: [{
@@ -2633,6 +2641,14 @@
                                     font: {
                                         size: 14
                                     },
+                                    min: min,
+                                    max: max,
+                                    callback: function(value, index, values) {
+                                        var n = (values.length-1) % 2;
+                                        if(index % 2 === n){
+                                            return Number(value.toString());
+                                        }
+                                    },
                                   },
                                   title: {
                                       text: 'MB',
@@ -2665,6 +2681,14 @@
                 chartbar_quotation_target.destroy();
             }
             var ctx = document.getElementById(chart_name).getContext('2d');
+            var temp = [(typeof quotation.product.mb !== 'undefined' ? parseFloat(quotation.product.mb) : 0.0),
+                                (typeof quotation.project.mb !== 'undefined' ? parseFloat(quotation.project.mb) : 0.0),
+                                (typeof quotation.service.mb !== 'undefined' ? parseFloat(quotation.service.mb) : 0.0),
+                                (typeof target.product !== 'undefined' ? parseFloat(target.product) : 0.0),
+                                (typeof target.project !== 'undefined' ? parseFloat(target.project) : 0.0),
+                                (typeof target.service !== 'undefined' ? parseFloat(target.service) : 0.0)];
+            var max = Math.max(...temp);
+            var min = Math.min(...temp);
             const data = {
                               labels: ["Product","Project","Service"],
                               datasets: [{
@@ -2754,6 +2778,14 @@
                                     font: {
                                         size: 14
                                     },
+                                    min: min,
+                                    max: max,
+                                    callback: function(value, index, values) {
+                                        var n = (values.length-1) % 2;
+                                        if(index % 2 === n){
+                                            return Number(value.toString());
+                                        }
+                                    },
                                   },
                                   title: {
                                       text: 'MB',
@@ -2785,6 +2817,14 @@
                 chartbar_target_won.destroy();
             }
             var ctx = document.getElementById(chart_name).getContext('2d');
+            var temp = [(typeof won.product.mb !== 'undefined' ? parseFloat(won.product.mb) : 0.0),
+                                (typeof won.project.mb !== 'undefined' ? parseFloat(won.project.mb) : 0.0),
+                                (typeof won.service.mb !== 'undefined' ? parseFloat(won.service.mb) : 0.0),
+                                (typeof target.product !== 'undefined' ? parseFloat(target.product) : 0.0),
+                                (typeof target.project !== 'undefined' ? parseFloat(target.project) : 0.0),
+                                (typeof target.service !== 'undefined' ? parseFloat(target.service) : 0.0)];
+            var max = Math.max(...temp);
+            var min = Math.min(...temp);
             const data = {
                               labels: ["Product","Project","Service"],
                               datasets: [{
@@ -2874,6 +2914,14 @@
                                     font: {
                                         size: 14
                                     },
+                                    min: min,
+                                    max: max,
+                                    callback: function(value, index, values) {
+                                        var n = (values.length-1) % 2;
+                                        if(index % 2 === n){
+                                            return Number(value.toString());
+                                        }
+                                    },
                                   },
                                   title: {
                                       text: 'MB',
@@ -2905,6 +2953,14 @@
                 chartbar_remaintarget_pendingin.destroy();
             }
             var ctx = document.getElementById(chart_name).getContext('2d');
+            var temp = [(typeof pending_in.product.mb !== 'undefined' ? parseFloat(pending_in.product.mb) : 0.0),
+                                (typeof pending_in.project.mb !== 'undefined' ? parseFloat(pending_in.project.mb) : 0.0),
+                                (typeof pending_in.service.mb !== 'undefined' ? parseFloat(pending_in.service.mb) : 0.0),
+                                (typeof remain_target.product !== 'undefined' ? parseFloat(remain_target.product) : 0.0),
+                                (typeof remain_target.project !== 'undefined' ? parseFloat(remain_target.project) : 0.0),
+                                (typeof remain_target.service !== 'undefined' ? parseFloat(remain_target.service) : 0.0)];
+            var max = Math.max(...temp);
+            var min = Math.min(...temp);
             const data = {
                               labels: ["Product","Project","Service"],
                               datasets: [{
@@ -2994,6 +3050,14 @@
                                     font: {
                                         size: 14
                                     },
+                                    min: min,
+                                    max: max,
+                                    callback: function(value, index, values) {
+                                        var n = (values.length-1) % 2;
+                                        if(index % 2 === n){
+                                            return Number(value.toString());
+                                        }
+                                    },
                                   },
                                   title: {
                                       text: 'MB',
@@ -3025,6 +3089,14 @@
                 chartbar_won_lost.destroy();
             }
             var ctx = document.getElementById(chart_name).getContext('2d');
+            var temp = [(typeof won.product.mb !== 'undefined' ? parseFloat(won.product.mb) : 0.0),
+                                (typeof won.project.mb !== 'undefined' ? parseFloat(won.project.mb) : 0.0),
+                                (typeof won.service.mb !== 'undefined' ? parseFloat(won.service.mb) : 0.0),
+                                (typeof lost.product.mb !== 'undefined' ? parseFloat(lost.product.mb) : 0.0),
+                                (typeof lost.project.mb !== 'undefined' ? parseFloat(lost.project.mb) : 0.0),
+                                (typeof lost.service.mb !== 'undefined' ? parseFloat(lost.service.mb) : 0.0)];
+            var max = Math.max(...temp);
+            var min = Math.min(...temp);
             const data = {
                               labels: ["Product","Project","Service"],
                               datasets: [{
@@ -3114,6 +3186,14 @@
                                     font: {
                                         size: 14
                                     },
+                                    min: min,
+                                    max: max,
+                                    callback: function(value, index, values) {
+                                        var n = (values.length-1) % 2;
+                                        if(index % 2 === n){
+                                            return Number(value.toString());
+                                        }
+                                    },
                                   },
                                   title: {
                                       text: 'MB',
@@ -3145,7 +3225,14 @@
                 chart_stack_wonlost_nogo.destroy();
             }
             var ctx = document.getElementById(chart_name).getContext('2d');
-
+            var temp = [((typeof won.product.mb !== 'undefined' ? parseFloat(won.product.mb) : 0.0) + (typeof lost.product.mb !== 'undefined' ? parseFloat(lost.product.mb) : 0.0) ),
+                                ((typeof won.project.mb !== 'undefined' ? parseFloat(won.project.mb) : 0.0) + (typeof lost.project.mb !== 'undefined' ? parseFloat(lost.project.mb) : 0.0)),
+                                ((typeof won.service.mb !== 'undefined' ? parseFloat(won.service.mb) : 0.0) + (typeof lost.service.mb !== 'undefined' ? parseFloat(lost.service.mb) : 0.0 )),
+                                ((typeof nogo.product.mb !== 'undefined' ? parseFloat(nogo.product.mb) : 0.0)),
+                                ((typeof nogo.project.mb !== 'undefined' ? parseFloat(nogo.project.mb) : 0.0)),
+                                ((typeof nogo.service.mb !== 'undefined' ? parseFloat(nogo.service.mb) : 0.0))];
+            var max = Math.max(...temp);
+            var min = Math.min(...temp);
             const data = {
                               labels: ["Product","Project","Service"],
                               datasets: [
@@ -3249,6 +3336,14 @@
                                     font: {
                                         size: 14
                                     },
+                                    min: min,
+                                    max: max,
+                                    callback: function(value, index, values) {
+                                        var n = (values.length-1) % 2;
+                                        if(index % 2 === n){
+                                            return Number(value.toString());
+                                        }
+                                    },
                                   },
                                   title: {
                                       text: 'MB',
@@ -3282,6 +3377,14 @@
             }
             var ctx = document.getElementById(chart_name).getContext('2d');
 
+            var temp = [((typeof won.product.mb !== 'undefined' ? parseFloat(won.product.mb) : 0.0) + (typeof lost.product.mb !== 'undefined' ? parseFloat(lost.product.mb) : 0.0) ),
+                                ((typeof won.project.mb !== 'undefined' ? parseFloat(won.project.mb) : 0.0) + (typeof lost.project.mb !== 'undefined' ? parseFloat(lost.project.mb) : 0.0)),
+                                ((typeof won.service.mb !== 'undefined' ? parseFloat(won.service.mb) : 0.0) + (typeof lost.service.mb !== 'undefined' ? parseFloat(lost.service.mb) : 0.0 )),
+                                ((typeof nogo.product.mb !== 'undefined' ? parseFloat(nogo.product.mb) : 0.0) + (typeof budget.product.mb !== 'undefined' ? parseFloat(budget.product.mb) : 0.0) ),
+                                ((typeof nogo.project.mb !== 'undefined' ? parseFloat(nogo.project.mb) : 0.0) + (typeof budget.project.mb !== 'undefined' ? parseFloat(budget.project.mb) : 0.0 )),
+                                ((typeof nogo.service.mb !== 'undefined' ? parseFloat(nogo.service.mb) : 0.0) + (typeof budget.service.mb !== 'undefined' ? parseFloat(budget.service.mb) : 0.0 )),];
+            var max = Math.max(...temp);
+            var min = Math.min(...temp);
             const data = {
                               labels: ["Product","Project","Service"],
                               datasets: [
@@ -3313,6 +3416,7 @@
                         };
 
                         const options = {
+                             responsive: true,
                              maintainAspectRatio: false,
                               plugins: {
                                 title: {
@@ -3381,7 +3485,6 @@
                               interaction: {
                                   intersect: false,
                               },
-                              responsive: true,
                               scales: {
                                 x: {
                                   stacked: true,
@@ -3399,14 +3502,21 @@
                                     font: {
                                         size: 14
                                     },
+                                    min: min,
+                                    max: max,
+                                    callback: function(value, index, values) {
+                                        var n = (values.length-1) % 2;
+                                        if(index % 2 === n){
+                                            return Number(value.toString());
+                                        }
+                                    },
                                   },
                                   title: {
                                       text: 'MB',
                                       display: true
                                   },
-                                  type: 'logarithmic',
-                                },
-                                
+                                  type: 'logarithmic',                                  
+                                },                                
                               },
                               onHover: (event, chartElement) => {
                                 event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
@@ -3677,6 +3787,15 @@
                 chartbar_pending_all_pending_in_department.destroy();
             }
             var ctx = document.getElementById(chart_name).getContext('2d');
+            var ctx = document.getElementById(chart_name).getContext('2d');
+            var temp = [(typeof pending_all.product.mb !== 'undefined' ? parseFloat(pending_all.product.mb) : 0.0),
+                                (typeof pending_all.project.mb !== 'undefined' ? parseFloat(pending_all.project.mb) : 0.0),
+                                (typeof pending_all.service.mb !== 'undefined' ? parseFloat(pending_all.service.mb) : 0.0),
+                                (typeof pending_in.product.mb !== 'undefined' ? parseFloat(pending_in.product.mb) : 0.0),
+                                (typeof pending_in.project.mb !== 'undefined' ? parseFloat(pending_in.project.mb) : 0.0),
+                                (typeof pending_in.service.mb !== 'undefined' ? parseFloat(pending_in.service.mb) : 0.0)];
+            var max = Math.max(...temp);
+            var min = Math.min(...temp);
             const data = {
                               labels: ["Product","Project","Service"],
                               datasets: [{
@@ -3766,6 +3885,14 @@
                                     font: {
                                         size: 14
                                     },
+                                    min: min,
+                                    max: max,
+                                    callback: function(value, index, values) {
+                                        var n = (values.length-1) % 2;
+                                        if(index % 2 === n){
+                                            return Number(value.toString());
+                                        }
+                                    },
                                   },
                                   title: {
                                       text: 'MB',
@@ -3797,6 +3924,14 @@
                 chartbar_quotation_target_department.destroy();
             }
             var ctx = document.getElementById(chart_name).getContext('2d');
+            var temp = [(typeof quotation.product_department.mb !== 'undefined' ? parseFloat(quotation.product_department.mb) : 0.0),
+                                (typeof quotation.project_department.mb !== 'undefined' ? parseFloat(quotation.project_department.mb) : 0.0),
+                                (typeof quotation.service_department.mb !== 'undefined' ? parseFloat(quotation.service_department.mb) : 0.0),
+                                (typeof target.product !== 'undefined' ? parseFloat(target.product) : 0.0),
+                                (typeof target.project !== 'undefined' ? parseFloat(target.project) : 0.0),
+                                (typeof target.service !== 'undefined' ? parseFloat(target.service) : 0.0)];
+            var max = Math.max(...temp);
+            var min = Math.min(...temp);
             const data = {
                               labels: ["Product","Project","Service"],
                               datasets: [{
@@ -3886,6 +4021,14 @@
                                     font: {
                                         size: 14
                                     },
+                                    min: min,
+                                    max: max,
+                                    callback: function(value, index, values) {
+                                        var n = (values.length-1) % 2;
+                                        if(index % 2 === n){
+                                            return Number(value.toString());
+                                        }
+                                    },
                                   },
                                   title: {
                                       text: 'MB',
@@ -3917,6 +4060,14 @@
                 chartbar_target_won_department.destroy();
             }
             var ctx = document.getElementById(chart_name).getContext('2d');
+            var temp = [(typeof won.product.mb !== 'undefined' ? parseFloat(won.product.mb) : 0.0),
+                                (typeof won.project.mb !== 'undefined' ? parseFloat(won.project.mb) : 0.0),
+                                (typeof won.service.mb !== 'undefined' ? parseFloat(won.service.mb) : 0.0),
+                                (typeof target.product !== 'undefined' ? parseFloat(target.product) : 0.0),
+                                (typeof target.project !== 'undefined' ? parseFloat(target.project) : 0.0),
+                                (typeof target.service !== 'undefined' ? parseFloat(target.service) : 0.0)];
+            var max = Math.max(...temp);
+            var min = Math.min(...temp);
             const data = {
                               labels: ["Product","Project","Service"],
                               datasets: [{
@@ -4006,6 +4157,14 @@
                                     font: {
                                         size: 14
                                     },
+                                    min: min,
+                                    max: max,
+                                    callback: function(value, index, values) {
+                                        var n = (values.length-1) % 2;
+                                        if(index % 2 === n){
+                                            return Number(value.toString());
+                                        }
+                                    },
                                   },
                                   title: {
                                       text: 'MB',
@@ -4037,6 +4196,14 @@
                 chartbar_remaintarget_pendingin_department.destroy();
             }
             var ctx = document.getElementById(chart_name).getContext('2d');
+            var temp = [(typeof pending_in.product.mb !== 'undefined' ? parseFloat(pending_in.product.mb) : 0.0),
+                                (typeof pending_in.project.mb !== 'undefined' ? parseFloat(pending_in.project.mb) : 0.0),
+                                (typeof pending_in.service.mb !== 'undefined' ? parseFloat(pending_in.service.mb) : 0.0),
+                                (typeof remain_target.product !== 'undefined' ? parseFloat(remain_target.product) : 0.0),
+                                (typeof remain_target.project !== 'undefined' ? parseFloat(remain_target.project) : 0.0),
+                                (typeof remain_target.service !== 'undefined' ? parseFloat(remain_target.service) : 0.0)];
+            var max = Math.max(...temp);
+            var min = Math.min(...temp);
             const data = {
                               labels: ["Product","Project","Service"],
                               datasets: [{
@@ -4126,6 +4293,14 @@
                                     font: {
                                         size: 14
                                     },
+                                    min: min,
+                                    max: max,
+                                    callback: function(value, index, values) {
+                                        var n = (values.length-1) % 2;
+                                        if(index % 2 === n){
+                                            return Number(value.toString());
+                                        }
+                                    },
                                   },
                                   title: {
                                       text: 'MB',
@@ -4157,6 +4332,14 @@
                 chartbar_won_lost_department.destroy();
             }
             var ctx = document.getElementById(chart_name).getContext('2d');
+            var temp = [(typeof won.product.mb !== 'undefined' ? parseFloat(won.product.mb) : 0.0),
+                                (typeof won.project.mb !== 'undefined' ? parseFloat(won.project.mb) : 0.0),
+                                (typeof won.service.mb !== 'undefined' ? parseFloat(won.service.mb) : 0.0),
+                                (typeof lost.product.mb !== 'undefined' ? parseFloat(lost.product.mb) : 0.0),
+                                (typeof lost.project.mb !== 'undefined' ? parseFloat(lost.project.mb) : 0.0),
+                                (typeof lost.service.mb !== 'undefined' ? parseFloat(lost.service.mb) : 0.0)];
+            var max = Math.max(...temp);
+            var min = Math.min(...temp);
             const data = {
                               labels: ["Product","Project","Service"],
                               datasets: [{
@@ -4246,6 +4429,14 @@
                                     font: {
                                         size: 14
                                     },
+                                    min: min,
+                                    max: max,
+                                    callback: function(value, index, values) {
+                                        var n = (values.length-1) % 2;
+                                        if(index % 2 === n){
+                                            return Number(value.toString());
+                                        }
+                                    },
                                   },
                                   title: {
                                       text: 'MB',
@@ -4277,7 +4468,14 @@
                 chart_stack_wonlost_nogo_department.destroy();
             }
             var ctx = document.getElementById(chart_name).getContext('2d');
-
+            var temp = [((typeof won.product.mb !== 'undefined' ? parseFloat(won.product.mb) : 0.0) + (typeof lost.product.mb !== 'undefined' ? parseFloat(lost.product.mb) : 0.0) ),
+                                ((typeof won.project.mb !== 'undefined' ? parseFloat(won.project.mb) : 0.0) + (typeof lost.project.mb !== 'undefined' ? parseFloat(lost.project.mb) : 0.0)),
+                                ((typeof won.service.mb !== 'undefined' ? parseFloat(won.service.mb) : 0.0) + (typeof lost.service.mb !== 'undefined' ? parseFloat(lost.service.mb) : 0.0 )),
+                                ((typeof nogo.product.mb !== 'undefined' ? parseFloat(nogo.product.mb) : 0.0)),
+                                ((typeof nogo.project.mb !== 'undefined' ? parseFloat(nogo.project.mb) : 0.0)),
+                                ((typeof nogo.service.mb !== 'undefined' ? parseFloat(nogo.service.mb) : 0.0))];
+            var max = Math.max(...temp);
+            var min = Math.min(...temp);
             const data = {
                               labels: ["Product","Project","Service"],
                               datasets: [
@@ -4381,6 +4579,14 @@
                                     font: {
                                         size: 14
                                     },
+                                    min: min,
+                                    max: max,
+                                    callback: function(value, index, values) {
+                                        var n = (values.length-1) % 2;
+                                        if(index % 2 === n){
+                                            return Number(value.toString());
+                                        }
+                                    },
                                   },
                                   title: {
                                       text: 'MB',
@@ -4413,7 +4619,14 @@
                 chart_stack_wonlost_nogobudget_department.destroy();
             }
             var ctx = document.getElementById(chart_name).getContext('2d');
-
+            var temp = [((typeof won.product.mb !== 'undefined' ? parseFloat(won.product.mb) : 0.0) + (typeof lost.product.mb !== 'undefined' ? parseFloat(lost.product.mb) : 0.0) ),
+                                ((typeof won.project.mb !== 'undefined' ? parseFloat(won.project.mb) : 0.0) + (typeof lost.project.mb !== 'undefined' ? parseFloat(lost.project.mb) : 0.0)),
+                                ((typeof won.service.mb !== 'undefined' ? parseFloat(won.service.mb) : 0.0) + (typeof lost.service.mb !== 'undefined' ? parseFloat(lost.service.mb) : 0.0 )),
+                                ((typeof nogo.product.mb !== 'undefined' ? parseFloat(nogo.product.mb) : 0.0) + (typeof budget.product.mb !== 'undefined' ? parseFloat(budget.product.mb) : 0.0) ),
+                                ((typeof nogo.project.mb !== 'undefined' ? parseFloat(nogo.project.mb) : 0.0) + (typeof budget.project.mb !== 'undefined' ? parseFloat(budget.project.mb) : 0.0 )),
+                                ((typeof nogo.service.mb !== 'undefined' ? parseFloat(nogo.service.mb) : 0.0) + (typeof budget.service.mb !== 'undefined' ? parseFloat(budget.service.mb) : 0.0 )),];
+            var max = Math.max(...temp);
+            var min = Math.min(...temp);
             const data = {
                               labels: ["Product","Project","Service"],
                               datasets: [
@@ -4530,6 +4743,14 @@
                                     color: '#000000C8',
                                     font: {
                                         size: 14
+                                    },
+                                    min: min,
+                                    max: max,
+                                    callback: function(value, index, values) {
+                                        var n = (values.length-1) % 2;
+                                        if(index % 2 === n){
+                                            return Number(value.toString());
+                                        }
                                     },
                                   },
                                   title: {
