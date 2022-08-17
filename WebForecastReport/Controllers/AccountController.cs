@@ -48,7 +48,7 @@ namespace WebForecastReport.Controllers
                         {
                             HttpContext.Session.SetString("userId", user);
                             HttpContext.Session.Set("Image", image);
-                            HttpContext.Session.SetString("Login", "1234");
+                            HttpContext.Session.SetString("Login_MES", "1234");
                             return RedirectToAction("Index", "Main");
                         }
                         else
