@@ -31,12 +31,13 @@ namespace WebForecastReport.Service.MPR
                         tomorrow_plan,
                         WorkingHours.user_id,
 	                    EngineerUsers.user_name,
-                        customer,
+                        Quotation.customer,
                         note
                     FROM WorkingHours 
                     LEFT JOIN EngineerUsers ON WorkingHours.user_id = EngineerUsers.user_id
                     LEFT JOIN Jobs ON WorkingHours.job_id = Jobs.job_id
                     LEFT JOIN Tasks ON WorkingHours.task_id = Tasks.task_id
+                    LEFT JOIN Quotation ON Jobs.quotation_no = Quotation.quotation_no
                     WHERE EngineerUsers.user_name LIKE '{user_name}'
                     AND working_date BETWEEN '{start_date.ToString("yyyy-MM-dd")}' AND '{stop_date.ToString("yyyy-MM-dd")}'
                     ORDER BY working_date, start_time;
