@@ -47,7 +47,7 @@ namespace WebForecastReport.Controllers
 
         public IActionResult EngineerWeeklySummary()
         {
-            if (HttpContext.Session.GetString("Login") != null)
+            if (HttpContext.Session.GetString("Login_MES") != null)
             {
                 string user = HttpContext.Session.GetString("userId");
                 List<UserModel> users = new List<UserModel>();
