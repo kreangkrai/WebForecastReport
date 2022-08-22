@@ -128,18 +128,44 @@ namespace WebForecastReport.Controllers
                         }
                         else
                         {
+                            //Check Start and Stop Time to calculate hours
                             if(wh.start_time < evening && wh.stop_time > evening)
                             {
+                                //Start before 17.30 and stop after 17.30
                                 regular += evening - wh.start_time;
-                                ot15 += wh.stop_time - evening;
+
+                                //Check if task is not equal to travel
+                                if(wh.task_id[0] != 'T')
+                                {
+                                    //Add hours to overtime 1.5 if task is not travel
+                                    ot15 += wh.stop_time - evening;
+                                }
+                                else
+                                {
+                                    //Add hours to regular if task is travel
+                                    regular += wh.stop_time - evening;
+                                }
+                                
                             }
                             else if(wh.start_time < evening && wh.stop_time <= evening)
                             {
+                                //Start before 17.30 and stop before 17.30
                                 regular += wh.stop_time - wh.start_time;
                             }
                             else
                             {
-                                ot15 += wh.stop_time - wh.start_time;
+                                //Start and stop after 17.30
+                                //Check if task is not equal to travel
+                                if (wh.task_id[0] != 'T')
+                                {
+                                    //Add hours to overtime 1.5 if task is not travel
+                                    ot15 += wh.stop_time - wh.start_time;
+                                }
+                                else
+                                {
+                                    //Add hours to regular if task is travel
+                                    regular += wh.stop_time - wh.start_time;
+                                }
                             }
 
                             if (wh.lunch && wh.start_time <= noon && wh.stop_time > after_noon && regular.Hours > 1)
