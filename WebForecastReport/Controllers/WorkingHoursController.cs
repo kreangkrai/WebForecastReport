@@ -326,12 +326,13 @@ namespace WebForecastReport.Controllers
                 hours_1_5 = Convert.ToDouble(sum_ot1_5.TotalHours),
                 hours_3_0 = Convert.ToDouble(sum_ot3_0.TotalHours)
             };
-
+            string cs = $"--print-media-type --page-size A4";
             var form_overtime = new ViewAsPdf("FormOvertime")
             {
                 Model = form_data,
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
-                PageSize = Rotativa.AspNetCore.Options.Size.A4
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                CustomSwitches = cs
             };
             return form_overtime;
         }

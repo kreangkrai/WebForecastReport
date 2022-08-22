@@ -1,6 +1,6 @@
 ﻿@model WebForecastReport.Models.MPR.Form_OvertimeModel
 @{
-    Layout = null;
+    Layout = "";
 }
 <!DOCTYPE html>
 <html>
@@ -355,9 +355,9 @@
                                     <tr>
                                         <td>@(i + 1)</td>
                                         <td>@Model.summary[i].job_id</td>
-                                        <td>@Convert.ToDouble(Model.summary[i].normal.TotalHours).ToString("#.#")</td>
-                                        <td>@Convert.ToDouble(Model.summary[i].ot1_5.TotalHours).ToString("#.#")</td>
-                                        <td>@Convert.ToDouble(Model.summary[i].ot3_0.TotalHours).ToString("#.#")</td>
+                                        <td>@Convert.ToDouble(Model.summary[i].normal.TotalHours).ToString("0.0")</td>
+                                        <td>@Convert.ToDouble(Model.summary[i].ot1_5.TotalHours).ToString("0.0")</td>
+                                        <td>@Convert.ToDouble(Model.summary[i].ot3_0.TotalHours).ToString("0.0")</td>
                                     </tr>
                                 }
                                 else
