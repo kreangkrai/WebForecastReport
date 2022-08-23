@@ -15,6 +15,15 @@
         p {
             font-size: 16px;
             font-family: 'Angsana New';
+            margin:0px;
+            padding: 0px;
+        }
+
+        b {
+            font-size: 16px;
+            font-family: 'Angsana New';
+            margin: 0px;
+            padding: 0px
         }
 
         table {
@@ -32,12 +41,26 @@
             vertical-align: middle;
         }
 
+        th {
+            font-family: 'Angsana New';
+            font-size: 16px;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        td {
+            font-family:'Angsana New';
+            font-size: 16px;
+            margin:0px;
+            padding:0px;
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <form>
-            <div class="form-group row">
+            <div class="form-group row" style="margin:0px;padding:0px">
                 <div class="col-10 text-center">
                     <p style="font-size:18px;padding-left:50px;margin:0px">บริษัทคอนโทรลอจิค จำกัด</p>
                     <p style="font-size:18px;padding-left:50px;margin:0px">Overtime Record ใบเบิกค่าทำงานล่วงเวลา</p>
@@ -46,7 +69,7 @@
                     <img src="https://contrologic.co.th/web/wp-content/uploads/2020/07/contrologic-logo.png" height="50" />
                 </div>
             </div>
-            <div class="form-group row" style="margin:0px;">
+            <div class="form-group row" style="margin:0px;padding:0px">
                 <div class="col-2">
                     <p>ชื่อพนักงาน</p>
                 </div>
@@ -60,7 +83,7 @@
                     <p>@Model.department</p>
                 </div>
             </div>
-            <div class="form-group row" style="margin:0px">
+            <div class="form-group row" style="margin:0px;padding:0px">
                 <div class="col-2">
                     <p>เบอร์โทรศัพท์</p>
                 </div>
@@ -74,7 +97,7 @@
                     <p>08:30</p>
                 </div>
             </div>
-            <div class="form-group row" style="margin:0px">
+            <div class="form-group row" style="margin:0px;padding:0px">
                 <div class="col-2">
                     <p>สำหรับงวดเดือน</p>
                 </div>
@@ -82,11 +105,7 @@
                     <p>@Convert.ToDateTime(Model.month).ToString("MMMM yyyy").ToUpper()</p>
                 </div>
             </div>
-            <div class="form-group">
-                <br />
-            </div>
-
-            <div class="form-group">
+            <div class="form-group" style="margin:0px;padding:0px">
                 <table class="table table-bordered table-sm text-center">
                     <thead>
                         <tr>
@@ -121,7 +140,7 @@
                                     <td>
                                         @Model.datas[i].location
                                     </td>
-                                    <td>
+                                    <td style="text-align:left;padding-left:8px">
                                         @Model.datas[i].task
                                     </td>
                                     <td>
@@ -159,7 +178,7 @@
                                     <td>
                                         @Model.datas[i].location
                                     </td>
-                                    <td>
+                                    <td style="text-align:left;padding-left:8px">
                                         @Model.datas[i].task
                                     </td>
                                     <td>
@@ -197,7 +216,7 @@
                                     <td>
                                         @Model.datas[i].location
                                     </td>
-                                    <td>
+                                    <td style="text-align:left;padding-left:8px">
                                         @Model.datas[i].task
                                     </td>
                                     <td>
@@ -230,8 +249,7 @@
                     </tbody>
                 </table>
             </div>
-
-            <div class="form-group row">
+            <div class="form-group row" style="margin:0px;padding:0px">
                 <div class="col-1">
 
                 </div>
@@ -260,29 +278,27 @@
 
                 </div>
             </div>
-
-            <div class="form-group row">
+            <div class="form-group row" style="margin:0px;padding:0px">
                 <div class="col-1"></div>
                 <div class="col-2 text-center">
-                    <p>(ผู้ควบคุมการทำงาน)</p>
+                    <p style="font-size: 16px">(ผู้ควบคุมการทำงาน)</p>
                 </div>
                 <div class="col-2"></div>
                 <div class="col-2 text-center">
-                    <p>(ผู้ตรวจสอบ)</p>
+                    <p style="font-size: 16px">(ผู้ตรวจสอบ)</p>
                 </div>
                 <div class="col-2"></div>
                 <div class="col-2 text-center">
-                    <p>(ผู้อนุมัติ)</p>
+                    <p style="font-size: 16px">(ผู้อนุมัติ)</p>
                 </div>
                 <div class="col-1"></div>
             </div>
-
             <div class="form-group my-0 py-0 row">
                 <div class="col-12">
                     <p>ADMIN</p>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row" style="margin:0px;padding:0px">
                 <div class="col-4">
                     <table class="table table-bordered table-sm text-center">
                         <thead>

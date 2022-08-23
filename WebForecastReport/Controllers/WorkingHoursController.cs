@@ -289,7 +289,6 @@ namespace WebForecastReport.Controllers
                     data.ot1_5 = monthly[i].ot1_5.ToString().Substring(0, 5) != "00:00" ? monthly[i].ot1_5.ToString().Substring(0, 5) : "";
                     data.ot3_0 = monthly[i].ot3_0.ToString().Substring(0, 5) != "00:00" ? monthly[i].ot3_0.ToString().Substring(0, 5) : "";
                 }
-
                 datas.Add(data);
             }
 
@@ -319,20 +318,19 @@ namespace WebForecastReport.Controllers
                 datas = datas,
                 summary = summaries,
                 total_working_hours = Convert.ToInt32(twhs.TotalHours).ToString().PadLeft(2,'0') + ":" + twhs.Minutes.ToString().PadLeft(2,'0'),
-                total_normal = Convert.ToInt32(sum_normal.TotalHours).ToString().PadLeft(2,'0') + ":" + sum_normal.Minutes.ToString().PadLeft(2,'0'),
-                total_ot1_5 = Convert.ToInt32(sum_ot1_5.TotalHours).ToString().PadLeft(2,'0') + ":" + sum_ot1_5.Minutes.ToString().PadLeft(2,'0'),
-                total_ot3_0 = Convert.ToInt32(sum_ot3_0.TotalHours).ToString().PadLeft(2,'0') + ":" + sum_ot3_0.Minutes.ToString().PadLeft(2, '0'),
+                total_normal = Convert.ToInt32(sum_normal.TotalHours).ToString().PadLeft(2, '0') + ":" + sum_normal.Minutes.ToString().PadLeft(2, '0'),
+                total_ot1_5 = Convert.ToInt32(sum_ot1_5.TotalHours).ToString().PadLeft(2, '0') + ":" + sum_ot1_5.Minutes.ToString().PadLeft(2, '0'),
+                total_ot3_0 = Convert.ToInt32(sum_ot3_0.TotalHours).ToString().PadLeft(2, '0') + ":" + sum_ot3_0.Minutes.ToString().PadLeft(2, '0'),
                 hours_normal = Convert.ToDouble(sum_normal.TotalHours),
                 hours_1_5 = Convert.ToDouble(sum_ot1_5.TotalHours),
                 hours_3_0 = Convert.ToDouble(sum_ot3_0.TotalHours)
             };
-            string cs = $"--print-media-type --page-size A4";
             var form_overtime = new ViewAsPdf("FormOvertime")
             {
                 Model = form_data,
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
                 PageSize = Rotativa.AspNetCore.Options.Size.A4,
-                CustomSwitches = cs
+                PageMargins = new Rotativa.AspNetCore.Options.Margins { Top = 5, Left = 5, Right = 5, Bottom = 2 }
             };
             return form_overtime;
         }
