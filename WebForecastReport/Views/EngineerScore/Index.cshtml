@@ -69,6 +69,7 @@
                         <tr>
                             <th>Job ID</th>
                             <th>Job Name</th>
+                            <th>Job Status</th>
                             <th>Cost</th>
                             <th>MD</th>
                             <th>PD</th>
@@ -84,6 +85,7 @@
                         <tr>
                             <th>Job ID</th>
                             <th>Job Name</th>
+                            <th>Job Status</th>
                             <th>Cost</th>
                             <th>MD</th>
                             <th>PD</th>
@@ -109,7 +111,7 @@
         var users;
 
         //Change these parameters to true to see result
-        var debug_score = false;
+        var debug_score = true;
         var debug_user = false;
 
         $(document).ready(async function () {
@@ -174,6 +176,7 @@
                 datas.push([
                     scores[i].job_id,
                     scores[i].job_name,
+                    scores[i].job_status,
                     scores[i].cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     scores[i].md_rate,
                     scores[i].pd_rate,
@@ -203,10 +206,18 @@
                         className: "text-left"
                     },
                     {
-                        targets: [3, 4, 10],
+                        targets: [4, 5, 11],
                         visible: false
                     }
-                ]
+                ],
+                rowCallback: function (row, data) {
+                    let job_status = data[2];
+                    if (job_status === "1") {
+                        $('td:eq(2)', row).html(`<span class="badge badge-success">FINISHED</span>`);
+                    } else {
+                        $('td:eq(2)', row).html(`<span class="badge badge-warning">IN PROGRESS</span>`);
+                    }
+                }
             });
         }
 

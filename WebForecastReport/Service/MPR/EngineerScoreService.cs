@@ -56,11 +56,11 @@ namespace WebForecastReport.Service.MPR
 						WHERE user_id = '{user_id}'
 	                    GROUP BY user_id,job_id
 					)
-					
 					SELECT distinct
 	                    t1.user_id AS user_id,
 	                    t1.job_id AS job_id,
 	                    Jobs.job_name AS job_name,
+                        Jobs.status,
                         cost,
 	                    md_rate AS md_rate,
 	                    pd_rate AS pd_rate,
@@ -92,6 +92,7 @@ namespace WebForecastReport.Service.MPR
                         {
                             job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
                             job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
+                            job_status = dr["status"] != DBNull.Value ? dr["status"].ToString() : "",
                             cost = dr["cost"] != DBNull.Value ? Convert.ToInt32(dr["cost"]) : 0,
                             md_rate = dr["md_rate"] != DBNull.Value ? Convert.ToDouble(dr["md_rate"]) : 0,
                             pd_rate = dr["pd_rate"] != DBNull.Value ? Convert.ToDouble(dr["pd_rate"]) : 0,
