@@ -6,6 +6,9 @@
 <div class="row p-3">
     @if (Model.role == "Admin")
     {
+        <div class="col-xl-1">
+            <select id="departments" class="form-control"></select>
+        </div>
         <div class="col-xl-2 pb-3">
             <select id="user_id" class="form-control">
                 <option value="">Please Select User</option>
@@ -14,6 +17,9 @@
     }
     else
     {
+        <div class="col-xl-1">
+            <select id="departments" class="form-control"></select>
+        </div>
         <div class="col-xl-2 pb-3" hidden>
             <select id="user_id" class="form-control">
                 <option value="">Please Select User</option>
@@ -69,6 +75,7 @@
                         <tr>
                             <th>Job ID</th>
                             <th>Job Name</th>
+                            <th>Customer</th>
                             <th>Job Status</th>
                             <th>Cost</th>
                             <th>MD</th>
@@ -85,6 +92,7 @@
                         <tr>
                             <th>Job ID</th>
                             <th>Job Name</th>
+                            <th>Customer</th>
                             <th>Job Status</th>
                             <th>Cost</th>
                             <th>MD</th>
@@ -111,11 +119,12 @@
         var users;
 
         //Change these parameters to true to see result
-        var debug_score = true;
+        var debug_score = false;
         var debug_user = false;
 
         $(document).ready(async function () {
             await GetEngineers();
+            GenerateDepartmentOptions();
             GenerateUserOption();
             GenerateYearOption();
             var date = new Date();
@@ -160,13 +169,35 @@
             });
         }
 
-        function GenerateUserOption() {
-            var user_str = '<option value="" selected disabled>Please Select Engineer</option>';
-            for (var i = 0; i < users.length;i++) {
-                user_str += `<option value="${users[i].user_id}">${users[i].user_name}</option>`;
+        function GenerateDepartmentOptions() {
+            let departments = users.map(m => m.department);
+            departments = [...new Set(departments)].sort();
+            $('#departments').empty();
+            $('#departments').append(`<option value="ALL" selected>ALL</option>`);
+            for (let i = 0; i < departments.length; i++) {
+                $('#departments').append(`<option value="${departments[i]}">${departments[i]}</option>`);
             }
+        }
+
+        $('#departments').on('change', function () {
+            GenerateUserOption();
+        });
+
+        function GenerateUserOption() {
             $('#user_id').empty();
-            $('#user_id').append(user_str);
+            $('#user_id').append('<option value="" selected disabled>Please Select Engineer</option>');
+            let department = $('#departments').val();
+            if (department === "ALL") {
+                for (let i = 0; i < users.length; i++) {
+                    $('#user_id').append(`<option value="${users[i].user_id}">${users[i].user_name}</option>`);
+                }
+            }
+            else {
+                let employees = users.filter(f => f.department === department);
+                for (let i = 0; i < employees.length; i++) {
+                    $('#user_id').append(`<option value="${employees[i].user_id}">${employees[i].user_name}</option>`);
+                }
+            }
         }
 
         function GenerateTable() {
@@ -176,6 +207,7 @@
                 datas.push([
                     scores[i].job_id,
                     scores[i].job_name,
+                    scores[i].customer,
                     scores[i].job_status,
                     scores[i].cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     scores[i].md_rate,
@@ -198,24 +230,26 @@
                 columnDefs: [
                     {
                         targets: 0,
-                        width: "10%"
+                        width: "5%"
                     },
                     {
                         targets: 1,
-                        width: "40%",
+                        width: "30%",
                         className: "text-left"
                     },
                     {
-                        targets: [4, 5, 11],
+                        targets: [5, 6, 12],
                         visible: false
                     }
                 ],
                 rowCallback: function (row, data) {
-                    let job_status = data[2];
-                    if (job_status === "1") {
-                        $('td:eq(2)', row).html(`<span class="badge badge-success">FINISHED</span>`);
+                    let job_status = data[3];
+                    if (job_status === "0") {
+                        $('td:eq(3)', row).html(`<span class="badge badge-success">FINISHED</span>`);
+                    } else if (job_status === "1") {
+                        $('td:eq(3)', row).html(`<span class="badge badge-warning">IN PROGRESS</span>`);
                     } else {
-                        $('td:eq(2)', row).html(`<span class="badge badge-warning">IN PROGRESS</span>`);
+                        $('td:eq(3)')
                     }
                 }
             });

@@ -60,6 +60,7 @@ namespace WebForecastReport.Service.MPR
 	                    t1.user_id AS user_id,
 	                    t1.job_id AS job_id,
 	                    Jobs.job_name AS job_name,
+                        Quotation.customer as customer,
                         Jobs.status,
                         cost,
 	                    md_rate AS md_rate,
@@ -71,7 +72,8 @@ namespace WebForecastReport.Service.MPR
 	                    (CAST(t3.working_hours AS FLOAT) / (CAST(t2.total_manpower AS FLOAT))) AS manpower_per_tmp,
 	                    (cost * (md_rate + pd_rate) * (cost / t2.total_manpower) * (CAST(t3.working_hours AS FLOAT) / (CAST(t2.total_manpower AS FLOAT)))) AS score
                     FROM WorkingHours  As t1  
-					LEFT JOIN Jobs ON t1.job_id = Jobs.job_id		     
+					LEFT JOIN Jobs ON t1.job_id = Jobs.job_id
+                    LEFT JOIN Quotation ON Jobs.quotation_no = Quotation.quotation_no
                     INNER JOIN t2	                     
                     ON t1.job_id = t2.job_id
                     INNER JOIN t3					
@@ -93,6 +95,7 @@ namespace WebForecastReport.Service.MPR
                             job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
                             job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
                             job_status = dr["status"] != DBNull.Value ? dr["status"].ToString() : "",
+                            customer = dr["customer"] != DBNull.Value ? dr["customer"].ToString() : "",
                             cost = dr["cost"] != DBNull.Value ? Convert.ToInt32(dr["cost"]) : 0,
                             md_rate = dr["md_rate"] != DBNull.Value ? Convert.ToDouble(dr["md_rate"]) : 0,
                             pd_rate = dr["pd_rate"] != DBNull.Value ? Convert.ToDouble(dr["pd_rate"]) : 0,
