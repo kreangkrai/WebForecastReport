@@ -38,6 +38,8 @@
                             <th>End User</th>
                             <th>Sale Name</th>
                             <th>Department</th>
+                            <th>Process</th>
+                            <th>System</th>
                             <th>Cost</th>
                             <th>MD</th>
                             <th>PD</th>
@@ -46,6 +48,7 @@
                             <th>Cost/MP</th>
                             <th>OT MP</th>
                             <th>Status</th>
+                            <th>Customer Satisfaction</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,6 +62,8 @@
                             <th>End User</th>
                             <th>Sale Name</th>
                             <th>Department</th>
+                            <th>Process</th>
+                            <th>System</th>
                             <th>Cost</th>
                             <th>MD</th>
                             <th>PD</th>
@@ -67,6 +72,7 @@
                             <th>Cost/MP</th>
                             <th>OT MP</th>
                             <th>Status</th>
+                            <th>Customer Satisfaction</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -227,6 +233,8 @@
                     jobs[i].enduser,
                     jobs[i].sale_name,
                     jobs[i].department,
+                    "", //Process
+                    "", //System
                     jobs[i].cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     jobs[i].md_rate,
                     jobs[i].pd_rate,
@@ -235,6 +243,7 @@
                     jobs[i].cost_per_manpower,
                     jobs[i].ot_manpower,
                     jobs[i].status,
+                    "" //Customer Satisfaction
                 ]);
             }
 
@@ -247,7 +256,7 @@
                 },
                 columnDefs: [
                     {
-                        targets: [4, 5, 6, 8, 9, 11, 12, 13],
+                        targets: [4, 5, 6, 10, 11, 13, 14, 15],
                         visible: false
                     },
                 ],
@@ -255,16 +264,16 @@
                     $('td:eq(1)', row).addClass("text-left");
                     $('td:eq(3)', row).addClass("text-left");
                     var status_str = '';
-                    if (data[14] === "1") {
+                    if (data[16] === "1") {
                         status_str = `<span class="badge badge-warning">IN PROGRESS</span>`;
                     }
-                    else if (data[14] === "0") {
+                    else if (data[16] === "0") {
                         status_str = `<span class="badge badge-success">FINISHED</span>`;
                     }
                     else {
                         status_str = '';
                     }
-                    $('td:eq(6)', row).html(status_str);
+                    $('td:eq(8)', row).html(status_str);
                 }
             });
         };
