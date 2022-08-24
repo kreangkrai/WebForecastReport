@@ -48,7 +48,7 @@
                             <th>Cost/MP</th>
                             <th>OT MP</th>
                             <th>Status</th>
-                            <th>Customer Satisfaction</th>
+                            <th>C SAT.</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -72,7 +72,7 @@
                             <th>Cost/MP</th>
                             <th>OT MP</th>
                             <th>Status</th>
-                            <th>Customer Satisfaction</th>
+                            <th>C SAT.</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -238,7 +238,7 @@
                     jobs[i].cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     jobs[i].md_rate,
                     jobs[i].pd_rate,
-                    jobs[i].factor,
+                    jobs[i].md_rate * jobs[i].pd_rate, //Factor
                     jobs[i].manpower,
                     jobs[i].cost_per_manpower,
                     jobs[i].ot_manpower,
