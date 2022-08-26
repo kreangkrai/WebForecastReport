@@ -1,0 +1,63 @@
+﻿@{ 
+    ViewData["title"] = "Skills";
+}
+<div class="row p-4" style="row-gap:20px">
+    <div class="col-xl-12">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Skills</span>
+            </div>
+            <div class="card-body">
+                <table id="table" class="table table-sm table-bordered text-center w-100">
+                    <thead>
+                        <tr>
+                            <th>Skill Name</th>
+                            <th>Skill ID</th>
+                            <th>Skill Description</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_skill" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_title">Create Skill</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <span>Skill ID</span>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <span>Skill Name</span>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <span>Skill Description</span>
+                        <input type="text" class="form-control" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{ 
+    <script type="text/javascript">
+
+    </script>
+}
