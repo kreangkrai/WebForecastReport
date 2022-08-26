@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["title"] = "System";
+}
+<div class="row p-4" style="row-gap:20px">
+    <div class="col-xl-12">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">System</span>
+            </div>
+            <div class="card-body">
+                <table id="table" class="table table-sm table-bordered text-center w-100">
+                    <thead>
+                        <tr>
+                            <th>System ID</th>
+                            <th>System Name</th>
+                            <th>System Description</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_system" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_title">Create System</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <span>System ID</span>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <span>System Name</span>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <span>System Description</span>
+                        <input type="text" class="form-control" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            GenerateTable();
+        });
+
+        function GenerateTable() {
+            $('#table').DataTable();
+        }
+    </script>
+}
