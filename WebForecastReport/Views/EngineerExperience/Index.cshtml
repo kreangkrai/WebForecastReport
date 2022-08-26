@@ -1,0 +1,326 @@
+﻿@{
+    ViewData["title"] = "Engineer Experience";
+}
+<div class="row p-4" style="row-gap:20px">
+    <div class="col-xl-4">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Processes</span>
+            </div>
+            <div class="card-body">
+                <div id="chart_process" style="width:100%;height:250px"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Systems</span>
+            </div>
+            <div class="card-body">
+                <div id="chart_system" style="width:100%;height:250px"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Skills</span>
+            </div>
+            <div class="card-body">
+                <div id="chart_skill" style="width:100%;height:250px"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-12">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Experience</span>
+                <div class="card-tools">
+                    <button id="btn_range" type="button" class="btn btn-tool bg-primary">
+                        <i class="fas fa-info-circle"></i> Range
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="table" class="table table-sm table-bordered text-center w-100">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_range" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Range Explanation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span>Ranges</span>
+                <table class="table table-sm table-bordered w-100">
+                    <thead>
+                        <tr>
+                            <th>LV</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span class="badge badge-danger">INEXP</span>
+                            </td>
+                            <td>
+                                <span>Inexperience</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="badge badge-danger">LOW EXP</span>
+                            </td>
+                            <td>
+                                <span>Low Experience</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="badge badge-warning">SOME EXP</span>
+                            </td>
+                            <td>
+                                <span>Some Experience</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="badge badge-success">HIGH EXP</span>
+                            </td>
+                            <td>
+                                <span>High Experience</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="badge badge-success">Expert</span>
+                            </td>
+                            <td>
+                                <span>Expert</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        let processes = [];
+        let systems = [];
+        let users = [];
+        let skills = [];
+
+        $(document).ready(function () {
+            GetProcesses();
+            GetSystems();
+            GetSkills();
+            GetEngineerExperiences();
+            GenerateTable();
+            GenerateChartProcess();
+            GenerateChartSystem();
+            GenerateChartSkill();
+        });
+
+        function GetProcesses() {
+            processes = [];
+            let datas = ['Sugar - Extraction', 'Sugar - Purification', 'Sugar - Crystallization', 'Sugar - Centrifugation', 'Sugar - Drying', 'Sugar - Packing'];
+            for (let i = 0; i < datas.length; i++) {
+                processes.push(datas[i]);
+            }
+            processes.sort();
+        }
+
+        function GetSystems() {
+            systems = [];
+            let datas = ['ABB - DCS', 'ABB - PLC Automation'];
+            for (let i = 0; i < datas.length; i++) {
+                systems.push(datas[i]);
+            }
+            systems.sort();
+        }
+
+        function GetSkills() {
+            skills = [];
+            datas = ['CAD', 'Welding'];
+            for (let i = 0; i < datas.length; i++) {
+                skills.push(datas[i]);
+            }
+            skills.sort();
+        }
+
+        function GetEngineerExperiences() {
+            users = [];
+            users.push({
+                "username": 'Dame Marcum', "p1": 0, "p2": 2, "p3": 0, "p4": 0, "p5": 0, "p6": 0, "sy1": 1, "sy2": 1, "sk1": 1, "sk2": 1
+            });
+            users.push({
+                "username": 'Addie Copes', "p1": 0, "p2": 2, "p3": 0, "p4": 0, "p5": 0, "p6": 0, "sy1": 1, "sy2": 1, "sk1": 1, "sk2": 1
+            });
+            users.push({
+                "username": 'Julia Baldin', "p1": 0, "p2": 2, "p3": 0, "p4": 0, "p5": 0, "p6": 0, "sy1": 1, "sy2": 1, "sk1": 1, "sk2": 1
+            });
+            users.sort();
+        }
+
+        function GenerateTable() {
+            $('#table').empty();
+            var header = `
+                <thead>
+                    <tr>
+                        <td rowspan="2" style="vertical-align:middle">Engineer</td>
+                        <td colspan="${processes.length}">Processes</td>
+                        <td colspan="${systems.length}">Systems</td>
+                        <td colspan="${skills.length}">Skills</td>
+                    </tr>
+                    <tr>`;
+
+            for (let i = 0; i < processes.length; i++) {
+                header += `<td>${processes[i]}</td>`;
+            }
+
+            for (let i = 0; i < systems.length; i++) {
+                header += `<td>${systems[i]}</td>`;
+            }
+
+            for (let i = 0; i < skills.length; i++) {
+                header += `<td>${skills[i]}</td>`;
+            }
+
+            header += `</tr></thead><tbody></tbody>`;
+            $('#table').append(header);
+
+            for (let i = 0; i < users.length; i++) {
+                let row_str = `
+                <tr>
+                    <td>${users[i].username}</td>
+                    <td>${users[i].p1}</td>
+                    <td>${users[i].p2}</td>
+                    <td>${users[i].p3}</td>
+                    <td>${users[i].p4}</td>
+                    <td>${users[i].p5}</td>
+                    <td>${users[i].p6}</td>
+                    <td>${users[i].sy1}</td>
+                    <td>${users[i].sy2}</td>
+                    <td>${users[i].sk1}</td>
+                    <td>${users[i].sk2}</td>
+                </tr>`;
+                $('#table tbody').append(row_str);
+            }
+
+            table = $('#table').DataTable({
+                rowCallback: function (row, data) {
+                    var levels = [
+                        '<span class="badge badge-danger">INEXP</span>',
+                        '<span class="badge badge-danger">LOW EXP</span>',
+                        '<span class="badge badge-warning">SOME EXP</span>',
+                        '<span class="badge badge-success">HIGH EXP</span>',
+                        '<span class="badge badge-success">EXPERT</span>',
+                    ];
+                    $('td:eq(1)', row).html(levels[data[1]]);
+                    $('td:eq(2)', row).html(levels[data[2]]);
+                    $('td:eq(3)', row).html(levels[data[3]]);
+                    $('td:eq(4)', row).html(levels[data[4]]);
+                    $('td:eq(5)', row).html(levels[data[5]]);
+                    $('td:eq(6)', row).html(levels[data[6]]);
+                    $('td:eq(7)', row).html(levels[data[7]]);
+                    $('td:eq(8)', row).html(levels[data[8]]);
+                    $('td:eq(9)', row).html(levels[data[9]]);
+                    $('td:eq(10)', row).html(levels[data[10]]);
+                }
+            });
+        }
+
+        function GenerateChartProcess() {
+            let chartDom = document.getElementById('chart_process');
+            let myChart = echarts.init(chartDom);
+            let option;
+            option = {
+                legend: {},
+                tooltip: {},
+                dataset: {
+                    source: [
+                        ['SKILL', 'LOW', 'MID', 'HIGH'],
+                        ['Mill', 3, 5, 7],
+                        ['Evaporate', 5, 3, 1],
+                        ['Feed Mill', 3, 3, 10]
+                    ]
+                },
+                xAxis: { type: 'category' },
+                yAxis: {},
+                series: [{ type: 'bar' }, { type: 'bar' }, { type: 'bar' }]
+            };
+            option && myChart.setOption(option);
+            new ResizeObserver(() => myChart.resize()).observe(chartDom);
+        }
+
+        function GenerateChartSystem() {
+            let chartDom = document.getElementById('chart_system');
+            let myChart = echarts.init(chartDom);
+            let option;
+            option = {
+                legend: {},
+                tooltip: {},
+                dataset: {
+                    source: [
+                        ['SKILL', 'LOW', 'MID', 'HIGH'],
+                        ['DCS Yokogawa', 1, 6, 5],
+                        ['DCS Siemens', 2, 5, 5],
+                        ['DCS ABB', 3, 3, 6],
+                        ['PLC OMRON', 2, 3, 7]
+                    ]
+                },
+                xAxis: { type: 'category' },
+                yAxis: {},
+                series: [{ type: 'bar' }, { type: 'bar' }, { type: 'bar' }]
+            };
+            option && myChart.setOption(option);
+            new ResizeObserver(() => myChart.resize()).observe(chartDom);
+        }
+
+        function GenerateChartSkill() {
+            let chartDom = document.getElementById('chart_skill');
+            let myChart = echarts.init(chartDom);
+            let option;
+            option = {
+                legend: {},
+                tooltip: {},
+                dataset: {
+                    source: [
+                        ['SKILL', 'LOW', 'MID', 'HIGH'],
+                        ['Electrical', 2, 7, 3],
+                        ['CAD', 5, 3, 4],
+                        ['Mechanic', 3, 6, 3],
+                        ['Programming', 5, 4, 3]
+                    ]
+                },
+                xAxis: { type: 'category' },
+                yAxis: {},
+                series: [{ type: 'bar' }, { type: 'bar' }, { type: 'bar' }]
+            };
+            option && myChart.setOption(option);
+            new ResizeObserver(() => myChart.resize()).observe(chartDom);
+        }
+
+        $('#btn_range').on('click', function () {
+            $('#modal_range').modal();
+        });
+
+    </script>
+}

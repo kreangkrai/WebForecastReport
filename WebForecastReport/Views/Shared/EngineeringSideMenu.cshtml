@@ -9,7 +9,7 @@
         <nav class="mt-2">
             <ul class="nav nav-legacy nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-                @if(@Model.name == "Korakod.P")
+                @if (@Model.name == "Korakod.P")
                 {
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Test" asp-action="Index">
@@ -56,12 +56,29 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Holiday" asp-action="Index">
-                        <i class="nav-icon fas fa-calendar-day"></i>
-                        <p class="text-bold">HOLIDAY</p>
-                    </a>
-                </li>
+                @if (Model.role == "Admin")
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="EngineerExperience" asp-action="Index">
+                            <i class="nav-icon fas fa-user-graduate"></i>
+                            <p class="text-bold">EXPERIENCE <span class="badge badge-danger">DEV</span></p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="EngineerExperience" asp-action="ExperienceAndSkill">
+                            <i class="nav-icon fas fa-project-diagram"></i>
+                            <p class="text-bold">EXPERIENCE2 <span class="badge badge-danger">DEV</span></p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Holiday" asp-action="Index">
+                            <i class="nav-icon fas fa-calendar-day"></i>
+                            <p class="text-bold">HOLIDAY</p>
+                        </a>
+                    </li>
+                }
 
                 @if (Model.role == "Admin")
                 {
@@ -171,6 +188,24 @@
                                 <a class="nav-link" asp-controller="Tasks" asp-action="Index">
                                     <i class="nav-icon fas fa-tasks"></i>
                                     <p>TASKS</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="EngProcess" asp-action="Index">
+                                    <i class="nav-icon fas fa-project-diagram"></i>
+                                    <p>PROCESS <span class="badge badge-danger">DEV</span></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="EngSystem" asp-action="Index">
+                                    <i class="nav-icon fas fa-microchip"></i>
+                                    <p>SYSTEM <span class="badge badge-danger">DEV</span></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="EngSkill" asp-action="Index">
+                                    <i class="nav-icon fas fa-user-graduate"></i>
+                                    <p>SKILL <span class="badge badge-danger">DEV</span></p>
                                 </a>
                             </li>
                             <li class="nav-item">

@@ -1,0 +1,282 @@
+﻿@{
+    ViewData["title"] = "EXP2";
+}
+<div class="row p-4" style="row-gap:20px">
+    <div class="col-xl-2">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span class="card-title">Engineer</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <span>Departments</span>
+                        <select class="form-control">
+                            <option value="ALL">All Department</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span>Engineer</span>
+                        <select class="form-control">
+                            <option value="ENG1">Engineer 1</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary form-control elevation-1">
+                            Load
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-10">
+        <form>
+            <div class="form-group">
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <span class="card-title">Engineer</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-xl-4">
+                                <span>Name</span>
+                                <input type="text" class="form-control" />
+                            </div>
+                            <div class="col-xl-2">
+                                <span>Department</span>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-xl-4">
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <span class="card-title">Processes</span>
+                        </div>
+                        <div class="card-body">
+                            <div id="eng1" style="width:100%;height:300px"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <span class="card-title">Systems</span>
+                        </div>
+                        <div class="card-body">
+                            <div id="eng2" style="width:100%;height:300px"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <span class="card-title">Skills</span>
+                        </div>
+                        <div class="card-body">
+                            <div id="eng3" style="width:100%;height:300px"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <span class="card-title">Jobs</span>
+                    </div>
+                    <div class="card-body">
+                        <table id="table_job" class="table table-sm table-bordered text-center w-100">
+                            <thead>
+                                <tr>
+                                    <th>Job ID</th>
+                                    <th>Job Name</th>
+                                    <th>Customer</th>
+                                    <th>Job Status</th>
+                                    <th>Total Hours</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts 
+{
+    <script type="text/javascript">
+        let jobs = [
+            {
+                "job_id": "J22-0001",
+                "job_name": "Job 1",
+                "customer": "Customer 1",
+                "job_status": "Finished",
+                "hours": 1000
+            },
+            {
+                "job_id": "J22-0002",
+                "job_name": "Job 2",
+                "customer": "Customer 1",
+                "job_status": "In Progress",
+                "hours": 800,
+            },
+            {
+                "job_id": "J22-0003",
+                "job_name": "Job 3",
+                "customer": "Customer 1",
+                "job_status": "In Progress",
+                "hours": 400,
+            },
+        ];
+        let table;
+
+        $(document).ready(function () {
+            GenerateChart1();
+            GenerateChart2();
+            GenerateChart3();
+            GenerateJobTable();
+        });
+
+        function GenerateChart1() {
+            let chartDom = document.getElementById('eng1');
+            let myChart = echarts.init(chartDom);
+            let option;
+            option = {
+                title: {
+                    text: 'Processes',
+                    left: 'center',
+                    show: false
+                },
+                legend: {
+                    data: ['Allocated Budget'],
+                    show: false
+                },
+                radar: {
+                    indicator: [
+                        { name: 'Process 1', max: 6500 },
+                        { name: 'Process 2', max: 16000 },
+                        { name: 'Process 3', max: 30000 },
+                        { name: 'Process 4', max: 38000 },
+                        { name: 'Process 5', max: 52000 },
+                        { name: 'Process 6', max: 25000 }
+                    ]
+                },
+                series: [
+                    {
+                        name: 'Hours',
+                        type: 'radar',
+                        data: [
+                            {
+                                value: [4200, 3000, 20000, 35000, 50000, 18000],
+                                name: 'Allocated Budget'
+                            }
+                        ]
+                    }
+                ]
+            };
+            option && myChart.setOption(option);
+            new ResizeObserver(() => myChart.resize()).observe(chartDom);
+        }
+
+        function GenerateChart2() {
+            let chartDom = document.getElementById('eng2');
+            let myChart = echarts.init(chartDom);
+            let option;
+            option = {
+                title: {
+                    text: 'Systems',
+                    left: 'center',
+                    show: false
+                },
+                legend: {
+                    data: ['Allocated Budget'],
+                    show: false
+                },
+                radar: {
+                    indicator: [
+                        { name: 'System 1', max: 5000 },
+                        { name: 'System 2', max: 5000 },
+                        { name: 'System 3', max: 5000 },
+                        { name: 'System 4', max: 5000 },
+                        { name: 'System 5', max: 5000 },
+                    ]
+                },
+                series: [
+                    {
+                        name: 'Hours',
+                        type: 'radar',
+                        data: [
+                            {
+                                value: [4200, 3000, 3300, 2100, 1300],
+                                name: 'Allocated Budget'
+                            }
+                        ]
+                    }
+                ]
+            };
+            option && myChart.setOption(option);
+            new ResizeObserver(() => myChart.resize()).observe(chartDom);
+        }
+
+        function GenerateChart3() {
+            let chartDom = document.getElementById('eng3');
+            let myChart = echarts.init(chartDom);
+            let option;
+            option = {
+                title: {
+                    text: 'Skills',
+                    left: 'center',
+                    show: false
+                },
+                legend: {
+                    data: ['Allocated Budget'],
+                    show: false
+                },
+                radar: {
+                    indicator: [
+                        { name: 'Skill 1', max: 5 },
+                        { name: 'Skill 2', max: 5 },
+                        { name: 'Skill 3', max: 5 },
+                        { name: 'Skill 4', max: 5 },
+                        { name: 'Skill 5', max: 5 },
+                    ]
+                },
+                series: [
+                    {
+                        name: 'Hours',
+                        type: 'radar',
+                        data: [
+                            {
+                                value: [3, 4, 5, 4, 3],
+                                name: 'Allocated Budget'
+                            }
+                        ]
+                    }
+                ]
+            };
+            option && myChart.setOption(option);
+            new ResizeObserver(() => myChart.resize()).observe(chartDom);
+        }
+
+        function GenerateJobTable() {
+            let datas = [];
+            for (let i = 0; i < jobs.length; i++) {
+                datas.push([
+                    jobs[i].job_id,
+                    jobs[i].job_name,
+                    jobs[i].customer,
+                    jobs[i].job_status,
+                    jobs[i].hours
+                ]);
+            }
+            table = $('#table_job').DataTable({
+                data: datas
+            });
+        }
+    </script>
+}
