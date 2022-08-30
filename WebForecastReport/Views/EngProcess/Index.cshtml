@@ -6,9 +6,14 @@
         <div class="card card-dark">
             <div class="card-header">
                 <span class="card-title">Process</span>
+                <div class="card-tools">
+                    <button id="btn_add" class="btn btn-tool bg-primary">
+                        <i class="fas fa-plus"></i> New Process
+                    </button>
+                </div>
             </div>
             <div class="card-body">
-                <table id="table" class="table table-sm table-bordered text-center w-100">
+                <table id="table" class="table table-sm table-hover table-bordered text-center w-100">
                     <thead>
                         <tr>
                             <th>Process ID</th>
@@ -24,7 +29,7 @@
 </div>
 
 <div class="modal fade" id="modal_process" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modal_title">Create Process</h5>
@@ -36,21 +41,21 @@
                 <form>
                     <div class="form-group">
                         <span>Process ID</span>
-                        <input type="text" class="form-control" />
+                        <input id="process_id" type="text" class="form-control" readonly />
                     </div>
                     <div class="form-group">
                         <span>Process Name</span>
-                        <input type="text" class="form-control" />
+                        <input id="process_name" type="text" class="form-control" />
                     </div>
                     <div class="form-group">
                         <span>Process Description</span>
-                        <input type="text" class="form-control" />
+                        <input id="process_description" type="text" class="form-control" />
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Confirm</button>
+                <button id="btn_accept" type="button" class="btn btn-primary">Accept</button>
             </div>
         </div>
     </div>
@@ -59,12 +64,130 @@
 @section Scripts
 {
     <script type="text/javascript">
-        $(document).ready(function () {
+        let processes = [];
+        let last_id = 0;
+        let table;
+        let update = false;
+
+        $(document).ready(async function () {
+            await GetProcesses();
             GenerateTable();
         });
 
-        function GenerateTable() {
-            $('#table').DataTable();
+        async function GetProcesses() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetProcesses", "EngProcess")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    processes = response;
+                }
+            });
         }
+
+        async function GetLastProcessID() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetLastProcessID", "EngProcess")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    last_id = response;
+                }
+            });
+        }
+
+        function GenerateTable() {
+            let datas = [];
+
+            for (let i = 0; i < processes.length; i++) {
+                datas.push([
+                    processes[i].process_id,
+                    processes[i].process_name,
+                    processes[i].process_description
+                ]);
+            }
+
+            if (table !== undefined) {
+                table.destroy();
+            }
+
+            table = $('#table').DataTable({
+                data: datas,
+            });
+        }
+
+        $('#btn_add').on('click', async function () {
+            update = false;
+            await GetLastProcessID();
+            last_id += 1;
+            $('#modal_title').text("Create Process");
+            $('#process_id').val("PRO" + last_id.toString().padStart(3, '0'));
+            $('#process_name').val(null);
+            $('#process_description').val(null);
+            $('#modal_process').modal();
+        });
+
+        $('#table tbody').on('click', 'tr', function () {
+            update = true;
+            let data = table.row(this).data();
+            let process_id = data[0];
+            let process_name = data[1];
+            let process_description = data[2];
+            $('#modal_title').text("Edit Process");
+            $('#process_id').val(process_id);
+            $('#process_name').val(process_name);
+            $('#process_description').val(process_description);
+            $('#modal_process').modal();
+        });
+
+        $('#btn_accept').on('click', async function () {
+            let process_str = JSON.stringify({
+                "process_id": $('#process_id').val(),
+                "process_name": $('#process_name').val(),
+                "process_description": $('#process_description').val()
+            });
+            if (update === false) {
+                await CreateProcess(process_str);
+            } else {
+                await EditProcess(process_str);
+            }
+        });
+
+        async function CreateProcess(process_str) {
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("CreateProcess", "EngProcess")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { process_str },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
+        async function EditProcess(process_str) {
+            await $.ajax({
+                type: "PATCH",
+                url: '@Url.Action("EditProcess", "EngProcess")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { process_str },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
     </script>
 }

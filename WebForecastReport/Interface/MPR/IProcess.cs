@@ -9,6 +9,7 @@ namespace WebForecastReport.Interface.MPR
     interface IProcess
     {
         List<EngProcessModel> GetProcesses();
+        int GetLastProcessID();
         string CreateProcess(EngProcessModel process);
         string EditProcess(EngProcessModel process);
         string DeleteProcess(EngProcessModel process);

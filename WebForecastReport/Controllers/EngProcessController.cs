@@ -52,6 +52,13 @@ namespace WebForecastReport.Controllers
             return processes;
         }
 
+        [HttpGet]
+        public int GetLastProcessID()
+        {
+            int id = Process.GetLastProcessID();
+            return id;
+        }
+
         [HttpPost]
         public JsonResult CreateProcess(string process_str)
         {
