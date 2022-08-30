@@ -52,6 +52,13 @@ namespace WebForecastReport.Controllers
             return systems;
         }
 
+        [HttpGet]
+        public int GetLastSystemID()
+        {
+            int id = System.GetLastSystemID();
+            return id;
+        }
+
         [HttpPost]
         public JsonResult CreateSystem(string system_str)
         {

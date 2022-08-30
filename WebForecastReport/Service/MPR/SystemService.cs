@@ -49,6 +49,38 @@ namespace WebForecastReport.Service.MPR
             return systems;
         }
 
+        public int GetLastSystemID()
+        {
+            int id = 0;
+            try
+            {
+                string string_command = string.Format($@"SELECT TOP 1 System_ID FROM Eng_System ORDER BY System_ID DESC");
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        id = dr["System_ID"] != DBNull.Value ? Convert.ToInt32(dr["System_ID"].ToString().Substring(3)) : 0;
+                    }
+                    dr.Close();
+                }
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+            return id;
+        }
+
         public string CreateSystem(EngSystemModel system)
         {
             try

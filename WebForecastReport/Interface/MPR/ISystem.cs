@@ -9,6 +9,7 @@ namespace WebForecastReport.Interface.MPR
     interface ISystem
     {
         List<EngSystemModel> GetSystems();
+        int GetLastSystemID();
         string CreateSystem(EngSystemModel system);
         string EditSystem(EngSystemModel system);
         string DeleteSystem(EngSystemModel system);

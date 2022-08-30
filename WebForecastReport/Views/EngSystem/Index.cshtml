@@ -6,9 +6,14 @@
         <div class="card card-dark">
             <div class="card-header">
                 <span class="card-title">System</span>
+                <div class="card-tools">
+                    <button id="btn_add" type="button" class="btn btn-tool bg-primary">
+                        <i class="fas fa-plus"></i> New System
+                    </button>
+                </div>
             </div>
             <div class="card-body">
-                <table id="table" class="table table-sm table-bordered text-center w-100">
+                <table id="table" class="table table-sm table-hover table-bordered text-center w-100">
                     <thead>
                         <tr>
                             <th>System ID</th>
@@ -24,7 +29,7 @@
 </div>
 
 <div class="modal fade" id="modal_system" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modal_title">Create System</h5>
@@ -36,21 +41,21 @@
                 <form>
                     <div class="form-group">
                         <span>System ID</span>
-                        <input type="text" class="form-control" />
+                        <input id="system_id" type="text" class="form-control" />
                     </div>
                     <div class="form-group">
                         <span>System Name</span>
-                        <input type="text" class="form-control" />
+                        <input id="system_name" type="text" class="form-control" />
                     </div>
                     <div class="form-group">
                         <span>System Description</span>
-                        <input type="text" class="form-control" />
+                        <input id="system_description" type="text" class="form-control" />
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Confirm</button>
+                <button id="btn_accept" type="button" class="btn btn-primary">Accept</button>
             </div>
         </div>
     </div>
@@ -59,12 +64,131 @@
 @section Scripts
 {
     <script type="text/javascript">
-        $(document).ready(function () {
+        let systems = [];
+        let last_id;
+        let table;
+        let update = false;
+
+        $(document).ready(async function () {
+            await GetSystems();
             GenerateTable();
         });
 
-        function GenerateTable() {
-            $('#table').DataTable();
+        async function GetSystems() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetSystems", "EngSystem")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    systems = response;
+                }
+            });
         }
+
+        async function GetLastSystemID() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetLastSystemID", "EngSystem")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    last_id = response;
+                }
+            });
+        }
+
+        function GenerateTable() {
+            let datas = [];
+
+            for (let i = 0; i < systems.length; i++) {
+                datas.push([
+                    systems[i].system_id,
+                    systems[i].system_name,
+                    systems[i].system_description
+                ]);
+            }
+
+            if (table !== undefined) {
+                table.destroy();
+            }
+
+            table = $('#table').DataTable({
+                data: datas
+            });
+        }
+
+        $('#btn_add').on('click', async function () {
+            update = false;
+            await GetLastSystemID();
+            last_id += 1;
+            $('#modal_title').text("Create System");
+            $('#system_id').val("SYS" + last_id.toString().padStart(3,'0'));
+            $('#system_name').val(null);
+            $('#system_description').val(null);
+            $('#modal_system').modal();
+        });
+
+        $('#table tbody').on('click', 'tr', function () {
+            update = true;
+            let data = table.row(this).data();
+            let system_id = data[0];
+            let system_name = data[1];
+            let system_description = data[2];
+            $('#modal_title').text("Edit System");
+            $('#system_id').val(system_id);
+            $('#system_name').val(system_name);
+            $('#system_description').val(system_description);
+            $('#modal_system').modal();
+        });
+
+        $('#btn_accept').on('click', async function () {
+            let system_str = JSON.stringify({
+                "system_id": $('#system_id').val(),
+                "system_name": $('#system_name').val(),
+                "system_description": $('#system_description').val()
+            });
+            if (update === false) {
+                await CreateSystem(system_str);
+            } else {
+                await EditSystem(system_str);
+            }
+        });
+
+        async function CreateSystem(system_str) {
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("CreateSystem", "EngSystem")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { system_str },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    }
+                    else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
+        async function EditSystem(system_str) {
+            await $.ajax({
+                type: "PATCH",
+                url: '@Url.Action("EditSystem", "EngSystem")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { system_str },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
     </script>
 }
