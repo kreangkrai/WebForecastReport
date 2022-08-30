@@ -52,6 +52,13 @@ namespace WebForecastReport.Controllers
             return skills;
         }
 
+        [HttpGet]
+        public int GetLastSkillID()
+        {
+            int id = Skill.GetLastSkillID();
+            return id;
+        }
+
         [HttpPost]
         public JsonResult CreateSkill(string skill_str)
         {

@@ -49,6 +49,38 @@ namespace WebForecastReport.Service.MPR
             return skills;
         }
 
+        public int GetLastSkillID()
+        {
+            int id = 0;
+            try
+            {
+                string string_command = string.Format($@"SELECT TOP 1 Skill_ID FROM Eng_Skill ORDER BY Skill_ID DESC");
+                SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        id = dr["Skill_ID"] != DBNull.Value ? Convert.ToInt32(dr["Skill_ID"].ToString().Substring(3)) : 0;
+                    }
+                    dr.Close();
+                }
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+            return id;
+        }
+
         public string CreateSkill(EngSkillModel skill)
         {
             try

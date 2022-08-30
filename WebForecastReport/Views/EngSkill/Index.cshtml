@@ -6,6 +6,11 @@
         <div class="card card-dark">
             <div class="card-header">
                 <span class="card-title">Skills</span>
+                <div class="card-tools">
+                    <button id="btn_add" type="button" class="btn btn-tool bg-primary">
+                        <i class="fas fa-plus"></i> New Skill
+                    </button>
+                </div>
             </div>
             <div class="card-body">
                 <table id="table" class="table table-sm table-bordered text-center w-100">
@@ -24,7 +29,7 @@
 </div>
 
 <div class="modal fade" id="modal_skill" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modal_title">Create Skill</h5>
@@ -36,21 +41,21 @@
                 <form>
                     <div class="form-group">
                         <span>Skill ID</span>
-                        <input type="text" class="form-control" />
+                        <input id="skill_id" type="text" class="form-control" />
                     </div>
                     <div class="form-group">
                         <span>Skill Name</span>
-                        <input type="text" class="form-control" />
+                        <input id="skill_name" type="text" class="form-control" />
                     </div>
                     <div class="form-group">
                         <span>Skill Description</span>
-                        <input type="text" class="form-control" />
+                        <input id="skill_description" type="text" class="form-control" />
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Confirm</button>
+                <button id="btn_accept" type="button" class="btn btn-primary">Accept</button>
             </div>
         </div>
     </div>
@@ -58,6 +63,127 @@
 @section Scripts
 { 
     <script type="text/javascript">
+        let skills = [];
+        let table;
+        let last_id = 0;
+        let update = false;
+
+        $(document).ready(async function () {
+            await GetSkills();
+            GenerateTable();
+        });
+
+        async function GetSkills() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetSkills", "EngSkill")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    skills = response;
+                }
+            });
+        }
+
+        async function GetLastSkillID() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetLastSkillID", "EngSkill")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    last_id = response;
+                }
+            });
+        }
+
+        function GenerateTable() {
+            let datas = [];
+
+            for (let i = 0; i < skills.length; i++) {
+                datas.push([
+                    skills[i].skill_id,
+                    skills[i].skill_name,
+                    skills[i].skill_description
+                ]);
+            }
+
+            if (table !== undefined) {
+                table.destroy();
+            }
+
+            table = $('#table').DataTable({
+                data: datas
+            });
+        }
+
+        $('#btn_add').on('click', async function () {
+            update = false;
+            await GetLastSkillID();
+            last_id += 1;
+            $('#modal_title').text("Create Skill");
+            $('#skill_id').val("SKI" + last_id.toString().padStart(3,'0'));
+            $('#skill_name').val(null);
+            $('#skill_description').val(null);
+            $('#modal_skill').modal();
+        });
+
+        $('#table tbody').on('click', 'tr', function () {
+            update = true;
+            let data = table.row(this).data();
+            $('#modal_title').text("Edit Skill");
+            $('#skill_id').val(data[0]);
+            $('#skill_name').val(data[1]);
+            $('#skill_description').val(data[2]);
+            $('#modal_skill').modal();
+        });
+
+        $('#btn_accept').on('click', async function () {
+            let skill_str = JSON.stringify({
+                "skill_id": $('#skill_id').val(),
+                "skill_name": $('#skill_name').val(),
+                "skill_description": $('#skill_description').val()
+            });
+            if (update === false) {
+                await CreateSkill(skill_str);
+            } else {
+                await EditSkill(skill_str);
+            }
+        });
+
+        async function CreateSkill(skill_str) {
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("CreateSkill", "EngSkill")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
+        async function EditSkill(skill_str) {
+            await $.ajax({
+                type: "PATCH",
+                url: '@Url.Action("EditSkill", "EngSkill")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        }
 
     </script>
 }
