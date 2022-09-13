@@ -1203,10 +1203,10 @@ namespace WebForecastReport.Service
                 if (department == "ALL")
                 {
                     command = string.Format($@"select 'ALL' as department,
-                                                sum(cast(product as float)) as product,
-                                                sum(cast(project as float)) as project,
-                                                sum(cast(service as float)) as service
-                                               from Target");
+                                                    sum(cast(product as float)) as product,
+                                                    sum(cast(project as float)) as project,
+                                                    sum(cast(service as float)) as service
+                                               from Target group by year having year='{year}'");
                 }
                 else
                 {
