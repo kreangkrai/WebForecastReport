@@ -30,7 +30,8 @@ namespace WebForecastReport.Services.MPR
 	                    Quotation.sale_name,
 	                    Quotation.department
                     FROM Jobs
-                    LEFT JOIN Quotation ON Jobs.quotation_no = Quotation.quotation_no");
+                    LEFT JOIN Quotation ON Jobs.quotation_no = Quotation.quotation_no
+                    ORDER BY Jobs.job_id");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
