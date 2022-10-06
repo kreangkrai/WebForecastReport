@@ -1,0 +1,601 @@
+﻿@{
+    ViewData["title"] = "Job Milestone";
+}
+<div class="row p-4" style="row-gap:20px">
+    <div class="col-xl-3">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span>Filter</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <span>Customer</span>
+                        <select id="customers" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <span>Jobs</span>
+                        <select id="jobs" class="form-control"></select>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="cards" class="col-xl-9">
+
+    </div>
+</div>
+
+<div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Milestones</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Job ID</span>
+                            <input id="addJobId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <spna>Job Name</spna>
+                            <input id="addJobName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span>Milestones</span>
+                        <table id="tableMilestones" class="table table-sm table-bordered text-center w-100">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Milestone ID</th>
+                                    <th>Milestone Name</th>
+                                    <th>Start Date</th>
+                                    <th>Stop Date</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Close
+                </button>
+                <button id="btnSave" type="button" class="btn btn-primary" data-dismiss="modal">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalResult" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Result</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row">
+                        <div class="col-xl-4">
+                            <span>Job ID</span>
+                            <input id="saveJobId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <span>Job Name</span>
+                            <input id="saveJobName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span>Milestones</span>
+                        <table id="tableResult" class="table table-bordered table-sm text-center w-100">
+                            <thead>
+                                <tr>
+                                    <th>Milestone</th>
+                                    <th>Start Date</th>
+                                    <th>Stop Date</th>
+                                    <th>Result</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Milestone</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row">
+                        <div class="col-xl-4">
+                            <span>Job ID</span>
+                            <input id="editJobId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <span>Job Name</span>
+                            <input id="editJobName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group" hidden>
+                        <span>Job Milestone ID</span>
+                        <input id="editJobMilestoneId" type="text" class="form-control" readonly />
+                    </div>
+                    <div class="form-group">
+                        <span>Milestones</span>
+                        <input id="editMilestoneName" type="text" class="form-control" readonly />
+                    </div>
+                    <div class="form-group">
+                        <span>Date</span>
+                        <input id="editStartDate" type="date" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <span>Stop Date</span>
+                        <input id="editStopDate" type="date" class="form-control" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="confirmEdit" type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Milestone</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <p>Are you sure you want to delete this milestone ?</p>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Job ID</span>
+                            <input id="deleteJobId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <span>Job Name</span>
+                            <input id="deleteJobName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Milestone ID</span>
+                            <input id="deleteMilestoneId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <span>Milestone Name</span>
+                            <input id="deleteMilestoneName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btnDelete" type="button" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDeleteAll" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete All Milestones</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <span>Are you sure you want to delete all milestones from this job ?</span>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Job ID</span>
+                            <input id="deleteAllJobId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <span>Job Name</span>
+                            <input id="deleteAllJobName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btnDeleteAll" type="button" class="btn btn-danger">Delete All</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        let jms = [];
+        let jobs = [];
+        let milestones = [];
+        let table;
+        let update = false;
+
+        $(document).ready(async function () {
+            await GetJobs();
+            await GetJobsMilestones();
+            GenerateCustomers();
+            GenerateJobs();
+            GenerateJobCards("");
+        });
+
+        async function GetJobs() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobs","Job")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    jobs = response;
+                }
+            });
+        }
+
+        async function GetJobsMilestones() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobsMilestones", "JobMilestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    jms = response;
+                }
+            });
+        }
+
+        async function GetMilestones() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetMilestones", "Milestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    milestones = response;
+                }
+            });
+        }
+
+        function GenerateCustomers() {
+            let customers = jobs.map(m => m.customer);
+            customers = [...new Set(customers)];
+            $('#customers').empty();
+            $('#customers').append(`<option value="" selected>ALL</option>`);
+            for (let i = 0; i < customers.length;i++) {
+                $('#customers').append(`<option value="${customers[i]}">${customers[i]}</option>`);
+            }
+        }
+
+        $('#customers').on('change', function () {
+            GenerateJobs();
+        });
+
+        function GenerateJobs() {
+            $('#jobs').empty();
+            $('#jobs').append('<option value="" selected>ALL</option>');
+            for (let i = 0; i < jobs.length; i++) {
+                if ($('#customers').val() === "" || jobs[i].customer === $('#customers').val()) {
+                    $('#jobs').append(`<option value="${jobs[i].job_id}">${jobs[i].job_id}: ${jobs[i].job_name}</option>`);
+                }
+            }
+        }
+
+        $('#jobs').on('change', function () {
+            let jobId = $('#jobs').val();
+            GenerateJobCards(jobId);
+        });
+
+        function GenerateJobCards(jobId) {
+            $('#cards').empty();
+            for (let i = 0; i < jobs.length; i++) {
+                if (jobId === "" || jobs[i].job_id === jobId) {
+                    $('#cards').append(`
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <h5 class="card-title">${jobs[i].job_id}: ${jobs[i].job_name}</h5>
+                            <div class="card-tools">
+                                <button class="btn btn-tool bg-primary" onclick="AddMilestone('${jobs[i].job_id}')">
+                                    <i class="fas fa-plus"></i> ADD MILESTONE
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table id="${jobs[i].job_id}" class="table table-sm table-bordered text-center w-100">
+                                <thead>
+                                    <th>#</th>
+                                    <th>Milestone</th>
+                                    <th>Start</th>
+                                    <th>Stop</th>
+                                    <th style="width:10%">Edit</th>
+                                    <th style="width:10%">Delete</th>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-danger" onclick="DeleteAllMilestones('${jobs[i].job_id}')">
+                                <i class="fas fa-trash-alt"></i> Delete All
+                            </button>
+                        </div>
+                    </div>`);
+                    let ms_data = jms.filter(f => f.job_id === jobs[i].job_id);
+                    for (let j = 0; j < ms_data.length; j++) {
+                        $('#' + jobs[i].job_id + ' tbody').append(`
+                        <tr>
+                            <td>${j + 1}</td>
+                            <td>${ms_data[j].milestone_name}</td>
+                            <td>${ms_data[j].start_date.split("T")[0]}</td>
+                            <td>${ms_data[j].stop_date.split("T")[0]}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning form-control"
+                                    onclick="EditMilestone('${ms_data[j].job_milestone_id}',
+                                    '${ms_data[j].start_date.split("T")[0]}','${ms_data[j].stop_date.split("T")[0]}')">
+                                    Edit
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-danger form-control" onclick="DeleteMilestone('${ms_data[j].job_milestone_id}')">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>`);
+                    }
+                    if (ms_data.length === 0) {
+                        $('#' + jobs[i].job_id + ' tbody').append(`
+                        <tr>
+                            <td colspan="5">No Milestone Added</td>
+                        </tr>`);
+                    }
+                }
+            }
+        }
+
+        function GenerateMilestones() {
+            $('#milestones').empty();
+            $('#milestones').append('<option value="" selected disabled>Please Select Milestone</option>');
+            for (let i = 0; i < milestones.length; i++) {
+                $('#milestones').append(`<option value="${milestones[i].milestone_id}">${milestones[i].milestone_id}: ${milestones[i].milestone_name}</option>`);
+            }
+        }
+
+        let added_ms = [];
+        async function AddMilestone(jobId) {
+            await GetJobs();
+            await GetJobsMilestones();
+            await GetMilestones();
+            added_ms = [];
+            let added = jms.filter(f => f.job_id === jobId).map(m => m.job_milestone_id.substring(m.job_milestone_id.length - 5));
+            let job = jobs.filter(f => f.job_id === jobId)[0];
+            $('#addJobId').val(job.job_id);
+            $('#addJobName').val(job.job_name);
+            $('#btnSave').show();
+
+            let count = 0;
+            $('#tableMilestones tbody').empty();
+            for (let i = 0; i < milestones.length; i++) {
+                if (added.includes(milestones[i].milestone_id)) continue;
+                count++;
+                $('#tableMilestones tbody').append(`
+                <tr>
+                    <td>${count}</td>
+                    <td>${milestones[i].milestone_id}</td>
+                    <td>${milestones[i].milestone_name}</td>
+                    <td>
+                        <input id="start_${jobId}${milestones[i].milestone_id}" type="date" class="form-control"/>
+                    </td>
+                    <td>
+                        <input id="stop_${jobId}${milestones[i].milestone_id}" type="date" class="form-control"/>
+                    </td>
+                </tr>
+                `);
+                added_ms.push(jobId + milestones[i].milestone_id);
+            }
+            if (count === 0) {
+                $('#tableMilestones tbody').append(`
+                    <tr>
+                        <td colspan="4">No Milestone Available</td>
+                    </tr>
+                `);
+                $('#btnSave').hide();
+            }
+            $('#modalAdd').modal();
+        }
+
+        $('#btnSave').on('click', async function () {
+            let result = [];
+            $('#modalResult').modal();
+            $('#saveJobId').val($('#addJobId').val());
+            $('#saveJobName').val($('#addJobName').val());
+            $('#tableResult tbody').empty();
+            for (let i = 0; i < added_ms.length; i++) {
+                if ($('#start_' + added_ms[i]).val() === "" || $('#start_' + added_ms[i]).val() === null) continue;
+                let str = JSON.stringify({
+                    "job_milestone_id": added_ms[i],
+                    "job_id": added_ms[i].split("M")[0],
+                    "milestone_id": added_ms[i].substring(added_ms[i].length - 5),
+                    "start_date": $('#start_' + added_ms[i]).val(),
+                    "stop_date": $('#stop_' + added_ms[i]).val()
+                });
+                let res = await CreateJobMilestone(str);
+                result.push(res);
+                $('#tableResult tbody').append(`
+                <tr>
+                    <td>${added_ms[i].substring(added_ms[i].length - 5)}</td>
+                    <td>${$('#start_' + added_ms[i]).val()}</td>
+                    <td>${$('#stop_' + added_ms[i]).val()}</td>
+                    <td>
+                        ${res === "Success" ? '<span class="badge badge-success">SUCCESS</span>' : '<span class="badge badge-danger">' + res + '</span>'}
+                    </td>
+                </tr>
+                `);
+            }
+        });
+
+        async function EditMilestone(jobMilestoneId, startDate, stopDate) {
+            await GetJobs();
+            await GetMilestones();
+            let job = jobs.filter(f => f.job_id === jobMilestoneId.split("M")[0])[0];
+            let ms = milestones.filter(f => f.milestone_id === jobMilestoneId.substring(jobMilestoneId.length - 5))[0];
+            $('#modalEdit').modal();
+            $('#editJobId').val(job.job_id);
+            $('#editJobName').val(job.job_name);
+            $('#editJobMilestoneId').val(jobMilestoneId);
+            $('#editMilestoneName').val(ms.milestone_name);
+            $('#editStartDate').val(startDate);
+            $('#editStopDate').val(stopDate);
+        }
+
+        $('#confirmEdit').on('click', async function () {
+            let str = JSON.stringify({
+                "job_milestone_id": $('#editJobMilestoneId').val(),
+                "job_id": $('#editJobId').val(),
+                "milestone_id": $('#editJobMilestoneId').val().substring($('#editJobMilestoneId').val().length - 5),
+                "start_date": $('#editStartDate').val(),
+                "stop_date": $('#editStopDate').val()
+            });
+            await EditJobMilestone(str);
+        });
+
+        async function DeleteMilestone(jobMilestoneId) {
+            await GetJobs();
+            await GetMilestones();
+            let job = jobs.filter(f => f.job_id === jobMilestoneId.split("M")[0])[0];
+            let milestone = milestones.filter(f => f.milestone_id === jobMilestoneId.substring(jobMilestoneId.length - 5))[0];
+            $('#modalDelete').modal();
+            $('#deleteJobId').val(job.job_id);
+            $('#deleteJobName').val(job.job_name);
+            $('#deleteMilestoneId').val(milestone.milestone_id);
+            $('#deleteMilestoneName').val(milestone.milestone_name);
+        }
+
+        $('#btnDelete').on('click', async function () {
+            let str = JSON.stringify({
+                "job_milestone_id": $('#deleteJobId').val() + $('#deleteMilestoneId').val()
+            });
+            await DeleteJobMilestone(str);
+        });
+
+        async function DeleteAllMilestones(jobId) {
+            await GetJobs();
+            let job = jobs.filter(f => f.job_id === jobId)[0];
+            $('#modalDeleteAll').modal();
+            $('#deleteAllJobId').val(job.job_id);
+            $('#deleteAllJobName').val(job.job_name);
+        }
+
+        $('#btnDeleteAll').on('click', async function () {
+            let str = JSON.stringify({
+                "job_id": $('#deleteAllJobId').val()
+            });
+            await DeleteAllJobMilestones(str);
+        });
+
+        async function CreateJobMilestone(jmStr) {
+            let str = '';
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("CreateJobMilestone", "JobMilestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { jmStr },
+                success: function (response) {
+                    str = response;
+                }
+            });
+            return str;
+        }
+
+        async function EditJobMilestone(jmStr) {
+            await $.ajax({
+                type: "PATCH",
+                url: '@Url.Action("EditJobMilestone", "JobMilestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { jmStr },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
+        async function DeleteJobMilestone(jmStr) {
+            await $.ajax({
+                type: "DELETE",
+                url: '@Url.Action("DeleteJobMilestone", "JobMilestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { jmStr },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
+        async function DeleteAllJobMilestones(jmStr) {
+            await $.ajax({
+                type: "DELETE",
+                url: '@Url.Action("DeleteAllJobMilestones", "JobMilestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { jmStr },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
+    </script>
+}
