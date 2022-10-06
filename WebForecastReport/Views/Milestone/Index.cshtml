@@ -1,0 +1,179 @@
+﻿@{
+    ViewData["title"] = "Milestone";
+}
+<div class="row p-4" style="row-gap:20px">
+    <div class="col-xl-12">
+        <div class="card card-dark">
+            <div class="card-header d-flex align-items-center">
+                <span>Milestones</span>
+                <div class="card-tools ml-auto">
+                    <button id="btn_add" class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus"></i> New Milestone
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="table" class="table table-sm compact table-bordered table-hover w-100">
+                    <thead>
+                        <tr>
+                            <th>Milestone ID</th>
+                            <th>Milestone Name</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_milestone" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_title">Create Milestone</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <span>Milestone ID</span>
+                        <input id="ms_id" type="text" class="form-control" readonly />
+                    </div>
+                    <div class="form-group">
+                        <span>Milestone Name</span>
+                        <input id="ms_name" type="text" class="form-control" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btn_accept" type="button" class="btn btn-primary">Accept</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        let table;
+        let milestones = [];
+        let last_id = 0;
+        let update = false;
+
+        $(document).ready(async function () {
+            await GetMilestones();
+            GenerateTable();
+        });
+
+        async function GetMilestones() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetMilestones", "Milestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    milestones = response;
+                }
+            });
+        }
+
+        async function GetLastMilestoneID() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetLastMilestoneID", "Milestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    last_id = response;
+                }
+            });
+        }
+
+        function GenerateTable() {
+            let datas = [];
+
+            for (let i = 0; i < milestones.length; i++) {
+                datas.push([
+                    milestones[i].milestone_id,
+                    milestones[i].milestone_name
+                ]);
+            }
+
+            table = $('#table').DataTable({
+                data: datas
+            });
+        }
+
+        $('#btn_add').on('click', async function () {
+            update = false;
+            await GetLastMilestoneID();
+            last_id += 1;
+            $('#modal_title').text("Create Milestone");
+            $('#ms_id').val("M" + last_id.toString().padStart(4,0));
+            $('#ms_name').val(null);
+            $('#modal_milestone').modal();
+        });
+
+        $('#table tbody').on('click', 'tr', function () {
+            update = true;
+            let data = table.row(this).data();
+            let ms_id = data[0];
+            let ms_name = data[1];
+            $('#modal_title').text("Edit Milestone");
+            $('#ms_id').val(ms_id);
+            $('#ms_name').val(ms_name);
+            $('#modal_milestone').modal();
+        });
+
+        $('#btn_accept').on('click', async function () {
+            let ms_str = JSON.stringify({
+                "milestone_id": $('#ms_id').val(),
+                "milestone_name": $('#ms_name').val(),
+            });
+            if (update === false) {
+                await CreateMilestone(ms_str);
+            } else {
+                await EditMilestone(ms_str);
+            }
+        });
+
+        async function CreateMilestone(ms_str) {
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("CreateMilestone", "Milestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { ms_str },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
+        async function EditMilestone(ms_str) {
+            await $.ajax({
+                type: "PATCH",
+                url: '@Url.Action("EditMilestone", "Milestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { ms_str },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
+    </script>
+}
