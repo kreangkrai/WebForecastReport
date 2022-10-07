@@ -89,15 +89,15 @@ namespace WebForecastReport.Service
                 string connectString = "";
                 if (role == "Admin")
                 {
-                    connectString = "select * from Quotation where exclude_quote <>'True' order by quotation_no";
+                    connectString = "select * from Quotation where (exclude_quote <>'True' or exclude_quote is null) order by quotation_no";
                 }
                 else if (role != "Admin" && role != "")
                 {
-                    connectString = "select * from Quotation where department='" + role + "' or sale_name='" + name + "' and exclude_quote <>'True' order by sale_name";
+                    connectString = "select * from Quotation where department='" + role + "' or sale_name='" + name + "' and (exclude_quote <>'True' or exclude_quote is null) order by sale_name";
                 }
                 else
                 {
-                    connectString = "select * from Quotation where sale_name='" + name + "' and exclude_quote <>'True' order by quotation_no";
+                    connectString = "select * from Quotation where sale_name='" + name + "' and (exclude_quote <>'True' or exclude_quote is null) order by quotation_no";
                 }
 
                 SqlCommand cmd = new SqlCommand(connectString, ConnectSQL.OpenConnect());
