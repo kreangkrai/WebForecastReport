@@ -9,15 +9,6 @@
         <nav class="mt-2">
             <ul class="nav nav-legacy nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-                @if (@Model.name == "Korakod.P")
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Test" asp-action="Index">
-                            <p>TEST</p>
-                        </a>
-                    </li>
-                }
-
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="Calendar" asp-action="Index">
                         <i class="nav-icon fas fa-calendar-alt"></i>
@@ -59,24 +50,24 @@
                 @if (Model.role == "Admin")
                 {
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="EngineerExperience" asp-action="Index">
-                            <i class="nav-icon fas fa-user-graduate"></i>
-                            <p class="text-bold">EXPERIENCE <span class="badge badge-danger">DEV</span></p>
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-hourglass-half"></i>
+                            <p class="text-bold">SKILL AND EXP<i class="right fas fa-angle-left"></i></p>
                         </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="EngineerExperience" asp-action="ExperienceAndSkill">
-                            <i class="nav-icon fas fa-project-diagram"></i>
-                            <p class="text-bold">EXPERIENCE2 <span class="badge badge-danger">DEV</span></p>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Holiday" asp-action="Index">
-                            <i class="nav-icon fas fa-calendar-day"></i>
-                            <p class="text-bold">HOLIDAY</p>
-                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="EngineerExperience" asp-action="Index">
+                                    <i class="nav-icon fas fa-user-graduate"></i>
+                                    <p>EXPERIENCE <span class="badge badge-danger">DEV</span></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="EngineerExperience" asp-action="ExperienceAndSkill">
+                                    <i class="nav-icon fas fa-project-diagram"></i>
+                                    <p>EXPERIENCE2 <span class="badge badge-danger">DEV</span></p>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 }
 
@@ -174,6 +165,60 @@
                 {
                     <li class="nav-item">
                         <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-brain"></i>
+                            <p class="text-bold">PLANNING<i class="right fas fa-angle-left"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="PlanManday" asp-action="PlanningSummary">
+                                    <i class="nav-icon fas fa-chart-bar"></i>
+                                    <p>PLANNING SUMMARY</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="PlanManday" asp-action="JobPlanningDetail">
+                                    <i class="nav-icon fas fa-info-circle"></i>
+                                    <p>JOB PLANNING DETAIL</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="JobMilestone" asp-action="Index">
+                                    <i class="nav-icon fas fa-map-marker-alt"></i>
+                                    <p>JOB MILESTONES</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="AssignMilestone" asp-action="Index">
+                                    <i class="nav-icon fas fa-user-plus"></i>
+                                    <p>ASSIGN MILESTONE</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="PlanManday" asp-action="Index">
+                                    <i class="nav-icon fas fa-calendar-alt"></i>
+                                    <p>PLAN MANDAY</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="PlanManday" asp-action="EngineerPlan">
+                                    <i class="nav-icon fas fa-users"></i>
+                                    <p>ENGINEER PLAN</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="PlanManday" asp-action="JobPlan">
+                                    <i class="nav-icon fas fa-tasks"></i>
+                                    <p>JOB PLAN</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+
+                @if (Model.role == "Admin")
+                {
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-cogs"></i>
                             <p class="text-bold">ADMIN<i class="right fas fa-angle-left"></i></p>
                         </a>
@@ -182,6 +227,12 @@
                                 <a class="nav-link" asp-controller="Job" asp-action="Index">
                                     <i class="nav-icon fas fa-project-diagram"></i>
                                     <p>JOBS</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Milestone" asp-action="Index">
+                                    <i class="nav-icon fas fa-map-marker-alt"></i>
+                                    <p>MILESTONES</p>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -212,6 +263,12 @@
                                 <a class="nav-link" asp-controller="EngUser" asp-action="Index">
                                     <i class="nav-icon fas fa-user"></i>
                                     <p>USERS</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Holiday" asp-action="Index">
+                                    <i class="nav-icon fas fa-calendar-day"></i>
+                                    <p class="text-bold">HOLIDAY</p>
                                 </a>
                             </li>
                         </ul>

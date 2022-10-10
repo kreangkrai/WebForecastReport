@@ -1,0 +1,822 @@
+﻿@{
+    ViewData["title"] = "Job Plan";
+}
+<div class="row p-4">
+    <div class="col-xl-3">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span>Job</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <span>Years</span>
+                        <select id="years" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <span>Customers</span>
+                        <select id="customers" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <span>Jobs</span>
+                        <select id="jobs" class="form-control"></select>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-9">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span>Engineer's Workload</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <div style="width:100%;height:300px">
+                            <canvas id="chartWorkload"></canvas>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card card-dark">
+            <div class="card-header">
+                <span>Job Detail</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-2">
+                            <span>Job ID</span>
+                            <input id="jobId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-5">
+                            <span>Job Name</span>
+                            <input id="jobName" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-5">
+                            <span>Customer</span>
+                            <input id="customer" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span>Milestones</span>
+                        <table id="tableMilestones" class="table table-sm table-bordered text-center w-100">
+                            <thead></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="form-group">
+                        <span>Assigned Engineers</span>
+                        <table id="tableEngineers" class="table table-sm table-bordered text-center w-100">
+                            <thead></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card card-dark">
+            <div class="card-header">
+                <span>Plans</span>
+                <div class="card-tools">
+                    <button id="btnAdd" type="button" class="btn btn-tool bg-primary" disabled hidden>
+                        <i class="fas fa-plus"></i> Add Plan
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="tablePlans" class="table table-sm table-bordered text-center compact w-100">
+                    <thead>
+                        <tr>
+                            <th>Engineer</th>
+                            <th>Job</th>
+                            <th>Milestone</th>
+                            <th>Date</th>
+                            <th>Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalPlan" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modalTitle" class="modal-title">Add Plan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <span>Preview Workload</span>
+                        <div style="width:100%;height:200px">
+                            <canvas id="chartPreview"></canvas>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xl-4">
+                            <span>Job</span>
+                            <input id="job" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-3">
+                            <span>Milestone</span>
+                            <select id="milestone" class="form-control"></select>
+                        </div>
+                        <div class="col-xl-2">
+                            <span>Date</span>
+                            <input id="date" type="date" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-3">
+                            <span>Engineer</span>
+                            <select id="engineer" class="form-control"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xl-4">
+                            <span>Remain (Days)</span>
+                            <input id="remain" type="number" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-4">
+                            <span>Month</span>
+                            <input id="month" type="month" class="form-control" />
+                        </div>
+                        <div class="col-xl-4">
+                            <span>Days</span>
+                            <input id="days" type="number" class="form-control" min="0" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btnSave" type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalSave" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Add</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Job ID</span>
+                            <input id="saveJobId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <span>Job Name</span>
+                            <input id="saveJobName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Milestone ID</span>
+                            <input id="saveMilestoneId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <span>Milestone Name</span>
+                            <input id="saveMilestoneName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Engineer ID</span>
+                            <input id="saveEngineerId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <span>Engineer Name</span>
+                            <input id="saveEngineerName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xl-8">
+                            <span>Month</span>
+                            <input id="saveMonth" type="month" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-4">
+                            <span>Days</span>
+                            <input id="saveDays" type="number" class="form-control" readonly />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btnConfirm" type="button" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        let allPlans = [];
+        let holidays = [];
+        let jobs = [];
+
+        let colorsMain = [
+            '#023E8A', //2,62,138 DARK BLUE
+            '#0096C7', //0,150,199 LIGHT BLUE
+            '#00918E', //0,145,142 TEAL
+            '#4DD599', //77,213,153 LIME
+            '#E45826', //228,88,38 ORANGE
+            '#F0A500', //240,165,0 YELLOW
+            '#900C27', //144,12,39 DARK RED
+            '#C70039', //199,0,57 PINK
+            '#5727A3', //87,39,163 DARK PURPLE
+            '#9153F4', //145,83,244 PURPLE
+        ];
+
+        let colorsOther = [
+            '#023E8A33', //2,62,138 DARK BLUE
+            '#0096C733', //0,150,199 LIGHT BLUE
+            '#00918E33', //0,145,142 TEAL
+            '#4DD59933', //77,213,153 LIME
+            '#E4582633', //228,88,38 ORANGE
+            '#F0A50033', //240,165,0 YELLOW
+            '#900C2733', //144,12,39 DARK RED
+            '#C7003933', //199,0,57 PINK
+            '#5727A333', //87,39,163 DARK PURPLE
+            '#9153F433', //145,83,244 PURPLE
+        ];
+
+        $(document).ready(async function () {
+            await GetJobs();
+            await GetHolidays();
+            GenerateYears();
+            GenerateCustomers();
+            GenerateJobs();
+        });
+
+        async function GetJobs() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobs", "Job")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    jobs = response;
+                }
+            });
+        }
+
+        async function GetMilestones() {
+            let milestones;
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetMilestones", "Milestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    milestones = response;
+                }
+            });
+            return milestones;
+        }
+
+        async function GetJobsPlans() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobsPlans", "PlanManday")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    allPlans = response;
+                }
+            });
+        }
+
+        async function GetJobPlans(jobId) {
+            let plans;
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobPlans", "PlanManday")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { jobId },
+                success: function (response) {
+                    plans = response;
+                }
+            });
+            return plans;
+        }
+
+        async function GetEngPlans(engId) {
+            let plans;
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetEngPlans", "PlanManday")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { engId },
+                success: function (response) {
+                    plans = response;
+                }
+            });
+            return plans;
+        }
+
+        async function GetJob(job_id) {
+            let job;
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJob", "Job")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { job_id },
+                success: function (response) {
+                    job = response;
+                }
+            });
+            return job;
+        }
+
+        async function GetJobMilestones(jobId) {
+            let jobMilestones;
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobMilestones", "JobMilestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { jobId },
+                success: function (response) {
+                    jobMilestones = response;
+                }
+            });
+            return jobMilestones;
+        }
+
+        async function GetJobAssignedEngineers(jobId) {
+            let assignedEngineers;
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobAssignedEngineers", "AssignMilestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { jobId },
+                success: function (response) {
+                    assignedEngineers = response;
+                }
+            });
+            return assignedEngineers;
+        }
+
+        async function GetHolidays() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetHolidays", "Holiday")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    holidays = response;
+                }
+            });
+        }
+
+        function GenerateYears() {
+            $('#years').empty();
+            for (let i = 0; i < 5; i++) {
+                let date = new Date();
+                let year = date.getFullYear();
+                $('#years').append(`<option value="${year - i}">${year - i}</option>`);
+            }
+        }
+
+        function GenerateCustomers() {
+            let customers = jobs.map(m => m.customer);
+            customers = customers.filter(f => f !== "");
+            customers = [...new Set(customers)];
+            $('#customers').empty();
+            $('#customers').append(`<option value="" selected>ALL</option>`);
+            for (let i = 0; i < customers.length; i++) {
+                $('#customers').append(`<option value="${customers[i]}">${customers[i]}</option>`);
+            }
+        }
+
+        $('#customers').on('change', function () {
+            GenerateJobs();
+        });
+
+        function GenerateJobs() {
+            $('#jobs').empty();
+            $('#jobs').append(`<option value="" selected disabled>Select Job</option>`);
+            for (let i = 0; i < jobs.length; i++) {
+                if (jobs[i].customer === $('#customers').val() || $('#customers').val() === "") {
+                    $('#jobs').append(`<option value="${jobs[i].job_id}">${jobs[i].job_id}: ${jobs[i].job_name}</option>`);
+                }
+            }
+            $('#btnLoad').attr('disabled', true);
+        }
+
+        $('#jobs').on('change', async function () {
+            $('#btnAdd').attr('disabled', false);
+            GetJobDetail();
+        });
+
+        async function GetJobDetail() {
+            let job_id = $('#jobs').val();
+            let job = await GetJob(job_id);
+            let dates = [];
+            $('#jobId').val(job.job_id);
+            $('#jobName').val(job.job_name);
+            $('#customer').val(job.customer);
+            let jobMilestones = await GetJobMilestones(job_id);
+            $('#tableMilestones thead').empty();
+            $('#tableMilestones tbody').empty();
+            if (jobMilestones.length > 0) {
+                $('#tableMilestones thead').append('<tr>');
+                $('#tableMilestones tbody').append('<tr>');
+                for (let i = 0; i < jobMilestones.length; i++) {
+                    dates.push(new Date(jobMilestones[i].start_date.split("T")[0]));
+                    dates.push(new Date(jobMilestones[i].stop_date.split("T")[0]));
+                    $('#tableMilestones thead').append(`<th colspan="2">${jobMilestones[i].milestone_name}</th>`);
+                    $('#tableMilestones tbody').append(`
+                        <td>${jobMilestones[i].start_date.split("T")[0]}</td>
+                        <td>${jobMilestones[i].stop_date.split("T")[0]}</td>
+                    `);
+                    $('#tableMilestones thead').append('</tr>');
+                    $('#tableMilestones tbody').append('</tr>');
+                }
+            }
+            dates = [...new Set(dates)];
+            dates.sort().reverse();
+            let startDate;
+            let stopDate;
+            if (dates.length > 0) {
+                startDate = dates[0];
+                stopDate = dates[dates.length - 1];
+                $('#startDate').val(startDate.toISOString().split("T")[0]);
+                $('#stopDate').val(stopDate.toISOString().split("T")[0]);
+            } else {
+                $('#startDate').val(null);
+                $('#stopDate').val(null);
+            }
+
+            let jobPlans = await GetJobPlans(job_id);
+            GenerateChart(jobPlans);
+            let assignedEngineers = await GetJobAssignedEngineers(job_id);
+            GenerateTableEngineer(assignedEngineers);
+            GenerateTablePlans(jobPlans);
+        }
+
+        function GetNormalWorkingDay(year, month) {
+            let days = 0;
+            let stopDate = new Date(year, month, 1);
+            for (let startDate = new Date(year, month - 1, 2); startDate <= stopDate; startDate.setDate(startDate.getDate() + 1)) {
+                let h = holidays.filter(f => f.date.split("T")[0] === startDate.toISOString().split("T")[0]);
+                if (h.length > 0) continue;
+                let d = startDate.getDay();
+                if (d !== 0 && d !== 6) days++;
+            }
+            return days;
+        }
+
+        let ctx;
+        let chart;
+        function GenerateChart(jobPlans) {
+            let months = jobPlans.map(m => m.date.substring(0,7));
+            months = [...new Set(months)];
+
+            let engs = jobPlans.map(m => m.eng_name);
+            engs = [...new Set(engs)];
+
+            let jobId = $('#jobs').val();
+            let ds = [];
+
+            let workingDays = [];
+            for (let i = 0; i < months.length; i++) {
+                let days = GetNormalWorkingDay(months[i].split("-")[1], parseInt(months[i].split("-")[0]));
+                workingDays.push(days);
+            }
+
+            let type = workingDays.length > 1 ? 'line' : 'bar';
+            ds.push({
+                type: type,
+                label: 'Working Days',
+                data: workingDays,
+                backgroundColor: ['rgba(255, 50, 50, 1)'],
+                borderColor: ['rgba(255, 50, 50, 1)'],
+                borderWidth: 1,
+                tension: 0.2,
+                radius: 1,
+            });
+
+            for (let i = 0; i < engs.length; i++) {
+                let jobMandays = [];
+                let otherMandays = [];
+
+                for (let j = 0; j < months.length; j++) {
+                    let jobDays = jobPlans.filter(f => f.job_id === jobId && f.eng_name === engs[i] && (f.date.substring(0, 7)) === months[j])
+                        .map(m => m.hours / 8).reduce((a, b) => a + b, 0);
+                    let otherDays = jobPlans.filter(f => f.job_id !== jobId && f.eng_name === engs[i] && (f.date.substring(0,7)) === months[j])
+                        .map(m => m.hours / 8).reduce((a, b) => a + b, 0);
+                    jobMandays.push(jobDays);
+                    otherMandays.push(otherDays);
+                }
+
+                ds.push({
+                    label: engs[i] + ": " + jobId,
+                    data: jobMandays,
+                    backgroundColor: colorsMain[i],
+                    borderColor: colorsMain[i],
+                    borderWidth: 1,
+                    stack: 'Stack' + [i]
+                });
+
+                ds.push({
+                    label: engs[i] + ": Others",
+                    data: otherMandays,
+                    backgroundColor: colorsOther[i],
+                    borderColor: colorsOther[i],
+                    borderWidth: 1,
+                    stack: 'Stack' + [i]
+                });
+            }
+
+            if (chart !== undefined) chart.destroy();
+            ctx = document.getElementById('chartWorkload').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: ds
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                text: 'Month',
+                                display: true
+                            },
+                            stacked: true
+                        },
+                        y: {
+                            title: {
+                                text: 'Days',
+                                display: true
+                            },
+                            beginAtZero: true,
+                            max: 40,
+                            stacked: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position:'bottom'
+                        }
+                    },
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function GenerateTableEngineer(assignedEngineers) {
+            let milestones = assignedEngineers.map(m => m.milestone_name);
+            milestones = [...new Set(milestones)];
+
+            let engineers = assignedEngineers.map(m => m.user_name);
+            engineers = [...new Set(engineers)];
+
+            $('#tableEngineers thead').empty();
+            $('#tableEngineers thead').append('<tr>');
+            for (let i = 0; i < milestones.length; i++) {
+                if (i === 0) $('#tableEngineers thead').append('<th>Engineer</th>');
+                $('#tableEngineers thead').append(`<th>${milestones[i]}</th>`);
+            }
+            $('#tableEngineers thead').append('</tr>');
+
+            $('#tableEngineers tbody').empty();
+            for (let i = 0; i < engineers.length; i++) {
+                let str = '<tr>';
+                for (let j = 0; j < milestones.length; j++) {
+                    if (j === 0) str += `<td style="text-align:left">${engineers[i]}</td>`;
+                    let days = assignedEngineers.filter(f => f.eng_name === engineers[i] && f.milestone_name === milestones[j])
+                        .map(m => m.days).reduce((a, b) => a + b, 0);
+                    str += `<td>${days}</td>`;
+                }
+                $('#tableEngineers tbody').append(str);
+            }
+        }
+
+        let tablePlans;
+        function GenerateTablePlans(jobPlans) {
+            let datas = [];
+
+            for (let i = 0; i < jobPlans.length; i++) {
+                datas.push([
+                    jobPlans[i].user_name,
+                    jobPlans[i].job_id + ": " + jobPlans[i].job_name,
+                    jobPlans[i].milestone_name,
+                    jobPlans[i].date.split("T")[0],
+                    jobPlans[i].hours
+                ]);
+            }
+
+            if (tablePlans !== undefined) tablePlans.destroy();
+
+            tablePlans = $('#tablePlans').DataTable({
+                data: datas
+            });
+        }
+
+        $('#btnAdd').on('click', async function () {
+            let jobId = $('#jobs').val();
+            let jobs = await GetJobs();
+            let job = jobs.filter(f => f.job_id === jobId)[0];
+            $('#job').val(job.job_id + ": " + job.job_name);
+            let milestones = await GetJobMilestones(jobId);
+            $('#milestone').empty();
+            $('#milestone').append(`<option value="" selected disabled>Select Milestone</option>`);
+            for (let i = 0; i < milestones.length; i++) {
+                $('#milestone').append(`<option value="${milestones[i].milestone_id}">${milestones[i].milestone_name}</option>`);
+            }
+            $('#date').val(null);
+            let engineers = await GetJobAssignedEngineers(jobId);
+            let eng_ids = engineers.map(m => m.user_id);
+            eng_ids = [...new Set(eng_ids)];
+            $('#engineer').empty();
+            $('#engineer').append(`<option value="" selected disabled>Select Engineer</option>`);
+            for (let i = 0; i < eng_ids.length; i++) {
+                let eng = engineers.filter(f => f.user_id === eng_ids[i])[0];
+                $('#engineer').append(`<option value="${eng.user_id}">${eng.user_name}</option>`);
+            }
+            $('#remain').val(0);
+            $('#month').val(null);
+            $('#days').val(0);
+            $('#modalPlan').modal();
+            $('#btnSave').attr('disabled', true);
+        });
+
+        $('#milestone').on('change', async function () {
+            let milestones = await GetJobMilestones($('#job').val().split(":")[0]);
+            let date = milestones.filter(f => f.milestone_id === $('#milestone').val()).map(m => m.date)[0].split("T")[0];
+            $('#date').val(date);
+            CheckDaysRemain();
+            ValidateInputs();
+        });
+
+        $('#engineer').on('change', async function () {
+            let engPlans = await GetEngPlans($('#engineer').val());
+            GenerateChartPreview(engPlans);
+            CheckDaysRemain();
+            ValidateInputs();
+        });
+
+        $('#month').on('change', function () {
+            ValidateInputs();
+        });
+
+        $('#days').on('change', function () {
+            ValidateInputs();
+        });
+
+        let ctxPreview;
+        let chartPreview;
+        function GenerateChartPreview(engPlans) {
+            let jobs = engPlans.map(m => m.job_id);
+            jobs = [...new Set(jobs)];
+
+            let months = engPlans.map(m => m.month.toString().padStart(2, '0') + "-" + m.year);
+            months = [...new Set(months)];
+
+            let ds = [];
+            for (let i = 0; i < jobs.length; i++) {
+                let days = [];
+                for (let j = 0; j < months.length; j++) {
+                    days.push(
+                        engPlans.filter(f => f.job_id === jobs[i] && f.month.toString().padStart(2, '0') + "-" + f.year === months[j])
+                            .map(m => m.days).reduce((a, b) => a + b, 0)
+                    );
+                }
+                ds.push({
+                    label: engPlans.filter(f => f.job_id === jobs[i]).map(m => m.job_id + " " + m.job_name)[0],
+                    data: days,
+                    backgroundColor: colors[i],
+                    borderColor: colors[i]
+                });
+            }
+
+            if (chartPreview !== undefined) chartPreview.destroy();
+            ctxPreview = document.getElementById('chartPreview').getContext('2d');
+            chartPreview = new Chart(ctxPreview, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: ds
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                text: 'Month',
+                                display: true
+                            }
+                        },
+                        y: {
+                            title: {
+                                text: 'Days',
+                                display: true
+                            },
+                            beginAtZero: true,
+                            max: 40,
+                        }
+                    },
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        async function CheckDaysRemain() {
+            let jobId = $('#job').val().split(":")[0];
+            let milestoneId = $('#milestone').val();
+            let engId = $('#engineer').val();
+            let remainDays = 0;
+            if (jobId !== "" && milestoneId !== "" && engId !== "") {
+                let assigned = await GetJobAssignedEngineers(jobId);
+                let assignedDays = assigned.filter(f => f.job_id === jobId && f.milestone_id === milestoneId && f.user_id === engId)
+                    .map(m => m.days).reduce((a, b) => a + b, 0);
+                let planned = await GetEngPlans(engId);
+                let plannedDays = planned.filter(f => f.job_id === jobId && f.milestone_id === milestoneId && f.user_id === engId)
+                    .map(m => m.days).reduce((a, b) => a + b, 0);
+                remainDays = assignedDays - plannedDays;
+            }
+            $('#remain').val(remainDays);
+            $('#days').attr('max', remainDays);
+            $('#days').val(remainDays);
+        }
+
+        function ValidateInputs() {
+            let msId = $('#milestone').val();
+            let engId = $('#engineer').val();
+            let month = $('#month').val();
+            let days = $('#days').val();
+            let pass = 1;
+            pass *= msId !== "" ? 1 : 0;
+            pass *= engId !== "" ? 1 : 0;
+            pass *= month !== "" ? 1 : 0;
+            pass *= days > 0 ? 1 : 0;
+            $('#btnSave').attr('disabled', !pass);
+        }
+
+        $('#btnSave').on('click', function () {
+            let jobId = $('#job').val().split(":")[0];
+            let jobName = $('#job').val().split(":")[1].trim();
+            let milestoneId = $('#milestone').val();
+            let milestoneName = $('#milestone option:selected').text();
+            let engineerId = $('#engineer').val();
+            let engineerName = $('#engineer option:selected').text();
+            let month = $('#month').val();
+            let days = $('#days').val();
+            $('#saveJobId').val(jobId);
+            $('#saveJobName').val(jobName);
+            $('#saveMilestoneId').val(milestoneId);
+            $('#saveMilestoneName').val(milestoneName);
+            $('#saveEngineerId').val(engineerId);
+            $('#saveEngineerName').val(engineerName);
+            $('#saveMonth').val(month);
+            $('#saveDays').val(days);
+            $('#modalSave').modal();
+        });
+
+        $('#btnConfirm').on('click', async function () {
+            let planStr = JSON.stringify({
+                "job_milestone_id": $('#saveJobId').val() + $('#saveMilestoneId').val(),
+                "user_id": $('#saveEngineerId').val(),
+                "year": parseInt($('#saveMonth').val().split("-")[0]),
+                "month": parseInt($('#saveMonth').val().split("-")[1]),
+                "days": $('#saveDays').val()
+            });
+            await CreatePlan(planStr);
+        });
+
+        async function CreatePlan(planStr) {
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("CreatePlan", "PlanManday")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { planStr },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
+    </script>
+}

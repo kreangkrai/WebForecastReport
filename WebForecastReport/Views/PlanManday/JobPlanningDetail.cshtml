@@ -1,0 +1,471 @@
+﻿@{
+    ViewData["title"] = "Job Planning Detail";
+}
+<div class="row p-4" style="row-gap:20px">
+    <div class="col-xl-12">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span>Job's Detail</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group row">
+                        <div class="col-xl-6">
+                            <span>Customers</span>
+                            <select id="customers" class="form-control"></select>
+                        </div>
+                        <div class="col-xl-6">
+                            <span>Jobs</span>
+                            <select id="jobs" class="form-control"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-5">
+                            <span>Start</span>
+                            <input id="startDate" type="date" class="form-control" />
+                        </div>
+                        <div class="col-xl-5">
+                            <span>Stop</span>
+                            <input id="stopDate" type="date" class="form-control" />
+                        </div>
+                        <div class="col-xl-2 d-flex align-items-end">
+                            <button id="btnLoad" type="button" class="btn btn-primary form-control">
+                                <i class="fas fa-sync"></i> Load
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div style="width:100%;height:300px">
+                            <canvas id="chartWorkload"></canvas>
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-2">
+                            <span>Job ID</span>
+                            <input id="jobId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-5">
+                            <span>Job Name</span>
+                            <input id="jobName" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-5">
+                            <span>Customer</span>
+                            <input id="customer" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span>Milestones</span>
+                        <table id="tableMilestones" class="table table-sm table-bordered text-center w-100">
+                            <thead></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="form-group">
+                        <span>Timeline</span>
+                        <div id="chartTimeline" style="width:100%"></div>
+                    </div>
+                    <div class="form-group">
+                        <span>Assigned Engineer</span>
+                        <table id="tableEngineers" class="table table-sm table-bordered text-center w-100">
+                            <thead>
+                                <tr>
+                                    <th>Engineer</th>
+                                    <th>Milestone</th>
+                                    <th>Days</th>
+                                    <th>Assigned</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        let jobs = [];
+        let holidays = [];
+
+        let colorsMain = [
+            '#023E8A', //2,62,138 DARK BLUE
+            '#0096C7', //0,150,199 LIGHT BLUE
+            '#00918E', //0,145,142 TEAL
+            '#4DD599', //77,213,153 LIME
+            '#E45826', //228,88,38 ORANGE
+            '#F0A500', //240,165,0 YELLOW
+            '#900C27', //144,12,39 DARK RED
+            '#C70039', //199,0,57 PINK
+            '#5727A3', //87,39,163 DARK PURPLE
+            '#9153F4', //145,83,244 PURPLE
+        ];
+
+        let colorsOther = [
+            '#023E8A33', //2,62,138 DARK BLUE
+            '#0096C733', //0,150,199 LIGHT BLUE
+            '#00918E33', //0,145,142 TEAL
+            '#4DD59933', //77,213,153 LIME
+            '#E4582633', //228,88,38 ORANGE
+            '#F0A50033', //240,165,0 YELLOW
+            '#900C2733', //144,12,39 DARK RED
+            '#C7003933', //199,0,57 PINK
+            '#5727A333', //87,39,163 DARK PURPLE
+            '#9153F433', //145,83,244 PURPLE
+        ];
+
+        $(document).ready(async function () {
+            await GetJobs();
+            GenerateCustomers();
+            GenerateJobs();
+            let today = new Date();
+            let year = today.getFullYear();
+            $('#startDate').val(year+"-01-01");
+            $('#stopDate').val(year+"-12-31");
+        });
+
+        async function GetJobs() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobs", "Job")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    jobs = response;
+                }
+            });
+        }
+
+        async function GetJobMilestones(jobId) {
+            let jms = [];
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobMilestones", "JobMilestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { jobId },
+                success: function (response) {
+                    jms = response;
+                }
+            });
+            return jms;
+        }
+
+        async function GetJobAssignedEngineers(jobId) {
+            let assignedEngineers;
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobAssignedEngineers", "AssignMilestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { jobId },
+                success: function (response) {
+                    assignedEngineers = response;
+                }
+            });
+            return assignedEngineers;
+        }
+
+        async function GetPlansBetweenDates(startDate, stopDate) {
+            let plans = [];
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetPlansBetweenDates", "PlanManday")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { startDate, stopDate },
+                success: function (response) {
+                    plans = response;
+                }
+            });
+            return plans;
+        }
+
+        async function GetHolidays() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetHolidays", "Holiday")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    holidays = response;
+                }
+            });
+        }
+
+        function GenerateCustomers() {
+            let customers = jobs.map(m => m.customer);
+            customers = customers.filter(f => f !== "");
+            customers = [...new Set(customers)];
+            $('#customers').empty();
+            $('#customers').append(`<option value="" selected>ALL</option>`);
+            for (let i = 0; i < customers.length; i++) {
+                $('#customers').append(`<option value="${customers[i]}">${customers[i]}</option>`);
+            }
+        }
+
+        $('#customers').on('change', function () {
+            GenerateJobs();
+        });
+
+        function GenerateJobs() {
+            $('#jobs').empty();
+            $('#jobs').append(`<option value="" selected disabled>Select Job</option>`);
+            for (let i = 0; i < jobs.length; i++) {
+                if ($('#customers').val() === "" || jobs[i].customer === $('#customers').val()) {
+                    $('#jobs').append(`<option value="${jobs[i].job_id}">${jobs[i].job_id}: ${jobs[i].job_name}</option>`);
+                }
+            }
+        }
+
+        $('#jobs').on('change', async function () {
+            let jobId = $('#jobs').val();
+            let job = jobs.filter(f => f.job_id === jobId)[0];
+            $('#jobId').val(jobId);
+            $('#jobName').val(job.job_name);
+            $('#customer').val(job.customer);
+            let jobMilestones = await GetJobMilestones(jobId);
+            GenerateTableMilestones(jobMilestones);
+            GenerateChartTimeline(jobMilestones);
+            let assignedEngineers = await GetJobAssignedEngineers(jobId);
+            GenerateTableEngineers(assignedEngineers);
+            let startDate = $('#startDate').val();
+            let stopDate = $('#stopDate').val();
+            let plans = await GetPlansBetweenDates(startDate, stopDate);
+            await GetHolidays();
+            GenerateChart(plans);
+        });
+
+        $('#btnLoad').on('click', async function () {
+            let startDate = $('#startDate').val();
+            let stopDate = $('#stopDate').val();
+            let plans = await GetPlansBetweenDates(startDate, stopDate);
+            await GetHolidays();
+            GenerateChart(plans);
+        });
+
+        function GenerateTableMilestones(jobMilestones) {
+            $('#tableMilestones').empty();
+            let headerStr = `<thead><tr>`;
+            let bodyStr = `<tbody><tr>`;
+            for (let i = 0; i < jobMilestones.length; i++) {
+                headerStr += `<th colspan="2">${jobMilestones[i].milestone_name}</th>`;
+                bodyStr += `
+                    <td>${jobMilestones[i].start_date.split("T")[0]}</td>
+                    <td>${jobMilestones[i].stop_date.split("T")[0]}</td>
+                `;
+            }
+            headerStr += `</tr></thead>`;
+            bodyStr += `</tr></tbody>`;
+            $('#tableMilestones').append(headerStr);
+            $('#tableMilestones').append(bodyStr);
+        }
+
+        let chartTimeline;
+        function GenerateChartTimeline(jobMilestones) {
+            let datas = [];
+            for (let i = 0; i < jobMilestones.length; i++) {
+                let startDate = new Date(jobMilestones[i].start_date);
+                let stopDate = new Date(jobMilestones[i].stop_date);
+                datas.push({
+                    x: jobMilestones[i].milestone_name,
+                    y: [
+                        startDate.setDate(startDate.getDate() + 1),
+                        stopDate.setDate(stopDate.getDate() + 1),
+                    ],
+                    fillColor: colorsMain[i]
+                });
+            }
+
+            let options = {
+                series: [
+                    {
+                        data: datas
+                    }
+                ],
+                chart: {
+                    height: 300,
+                    type: 'rangeBar'
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                        distributed: true,
+                        dataLabels: {
+                            hideOverflowingLabels: false
+                        }
+                    }
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: function (val, opts) {
+                        var label = opts.w.globals.labels[opts.dataPointIndex]
+                        var a = moment(val[0])
+                        var b = moment(val[1])
+                        var diff = b.diff(a, 'days')
+                        diff += 1;
+                        return diff;
+                    },
+                    style: {
+                        colors: ['#f3f4f5', '#fff']
+                    }
+                },
+                xaxis: {
+                    type: 'datetime'
+                },
+                yaxis: {
+                    show: true
+                },
+                grid: {
+                    row: {
+                        colors: ['#f3f4f5', '#fff'],
+                        opacity: 1
+                    }
+                }
+            };
+
+            if (chartTimeline !== undefined) chartTimeline.destroy();
+            chartTimeline = new ApexCharts(document.querySelector("#chartTimeline"), options);
+            chartTimeline.render();
+        }
+
+        function GenerateTableEngineers(assignedEngineers) {
+            let engineers = assignedEngineers.map(m => m.user_id);
+            engineers = [...new Set(engineers)];
+
+            $('#tableEngineers tbody').empty();
+            let totalMandays = 0;
+            let totalAssigned = 0;
+            for (let i = 0; i < engineers.length; i++) {
+                let milestones = assignedEngineers.filter(f => f.user_id === engineers[i]);
+                for (let j = 0; j < milestones.length; j++) {
+                    if (j === 0) {
+                        $('#tableEngineers tbody').append(`
+                        <tr>
+                            <td rowspan="${milestones.length}">${milestones[j].user_name}</td>
+                            <td>${milestones[j].milestone_name}</td>
+                            <td>${milestones[j].days}</td>
+                            <td>${milestones[j].assigned_days}</td>
+                        </tr>`);
+                    } else {
+                        $('#tableEngineers tbody').append(`
+                        <tr>
+                            <td>${milestones[j].milestone_name}</td>
+                            <td>${milestones[j].days}</td>
+                            <td>${milestones[j].assigned_days}</td>
+                        </tr>`);
+                    }
+                    totalMandays += milestones[j].days;
+                    totalAssigned += milestones[j].assigned_days;
+                }
+            }
+            $('#tableEngineers tbody').append(`
+            <tr>
+                <td colspan="2">Total</td>
+                <td>${totalMandays}</td>
+                <td>${totalAssigned}</td>
+            </tr>`);
+        }
+
+        function GetNormalWorkingDay(year, month) {
+            let days = 0;
+            let stopDate = new Date(year, month, 1);
+            for (let startDate = new Date(year, month - 1, 2); startDate <= stopDate; startDate.setDate(startDate.getDate() + 1)) {
+                let h = holidays.filter(f => f.date.split("T")[0] === startDate.toISOString().split("T")[0]);
+                if (h.length > 0) continue;
+                let d = startDate.getDay();
+                if (d !== 0 && d !== 6) days++;
+            }
+            return days;
+        }
+
+        let ctx;
+        let chartWorkload;
+        function GenerateChart(plans) {
+            let months = [];
+            let startDate = new Date($('#startDate').val());
+            let stopDate = new Date($('#stopDate').val());
+
+            for (startDate; startDate <= stopDate; startDate.setMonth(startDate.getMonth() + 1)) {
+                months.push(startDate.toISOString().substring(0, 7));
+            }
+
+            let ds = [];
+            let workingDays = [];
+            for (let i = 0; i < months.length; i++) {
+                let days = GetNormalWorkingDay(months[i].split("-")[0], months[i].split("-")[1]);
+                workingDays.push(days);
+            }
+
+            ds.push({
+                label: 'Working Days',
+                type: 'line',
+                data: workingDays,
+                backgroundColor: ['rgba(255, 50, 50, 1)'],
+                borderColor: ['rgba(255, 50, 50, 1)'],
+                borderWidth: 1,
+                tension: 0.2,
+                radius: 1,
+            });
+
+            let engineers = plans.map(m => m.user_id);
+            engineers = [...new Set(engineers)];
+
+            let jobId = $('#jobId').val();
+
+            for (let i = 0; i < engineers.length; i++) {
+                let jobMandays = [];
+                let otherMandays = [];
+                for (let j = 0; j < months.length; j++) {
+                    jobMandays.push(plans.filter(f => f.user_id === engineers[i] && f.job_id === jobId && f.date.substring(0,7) === months[j])
+                        .map(m => m.hours / 8).reduce((a, b) => a + b, 0));
+                    otherMandays.push(plans.filter(f => f.user_id === engineers[i] && f.job_id !== jobId && jobId && f.date.substring(0, 7) === months[j])
+                        .map(m => m.hours / 8).reduce((a, b) => a + b, 0));
+                }
+                ds.push({
+                    label: engineers[i] + ": " + jobId,
+                    type: 'bar',
+                    data: jobMandays,
+                    backgroundColor: colorsMain[i],
+                    borderColor: colorsMain[i],
+                    stack: 'Stack' + [i]
+                });
+                ds.push({
+                    label: engineers[i] + ": Others",
+                    type: 'bar',
+                    data: otherMandays,
+                    backgroundColor: colorsOther[i],
+                    borderColor: colorsOther[i],
+                    stack: 'Stack' + [i]
+                });
+            }
+
+            if (chartWorkload !== undefined) chartWorkload.destroy();
+            ctx = document.getElementById('chartWorkload').getContext('2d');
+            chartWorkload = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: ds
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                text: 'Months',
+                                display: true
+                            }
+                        },
+                        y: {
+                            title: {
+                                text: 'Days',
+                                display: true
+                            },
+                            beginAtZero: true,
+                            max: 40
+                        }
+                    },
+                    maintainAspectRatio: false
+                }
+            });
+        }
+    </script>
+}

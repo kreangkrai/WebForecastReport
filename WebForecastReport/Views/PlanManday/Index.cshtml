@@ -1,0 +1,792 @@
+﻿@{
+    ViewData["title"] = "Plan Manday";
+}
+<div class="row p-4" style="row-gap:20px">
+    <div class="col-xl-2">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span>Engineer</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <span>Department</span>
+                        <select id="departments" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <span>Engineer</span>
+                        <select id="engineers" class="form-control"></select>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card card-dark">
+            <div class="card-header">
+                <span>Job</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <span>Year</span>
+                        <select id="years" class="form-control" disabled></select>
+                    </div>
+                    <div class="form-group">
+                        <span>Customer</span>
+                        <select id="customers" class="form-control" disabled></select>
+                    </div>
+                    <div class="form-group">
+                        <span>Job</span>
+                        <select id="jobs" class="form-control" disabled></select>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span>Assigned</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <span>Engineer</span>
+                        <input id="selectEngineer" type="text" class="form-control" placeholder="Select Engineer" readonly />
+                    </div>
+                    <div class="form-group">
+                        <span>Job</span>
+                        <input id="selectJob" type="text" class="form-control" placeholder="Select Job" readonly />
+                    </div>
+                    <div class="form-group">
+                        <span>Milestones</span>
+                        <div id="milestones" class="list-group"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer">
+                <button id="btnPlanAll" type="button" class="btn btn-primary form-control" disabled>
+                    <i class="fas fa-sync"></i> Plan All
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-8">
+        <div class="card card-dark">
+            <div class="card-header">
+                Calendar
+            </div>
+            <div class="card-body">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-12" hidden>
+        <div class="card card-dark">
+            <div class="card-header">
+                <span>Planned</span>
+            </div>
+            <div class="card-body">
+                <table id="tablePlans" class="table table-sm table-bordered compact w-100">
+                    <thead>
+                        <tr>
+                            <th>Job ID</th>
+                            <th>Job Name</th>
+                            <th>Milestone</th>
+                            <th>Engineer</th>
+                            <th>Date</th>
+                            <th>Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Plan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-3">
+                            <span>Engineer ID</span>
+                            <input id="engineerId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-9">
+                            <span>Engineer Name</span>
+                            <input id="engineerName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-3">
+                            <span>Job ID</span>
+                            <input id="jobId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-9">
+                            <span>Job Name</span>
+                            <input id="jobName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-3">
+                            <span>Milestone ID</span>
+                            <input id="milestoneId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-9">
+                            <span>Milestone Name</span>
+                            <input id="milestoneName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-6">
+                            <span>Start Date</span>
+                            <input id="startDate" type="date" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-6">
+                            <span>Stop Date</span>
+                            <input id="stopDate" type="date" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span>Available</span>
+                        <div class="input-group">
+                            <input id="available" type="number" class="form-control" min="0" readonly />
+                            <div class="input-group-append">
+                                <span class="input-group-text">Days</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Date</span>
+                            <input id="date" type="date" class="form-control" />
+                        </div>
+                        <div class="col-xl-4">
+                            <span>Assign</span>
+                            <div class="input-group">
+                                <input id="assign" type="number" class="form-control" min="0" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Days</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
+                            <span>Hours</span>
+                            <div class="input-group">
+                                <input id="hours" type="number" class="form-control" min="0" readonly />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Hours</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btnSave" type="button" class="btn btn-primary" disabled>Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalPlan" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Plan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-3">
+                            <span>Engineer ID</span>
+                            <input id="planEngId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-9">
+                            <span>Engineer Name</span>
+                            <input id="planEngName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-3">
+                            <span>Job ID</span>
+                            <input id="planJobId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-9">
+                            <span>Job Name</span>
+                            <input id="planJobName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-3">
+                            <span>Milestone ID</span>
+                            <input id="planMilestoneId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-9">
+                            <span>Milestone Name</span>
+                            <input id="planMilestoneName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xl-4">
+                            <span>Date</span>
+                            <input id="planDate" type="date" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-4">
+                            <span>Days</span>
+                            <input id="planDays" type="number" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-4">
+                            <span>Hours</span>
+                            <input id="planHours" type="number" class="form-control" readonly />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btnDelete" type="button" class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalPlanAll" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign All Plans</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Eng ID</span>
+                            <input id="planAllEngId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <span>Eng Name</span>
+                            <input id="planAllEngName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Job ID</span>
+                            <input id="planAllJobId" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <span>Job Name</span>
+                            <input id="planAllJobName" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span>Milestones</span>
+                        <table id="planAllMilestones" class="table table-sm table-bordered text-center w-100">
+                            <thead>
+                                <tr>
+                                    <th>Milestone ID</th>
+                                    <th>Milestone</th>
+                                    <th>Start</th>
+                                    <th>Stop</th>
+                                    <th>Planned</th>
+                                    <th>Assigned</th>
+                                    <th>Remain</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-3">
+                            <div class="form-check">
+                                <input id="overtime" class="form-check-input" type="checkbox" />
+                                <label class="form-check-label" for="overtimes">Overtime</label>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-check">
+                                <input id="saturday" class="form-check-input" type="checkbox" />
+                                <label class="form-check-label" for="saturday">Saturday</label>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-check">
+                                <input id="sunday" class="form-check-input" type="checkbox" />
+                                <label class="form-check-label" for="sunday">Sunday</label>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-check">
+                                <input id="holiday" class="form-check-input" type="checkbox" />
+                                <label class="form-check-label" for="holiday">Holiday</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btnAssignAll" type="button" class="btn btn-primary">Assign All</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        let assignedJobs = [];
+        let engineers = [];
+        let holidays = [];
+        let allMilestones = [];
+        let tablePlans;
+        let colors = [
+            '#023E8A', //2,62,138 DARK BLUE
+            '#0096C7', //0,150,199 LIGHT BLUE
+            '#00918E', //0,145,142 TEAL
+            '#4DD599', //77,213,153 LIME
+            '#E45826', //228,88,38 ORANGE
+            '#F0A500', //240,165,0 YELLOW
+            '#900C27', //144,12,39 DARK RED
+            '#C70039', //199,0,57 PINK
+            '#5727A3', //87,39,163 DARK PURPLE
+            '#9153F4', //145,83,244 PURPLE
+        ];
+
+        $(document).ready(async function () {
+            await GetEngineers();
+            await GetMilestones();
+            GenerateDepartments();
+            GenerateEngineers();
+            GenerateCalendar("");
+        });
+
+        async function GetEngineers() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetEngineerUsers", "EngUser")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    engineers = response;
+                }
+            });
+        }
+
+        async function GetEngPlans(engId) {
+            let plans = [];
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetEngPlans", "PlanManday")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { engId },
+                success: function (response) {
+                    plans = response;
+                }
+            });
+            return plans;
+        }
+
+        async function GetEngineerAssignedJobs(engId) {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetEngineerAssignedJobs", "AssignMilestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { engId },
+                success: function (response) {
+                    assignedJobs = response;
+                }
+            });
+        }
+
+        async function GetHolidays() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetHolidays", "Holiday")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    holidays = response;
+                }
+            });
+        }
+
+        async function GetMilestones() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetMilestones", "Milestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    allMilestones = response;
+                }
+            });
+        }
+
+        function GenerateDepartments() {
+            let departments = engineers.map(m => m.department);
+            departments = [...new Set(departments)];
+            $('#departments').empty();
+            $('#departments').append(`<option value="" selected>ALL</option>`);
+            for (let i = 0; i < departments.length; i++) {
+                $('#departments').append(`<option value="${departments[i]}">${departments[i]}</option>`);
+            }
+        }
+
+        $('#departments').on('change', function () {
+            GenerateEngineers();
+        });
+
+        function GenerateEngineers() {
+            let department = $('#departments').val();
+            $('#engineers').empty();
+            $('#engineers').append(`<option value="" selected disabled>Select Engineer</option>`);
+            for (let i = 0; i < engineers.length; i++) {
+                if (engineers[i].department === department || department === "") {
+                    $('#engineers').append(`<option value="${engineers[i].user_id}">${engineers[i].user_name}</option>`);
+                }
+            }
+        }
+
+        $('#engineers').on('change', async function () {
+            let engId = $('#engineers').val();
+            if (engId !== "") {
+                $('#customers').attr('disabled', false);
+                $('#jobs').attr('disabled', false);
+                await GetMilestones();
+                await GetEngineerAssignedJobs(engId);
+                GenerateCustomers();
+                GenerateJobs();
+            } else {
+                $('#customers').attr('disabled', true);
+                $('#jobs').attr('disabled', true);
+            }
+            $('#selectEngineer').val($('#engineers option:selected').text());
+            $('#selectJob').val(null);
+            $('#milestones').empty();
+            let plans = await GetEngPlans(engId);
+            GenerateCalendar(plans);
+            GeneratePlans(plans);
+            $('#btnPlanAll').attr('disabled', true);
+        });
+
+        function GenerateCustomers() {
+            let customers = assignedJobs.map(m => m.customer);
+            customers = [...new Set(customers)];
+            $('#customers').empty();
+            $('#customers').append(`<option value="" selected>ALL</option>`);
+            for (let i = 0; i < customers.length; i++) {
+                $('#customers').append(`<option value="${customers[i]}">${customers[i]}</option>`);
+            }
+        }
+
+        $('#customers').on('change', function () {
+            GenerateJobs();
+        });
+
+        function GenerateJobs() {
+            let customer = $('#customers').val();
+            let jobs = assignedJobs.map(m => m.job_id);
+            jobs = [...new Set(jobs)];
+            $('#jobs').empty();
+            $('#jobs').append(`<option value="" selected disabled>Select Job</option>`);
+            for (let i = 0; i < jobs.length; i++) {
+                let job = assignedJobs.filter(f => f.job_id === jobs[i])[0];
+                if (job.customer === customer || customer === "") {
+                    $('#jobs').append(`<option value="${job.job_id}">${job.job_name}</option>`);
+                }
+            }
+        }
+
+        $('#jobs').on('change', function () {
+            $('#selectJob').val($('#jobs option:selected').text());
+            let engId = $('#engineers').val();
+            let jobId = $('#jobs').val();
+            let milestones = assignedJobs.filter(f => f.job_id === jobId).map(m => m.milestone_id);
+            milestones = [...new Set(milestones)];
+            $('#milestones').empty();
+            for (let i = 0; i < milestones.length; i++) {
+                let milestone = assignedJobs.filter(f => f.job_id === jobId && f.user_id === engId && f.milestone_id === milestones[i])[0];
+                $('#milestones').append(`
+                <a class="list-group-item list-group-item-action d-flex justify-content-between"
+                    onclick="Plan('${milestone.user_id}','${milestone.job_id}','${milestone.milestone_id}')">
+                    <div>
+                        <span>${milestone.milestone_name}</span>
+                    </div>
+                    <div>
+                        <span>${milestone.assigned_days}/${milestone.days}</span>
+                    </div>
+                </a>`);
+            }
+            $('#btnPlanAll').attr('disabled', false);
+        });
+
+        function Plan(engId, jobId, milestoneId) {
+            $('#modalAdd').modal();
+            let milestone = assignedJobs.filter(f => f.job_id === jobId && f.milestone_id === milestoneId && f.user_id === engId)[0];
+            $('#jobId').val(milestone.job_id);
+            $('#jobName').val(milestone.job_name);
+            $('#milestoneId').val(milestone.milestone_id);
+            $('#milestoneName').val(milestone.milestone_name);
+            $('#engineerId').val(milestone.user_id);
+            $('#engineerName').val(milestone.user_name);
+            $('#startDate').val(milestone.start_date.split("T")[0]);
+            $('#stopDate').val(milestone.stop_date.split("T")[0]);
+            $('#available').val(milestone.days - milestone.assigned_days);
+            $('#date').val(milestone.start_date.split("T")[0]);
+            $('#date').attr({
+                "min": $('#startDate').val(),
+                "max": $('#stopDate').val()
+            });
+            let assign_days = $('#available').val() > 0 ? 1 : 0;
+            $('#assign').val(assign_days);
+            $('#assign').attr({
+                "min": 0,
+                "max": $('#available').val(),
+                "step": 0.5
+            });
+            $('#hours').val($('#assign').val() * 8);
+            if ($('#assign').val() > 0) {
+                $('#btnSave').attr('disabled', false);
+            } else {
+                $('#btnSave').attr('disabled', true);
+            }
+        }
+
+        $('#assign').on('change keyup', function () {
+            $('#hours').val($('#assign').val() * 8);
+        });
+
+        $('#btnSave').on('click', async function () {
+            let jobId = $('#jobId').val();
+            let milestoneId = $('#milestoneId').val();
+            let engId = $('#engineerId').val();
+            let date = $('#date').val();
+            let hours = $('#hours').val();
+            let planStr = JSON.stringify({
+                "job_milestone_id": jobId + milestoneId,
+                "job_id": jobId,
+                "milestone_id": milestoneId,
+                "user_id": engId,
+                "date": date,
+                "hours": hours
+            });
+            await CreatePlan(planStr);
+        });
+
+        async function CreatePlan(planStr) {
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("CreatePlan", "PlanManday")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { planStr },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
+        function GeneratePlans(plans) {
+            let datas = [];
+
+            for (let i = 0; i < plans.length; i++) {
+                datas.push([
+                    plans[i].job_id,
+                    plans[i].job_name,
+                    plans[i].milestone_name,
+                    plans[i].user_name,
+                    plans[i].date.split("T")[0],
+                    plans[i].hours
+                ]);
+            }
+
+            if (tablePlans !== undefined) tablePlans.destroy();
+            tablePlans = $('#tablePlans').DataTable({
+                data: datas
+            });
+        }
+
+        $('#btnPlanAll').on('click', function () {
+            let engId = $('#engineers').val();
+            let engName = assignedJobs.filter(f => f.user_id === engId).map(m => m.user_name)[0];
+            let jobId = $('#jobs').val();
+            let jobName = assignedJobs.filter(f => f.job_id === jobId).map(m => m.job_name)[0];
+            let milestones = assignedJobs.filter(f => f.user_id === engId && f.job_id === jobId);
+            $('#modalPlanAll').modal();
+            $('#planAllEngId').val(engId);
+            $('#planAllEngName').val(engName);
+            $('#planAllJobId').val(jobId);
+            $('#planAllJobName').val(jobName);
+            $('#planAllMilestones tbody').empty();
+            for (let i = 0; i < milestones.length; i++) {
+                let remains = milestones[i].days - milestones[i].assigned_days;
+                if (remains < 1) continue;
+                $('#planAllMilestones tbody').append(`
+                <tr>
+                    <td>${milestones[i].milestone_id}</td>
+                    <td>${milestones[i].milestone_name}</td>
+                    <td>${milestones[i].start_date.split("T")[0]}</td>
+                    <td>${milestones[i].stop_date.split("T")[0]}</td>
+                    <td>${milestones[i].days}</td>
+                    <td>${milestones[i].assigned_days}</td>
+                    <td>${remains}</td>
+                </tr>
+                `);
+            }
+        });
+
+        let calendarEl;
+        let calendar;
+        async function GenerateCalendar(plans) {
+            await GetHolidays();
+            let bgEvs = [];
+            for (let i = 0; i < holidays.length; i++) {
+                bgEvs.push({
+                    title: holidays[i].name,
+                    start: holidays[i].date.split("T")[0],
+                    allday: true,
+                    display: 'background'
+                });
+            }
+
+            let evs = [];
+            for (let i = 0; i < plans.length; i++) {
+                let msIndex = allMilestones.map(m => m.milestone_id);
+                if (i === 0) console.log(msIndex);
+                evs.push({
+                    id: `${plans[i].no}`,
+                    title: `${plans[i].hours} H: ${plans[i].milestone_name}-${plans[i].job_id}`,
+                    start: plans[i].date.split("T")[0],
+                    backgroundColor: colors[msIndex.indexOf(plans[i].milestone_id)],
+                    borderColor: colors[msIndex.indexOf(plans[i].milestone_id)],
+                    extendedProps: {
+                        no: plans[i].no,
+                        job_milestone_id: plans[i].job_milestone_id,
+                        job_id: plans[i].job_id,
+                        job_name: plans[i].job_name,
+                        customer: plans[i].customer,
+                        milestone_id: plans[i].milestone_id,
+                        milestone_name: plans[i].milestone_name,
+                        user_id: plans[i].user_id,
+                        user_name: plans[i].user_name,
+                        department: plans[i].department,
+                        date: plans[i].date,
+                        hours: plans[i].hours,
+                    }
+                });
+            }
+
+            if (calendar !== undefined) calendar.destroy();
+            calendarEl = document.getElementById('calendar');
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                events: evs,
+                eventClick: function (info) {
+                    let event = calendar.getEventById(info.event.id);
+                    $('#modalPlan').modal();
+                    $('#planEngId').val(event.extendedProps.user_id);
+                    $('#planEngName').val(event.extendedProps.user_name);
+                    $('#planJobId').val(event.extendedProps.job_id);
+                    $('#planJobName').val(event.extendedProps.job_name);
+                    $('#planMilestoneId').val(event.extendedProps.milestone_id);
+                    $('#planMilestoneName').val(event.extendedProps.milestone_name);
+                    $('#planDate').val(event.extendedProps.date.split("T")[0]);
+                    $('#planDays').val(event.extendedProps.hours / 8);
+                    $('#planHours').val(event.extendedProps.hours);
+                },
+                initialView: 'dayGridMonth',
+                height: 700
+            });
+            calendar.addEventSource(bgEvs);
+            calendar.render();
+        }
+
+        $('#btnDelete').on('click', async function () {
+            let planStr = JSON.stringify({
+                "job_milestone_id": $('#planJobId').val() + $('#planMilestoneId').val(),
+                "user_id": $('#planEngId').val(),
+                "date": $('#planDate').val()
+            });
+            await DeletePlan(planStr);
+        });
+
+        async function DeletePlan(planStr) {
+            await $.ajax({
+                type: "DELETE",
+                url: '@Url.Action("DeletePlan", "PlanManday")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { planStr },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
+        $('#btnAssignAll').on('click', async function () {
+            let plansStr = [];
+            let engId = $('#planAllEngId').val();
+            let jobId = $('#planAllJobId').val();
+            let milestones = assignedJobs.filter(f => f.user_id === engId && f.job_id === jobId && (f.days - f.assigned_days) > 0);
+            let overtime = $('#overtime').prop("checked");
+            let saturday = $('#saturday').prop("checked");
+            let sunday = $('#sunday').prop("checked");
+            let holiday = $('#holiday').prop("checked");
+            for (let i = 0; i < milestones.length; i++) {
+                plansStr.push({
+                    "job_milestone_id": milestones[i].job_milestone_id,
+                    "job_id": milestones[i].job_milestone_id.split("M")[0],
+                    "milestone_id": "M" + milestones[i].job_milestone_id.split("M")[1],
+                    "user_id": milestones[i].user_id,
+                    "start_date": milestones[i].start_date,
+                    "stop_date": milestones[i].stop_date,
+                    "hours": (milestones[i].days - milestones[i].assigned_days) * 8,
+                });
+            }
+            await PlanAll(JSON.stringify(plansStr), overtime, saturday, sunday, holiday);
+        });
+
+        async function PlanAll(plansStr, overtime, saturday, sunday, holiday) {
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("PlanAll", "PlanManday")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { plansStr, overtime, saturday, sunday, holiday },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
+    </script>
+}
