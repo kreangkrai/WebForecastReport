@@ -135,6 +135,7 @@ namespace WebForecastReport.Controllers
         public List<PlanMandayModel> GetJobsPlans()
         {
             List<PlanMandayModel> plans = PlanManday.GetJobsPlans();
+            plans = plans.OrderBy(o => o.date).ToList();
             return plans;
         }
 
@@ -142,6 +143,7 @@ namespace WebForecastReport.Controllers
         public List<PlanMandayModel> GetJobPlans(string jobId)
         {
             List<PlanMandayModel> plans = PlanManday.GetJobPlans(jobId);
+            plans = plans.OrderBy(o => o.date).ToList();
             return plans;
         }
 
@@ -149,6 +151,7 @@ namespace WebForecastReport.Controllers
         public List<PlanMandayModel> GetEngPlans(string engId)
         {
             List<PlanMandayModel> plans = PlanManday.GetEngPlans(engId);
+            plans = plans.OrderBy(o => o.date).ToList();
             return plans;
         }
 
@@ -156,6 +159,7 @@ namespace WebForecastReport.Controllers
         public List<PlanMandayModel> GetEngPlansByDate(string engId, DateTime date)
         {
             List<PlanMandayModel> plans = PlanManday.GetEngPlansByDate(engId, date);
+            plans = plans.OrderBy(o => o.date).ToList();
             return plans;
         }
 
@@ -163,6 +167,7 @@ namespace WebForecastReport.Controllers
         public List<PlanMandayModel> GetPlansBetweenDates(DateTime startDate, DateTime stopDate)
         {
             List<PlanMandayModel> plans = PlanManday.GetPlansBetweenDates(startDate, stopDate);
+            plans = plans.OrderBy(o => o.date).ToList();
             return plans;
         }
 
