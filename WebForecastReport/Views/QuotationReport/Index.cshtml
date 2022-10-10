@@ -1475,7 +1475,11 @@
                         document.getElementById('quarter_department').selectedIndex = 0;
 
                         $('#quarter_year').empty();
-                        var selectQuarterYear = document.getElementById('quarter_year');
+                       var selectQuarterYear = document.getElementById('quarter_year');
+                       let tempDate = new Date();
+                       tempDate.setFullYear(tempDate.getFullYear() + 1);
+                       let nextYear = tempDate.getFullYear();
+                       selectQuarterYear.options.add(new Option(nextYear, nextYear, option.selected));
                         for (var i = 0, l = Years.length; i < l; i++) {
                             var option = Years[i];
                             selectQuarterYear.options.add(new Option(option.text, option.value, option.selected));
