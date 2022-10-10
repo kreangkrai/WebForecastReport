@@ -240,8 +240,8 @@ namespace WebForecastReport.Service.MPR
             {
                 string string_command = string.Format($@"
                 DELETE FROM JobMilestone WHERE Job_Milestone_ID = @Job_Milestone_ID;
-                DELETE FROM AssignEngineer WHERE Job_Milestone_ID = @Job_Milestone_ID;
-                DELETE FROM PlanDay WHERE Job_Milestone_ID = @Job_Milestone_ID;");
+                DELETE FROM AssignMilestone WHERE Job_Milestone_ID = @Job_Milestone_ID;
+                DELETE FROM PlanManday WHERE Job_Milestone_ID = @Job_Milestone_ID;");
                 SqlCommand command = new SqlCommand(string_command, connection);
                 command.CommandType = System.Data.CommandType.Text;
                 command.Parameters.AddWithValue("@Job_Milestone_ID", jm.job_milestone_id);
@@ -265,8 +265,8 @@ namespace WebForecastReport.Service.MPR
             {
                 string string_command = string.Format($@"
                 DELETE FROM JobMilestone WHERE Job_ID = @Job_ID;
-                DELETE FROM AssignEngineer WHERE Job_Milestone_ID LIKE '{jm.job_id}%';
-                DELETE FROM PlanDay WHERE Job_Milestone_ID LIKE '{jm.job_id}%';");
+                DELETE FROM AssignMilestone WHERE Job_Milestone_ID LIKE '{jm.job_id}%';
+                DELETE FROM PlanManday WHERE Job_Milestone_ID LIKE '{jm.job_id}%';");
                 SqlCommand command = new SqlCommand(string_command, connection);
                 command.CommandType = System.Data.CommandType.Text;
                 command.Parameters.AddWithValue("@Job_ID", jm.job_id);
