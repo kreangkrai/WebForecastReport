@@ -300,6 +300,7 @@
 
         function GenerateCustomers() {
             let customers = jobs.map(m => m.customer);
+            customers = customers.filter(f => f !== "");
             customers = [...new Set(customers)];
             $('#customers').empty();
             $('#customers').append(`<option value="" selected>ALL</option>`);
