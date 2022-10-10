@@ -1,0 +1,558 @@
+﻿@{
+    ViewData["title"] = "Assign Milestone";
+}
+<div class="row p-4" style="row-gap:20px">
+    <div class="col-xl-3">
+        <div class="card card-dark">
+            <div class="card-header">
+                <h5 class="card-title">Filter</h5>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <span>Customer</span>
+                        <select id="customers" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <span>Job</span>
+                        <select id="jobs" class="form-control"></select>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="cards" class="col-xl-9">
+
+    </div>
+</div>
+
+<div class="modal fade" id="modal_add" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Engineer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Job ID</span>
+                            <input id="add_job_id" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <span>Job Name</span>
+                            <input id="add_job_name" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span>Engineer</span>
+                        <select id="engineers" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <span>Milestones</span>
+                        <table id="table_milestones" class="table table-sm table-bordered text-center w-100">
+                            <thead>
+                                <tr>
+                                    <th>Milestone ID</th>
+                                    <th>Milestone Name</th>
+                                    <th>Days</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="confirm_add" type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_add_result" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Manday Result</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table id="table_results" class="table table-sm table-bordered text-center w-100">
+                    <thead>
+                        <tr>
+                            <th>Job Milestone ID</th>
+                            <th>Engineer ID</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_edit" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Manday</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Job ID</span>
+                            <input id="edit_job_id" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <span>Job Name</span>
+                            <input id="edit_job_name" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Milestone ID</span>
+                            <input id="edit_milestone_id" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <span>Milestone Name</span>
+                            <input id="edit_milestone_name" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-8">
+                            <span>Engineer</span>
+                            <input id="edit_user_id" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-4">
+                            <span>Days</span>
+                            <input id="edit_days" type="number" class="form-control" min="0" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="confirm_edit" type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_delete" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Manday</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Job ID</span>
+                            <input id="delete_job_id" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <span>Job Name</span>
+                            <input id="delete_job_name" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-4">
+                            <span>Milestone ID</span>
+                            <input id="delete_milestone_id" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-8">
+                            <span>Milestone Name</span>
+                            <input id="delete_milestone_name" type="text" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row" style="row-gap:20px">
+                        <div class="col-xl-8">
+                            <span>Engineer</span>
+                            <input id="delete_user_id" type="text" class="form-control" readonly />
+                        </div>
+                        <div class="col-xl-4">
+                            <span>Days</span>
+                            <input id="delete_days" type="number" class="form-control" min="0" readonly />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="confirm_delete" type="button" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        let jobs = [];
+        let milestones = [];
+        let jms = [];
+        let engineers = [];
+        let assigns = [];
+
+        $(document).ready(async function () {
+            await GetJobs();
+            await GetMilestones();
+            await GetJobsMilestones();
+            await GetAssignedEngineers();
+            GenerateCustomers();
+            GenerateJobs();
+            GenerateJobCards("");
+        });
+
+        async function GetJobs() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobs", "Job")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    jobs = response;
+                }
+            });
+        }
+
+        async function GetMilestones() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetMilestones", "Milestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    milestones = response;
+                }
+            });
+        }
+
+        async function GetJobsMilestones() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobsMilestones", "JobMilestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    jms = response;
+                }
+            });
+        }
+
+        async function GetAssignedEngineers() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetAssignedEngineers", "AssignMilestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    assigns = response;
+                }
+            });
+        }
+
+        async function GetEngineers() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetEngineerUsers", "EngUser")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    engineers = response;
+                }
+            });
+        }
+
+        function GenerateCustomers() {
+            let customers = jobs.map(m => m.customer);
+            customers = customers.filter(f => f !== "");
+            customers = [...new Set(customers)];
+            $('#customers').empty();
+            $('#customers').append(`<option value="" selected>ALL</option>`);
+            for (let i = 0; i < customers.length; i++) {
+                $('#customers').append(`<option value="${customers[i]}">${customers[i]}</option>`);
+            }
+        }
+
+        $('#customers').on('change', function () {
+            GenerateJobs();
+        });
+
+        function GenerateJobs() {
+            $('#jobs').empty();
+            $('#jobs').append(`<option value="" selected>ALL</option>`);
+            for (let i = 0; i < jobs.length; i++) {
+                if ($('#customers').val() === "" || jobs[i].customer === $('#customers').val()) {
+                    $('#jobs').append(`<option value="${jobs[i].job_id}">${jobs[i].job_id}: ${jobs[i].job_name}</option>`);
+                }
+            }
+        }
+
+        $('#jobs').on('change', function () {
+            let jobId = $('#jobs').val();
+            GenerateJobCards(jobId);
+        });
+
+        let added = [];
+        function GenerateJobCards(jobId) {
+            $('#cards').empty();
+            for (let i = 0; i < jobs.length; i++) {
+                if (jobId === "" || jobs[i].job_id === jobId) {
+                    $('#cards').append(`
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <span>${jobs[i].job_id}: ${jobs[i].job_name}</span>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool bg-primary" onclick="AddEngineer('${jobs[i].job_id}')">
+                                    <i class="fas fa-plus"></i> ADD ENGINEER
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table id="${jobs[i].job_id}" class="table table-sm table-bordered text-center w-100">
+                                <thead>
+                                    <tr>
+                                        <th>Milestone ID</th>
+                                        <th>Milestone Name</th>
+                                        <th>Engineer</th>
+                                        <th>Days</th>
+                                        <th style="width:10%">Edit</th>
+                                        <th style="width:10%">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>`);
+                    let ms = jms.filter(f => f.job_id === jobs[i].job_id);
+                    for (let j = 0; j < ms.length; j++) {
+                        let ms_id = milestones.filter(f => f.milestone_id === ms[j].milestone_id).map(m => m.milestone_id);
+                        let ms_name = milestones.filter(f => f.milestone_id === ms[j].milestone_id).map(m => m.milestone_name);
+                        let engs = assigns.filter(f => f.job_milestone_id === jobs[i].job_id + ms_id);
+                        engs = [...new Set(engs)];
+                        for (let k = 0; k < engs.length; k++) {
+                            let str = `<tr>`;
+                            if (k === 0) {
+                                str += `
+                                <td rowspan="${engs.length}">${ms_id}</td>
+                                <td rowspan="${engs.length}">${ms_name}</td>`;
+                            }
+                            str += `
+                                <td>${engs[k].user_id}</td>
+                                <td>${engs[k].days}</td>
+                                <td>
+                                    <button class="btn btn-warning form-control" type="button"
+                                        onclick="EditEngineer('${jobs[i].job_id}','${ms_id}','${engs[k].user_id}',${engs[k].days})">
+                                        Edit
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger form-control" type="button"
+                                        onclick="DeleteEngineer('${jobs[i].job_id}','${ms_id}','${engs[k].user_id}',${engs[k].days})">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>`;
+                            $('#' + jobs[i].job_id + ' tbody').append(str);
+                            added.push({
+                                "job_id": jobs[i].job_id,
+                                "milestone_id": ms_id[0],
+                                "user_id": engs[k].user_id
+                            });
+                        }
+                        if (engs.length === 0) {
+                            $('#' + jobs[i].job_id + ' tbody').append(`
+                            <tr>
+                                <td>${ms_id}</td>
+                                <td>${ms_name}</td>
+                                <td colspan="4">No Engineer Assigned</td>
+                            </tr>`);
+                        }
+                    }
+                    if (ms.length === 0) {
+                        $('#' + jobs[i].job_id + ' tbody').append(`
+                        <tr>
+                            <td colspan="6">No Milestone Add</td>
+                        </tr>`);
+                    }
+                }
+            }
+        }
+
+        async function AddEngineer(job_id) {
+            await GetJobs();
+            await GetJobsMilestones();
+            await GetEngineers();
+            let job = jobs.filter(f => f.job_id === job_id)[0];
+            $('#modal_add').modal();
+            $('#add_job_id').val(job.job_id);
+            $('#add_job_name').val(job.job_name);
+            $('#engineers').empty();
+            $('#engineers').append(`<option value="" selected disabled>Please Select Engineer</option>`);
+            $('#confirm_add').attr('disabled', true);
+            $('#table_milestones tbody').empty();
+            $('#table_milestones tbody').append(`<tr><td colspan="3">Please Select Engineer</td></tr>`);
+            for (let i = 0; i < engineers.length; i++) {
+                $('#engineers').append(`<option value="${engineers[i].user_id}">${engineers[i].user_name}</option>`);
+            }
+        }
+
+        $('#engineers').on('change', async function () {
+            await GetJobsMilestones();
+            if ($('#engineers').val() !== "" && $('#engineers').val() !== null) $('#confirm_add').attr('disabled', false);
+            let ms = jms.filter(f => f.job_id === $('#add_job_id').val());
+            $('#table_milestones tbody').empty();
+            for (let i = 0; i < ms.length; i++) {
+                let data = added.filter(f => f.job_id === $('#add_job_id').val() && f.milestone_id === ms[i].milestone_id && f.user_id === $('#engineers').val());
+                if (data.length > 0) continue;
+                $('#table_milestones tbody').append(`
+                <tr>
+                    <td>${ms[i].milestone_id}</td>
+                    <td>${ms[i].milestone_name}</td>
+                    <td>
+                        <input id="${ms[i].job_id}${ms[i].milestone_id}" type="number" class="form-control" min="0" value="0"/>
+                    </td>
+                </tr>
+                `);
+            }
+        });
+
+        $('#confirm_add').on('click', async function () {
+            let ms = jms.filter(f => f.job_id === $('#add_job_id').val());
+            $('#modal_add_result').modal();
+            $('#table_results tbody').empty();
+            for (let i = 0; i < ms.length; i++) {
+                if ($('#' + ms[i].job_milestone_id).val() == 0 || $('#' + ms[i].job_milestone_id).val() === undefined) continue;
+                let asgStr = JSON.stringify({
+                    "job_milestone_id": ms[i].job_milestone_id,
+                    "user_id": $('#engineers').val(),
+                    "days": $('#' + ms[i].job_milestone_id).val()
+                });
+                let result = "";
+                await $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AddEngineer", "AssignMilestone")',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { asgStr },
+                    success: function (response) {
+                        result = response;
+                    }
+                });
+                $('#table_results tbody').append(`
+                <tr>
+                    <td>${ms[i].job_milestone_id}</td>
+                    <td>${$('#engineers').val()}</td>
+                    <td>
+                        ${result === "Success" ? '<span class="badge badge-success">SUCCESS</span>' : '<span class="badge badge-danger">FAILED</span>'}
+                    </td>
+                </tr>
+                `);
+            }
+        });
+
+        async function EditEngineer(job_id, milestone_id, user_id, days) {
+            await GetJobs();
+            await GetMilestones();
+            let job = jobs.filter(f => f.job_id === job_id)[0];
+            let milestone = milestones.filter(f => f.milestone_id === milestone_id)[0];
+            $('#modal_edit').modal();
+            $('#edit_job_id').val(job.job_id);
+            $('#edit_job_name').val(job.job_name);
+            $('#edit_milestone_id').val(milestone.milestone_id);
+            $('#edit_milestone_name').val(milestone.milestone_name);
+            $('#edit_user_id').val(user_id);
+            $('#edit_days').val(days);
+            $('#confirm_edit').attr('disabled', true);
+        }
+
+        $('#edit_days').on('change keyup', function () {
+            let days = $('#edit_days').val();
+            if (days > 0) {
+                $('#confirm_edit').attr('disabled', false);
+            } else {
+                $('#confirm_edit').attr('disabled', true);
+            }
+        });
+
+        $('#confirm_edit').on('click', async function () {
+            let jm_id = $('#edit_job_id').val() + $('#edit_milestone_id').val();
+            let asgStr = JSON.stringify({
+                "job_milestone_id": jm_id,
+                "user_id": $('#edit_user_id').val(),
+                "days": $('#edit_days').val()
+            });
+            await $.ajax({
+                type: "PATCH",
+                url: '@Url.Action("EditEngineer", "AssignMilestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { asgStr },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        });
+
+        async function DeleteEngineer(job_id, milestone_id, user_id, days) {
+            await GetJobs();
+            await GetMilestones();
+            let job = jobs.filter(f => f.job_id === job_id)[0];
+            let milestone = milestones.filter(f => f.milestone_id === milestone_id)[0];
+            $('#modal_delete').modal();
+            $('#delete_job_id').val(job.job_id);
+            $('#delete_job_name').val(job.job_name);
+            $('#delete_milestone_id').val(milestone.milestone_id);
+            $('#delete_milestone_name').val(milestone.milestone_name);
+            $('#delete_user_id').val(user_id);
+            $('#delete_days').val(days);
+        }
+
+        $('#confirm_delete').on('click', async function () {
+            let jm_id = $('#delete_job_id').val() + $('#delete_milestone_id').val();
+            let asgStr = JSON.stringify({
+                "job_milestone_id": jm_id,
+                "user_id": $('#delete_user_id').val(),
+                "days": $('#delete_days').val()
+            });
+            await $.ajax({
+                type: "DELETE",
+                url: '@Url.Action("DeleteEngineer", "AssignMilestone")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { asgStr },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                        console.log(response);
+                    }
+                }
+            });
+        });
+
+    </script>
+}
