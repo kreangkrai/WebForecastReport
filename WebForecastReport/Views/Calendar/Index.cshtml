@@ -48,6 +48,10 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="customers">Filter By Customers</label>
+                        <select id="customers" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
                         <label for="job_id">Job</label>
                         <select id="job_id" class="form-control"></select>
                     </div>
@@ -147,31 +151,31 @@
 {
     <script type="text/javascript">
         //Variable Declaration
-        var users = [];
-        var jobs = [];
-        var quotations = [];
-        var tasks = [];
-        var holidays = [];
-        var wh_day = [];
-        var calendar;
-        var calendarEl;
-        var update = false;
-        var drag = false;
-        var overlap = true;
-        var eng;
+        let users = [];
+        let jobs = [];
+        let quotations = [];
+        let tasks = [];
+        let holidays = [];
+        let wh_day = [];
+        let calendar;
+        let calendarEl;
+        let update = false;
+        let drag = false;
+        let overlap = true;
+        let eng;
 
         //Change these variable to true for show data response
-        var debug_user = false;
-        var debug_jobs = false;
-        var debug_quotations = false;
-        var debug_tasks = false;
-        var debug_holiday = false;
-        var debug_whs = false;
-        var debug_whs_datas = false;
-        var debug_accept = false;
-        var debug_wh_day = false;
-        var debug_edit = false;
-        var debug_drop = false;
+        let debug_user = false;
+        let debug_jobs = false;
+        let debug_quotations = false;
+        let debug_tasks = false;
+        let debug_holiday = false;
+        let debug_whs = false;
+        let debug_whs_datas = false;
+        let debug_accept = false;
+        let debug_wh_day = false;
+        let debug_edit = false;
+        let debug_drop = false;
 
         $(document).ready(async function () {
             await GetHolidays();
@@ -198,7 +202,7 @@
         }
 
         async function GetJobs() {
-            var user_name = '@Model.fullname.ToLower()';
+            let user_name = '@Model.fullname.ToLower()';
             await $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetJobs", "Calendar")',
@@ -215,7 +219,7 @@
         };
 
         async function GetQuotations() {
-            var user_name = '@Model.fullname.ToLower()';
+            let user_name = '@Model.fullname.ToLower()';
             await $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetQuotations", "Calendar")',
@@ -297,16 +301,16 @@
         }
 
         async function GenerateCalendar(whs) {
-            var datas = [];
-            for (var i = 0; i < whs.length; i++) {
-                var start_date = new Date(whs[i].working_date);
-                var enable_edit = false;
+            let datas = [];
+            for (let i = 0; i < whs.length; i++) {
+                let start_date = new Date(whs[i].working_date);
+                let enable_edit = false;
 
                 if (eng.role === "Admin" || eng.allow_edit === true) {
                     enable_edit = true;
                 } else {
-                    var today = new Date();
-                    var date_diff = Math.floor((today - start_date) / (1000 * 60 * 60 * 24));
+                    let today = new Date();
+                    let date_diff = Math.floor((today - start_date) / (1000 * 60 * 60 * 24));
                     enable_edit = date_diff < 15 ? true : false;
                 }
 
@@ -367,11 +371,11 @@
                 height: 750,
                 editable: true,
                 eventDrop: async function (info) {
-                    var enable = false;
-                    var drop_date = new Date(info.event.startStr.split("T")[0]);
-                    var today = new Date();
-                    var date_diff = Math.floor((today - drop_date) / (1000 * 60 * 60 * 24));
-                    var drop_overlap = await CheckDropOverlap(info.event.extendedProps, drop_date.toISOString().split("T")[0]);
+                    let enable = false;
+                    let drop_date = new Date(info.event.startStr.split("T")[0]);
+                    let today = new Date();
+                    let date_diff = Math.floor((today - drop_date) / (1000 * 60 * 60 * 24));
+                    let drop_overlap = await CheckDropOverlap(info.event.extendedProps, drop_date.toISOString().split("T")[0]);
                     if (drop_overlap === true) {
                         $('#modal_alert_title').text('Alert Task Overlap');
                         $('#alert_content').html('<p>Task Overlap</p>');
@@ -399,9 +403,9 @@
                 },
                 selectable: true,
                 select: function (info) {
-                    var date_start = info.startStr;
-                    var date_end = info.endStr.split("-")[0] + "-" + info.endStr.split("-")[1] + "-" + parseInt(info.endStr.split("-")[2] - 1).toString().padStart(2,'0');
-                    var date_diff = Math.floor((new Date(date_end) - new Date(date_start)) / (1000 * 60 * 60 * 24));
+                    let date_start = info.startStr;
+                    let date_end = info.endStr.split("-")[0] + "-" + info.endStr.split("-")[1] + "-" + parseInt(info.endStr.split("-")[2] - 1).toString().padStart(2,'0');
+                    let date_diff = Math.floor((new Date(date_end) - new Date(date_start)) / (1000 * 60 * 60 * 24));
                     if (date_diff === 0 || isNaN(date_diff)) {
                         AddTask(date_start)
                     }
@@ -414,7 +418,7 @@
                 },
             });
 
-            var weekend = [
+            let weekend = [
                 {
                     daysOfWeek: [0, 6],
                     display: 'background',
@@ -426,8 +430,8 @@
             ];
             calendar.addEventSource(weekend);
 
-            var e_holidays = [];
-            for (var i = 0; i < holidays.length; i++) {
+            let e_holidays = [];
+            for (let i = 0; i < holidays.length; i++) {
                 e_holidays.push(
                     {
                         id: holidays[i].no,
@@ -448,28 +452,47 @@
 
         function GenerateUsersOption() {
             $('#user_id').empty();
-            var user_string = `<option value="" selected disabled>Please Select User</option>`;
-            for (var i = 0; i < users.length; i++) {
+            let user_string = `<option value="" selected disabled>Please Select User</option>`;
+            for (let i = 0; i < users.length; i++) {
                 user_string += `<option value="${users[i].user_id}">${users[i].user_name}</option>`;
             }
             $('#user_id').append(user_string);
         }
 
+        function GenerateCustomerOptions() {
+            let customers = jobs.map(m => m.customer);
+            customers = customers.concat(quotations.map(m => m.customer));
+            customers = [...new Set(customers)];
+            $('#customers').empty();
+            $('#customers').append(`<option value="" selected>ALL</option>`);
+            for (let i = 0; i < customers.length; i++) {
+                $('#customers').append(`<option value="${customers}">${customers}</option>`);
+            }
+        }
+
+        $('#customers').on('change', function () {
+            GenerateJobsOption();
+        });
+
         function GenerateJobsOption() {
-            var jobs_str = `<option value="" selected disabled>Please Select Job</option>`;
-            for (var i = 0; i < jobs.length; i++) {
-                jobs_str += `<option value="${jobs[i].job_id}">${jobs[i].job_id}: ${jobs[i].job_name}</option>`;
-            }
-            for (var i = 0; i < quotations.length; i++) {
-                jobs_str += `<option value="${quotations[i].quotation_no}">${quotations[i].quotation_no}: ${quotations[i].project_name}</option>`;
-            }
+            let customer = $('#customers').val();
             $('#job_id').empty();
-            $('#job_id').append(jobs_str);
+            $('#job_id').append(`<option value="" selected disabled>Please Select Job</option>`);
+            for (let i = 0; i < jobs.length; i++) {
+                if (jobs[i].customer === customer || customer === "") {
+                    $('#job_id').append(`<option value="${jobs[i].job_id}">${jobs[i].job_id}: ${jobs[i].job_name}</option>`);
+                }
+            }
+            for (let i = 0; i < quotations.length; i++) {
+                if (quotations[i].customer === customer || customer === "") {
+                    $('#job_id').append(`<option value="${quotations[i].quotation_no}">${quotations[i].quotation_no}: ${quotations[i].project_name}</option>`);
+                }
+            }
         }
 
         function GenerateTasksOption() {
-            var tasks_str = `<option value="" selected disabled>Please Select Task</option>`;
-            for (var i = 0; i < tasks.length; i++) {
+            let tasks_str = `<option value="" selected disabled>Please Select Task</option>`;
+            for (let i = 0; i < tasks.length; i++) {
                 tasks_str += `<option value="${tasks[i].task_id}">${tasks[i].task_name}</option>`;
             }
             $('#task_id').empty();
@@ -477,8 +500,8 @@
         }
 
         async function CheckAllowEditable() {
-            var user_name = '@Model.fullname.ToLower()';
-            var allow = false;
+            let user_name = '@Model.fullname.ToLower()';
+            let allow = false;
             await $.ajax({
                 type: "GET",
                 url: '@Url.Action("CheckAllowEditable", "Calendar")',
@@ -492,10 +515,10 @@
         }
 
         async function AddTask(date_start) {
-            var show_modal = 0;
-            var today = new Date();
-            var edit_date = new Date(date_start);
-            var date_diff = Math.floor((today - edit_date) / (1000 * 60 * 60 * 24));
+            let show_modal = 0;
+            let today = new Date();
+            let edit_date = new Date(date_start);
+            let date_diff = Math.floor((today - edit_date) / (1000 * 60 * 60 * 24));
 
             if (date_diff < 15) {
                 show_modal = 1;
@@ -514,6 +537,7 @@
                 await GetWorkingHoursByDate("@Model.fullname.ToLower()", date_start);
                 await GetJobs();
                 await GetQuotations();
+                await GenerateCustomerOptions();
                 await GenerateJobsOption();
                 await GenerateLocationOption();
                 await GetTasks();
@@ -523,10 +547,10 @@
         }
 
         async function AddTasks(date_start, date_end) {
-            var show_modal = 0;
-            var today = new Date();
-            var edit_date = new Date(date_start);
-            var date_diff = Math.floor((today - edit_date) / (1000 * 60 * 60 * 24));
+            let show_modal = 0;
+            let today = new Date();
+            let edit_date = new Date(date_start);
+            let date_diff = Math.floor((today - edit_date) / (1000 * 60 * 60 * 24));
 
             if (date_diff < 15) {
                 show_modal = 1;
@@ -541,6 +565,7 @@
                 await GenerateUsersOption();
                 await GetJobs();
                 await GetQuotations();
+                await GenerateCustomerOptions();
                 await GenerateJobsOption();
                 await GenerateLocationOption();
                 await GetTasks();
@@ -551,7 +576,7 @@
 
         function GenerateLocationOption() {
             $('#location').empty();
-            var location_str = '<option value="" selected disabled>Please Select Location</option>';
+            let location_str = '<option value="" selected disabled>Please Select Location</option>';
             location_str += '<option value="O">Office</option>';
             location_str += '<option value="S">Site</option>';
             location_str += '<option value="T">Travel</option>';
@@ -561,8 +586,8 @@
         function PrepmodalTask(date_start) {
             $('#modal_task').modal();
             $('#modal_task_title').text("Add Task");
-            var user_name = '@Model.fullname.ToLower()';
-            var user_id = users.filter(f => f.user_name.toLowerCase() === user_name).map(m => m.user_id);
+            let user_name = '@Model.fullname.ToLower()';
+            let user_id = users.filter(f => f.user_name.toLowerCase() === user_name).map(m => m.user_id);
             $('#user_id').val(user_id);
             $('#working_date_group').show();
             $('#working_date').attr('disabled', true);
@@ -579,8 +604,8 @@
         function PrepmodalTasks(date_start, date_end) {
             $('#modal_task').modal();
             $('#modal_task_title').text("Add Tasks");
-            var user_name = '@Model.fullname.ToLower()';
-            var user_id = users.filter(f => f.user_name.toLowerCase() === user_name).map(m => m.user_id);
+            let user_name = '@Model.fullname.ToLower()';
+            let user_id = users.filter(f => f.user_name.toLowerCase() === user_name).map(m => m.user_id);
             $('#user_id').val(user_id);
             $('#working_date_group').hide();
             $('#working_date').attr('disabled', true);
@@ -597,26 +622,26 @@
         }
 
         $('#job_id').on('change', function () {
-            var job_id = $('#job_id').val();
-            var enable_location = (job_id !== "") ? 1 : 0;
+            let job_id = $('#job_id').val();
+            let enable_location = (job_id !== "") ? 1 : 0;
             $('#location').attr('disabled', !enable_location);
         });
 
         $('#location').on('change', function () {
-            var prefix = $('#location').val();
-            var arr = tasks.filter(t => t.task_id.substring(0, 1) === prefix);
-            var tasks_str = '<option value="" selected disabled>Please Select Task</option>';
-            for (var i = 0; i < arr.length; i++) {
+            let prefix = $('#location').val();
+            let arr = tasks.filter(t => t.task_id.substring(0, 1) === prefix);
+            let tasks_str = '<option value="" selected disabled>Please Select Task</option>';
+            for (let i = 0; i < arr.length; i++) {
                 tasks_str += '<option value="' + arr[i].task_id + '">' + arr[i].task_name + '</option>';
             }
             $('#task_id').empty();
             $('#task_id').append(tasks_str);
-            var en = $('#job_id').val() !== "" ? true : false;
+            let en = $('#job_id').val() !== "" ? true : false;
             $('#task_id').attr('disabled', !en);
         });
 
         $('#task_id').on('change', function () {
-            var en = $('#job_id').val() !== "" ? true : false;
+            let en = $('#job_id').val() !== "" ? true : false;
             en *= $('#task_id').val() !== "" ? true : false;
             if (en) {
                 $('#start_time').attr('disabled', !en);
@@ -633,11 +658,11 @@
         });
 
         $('#start_time').on('change focus', function () {
-            var start_time = $('#start_time').val();
+            let start_time = $('#start_time').val();
             document.getElementById("stop_time").min = start_time;
             $('#stop_time').attr('disabled', false);
             $('#stop_time').val(start_time);
-            var date = new Date($('#working_date').val());
+            let date = new Date($('#working_date').val());
             date.setHours($('#start_time').val().split(":")[0]);
             date.setMinutes($('#start_time').val().split(":")[1]);
             if (date.getDay() == 0 || date.getDay() == 7) {
@@ -648,17 +673,17 @@
         });
 
         $('#btn_accept').on('click', async function () {
-            var user_id = $('#user_id').val();
-            var working_date = $('#working_date').val();
+            let user_id = $('#user_id').val();
+            let working_date = $('#working_date').val();
 
-            var start_date = $('#start_date').val();
-            var stop_date = $('#stop_date').val();
+            let start_date = $('#start_date').val();
+            let stop_date = $('#stop_date').val();
 
-            var job_id = $('#job_id').val();
-            var task_id = $('#task_id').val();
-            var start_time = $('#start_time').val();
-            var stop_time = $('#stop_time').val();
-            var note = $('#note').val();
+            let job_id = $('#job_id').val();
+            let task_id = $('#task_id').val();
+            let start_time = $('#start_time').val();
+            let stop_time = $('#stop_time').val();
+            let note = $('#note').val();
 
             if (debug_accept) {
                 console.log("Add Task");
@@ -672,7 +697,7 @@
             }
 
             if (update) {
-                var wh_string = JSON.stringify({
+                let wh_string = JSON.stringify({
                     "index": wh_index,
                     "user_id": user_id,
                     "working_date": working_date,
@@ -683,12 +708,12 @@
                     "note": note,
                 });
 
-                var enable_edit = false;
+                let enable_edit = false;
                 if (eng.role === "Admin" || eng.allow_edit === true) {
                     enable_edit = true;
                 } else {
-                    var today = new Date();
-                    var date_diff = Math.floor((today - working_date) / (1000 * 60 * 60 * 24));
+                    let today = new Date();
+                    let date_diff = Math.floor((today - working_date) / (1000 * 60 * 60 * 24));
                     enable_edit = date_diff < 15 ? true : false;
                 }
 
@@ -703,7 +728,7 @@
             }
             else {
                 if (working_date !== "") {
-                    var wh_string = JSON.stringify({
+                    let wh_string = JSON.stringify({
                         "user_id": user_id,
                         "working_date": working_date,
                         "job_id": job_id,
@@ -715,12 +740,12 @@
                     await AddWorkingHours(wh_string);
                 }
                 else {
-                    var wh_strings = [];
-                    var date_start = new Date(start_date);
-                    var date_stop = new Date(stop_date);
-                    for (var cur_date = date_start; cur_date <= date_stop; cur_date.setDate(cur_date.getDate() + 1)){
-                        var task_overlap = false;
-                        var wh_string = JSON.stringify({
+                    let wh_strings = [];
+                    let date_start = new Date(start_date);
+                    let date_stop = new Date(stop_date);
+                    for (let cur_date = date_start; cur_date <= date_stop; cur_date.setDate(cur_date.getDate() + 1)){
+                        let task_overlap = false;
+                        let wh_string = JSON.stringify({
                             "user_id": user_id,
                             "working_date": cur_date,
                             "job_id": job_id,
@@ -729,7 +754,6 @@
                             "stop_time": stop_time,
                             "note": note,
                         });
-                        var task_overlap = false;
                         task_overlap = await CheckAddTasksOverlap(wh_string);
                         if (task_overlap === false) {
                             wh_strings.push(wh_string);
@@ -745,20 +769,20 @@
         });
 
         $('#btn_confirm_delete').on('click', async function () {
-            var user_id = $('#user_id').val();
-            var working_date = $('#working_date').val();
+            let user_id = $('#user_id').val();
+            let working_date = $('#working_date').val();
 
-            var job_id = $('#job_id').val();
-            var task_id = $('#task_id').val();
-            var start_time = $('#start_time').val();
-            var stop_time = $('#stop_time').val();
-            var wh_type = ($('#wh_type').val() === "") ? "REG" : $('#wh_type').val();
+            let job_id = $('#job_id').val();
+            let task_id = $('#task_id').val();
+            let start_time = $('#start_time').val();
+            let stop_time = $('#stop_time').val();
+            let wh_type = ($('#wh_type').val() === "") ? "REG" : $('#wh_type').val();
 
-            var lunch = $('#lunch').prop('checked');
-            var dinner = $('#dinner').prop('checked');
-            var note = $('#note').val();
+            let lunch = $('#lunch').prop('checked');
+            let dinner = $('#dinner').prop('checked');
+            let note = $('#note').val();
 
-            var wh_string = JSON.stringify({
+            let wh_string = JSON.stringify({
                 "index": wh_index,
                 "user_id": user_id,
                 "working_date": working_date,
@@ -775,14 +799,14 @@
         })
 
         async function CheckAddOverlap(wh_string) {
-            var task = JSON.parse(wh_string);
-            var date = task.working_date;
-            var start_time = new Date();
+            let task = JSON.parse(wh_string);
+            let date = task.working_date;
+            let start_time = new Date();
             start_time.setHours(task.start_time.split(":")[0]);
             start_time.setMinutes(task.start_time.split(":")[1]);
             start_time.setSeconds(0);
             start_time.setMilliseconds(0);
-            var stop_time = new Date();
+            let stop_time = new Date();
             stop_time.setHours(task.stop_time.split(":")[0]);
             stop_time.setMinutes(task.stop_time.split(":")[1]);
             stop_time.setSeconds(0);
@@ -791,9 +815,9 @@
             if (update) {
                 wh_day = wh_day.filter(f => f.index !== task.index);
             }
-            for (var i = 0; i < wh_day.length; i++) {
-                var task_start = new Date();
-                var task_stop = new Date();
+            for (let i = 0; i < wh_day.length; i++) {
+                let task_start = new Date();
+                let task_stop = new Date();
                 task_start.setHours(wh_day[i].start_time.split(":")[0]);
                 task_start.setMinutes(wh_day[i].start_time.split(":")[1]);
                 task_start.setSeconds(0);
@@ -819,22 +843,22 @@
         }
 
         async function CheckAddTasksOverlap(wh_string) {
-            var task = JSON.parse(wh_string);
-            var date = task.working_date;
-            var start_time = new Date();
+            let task = JSON.parse(wh_string);
+            let date = task.working_date;
+            let start_time = new Date();
             start_time.setHours(task.start_time.split(":")[0]);
             start_time.setMinutes(task.start_time.split(":")[1]);
             start_time.setSeconds(0);
             start_time.setMilliseconds(0);
-            var stop_time = new Date();
+            let stop_time = new Date();
             stop_time.setHours(task.stop_time.split(":")[0]);
             stop_time.setMinutes(task.stop_time.split(":")[1]);
             stop_time.setSeconds(0);
             stop_time.setMilliseconds(0);
             await GetWorkingHoursByDate("@Model.name", date);
-            for (var i = 0; i < wh_day.length; i++) {
-                var task_start = new Date();
-                var task_stop = new Date();
+            for (let i = 0; i < wh_day.length; i++) {
+                let task_start = new Date();
+                let task_stop = new Date();
                 task_start.setHours(wh_day[i].start_time.split(":")[0]);
                 task_start.setMinutes(wh_day[i].start_time.split(":")[1]);
                 task_start.setSeconds(0);
@@ -860,24 +884,24 @@
         }
 
         async function CheckDropOverlap(task, date) {
-            var start_time = new Date();
+            let start_time = new Date();
             start_time.setHours(task.start_time.split(":")[0]);
             start_time.setMinutes(task.start_time.split(":")[1]);
             start_time.setSeconds(0);
             start_time.setMilliseconds(0);
-            var stop_time = new Date();
+            let stop_time = new Date();
             stop_time.setHours(task.stop_time.split(":")[0]);
             stop_time.setMinutes(task.stop_time.split(":")[1]);
             stop_time.setSeconds(0);
             stop_time.setMilliseconds(0);
             await GetWorkingHoursByDate("@Model.name", date);
-            for (var i = 0; i < wh_day.length; i++) {
-                var task_start = new Date();
+            for (let i = 0; i < wh_day.length; i++) {
+                let task_start = new Date();
                 task_start.setHours(wh_day[i].start_time.split(":")[0]);
                 task_start.setMinutes(wh_day[i].start_time.split(":")[1]);
                 task_start.setSeconds(0);
                 task_start.setMilliseconds(0);
-                var task_stop = new Date();
+                let task_stop = new Date();
                 task_stop.setHours(wh_day[i].stop_time.split(":")[0]);
                 task_stop.setMinutes(wh_day[i].stop_time.split(":")[1]);
                 task_stop.setSeconds(0);
@@ -910,17 +934,18 @@
             });
         }
 
-        var wh_index;
+        let wh_index;
         async function EditTask(event) {
             update = true;
-            var user_id = event.extendedProps.user_id;
-            var user_name = users.filter(f => f.user_id === user_id).map(m => m.user_name.toLowerCase());
-            var date = event.extendedProps.working_date;
+            let user_id = event.extendedProps.user_id;
+            let user_name = users.filter(f => f.user_id === user_id).map(m => m.user_name.toLowerCase());
+            let date = event.extendedProps.working_date;
             await GetUsers();
             await GenerateUsersOption();
             await GetWorkingHoursByDate(user_name, date.split("T")[0]);
             await GetJobs();
             await GetQuotations();
+            await GenerateCustomerOptions();
             await GenerateJobsOption();
             await GenerateLocationOption();
             PrepmodalEditTask(event.extendedProps);
@@ -928,9 +953,9 @@
 
         function DropTask(event) {
             drag = true;
-            var task = event.extendedProps;
+            let task = event.extendedProps;
             task.working_date = event.startStr.split("T")[0];
-            var wh_string = JSON.stringify({
+            let wh_string = JSON.stringify({
                 "index": task.index,
                 "user_id": task.user_id,
                 "working_date": event.startStr.split("T")[0],
@@ -972,7 +997,7 @@
         }
 
         async function AddWorkingHours(wh_string) {
-            var add_overlap = await CheckAddOverlap(wh_string);
+            let add_overlap = await CheckAddOverlap(wh_string);
             if (add_overlap === false) {
                 await $.ajax({
                     type: "POST",
@@ -1017,7 +1042,7 @@
         }
 
         async function UpdateWorkingHours(wh_string) {
-            var edit_overlap = await CheckAddOverlap(wh_string);
+            let edit_overlap = await CheckAddOverlap(wh_string);
             if (edit_overlap === false) {
                 await $.ajax({
                     type: "PATCH",
