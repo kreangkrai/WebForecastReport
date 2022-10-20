@@ -19,6 +19,7 @@ namespace WebForecastReport.Service.MPR
                     SELECT
 	                    JobResponsible.job_id,
 	                    Jobs.job_name,
+                        Quotation.customer,
 	                    JobResponsible.user_id,
 	                    Sale_User.Name AS user_name,
 	                    Sale_User.Department2 AS department,
@@ -28,6 +29,7 @@ namespace WebForecastReport.Service.MPR
                     FROM JobResponsible
                         LEFT JOIN Jobs ON JobResponsible.job_id = Jobs.job_id
                         LEFT JOIN [gps_sale_tracking].[dbo].Sale_User AS Sale_User ON JobResponsible.user_id = Sale_User.Login
+                        LEFT JOIN Quotation ON Jobs.quotation_no = Quotation.quotation_no
                     WHERE LOWER(Sale_User.Name) = '{user_name}'
                     ORDER BY JobResponsible.job_id");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
@@ -47,6 +49,7 @@ namespace WebForecastReport.Service.MPR
                             user_name = dr["user_name"] != DBNull.Value ? dr["user_name"].ToString() : "",
                             job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
                             job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
+                            customer = dr["customer"] != DBNull.Value ? dr["customer"].ToString() : "",
                             department = dr["department"] != DBNull.Value ? dr["department"].ToString() : "",
                             role = dr["role"] != DBNull.Value ? dr["role"].ToString() : "",
                             assign_by = dr["assign_by"] != DBNull.Value ? dr["assign_by"].ToString() : "",
@@ -76,11 +79,13 @@ namespace WebForecastReport.Service.MPR
                     SELECT
 	                    Jobs.job_id,
                         Jobs.job_name,
+                        Quotation.customer,
 	                    JobResponsible.user_id,
                         Sale_User.Name
                     FROM Jobs
                     LEFT JOIN JobResponsible ON Jobs.job_id = JobResponsible.job_id
                     LEFT JOIN [gps_sale_tracking].dbo.Sale_User ON JobResponsible.user_id = Sale_User.Login
+                    LEFT JOIN Quotation ON Jobs.quotation_no = Quotation.quotation_no
                     ORDER BY Jobs.job_id, JobResponsible.user_id");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
@@ -97,6 +102,7 @@ namespace WebForecastReport.Service.MPR
                         {
                             job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
                             job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
+                            customer = dr["customer"] != DBNull.Value ? dr["customer"].ToString() : "",
                             user_id = dr["user_id"] != DBNull.Value ? dr["user_id"].ToString() : "",
                             user_name = dr["Name"] != DBNull.Value ? dr["Name"].ToString() : "",
                         };
@@ -123,7 +129,8 @@ namespace WebForecastReport.Service.MPR
                 string string_command = string.Format($@"
                     SELECT 
 	                    Proposal.quotation_no,
-	                    Quotation.project_name
+	                    Quotation.project_name,
+                        Quotation.customer
                     FROM Proposal
 	                    LEFT JOIN Quotation ON Proposal.quotation_no = Quotation.quotation_no
                     WHERE Proposal.engineer_in_charge LIKE '%{user_name}%'
@@ -143,6 +150,7 @@ namespace WebForecastReport.Service.MPR
                         {
                             quotation_no = dr["quotation_no"] != DBNull.Value ? dr["quotation_no"].ToString() : "",
                             project_name = dr["project_name"] != DBNull.Value ? dr["project_name"].ToString() : "",
+                            customer = dr["customer"] != DBNull.Value ? dr["customer"].ToString() : "",
                         };
                         qrs.Add(qr);
                     }
@@ -168,6 +176,7 @@ namespace WebForecastReport.Service.MPR
                     SELECT
 	                    JobResponsible.job_id,
 	                    Jobs.job_name,
+                        Quotation.customer,
 	                    JobResponsible.user_id,
 	                    Sale_User.Name AS user_name,
 	                    Sale_User.Department2 AS department,
@@ -177,6 +186,7 @@ namespace WebForecastReport.Service.MPR
                     FROM JobResponsible
                         LEFT JOIN Jobs ON JobResponsible.job_id = Jobs.job_id
                         LEFT JOIN [gps_sale_tracking].[dbo].Sale_User AS Sale_User ON JobResponsible.user_id = Sale_User.Login
+                        LEFT JOIN Quotation ON Jobs.quotation_no = Quotation.quotation_no
                     WHERE  JobResponsible.job_id = '{job_id}'
                     ORDER BY JobResponsible.job_id");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
@@ -196,6 +206,7 @@ namespace WebForecastReport.Service.MPR
                             user_name = dr["user_name"] != DBNull.Value ? dr["user_name"].ToString() : "",
                             job_id = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
                             job_name = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
+                            customer = dr["customer"] != DBNull.Value ? dr["customer"].ToString() : "",
                             department = dr["department"] != DBNull.Value ? dr["department"].ToString() : "",
                             role = dr["role"] != DBNull.Value ? dr["role"].ToString() : "",
                             assign_by = dr["assign_by"] != DBNull.Value ? dr["assign_by"].ToString() : "",
