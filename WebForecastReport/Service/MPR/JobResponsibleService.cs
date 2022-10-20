@@ -28,7 +28,8 @@ namespace WebForecastReport.Service.MPR
                     FROM JobResponsible
                         LEFT JOIN Jobs ON JobResponsible.job_id = Jobs.job_id
                         LEFT JOIN [gps_sale_tracking].[dbo].Sale_User AS Sale_User ON JobResponsible.user_id = Sale_User.Login
-                    WHERE LOWER(Sale_User.Name) = '{user_name}'");
+                    WHERE LOWER(Sale_User.Name) = '{user_name}'
+                    ORDER BY JobResponsible.job_id");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
@@ -125,7 +126,8 @@ namespace WebForecastReport.Service.MPR
 	                    Quotation.project_name
                     FROM Proposal
 	                    LEFT JOIN Quotation ON Proposal.quotation_no = Quotation.quotation_no
-                    WHERE Proposal.engineer_in_charge LIKE '%{user_name}%'");
+                    WHERE Proposal.engineer_in_charge LIKE '%{user_name}%'
+                    ORDER BY Proposal.quotation_no");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
@@ -175,7 +177,8 @@ namespace WebForecastReport.Service.MPR
                     FROM JobResponsible
                         LEFT JOIN Jobs ON JobResponsible.job_id = Jobs.job_id
                         LEFT JOIN [gps_sale_tracking].[dbo].Sale_User AS Sale_User ON JobResponsible.user_id = Sale_User.Login
-                    WHERE  JobResponsible.job_id = '{job_id}'");
+                    WHERE  JobResponsible.job_id = '{job_id}'
+                    ORDER BY JobResponsible.job_id");
                 SqlCommand cmd = new SqlCommand(string_command, ConnectSQL.OpenConnect());
                 if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
                 {
