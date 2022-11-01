@@ -461,12 +461,16 @@
 
         function GenerateCustomerOptions() {
             let customers = jobs.map(m => m.customer);
-            customers = customers.concat(quotations.map(m => m.customer));
+            for (let i = 0; i < quotations.length; i++) {
+                customers.push(quotations[i].map(m => m.customer));
+            }
+            customers = customers.filter(f => f !== "");
             customers = [...new Set(customers)];
+            customers.sort();
             $('#customers').empty();
             $('#customers').append(`<option value="" selected>ALL</option>`);
             for (let i = 0; i < customers.length; i++) {
-                $('#customers').append(`<option value="${customers}">${customers}</option>`);
+                $('#customers').append(`<option value="${customers[i]}">${customers[i]}</option>`);
             }
         }
 
