@@ -154,17 +154,17 @@
 {
     <script type="text/javascript">
         //Variable Declaration
-        var table;
-        var update = false;
-        var jobs = [];
-        var users = [];
-        var quots = [];
+        let table;
+        let update = false;
+        let jobs = [];
+        let users = [];
+        let quots = [];
 
         //Change these parameters to true to show result
-        var debug_jobs = false;
-        var debug_user = false;
-        var debug_job_string = false;
-        var debug_quots = false;
+        let debug_jobs = false;
+        let debug_user = false;
+        let debug_job_string = false;
+        let debug_quots = false;
 
         $(document).ready(function () {
             GetJobs();
@@ -202,8 +202,8 @@
         }
 
         async function GetQuotations() {
-            var today = new Date();
-            var year = today.getFullYear().toString().substring(2, 4);
+            let today = new Date();
+            let year = today.getFullYear().toString().substring(2, 4);
             await $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetQuotations", "Job")',
@@ -219,12 +219,12 @@
         }
 
         function GenerateTable(jobs) {
-            var datas = [];
+            let datas = [];
 
             if (table !== null)
                 $('#table_job').DataTable().destroy();
 
-            for (var i = 0; i < jobs.length; i++) {
+            for (let i = 0; i < jobs.length; i++) {
                 datas.push([
                     jobs[i].job_id,
                     jobs[i].job_name,
@@ -263,7 +263,7 @@
                 rowCallback: function (row, data) {
                     $('td:eq(1)', row).addClass("text-left");
                     $('td:eq(3)', row).addClass("text-left");
-                    var status_str = '';
+                    let status_str = '';
                     if (data[16] === "1") {
                         status_str = `<span class="badge badge-warning">IN PROGRESS</span>`;
                     }
@@ -279,8 +279,8 @@
         };
 
         function GenerateQuotationOptions() {
-            var quots_str = '';
-            for (var i = 0; i < quots.length; i++) {
+            let quots_str = '';
+            for (let i = 0; i < quots.length; i++) {
                 quots_str += `<option value="${quots[i].quotation_no}">${quots[i].quotation_no} - ${quots[i].customer}</option>`;
             }
             $('#quotations').empty();
@@ -307,7 +307,7 @@
         };
 
         $('#table_job tbody').on('click', 'tr', async function () {
-            var admin = '@Model.role' == "Admin" ? true : false;
+            let admin = '@Model.role' == "Admin" ? true : false;
             if (admin) {
                 await GetQuotations();
                 await GenerateQuotationOptions();
@@ -316,17 +316,18 @@
         });
 
         function EditJob(data) {
+            console.log(data);
             update = true;
             $('#modal_job').modal();
             $('#modal_title').text("Edit Job");
 
-            var job_id = data[0];
-            var job_name = data[1];
-            var quotation_no = data[2];
-            var cost = data[7].replaceAll(",","");
-            var md = data[8];
-            var pd = data[9];
-            var status = data[14];
+            let job_id = data[0];
+            let job_name = data[1];
+            let quotation_no = data[2];
+            let cost = data[9].replaceAll(",","");
+            let md = data[10];
+            let pd = data[11];
+            let status = data[14];
 
             $('#job_id').val(job_id);
             $('#job_id').attr('disabled', true);
@@ -339,18 +340,18 @@
         }
 
         $('#btn_save').on('click', function () {
-            var job_id = $('#job_id').val();
-            var job_name = $('#job_name').val();
-            var quotation_no = $('#quotation_no').val();
-            var cost = $('#cost').val();
-            var md_rate = $('#md_rate').val();
-            var pd_rate = $('#pd_rate').val();
-            var status = $('#status').val();
+            let job_id = $('#job_id').val();
+            let job_name = $('#job_name').val();
+            let quotation_no = $('#quotation_no').val();
+            let cost = $('#cost').val();
+            let md_rate = $('#md_rate').val();
+            let pd_rate = $('#pd_rate').val();
+            let status = $('#status').val();
             if (status === null) {
                 status = 1;
             }
 
-            var job_string = JSON.stringify({
+            let job_string = JSON.stringify({
                 "job_id": job_id,
                 "job_name": job_name,
                 "quotation_no": quotation_no,
