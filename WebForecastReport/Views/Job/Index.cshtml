@@ -303,7 +303,7 @@
             $('#cost').val(0);
             $('#md').val(1);
             $('#pd').val(1);
-            $('#status').val(null);
+            $('#status').val(1);
         };
 
         $('#table_job tbody').on('click', 'tr', async function () {
@@ -316,7 +316,6 @@
         });
 
         function EditJob(data) {
-            console.log(data);
             update = true;
             $('#modal_job').modal();
             $('#modal_title').text("Edit Job");
