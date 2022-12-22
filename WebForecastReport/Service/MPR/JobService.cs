@@ -77,6 +77,81 @@ namespace WebForecastReport.Services.MPR
             return jobs;
         }
 
+        public List<JobSummaryModel> GetJobsSummary()
+        {
+            List<JobSummaryModel> jobsSummaries = new List<JobSummaryModel>();
+            try
+            {
+                string stringCommand = string.Format($@"
+                    WITH T1 AS (
+                        SELECT 
+		                    WorkingHours.job_id, 
+		                    SUM(case when lunch = 1
+							 then case when dinner = 1 
+								then 
+									DATEDIFF(HOUR,start_time,stop_time) - 2
+								else 
+									DATEDIFF(HOUR,start_time,stop_time) - 1 
+							 end
+							 else case when dinner = 1 
+								then 
+									DATEDIFF(HOUR,start_time,stop_time) - 1 
+								else 
+									DATEDIFF(HOUR,start_time,stop_time)
+							 end
+						end ) AS total_manpower 
+	                    FROM WorkingHours
+	                    GROUP BY job_id
+					)
+                    SELECT
+                        Jobs.job_id,
+                        Jobs.job_name,
+                        Quotation.customer,
+                        Jobs.cost,
+                        (Jobs.md_rate * Jobs.pd_rate) as factor,
+                        T1.total_manpower,
+                        Jobs.status
+                    FROM Jobs
+                    LEFT JOIN Quotation ON Jobs.quotation_no = Quotation.quotation_no
+                    LEFT JOIN T1 ON Jobs.job_id = T1.job_id
+                    ORDER BY Jobs.job_id");
+                SqlCommand cmd = new SqlCommand(stringCommand, ConnectSQL.OpenConnect());
+                if (ConnectSQL.con.State != System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                    ConnectSQL.OpenConnect();
+                }
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        JobSummaryModel jobSummary = new JobSummaryModel()
+                        {
+                            jobId = dr["job_id"] != DBNull.Value ? dr["job_id"].ToString() : "",
+                            jobName = dr["job_name"] != DBNull.Value ? dr["job_name"].ToString() : "",
+                            customer = dr["customer"] != DBNull.Value ? dr["customer"].ToString() : "",
+                            cost = dr["cost"] != DBNull.Value ? Convert.ToInt32(dr["cost"]) : 0,
+                            factor = dr["factor"] != DBNull.Value ? Convert.ToDouble(dr["factor"]) : 1,
+                            totalManhour = dr["total_manpower"] != DBNull.Value ? Convert.ToInt32(dr["total_manpower"]) : 0,
+                            status = dr["status"] != DBNull.Value ? dr["status"].ToString() : "1"
+                        };
+                        jobSummary.remainingCost = jobSummary.cost - ((jobSummary.totalManhour / 8) * 3200);
+                        jobsSummaries.Add(jobSummary);
+                    }
+                    dr.Close();
+                }
+            }
+            finally
+            {
+                if (ConnectSQL.con.State == System.Data.ConnectionState.Open)
+                {
+                    ConnectSQL.CloseConnect();
+                }
+            }
+            return jobsSummaries;
+        }
+
         public string CreateJob(JobModel job)
         {
             try

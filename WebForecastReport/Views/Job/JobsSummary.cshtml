@@ -1,0 +1,106 @@
+﻿@{
+    ViewData["title"] = "Jobs Summary";
+}
+<div class="row p-4" style="row-gap:5px">
+    <div class="col-xl-12">
+        <div class="card card-dark">
+            <div class="card-header">
+                <span>Jobs Summary</span>
+            </div>
+            <div class="card-body">
+                <table id="tableJobs" class="table table-bordered table-hover table-sm text-center w-100">
+                    <thead>
+                        <tr>
+                            <th>Job ID</th>
+                            <th>Job Name</th>
+                            <th>Customer</th>
+                            <th>Cost</th>
+                            <th>Factor</th>
+                            <th>Total Manhours</th>
+                            <th>Remaining Cost</th>
+                            <th>Job Status</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Job ID</th>
+                            <th>Job Name</th>
+                            <th>Customer</th>
+                            <th>Cost</th>
+                            <th>Factor</th>
+                            <th>Total Manhours</th>
+                            <th>Remaining Cost</th>
+                            <th>Job Status</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        let table;
+
+        $(document).ready(async function () {
+            GenerateTable(await GetJobsSummary());
+        });
+
+        async function GetJobsSummary() {
+            let jobsSummary = [];
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJobsSummary", "Job")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { },
+                success: function (response) {
+                    jobsSummary = response;
+                }
+            });
+            return jobsSummary;
+        }
+
+        function GenerateTable(jobsSummary) {
+            let datas = [];
+
+            for (let i = 0; i < jobsSummary.length; i++) {
+                datas.push([
+                    jobsSummary[i].jobId,
+                    jobsSummary[i].jobName,
+                    jobsSummary[i].customer,
+                    jobsSummary[i].cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    jobsSummary[i].factor,
+                    jobsSummary[i].totalManhour,
+                    jobsSummary[i].remainingCost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    jobsSummary[i].status,
+                ]);
+            }
+
+            if (table !== undefined) {
+                table.destroy();
+            }
+
+            table = $('#tableJobs').DataTable({
+                data: datas,
+                columnDefs: [
+                    {
+                        targets: [1,2],
+                        className: "text-left"
+                    },
+                ],
+                paging: false,
+                rowCallback: function (row, data) {
+                    let job_status = data[7];
+                    if (job_status === "0") {
+                        $('td:eq(7)', row).html(`<span class="badge badge-success">FINISHED</span>`);
+                    } else if (job_status === "1") {
+                        $('td:eq(7)', row).html(`<span class="badge badge-warning">IN PROGRESS</span>`);
+                    } else {
+                        $('td:eq(7)');
+                    }
+                }
+            });
+        }
+    </script>
+}

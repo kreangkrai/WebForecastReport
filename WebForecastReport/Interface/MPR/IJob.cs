@@ -9,6 +9,7 @@ namespace WebForecastReport.Interfaces.MPR
     interface IJob
     {
         List<JobModel> GetAllJobs();
+        List<JobSummaryModel> GetJobsSummary();
         string CreateJob(JobModel job);
         string UpdateJob(JobModel job);
         List<JobQuotationModel> GetJobQuotations(string year);
