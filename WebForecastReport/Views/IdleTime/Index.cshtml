@@ -1,0 +1,189 @@
+﻿@{
+    ViewData["title"] = "Idle Time";
+}
+<div class="row p-4" style="row-gap:5px">
+    <div class="col-xl-12">
+        <div class="card card-dark">
+            <div class="card-body">
+                <div class="row" style="row-gap:10px">
+                    <div class="col-xl-6">
+
+                    </div>
+                    <div class="col-xl-2">
+                        <input id="startDate" type="date" class="form-control" />
+                    </div>
+                    <div class="col-xl-2">
+                        <input id="stopDate" type="date" class="form-control" />
+                    </div>
+                    <div class="col-xl-2">
+                        <button id="btnUpdate" type="button" class="btn btn-primary form-control">
+                            Update
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card card-dark">
+            <div class="card-body">
+                <canvas id="chart" style="height:400px" />
+            </div>
+        </div>
+        <div class="card card-dark">
+            <div class="card-header">
+                <span>Table</span>
+            </div>
+            <div class="card-body">
+                <table id="tableIdleHrs" class="table table-bordered table-hover table-sm text-center w-100">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Idle (Hours)</th>
+                            <th>Normal (Hours)</th>
+                            <th>Working Hours</th>
+                            <th>Overtime (Hours)</th>
+                            <th>Total (Hours)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        let chart;
+        let table;
+
+        $(document).ready(function () {
+            $('#startDate').val("2022-01-01");
+            $('#stopDate').val("2022-12-31");
+            UpdateView();
+        });
+
+        $('#btnUpdate').on('click', function () {
+            UpdateView();
+        });
+
+        async function UpdateView() {
+            let startDate = new Date($('#startDate').val());
+            let stopDate = new Date($('#stopDate').val());
+            let idles = await GetIdleTimes(startDate.toJSON(), stopDate.toJSON());
+            GenerateChart(idles);
+            GenerateTable(idles);
+        }
+
+        async function GetIdleTimes(startDate, stopDate) {
+            let idles = [];
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetIdleTimes", "IdleTime")',
+	            contentType: 'application/x-www-form-urlencoded',
+                data: { startDate, stopDate },
+                success: function (response) {
+                    idles = response;
+                }
+            });
+            return idles;
+        };
+
+        function GenerateChart(idles) {
+
+            let colors = ['#CAE9FF', '#5FA8D3', '#1B4965'];
+
+            let users = [];
+            users = idles.map(m => m.userName).filter(f => f !== "");
+            users = [... new Set(users)];
+
+            let hoursIdle = [];
+            let hoursNormal = [];
+            let hoursOvertime = [];
+            for (let i = 0; i < users.length; i++) {
+                let datas = idles.filter(f => f.userName === users[i]);
+                hoursIdle.push(datas.map(m => m.idle)[0]);
+                hoursNormal.push(datas.map(m => m.normal)[0]);
+                hoursOvertime.push(datas.map(m => m.overtime)[0]);
+            }
+
+            if (chart !== undefined) {
+                chart.destroy();
+            }
+
+            const ctx = document.getElementById('chart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: users,
+                    datasets: [
+                        {
+                            label: 'Idle',
+                            data: hoursIdle,
+                            backgroundColor: colors[0]
+                        },
+                        {
+                            label: 'Normal',
+                            data: hoursNormal,
+                            backgroundColor: colors[1]
+                        },
+                        {
+                            label: 'Overtime',
+                            data: hoursOvertime,
+                            backgroundColor: colors[2]
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                text: "Users",
+                                display: true
+                            },
+                            stacked: true
+                        },
+                        y: {
+                            title: {
+                                text: "Hours",
+                                display: true
+                            },
+                            stacked: true,
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            text: `Working Hours Chart`,
+                            display: true
+                        },
+                        legend: {
+                            position: 'bottom',
+                            display: true
+                        }
+                    },
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function GenerateTable(idles) {
+            let datas = idles;
+            datas = datas.filter(f => f.userName !== "");
+            $('#tableIdleHrs tbody').empty();
+            for (let i = 0; i < datas.length; i++) {
+                let rowStr = `
+                    <tr>
+                        <td style="text-align:left">${datas[i].userName}</td>
+                        <td>${datas[i].idle}</td>
+                        <td>${datas[i].normal}</td>
+                        <td>${datas[i].workingHours}</td>
+                        <td>${datas[i].overtime}</td>
+                        <td>${datas[i].normal + datas[i].overtime}</td>
+                    </tr>
+                `;
+                $('#tableIdleHrs tbody').append(rowStr);
+            }
+        }
+    </script>
+}
