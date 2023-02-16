@@ -1375,7 +1375,7 @@ namespace WebForecastReport.Service
                             sum(case when expected_order_date like '{year}-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_out,
                             sum(case when expected_order_date like '{year}-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_in,
                             sum(case when expected_order_date like '{year}-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_out
-							from Quotation where product_type in ('Project', 'Product', 'Service') AND {stage} AND (exclude_quote is null or exclude_quote = 0)
+							from Quotation where product_type in ('Project', 'Product', 'Service') AND {stage} AND (exclude_quote is null or exclude_quote = 0) AND expected_order_date like '{year}%'
 							group by department,sale_name union all
 
                             select(department + ' Total') as department,'' as sale,
@@ -1403,7 +1403,7 @@ namespace WebForecastReport.Service
                             sum(case when expected_order_date like '{year}-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_out,
                             sum(case when expected_order_date like '{year}-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_in,
                             sum(case when expected_order_date like '{year}-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_out
-							from Quotation where product_type in ('Project', 'Product', 'Service') AND {stage} AND (exclude_quote is null or exclude_quote = 0)
+							from Quotation where product_type in ('Project', 'Product', 'Service') AND {stage} AND (exclude_quote is null or exclude_quote = 0) AND expected_order_date like '{year}%'
 							group by department union all
 
                             select 'Total' as department,'' as sale,
@@ -1431,7 +1431,7 @@ namespace WebForecastReport.Service
                             sum(case when expected_order_date like '{year}-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_out,
                             sum(case when expected_order_date like '{year}-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_in,
                             sum(case when expected_order_date like '{year}-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_out
-							from Quotation where product_type in ('Project', 'Product', 'Service') AND {stage} AND (exclude_quote is null or exclude_quote = 0) )
+							from Quotation where product_type in ('Project', 'Product', 'Service') AND {stage} AND (exclude_quote is null or exclude_quote = 0) AND expected_order_date like '{year}%')
                             select* from s1 order by s1.department,s1.sale ");
                 }
                 else
@@ -1463,7 +1463,7 @@ namespace WebForecastReport.Service
 							sum(case when expected_order_date like '{year}-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_out,
 							sum(case when expected_order_date like '{year}-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_in,
 							sum(case when expected_order_date like '{year}-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_out
-							from Quotation where department='{department}' and product_type in ('Project', 'Product', 'Service') AND {stage} AND (exclude_quote is null or exclude_quote = 0)
+							from Quotation where department='{department}' and product_type in ('Project', 'Product', 'Service') AND {stage} AND (exclude_quote is null or exclude_quote = 0) AND expected_order_date like '{year}%'
 							group by department,sale_name union all
 
 							select(department + ' Total') as department,'' as sale,
@@ -1491,7 +1491,7 @@ namespace WebForecastReport.Service
 							sum(case when expected_order_date like '{year}-11%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as nov_out,
 							sum(case when expected_order_date like '{year}-12%' then case when status='IN' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_in,
 							sum(case when expected_order_date like '{year}-12%' then case when status='OUT' then cast(cast(replace(quoted_price,',','') as float) / @million as decimal(10,2)) else 0 end end) as dec_out
-							from Quotation where department='{department}' and product_type in ('Project', 'Product', 'Service') AND {stage} AND (exclude_quote is null or exclude_quote = 0)
+							from Quotation where department='{department}' and product_type in ('Project', 'Product', 'Service') AND {stage} AND (exclude_quote is null or exclude_quote = 0) AND expected_order_date like '{year}%'
 							group by department)
 							select* from s1 order by s1.department,s1.sale ");
                 }
