@@ -1075,7 +1075,7 @@ namespace WebForecastReport.Service
                                                  s1.service_actual
                                                  from (select department,sale_name,
                                                  format(sum(case when product_type='product' then case when quoted_price is not null then cast(replace(quoted_price,',','') as float) else 0 end else 0 end) / 1000000 ,'N3') as product_actual,
-                                                 format(sum(case when product_type='prject' then case when quoted_price is not null then cast(replace(quoted_price,',','') as float) else 0 end else 0 end) / 1000000,'N3') as project_actual,
+                                                 format(sum(case when product_type='project' then case when quoted_price is not null then cast(replace(quoted_price,',','') as float) else 0 end else 0 end) / 1000000,'N3') as project_actual,
                                                  format(sum(case when product_type='service' then case when quoted_price is not null then cast(replace(quoted_price,',','') as float) else 0 end else 0 end) / 1000000,'N3') as service_actual
                                                  from Quotation 
                                                  where department = '" + department + "' and stages_update_date like '" + year + "%' and stages ='Closed(Won)' AND (exclude_quote is null or exclude_quote = 0) " +
@@ -1095,7 +1095,7 @@ namespace WebForecastReport.Service
                                                  "s1.service_actual " +
                                                  "from (select department,'' as sale_name, " +
                                                  "format(sum(case when product_type = 'product' then case when quoted_price is not null then cast(replace(quoted_price, ',', '') as float) else 0 end else 0 end) / 1000000 ,'N3') as product_actual, " +
-                                                 "format(sum(case when product_type = 'prject' then case when quoted_price is not null then cast(replace(quoted_price, ',', '') as float) else 0 end else 0 end) / 1000000 ,'N3') as project_actual, " +
+                                                 "format(sum(case when product_type = 'project' then case when quoted_price is not null then cast(replace(quoted_price, ',', '') as float) else 0 end else 0 end) / 1000000 ,'N3') as project_actual, " +
                                                  "format(sum(case when product_type = 'service' then case when quoted_price is not null then cast(replace(quoted_price, ',', '') as float) else 0 end else 0 end) / 1000000 ,'N3') as service_actual " +
                                                  "from Quotation " +
                                                  "where department = '" + department + "' and stages_update_date like '" + year + "%' and stages ='Closed(Won)' AND (exclude_quote is null or exclude_quote = 0) " +
@@ -1152,7 +1152,7 @@ namespace WebForecastReport.Service
                                                  s1.service_actual
                                                  from (select department,sale_name,
                                                  format(sum(case when product_type='product' then case when quoted_price is not null then cast(replace(quoted_price,',','') as float) else 0 end else 0 end) / 1000000 ,'N3') as product_actual,
-                                                 format(sum(case when product_type='prject' then case when quoted_price is not null then cast(replace(quoted_price,',','') as float) else 0 end else 0 end) / 1000000,'N3') as project_actual,
+                                                 format(sum(case when product_type='project' then case when quoted_price is not null then cast(replace(quoted_price,',','') as float) else 0 end else 0 end) / 1000000,'N3') as project_actual,
                                                  format(sum(case when product_type='service' then case when quoted_price is not null then cast(replace(quoted_price,',','') as float) else 0 end else 0 end) / 1000000,'N3') as service_actual
                                                  from Quotation 
                                                  where department = '" + department + "' and stages_update_date like '" + year + "%' and stages ='Closed(Won)' AND (exclude_quote is null or exclude_quote = 0) " +
