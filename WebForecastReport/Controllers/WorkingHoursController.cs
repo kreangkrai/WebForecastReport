@@ -86,7 +86,7 @@ namespace WebForecastReport.Controllers
                 if(whd.Count > 0)
                 {
                     TimeSpan substraction = new TimeSpan(8, 0, 0);
-
+                    TimeSpan anHour = new TimeSpan(1, 0, 0);
                     TimeSpan noon = new TimeSpan(12, 0, 0);
                     TimeSpan after_noon = new TimeSpan(13, 0, 0);
 
@@ -116,7 +116,18 @@ namespace WebForecastReport.Controllers
                         if(isHoliday || isWeekend)
                         {
                             ot15 += wh.stop_time - wh.start_time;
-                            if (wh.lunch && wh.start_time <= noon && wh.stop_time > after_noon)
+
+                            if(wh.lunch)
+                            {
+                                ot15 -= anHour;
+                            }
+
+                            if(wh.dinner)
+                            {
+                                ot15 -= anHour;
+                            }
+
+                            /*if (wh.lunch && wh.start_time <= noon && wh.stop_time > after_noon)
                             {
                                 ot15 -= after_noon - noon;
                             }
@@ -124,7 +135,7 @@ namespace WebForecastReport.Controllers
                             if (wh.dinner && wh.start_time <= evening && wh.stop_time > end_evening)
                             {
                                 ot15 -= end_evening - evening;
-                            }
+                            }*/
                         }
                         else
                         {
@@ -179,7 +190,7 @@ namespace WebForecastReport.Controllers
                             }
                         }
 
-                        if(ot15 > substraction && (isHoliday || isWeekend))
+                        if((ot15 > substraction) && (isHoliday || isWeekend))
                         {
                             ot3 += ot15 - substraction;
                             ot15 -= ot15 - substraction;
