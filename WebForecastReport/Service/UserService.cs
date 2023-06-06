@@ -29,6 +29,7 @@ namespace WebForecastReport.Service
                     {
                         UserManagementModel u = new UserManagementModel()
                         {
+                            fullname = dr["Fullname"].ToString(),
                             name = dr["Name"].ToString(),
                             department = dr["Department"].ToString(),
                             role = dr["Role"].ToString(),
@@ -49,13 +50,14 @@ namespace WebForecastReport.Service
             }
         }
 
-        public string insert(string name)
+        public string insert(string fullname)
         {
             try
             {
                 bool b = false;
                 string department = "";
-                SqlCommand cmd1 = new SqlCommand("select * from [User] where Name = '" + name+"'", ConnectSQL.OpenConnect());
+                string name = "";
+                SqlCommand cmd1 = new SqlCommand("select * from [User] where Fullname = '" + fullname+"'", ConnectSQL.OpenConnect());
                 SqlDataReader dr1 = cmd1.ExecuteReader();
                 if (dr1.HasRows)
                 {
@@ -63,11 +65,13 @@ namespace WebForecastReport.Service
                 }
                 if (!b)
                 {
-                    department = Accessory.getAllUser().Where(w => w.name == name).Select(s => s.department).FirstOrDefault();
-                    using (SqlCommand cmd = new SqlCommand(@"INSERT INTO [User](Name,Department) VALUES (@Name,@Department)", ConnectSQL.OpenConnect()))
+                    department = Accessory.getAllUser().Where(w => w.fullname == fullname.ToLower()).Select(s => s.department).FirstOrDefault();
+                    name = Accessory.getAllUser().Where(w => w.fullname == fullname.ToLower()).Select(s => s.name).FirstOrDefault();
+                    using (SqlCommand cmd = new SqlCommand(@"INSERT INTO [User](Fullname,Name,Department) VALUES (@Fullname,@Name,@Department)", ConnectSQL.OpenConnect()))
                     {
                         cmd.CommandType = CommandType.Text;
                         cmd.Connection = ConnectSQL.OpenConnect();
+                        cmd.Parameters.AddWithValue("@Fullname", fullname);
                         cmd.Parameters.AddWithValue("@Name", name);
                         cmd.Parameters.AddWithValue("@Department", department);
                         cmd.ExecuteNonQuery();                       
@@ -88,13 +92,13 @@ namespace WebForecastReport.Service
             }
         }
 
-        public string update(string name,string role,string group)
+        public string update(string fullname,string name,string role,string group)
         {
             try
             {
                 SqlDataReader reader;
                 SqlCommand cmd = new SqlCommand(@"UPDATE [User] SET Role='" + role + "',Groups='" + group + "'" +
-                                                                      " WHERE Name='" + name + "'");
+                                                                      " WHERE Fullname='" + fullname + "'");
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = ConnectSQL.OpenConnect();
                 reader = cmd.ExecuteReader();

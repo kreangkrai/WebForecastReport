@@ -62,17 +62,17 @@ namespace WebForecastReport.Controllers
         }
 
         [HttpPost]
-        public JsonResult Update(string name, string role,string group)
+        public JsonResult Update(string fullname,string name, string role,string group)
         {
-            string message = Users.update(name, role, group);
+            string message = Users.update(fullname, name, role, group);
             return Json(message);
         }
         [HttpPost]
-        public JsonResult Insert(string name)
+        public JsonResult Insert(string fullname)
         {
-            if (name != "Please Select")
+            if (fullname != "Please Select")
             {
-                string message = Users.insert(name);
+                string message = Users.insert(fullname);
                 return Json(message);
             }
             else

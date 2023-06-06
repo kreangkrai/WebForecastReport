@@ -43,6 +43,7 @@
 @section Scripts
 {
 <script type="text/javascript">
+    var fullname='';
     var name = '';
     var role = '';
     var group = '';
@@ -74,7 +75,7 @@
             var selectUser = document.getElementById('users');
             for (var i = 0, l = Users.length; i < l; i++) {
                 var option = Users[i];
-                selectUser.options.add(new Option(option.text.name, option.value.name, option.selected));
+                selectUser.options.add(new Option(option.text.fullname, option.value.fullname, option.selected));
             }
             document.getElementById('users').selectedIndex = 0;
 
@@ -82,6 +83,7 @@
             var dataSet = [];
             for (var i = 0; i < datas.length; i++) {
                 var data = ["",
+                    datas[i].fullname,
                     datas[i].name,
                     datas[i].role,
                     datas[i].groups];
@@ -103,6 +105,7 @@
             data: dataSet,
             columns: [
                 { title: "Edit ", width:10 },
+                { title: "Full Name" },
                 { title: "Name" },
                 { title: "Role" },
                 { title: "Group" },
@@ -162,13 +165,14 @@
     $('#table').on('click', 'tbody td', function () {
         var cell = tables.cell(this);
         var column = cell[0][0].column;
-        name = cell.data()[1];
-        role = cell.data()[2];
-        group = cell.data()[3];
+        fullname = cell.data()[1];
+        name = cell.data()[2];
+        role = cell.data()[3];
+        group = cell.data()[4];
 
         if (column == "0") {
             document.getElementById('edit_name').value = name;
-
+            document.getElementById('edit_fullname').value = fullname;
             //role
             $('#edit_role').empty();
             var selectRole = document.getElementById('edit_role');
@@ -193,6 +197,7 @@
         }
     });
     $('#edit_RoleConfirm').on('click', function () {
+        var fullname = document.getElementById('edit_fullname').value;
         var name = document.getElementById('edit_name').value;
         var role = document.getElementById('edit_role').value;
         var group = document.getElementById('edit_group').value;
@@ -201,7 +206,7 @@
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                name,role,group
+                fullname,name,role,group
             },
             success: function (response) {
                 if (response == "Update Success") {
@@ -215,13 +220,13 @@
         });
     });
     $('#AddUser').on('click', function () {
-        var name = document.getElementById('users').value;
+        var fullname = document.getElementById('users').value;
         $.ajax({
             url: '@Url.Action("Insert", "User")',
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                name
+                fullname
             },
             success: function (response) {
                 if (response == "Insert Success") {

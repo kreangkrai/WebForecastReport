@@ -673,7 +673,15 @@
             var index_sale = Sales.map(function (e) { return e.value; }).indexOf(sale_name);
             document.getElementById('edit_sale_name').selectedIndex = index_sale;
 
-            document.getElementById('edit_department').innerHTML = department;
+            $('#edit_department').empty();
+            var select_department = document.getElementById("edit_department");
+            const opt_department = document.createElement("option");
+            opt_department.value = department;
+            opt_department.text = department;
+
+            select_department.add(opt_department, null);
+
+            //document.getElementById('edit_department').innerHTML = department;
 
 
             document.getElementById('edit_detail').value = detail;
@@ -858,7 +866,7 @@
         var competitor_description = document.getElementById('edit_competitor_description').value;
         var competitor_price = document.getElementById('edit_competitor_price').value;
         var sale_name = document.getElementById('edit_sale_name').value;
-        var department = document.getElementById('edit_department').innerHTML;
+        var department = document.getElementById('edit_department').value;
         var detail = document.getElementById('edit_detail').value;
         var exclude_quote = document.getElementById('edit_chk_exclude_quote').checked;
 
@@ -1017,8 +1025,16 @@
                 name
             },
             success: function (response) {
-                var department = response;
-                document.getElementById("edit_department").innerHTML = department;
+                var departments = response;
+                console.log(departments);
+                $('#edit_department').empty();
+                var selectBox = document.getElementById('edit_department');
+                for (var i = 0, l = departments.length; i < l; i++) {
+                    var option = departments[i];
+                    selectBox.options.add(new Option(option, option, option.selected));
+                }             
+                document.getElementById('edit_department').selectedIndex = 0;
+                //document.getElementById("edit_department").innerHTML = department;
             }
          });
     });

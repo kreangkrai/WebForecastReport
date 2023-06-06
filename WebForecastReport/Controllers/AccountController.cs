@@ -14,10 +14,11 @@ namespace WebForecastReport.Controllers
     public class AccountController : Controller
     {
         string user = "";
+        string dep = "";
         byte[] image = new byte[0];
         public IActionResult Index()
         {
-            return View();
+            return View(new LoginModel());
         }
         [HttpPost]
         public IActionResult Login(LoginModel model)
@@ -47,6 +48,7 @@ namespace WebForecastReport.Controllers
                         if (b)
                         {
                             HttpContext.Session.SetString("userId", user);
+                            HttpContext.Session.SetString("Department", dep);
                             HttpContext.Session.Set("Image", image);
                             HttpContext.Session.SetString("Login_MES", "1234");
                             return RedirectToAction("Index", "Main");
@@ -81,6 +83,7 @@ namespace WebForecastReport.Controllers
                         searcher.Filter = "(samaccountname=" + username + ")";
                         searcher.PropertiesToLoad.Add("displayname");
                         searcher.PropertiesToLoad.Add("thumbnailPhoto");
+                        searcher.PropertiesToLoad.Add("department");
 
                         SearchResult adsSearchResult = searcher.FindOne();
 
@@ -91,6 +94,7 @@ namespace WebForecastReport.Controllers
                             if (adsSearchResult.Properties["displayname"].Count == 1)
                             {
                                 user = (string)adsSearchResult.Properties["displayname"][0];
+                                dep = (string)adsSearchResult.Properties["department"][0];
                                 var img = adsSearchResult.Properties["thumbnailPhoto"].Count;
                                 if (img > 0)
                                 {
@@ -112,7 +116,7 @@ namespace WebForecastReport.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return View("Index");
+            return RedirectToAction("Index","Account");
         }
     }
 }

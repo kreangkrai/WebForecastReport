@@ -248,8 +248,8 @@ namespace WebForecastReport.Controllers
         [HttpPost]
         public JsonResult GetDepartment(string name)
         {
-            string department = Accessory.getAllUser().Where(w => w.name == name).Select(s => s.department).FirstOrDefault();
-            return Json(department);
+            List<string> dep = Accessory.getAllUser().Where(w => w.name == name).Select(s => s.department).ToList();
+            return Json(dep);
         }
         [HttpPost]
         public JsonResult GetType(string type)
