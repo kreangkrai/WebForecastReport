@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WebForecastReport.Interface;
@@ -14,10 +16,17 @@ namespace WebForecastReport.Controllers
     {
         readonly IAccessory Accessory;
         readonly IHome Home;
-        public HomeController()
+        readonly IExport Export;
+        private readonly IHostingEnvironment _hostingEnvironment;
+        static List<Home_DataModel> temp_data = new List<Home_DataModel>();
+        static TargetIndividual temp_target_individual = new TargetIndividual();
+        static TargetDepartment temp_target_department = new TargetDepartment();
+        public HomeController(IHostingEnvironment hostingEnvironment)
         {
             Accessory = new AccessoryService();
             Home = new HomeService();
+            Export = new ExportService();
+            _hostingEnvironment = hostingEnvironment;
         }
         public IActionResult Index()
         {
@@ -102,6 +111,8 @@ namespace WebForecastReport.Controllers
 
             var list = new { datas = datas, stages = stages, day = day, hittingrates = hittingRates, target = target };
 
+            temp_data = datas;
+            temp_target_individual = target;
             return Json(list);
         }
 
@@ -125,6 +136,8 @@ namespace WebForecastReport.Controllers
 
             var list = new { datas = datas, stages = stages, day = day, hittingrates = hittingRates, target = target };
 
+            temp_data = datas;
+            temp_target_department = target;
             return Json(list);
         }
 
@@ -205,6 +218,21 @@ namespace WebForecastReport.Controllers
             quotations = Home.GetQuotationByBarDepartment(year, department, title, type, data);
 
             return Json(new { quotation = quotations });
+        }
+
+        public IActionResult DownloadXlsxChartIndividual(string name)
+        {
+            //Download Excel
+            var templateFileInfo = new FileInfo(Path.Combine(_hostingEnvironment.ContentRootPath, "./wwwroot/template", "chart.xlsx"));
+            var stream = Export.ExportQuotation_Report_Chart_Individual(templateFileInfo,temp_data,temp_target_individual);
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Quotation_report_chart_" + name + "_" + DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss") + ".xlsx");
+        }
+        public IActionResult DownloadXlsxChartDepartment(string department)
+        {
+            //Download Excel
+            var templateFileInfo = new FileInfo(Path.Combine(_hostingEnvironment.ContentRootPath, "./wwwroot/template", "chart.xlsx"));
+            var stream = Export.ExportQuotation_Report_Chart_Department(templateFileInfo, temp_data, temp_target_department);
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Quotation_report_chart_" + department + "_" + DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss") + ".xlsx");
         }
     }
 }

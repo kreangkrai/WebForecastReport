@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using WebForecastReport.Models;
 
 namespace WebForecastReport.Interface
 {
@@ -15,5 +16,7 @@ namespace WebForecastReport.Interface
         Stream ExportQuotation_Report_Year(FileInfo path, string department, string year);
         Stream ExportLogStatus(FileInfo path, string year);
         Stream ExportLogStages(FileInfo path, string year);
+        Stream ExportQuotation_Report_Chart_Individual(FileInfo path, List<Home_DataModel> temp_data,TargetIndividual target);
+        Stream ExportQuotation_Report_Chart_Department(FileInfo path, List<Home_DataModel> temp_data, TargetDepartment target);
     }
 }

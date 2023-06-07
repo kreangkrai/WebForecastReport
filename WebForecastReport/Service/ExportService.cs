@@ -258,6 +258,347 @@ namespace WebForecastReport.Service
             return stream;
         }
 
+        public Stream ExportQuotation_Report_Chart_Individual(FileInfo path, List<Home_DataModel> temp_data, TargetIndividual target)
+        {
+            string target_product = target.product;
+            string target_project = target.project;
+            string target_service = target.service;
+
+            var quotation_product = temp_data.Where(w => w.type == "Product" && w.stages == "").FirstOrDefault();
+            var quotation_project = temp_data.Where(w => w.type == "Project" && w.stages == "").FirstOrDefault();
+            var quotation_service = temp_data.Where(w => w.type == "Service" && w.stages == "").FirstOrDefault();
+
+            var pending_in_product = temp_data.Where(w => w.type == "Product" && w.stages == "Pending In").FirstOrDefault();
+            var pending_in_project = temp_data.Where(w => w.type == "Project" && w.stages == "Pending In").FirstOrDefault();
+            var pending_in_service = temp_data.Where(w => w.type == "Service" && w.stages == "Pending In").FirstOrDefault();
+            var pending_all_product = temp_data.Where(w => w.type == "Product" && w.stages == "Pending").FirstOrDefault();
+            var pending_all_project = temp_data.Where(w => w.type == "Project" && w.stages == "Pending").FirstOrDefault();
+            var pending_all_service = temp_data.Where(w => w.type == "Service" && w.stages == "Pending").FirstOrDefault();
+
+            var won_product = temp_data.Where(w => w.type == "Product" && w.stages == "Closed(Won)").FirstOrDefault();
+            var won_project = temp_data.Where(w => w.type == "Project" && w.stages == "Closed(Won)").FirstOrDefault();
+            var won_service = temp_data.Where(w => w.type == "Service" && w.stages == "Closed(Won)").FirstOrDefault();
+
+            var remain_target_product = (double.Parse(target.product) - double.Parse(won_product.mb)).ToString("#.##");
+            var remain_target_project = (double.Parse(target.project) - double.Parse(won_project.mb)).ToString("#.##");
+            var remain_target_service = (double.Parse(target.service) - double.Parse(won_service.mb)).ToString("#.##");
+
+            var lost_product = temp_data.Where(w => w.type == "Product" && w.stages == "Closed(Lost)").FirstOrDefault();
+            var lost_project = temp_data.Where(w => w.type == "Project" && w.stages == "Closed(Lost)").FirstOrDefault();
+            var lost_service = temp_data.Where(w => w.type == "Service" && w.stages == "Closed(Lost)").FirstOrDefault();
+
+            var nogo_product = temp_data.Where(w => w.type == "Product" && w.stages == "No go").FirstOrDefault();
+            var nogo_project = temp_data.Where(w => w.type == "Project" && w.stages == "No go").FirstOrDefault();
+            var nogo_service = temp_data.Where(w => w.type == "Service" && w.stages == "No go").FirstOrDefault();
+
+            var quote_product = temp_data.Where(w => w.type == "Product" && w.stages == "Quote for Budget").FirstOrDefault();
+            var quote_project = temp_data.Where(w => w.type == "Project" && w.stages == "Quote for Budget").FirstOrDefault();
+            var quote_service = temp_data.Where(w => w.type == "Service" && w.stages == "Quote for Budget").FirstOrDefault();
+
+
+            Stream stream = new MemoryStream();
+            if (path.Exists)
+            {
+                using (ExcelPackage p = new ExcelPackage(path))
+                {
+                    ExcelWorksheet worksheet = p.Workbook.Worksheets["raw data"];
+
+                    //Pending ALL VS Pending IN
+                    worksheet.Cells["C4"].Value = pending_all_product != null ? double.Parse(pending_all_product.mb) : 0;
+                    worksheet.Cells["D4"].Value = pending_in_product != null ? double.Parse(pending_in_product.mb) : 0;
+                    worksheet.Cells["C5"].Value = pending_all_project != null ? double.Parse(pending_all_project.mb) : 0;
+                    worksheet.Cells["D5"].Value = pending_in_project != null ? double.Parse(pending_in_project.mb) : 0;
+                    worksheet.Cells["C6"].Value = pending_all_service != null ? double.Parse(pending_all_service.mb) : 0;
+                    worksheet.Cells["D6"].Value = pending_in_service != null ? double.Parse(pending_in_service.mb) : 0;
+
+                    worksheet.Cells["C9"].Value = pending_all_product != null ? "," + pending_all_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C10"].Value = pending_in_product != null ? "," + pending_in_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C11"].Value = pending_all_project != null ? "," + pending_all_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C12"].Value = pending_in_project != null ? "," + pending_in_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C13"].Value = pending_all_service != null ? "," + pending_all_service.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C14"].Value = pending_in_service != null ? "," + pending_in_service.cnt + " Quo." : ",0 Quo.";
+
+                    //Quotation VS Target
+                    worksheet.Cells["G4"].Value = quotation_product != null ? double.Parse(quotation_product.mb) : 0;
+                    worksheet.Cells["G5"].Value = quotation_project != null ? double.Parse(quotation_project.mb) : 0;
+                    worksheet.Cells["G6"].Value = quotation_service != null ? double.Parse(quotation_service.mb) : 0;
+                    worksheet.Cells["H4"].Value = target_product != null ? double.Parse(target_product) : 0;
+                    worksheet.Cells["H5"].Value = target_project != null ? double.Parse(target_project) : 0;
+                    worksheet.Cells["H6"].Value = target_service != null ? double.Parse(target_service) : 0;
+
+                    worksheet.Cells["G9"].Value = quotation_product != null ? "," + quotation_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["G10"].Value = quotation_project != null ? "," + quotation_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["G11"].Value = quotation_service != null ? "," + quotation_service.cnt + " Quo." : ",0 Quo.";
+
+                    //Target VS Won
+                    worksheet.Cells["C19"].Value = target_product != null ? double.Parse(target_product) : 0;
+                    worksheet.Cells["C20"].Value = target_project != null ? double.Parse(target_project) : 0;
+                    worksheet.Cells["C21"].Value = target_service != null ? double.Parse(target_service) : 0;
+                    worksheet.Cells["D19"].Value = won_product != null ? double.Parse(won_product.mb) : 0;
+                    worksheet.Cells["D20"].Value = won_project != null ? double.Parse(won_project.mb) : 0;
+                    worksheet.Cells["D21"].Value = won_service != null ? double.Parse(won_service.mb) : 0;
+
+                    worksheet.Cells["C24"].Value = won_product != null ? "," + won_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C25"].Value = won_project != null ? "," + won_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C26"].Value = won_service != null ? "," + won_service.cnt + " Quo." : ",0 Quo.";
+
+                    //Remain Target VS Pending IN
+                    worksheet.Cells["G19"].Value = remain_target_product != null ? double.Parse(remain_target_product) : 0;
+                    worksheet.Cells["G20"].Value = remain_target_project != null ? double.Parse(remain_target_project) : 0;
+                    worksheet.Cells["G21"].Value = remain_target_service != null ? double.Parse(remain_target_service) : 0;
+                    worksheet.Cells["H19"].Value = pending_in_product != null ? double.Parse(pending_in_product.mb) : 0;
+                    worksheet.Cells["H20"].Value = pending_in_project != null ? double.Parse(pending_in_project.mb) : 0;
+                    worksheet.Cells["H21"].Value = pending_in_service != null ? double.Parse(pending_in_service.mb) : 0;
+
+                    worksheet.Cells["G24"].Value = pending_in_product != null ? "," + pending_in_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["G25"].Value = pending_in_project != null ? "," + pending_in_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["G26"].Value = pending_in_service != null ? "," + pending_in_service.cnt + " Quo." : ",0 Quo.";
+
+                    //Won VS Lost
+                    worksheet.Cells["C34"].Value = won_product != null ? double.Parse(won_product.mb) : 0;
+                    worksheet.Cells["C35"].Value = won_project != null ? double.Parse(won_project.mb) : 0;
+                    worksheet.Cells["C36"].Value = won_service != null ? double.Parse(won_service.mb) : 0;
+                    worksheet.Cells["D34"].Value = lost_product != null ? double.Parse(lost_product.mb) : 0;
+                    worksheet.Cells["D35"].Value = lost_project != null ? double.Parse(lost_project.mb) : 0;
+                    worksheet.Cells["D36"].Value = lost_service != null ? double.Parse(lost_service.mb) : 0;
+
+                    worksheet.Cells["C39"].Value = won_product != null ? "," + won_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C41"].Value = won_project != null ? "," + won_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C43"].Value = won_service != null ? "," + won_service.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C40"].Value = lost_product != null ? "," + lost_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C42"].Value = lost_project != null ? "," + lost_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C44"].Value = lost_service != null ? "," + lost_service.cnt + " Quo." : ",0 Quo.";
+
+                    //Won & Lost VS No Go & Budget
+                    worksheet.Cells["K4"].Value = won_product != null ? double.Parse(won_product.mb) : 0;
+                    worksheet.Cells["K7"].Value = won_project != null ? double.Parse(won_project.mb) : 0;
+                    worksheet.Cells["K10"].Value = won_service != null ? double.Parse(won_service.mb) : 0;
+                    worksheet.Cells["L4"].Value = lost_product != null ? double.Parse(lost_product.mb) : 0;
+                    worksheet.Cells["L7"].Value = lost_project != null ? double.Parse(lost_project.mb) : 0;
+                    worksheet.Cells["L10"].Value = lost_service != null ? double.Parse(lost_service.mb) : 0;
+
+                    worksheet.Cells["M5"].Value = nogo_product != null ? double.Parse(nogo_product.mb) : 0;
+                    worksheet.Cells["M8"].Value =nogo_project != null ? double.Parse(nogo_project.mb) : 0;
+                    worksheet.Cells["M11"].Value = nogo_service != null ? double.Parse(nogo_service.mb) : 0;
+                    worksheet.Cells["N5"].Value = quote_product != null ? double.Parse(quote_product.mb) : 0;
+                    worksheet.Cells["N8"].Value = quote_project != null ? double.Parse(quote_project.mb) : 0;
+                    worksheet.Cells["N11"].Value = quote_service != null ? double.Parse(quote_service.mb) : 0;
+
+                    worksheet.Cells["K14"].Value = won_product != null ? "," + won_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K16"].Value = won_project != null ? "," + won_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K18"].Value = won_service != null ? "," + won_service.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K15"].Value = lost_product != null ? "," + lost_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K17"].Value = lost_project != null ? "," + lost_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K19"].Value = lost_service != null ? "," + lost_service.cnt + " Quo." : ",0 Quo.";
+
+                    worksheet.Cells["N14"].Value = nogo_product != null ? "," + nogo_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["N16"].Value = nogo_project != null ? "," + nogo_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["N18"].Value = nogo_service != null ? "," + nogo_service.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["N15"].Value = quote_product != null ? "," + quote_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["N17"].Value = quote_project != null ? "," + quote_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["N19"].Value = quote_service != null ? "," + quote_service.cnt + " Quo." : ",0 Quo.";
+
+                    //Won & Lost VS No Go
+                    worksheet.Cells["K23"].Value = won_product != null ? double.Parse(won_product.mb) : 0;
+                    worksheet.Cells["K26"].Value = won_project != null ? double.Parse(won_project.mb) : 0;
+                    worksheet.Cells["K29"].Value = won_service != null ? double.Parse(won_service.mb) : 0;
+                    worksheet.Cells["L23"].Value = lost_product != null ? double.Parse(lost_product.mb) : 0;
+                    worksheet.Cells["L26"].Value = lost_project != null ? double.Parse(lost_project.mb) : 0;
+                    worksheet.Cells["L29"].Value = lost_service != null ? double.Parse(lost_service.mb) : 0;
+
+                    worksheet.Cells["M24"].Value = nogo_product != null ? double.Parse(nogo_product.mb) : 0;
+                    worksheet.Cells["M27"].Value = nogo_project != null ? double.Parse(nogo_project.mb) : 0;
+                    worksheet.Cells["M30"].Value = nogo_service != null ? double.Parse(nogo_service.mb) : 0;
+
+                    worksheet.Cells["K33"].Value = won_product != null ? "," + won_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K35"].Value = won_project != null ? "," + won_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K37"].Value = won_service != null ? "," + won_service.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K34"].Value = lost_product != null ? "," + lost_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K36"].Value = lost_project != null ? "," + lost_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K38"].Value = lost_service != null ? "," + lost_service.cnt + " Quo." : ",0 Quo.";
+
+                    worksheet.Cells["N33"].Value = nogo_product != null ? "," + nogo_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["N34"].Value = nogo_project != null ? "," + nogo_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["N35"].Value = nogo_service != null ? "," + nogo_service.cnt + " Quo." : ",0 Quo.";
+
+                    p.SaveAs(stream);
+
+                    stream.Position = 0;
+                }
+            }
+            return stream;
+        }
+        public Stream ExportQuotation_Report_Chart_Department(FileInfo path, List<Home_DataModel> temp_data, TargetDepartment target)
+        {
+            string target_product = target.product;
+            string target_project = target.project;
+            string target_service = target.service;
+
+            var quotation_product = temp_data.Where(w => w.type == "Product" && w.stages == "").FirstOrDefault();
+            var quotation_project = temp_data.Where(w => w.type == "Project" && w.stages == "").FirstOrDefault();
+            var quotation_service = temp_data.Where(w => w.type == "Service" && w.stages == "").FirstOrDefault();
+
+            var pending_in_product = temp_data.Where(w => w.type == "Product" && w.stages == "Pending In").FirstOrDefault();
+            var pending_in_project = temp_data.Where(w => w.type == "Project" && w.stages == "Pending In").FirstOrDefault();
+            var pending_in_service = temp_data.Where(w => w.type == "Service" && w.stages == "Pending In").FirstOrDefault();
+            var pending_all_product = temp_data.Where(w => w.type == "Product" && w.stages == "Pending").FirstOrDefault();
+            var pending_all_project = temp_data.Where(w => w.type == "Project" && w.stages == "Pending").FirstOrDefault();
+            var pending_all_service = temp_data.Where(w => w.type == "Service" && w.stages == "Pending").FirstOrDefault();
+
+            var won_product = temp_data.Where(w => w.type == "Product" && w.stages == "Closed(Won)").FirstOrDefault();
+            var won_project = temp_data.Where(w => w.type == "Project" && w.stages == "Closed(Won)").FirstOrDefault();
+            var won_service = temp_data.Where(w => w.type == "Service" && w.stages == "Closed(Won)").FirstOrDefault();
+
+            var remain_target_product = (double.Parse(target.product) - double.Parse(won_product.mb)).ToString("#.##");
+            var remain_target_project = (double.Parse(target.project) - double.Parse(won_project.mb)).ToString("#.##");
+            var remain_target_service = (double.Parse(target.service) - double.Parse(won_service.mb)).ToString("#.##");
+
+            var lost_product = temp_data.Where(w => w.type == "Product" && w.stages == "Closed(Lost)").FirstOrDefault();
+            var lost_project = temp_data.Where(w => w.type == "Project" && w.stages == "Closed(Lost)").FirstOrDefault();
+            var lost_service = temp_data.Where(w => w.type == "Service" && w.stages == "Closed(Lost)").FirstOrDefault();
+
+            var nogo_product = temp_data.Where(w => w.type == "Product" && w.stages == "No go").FirstOrDefault();
+            var nogo_project = temp_data.Where(w => w.type == "Project" && w.stages == "No go").FirstOrDefault();
+            var nogo_service = temp_data.Where(w => w.type == "Service" && w.stages == "No go").FirstOrDefault();
+
+            var quote_product = temp_data.Where(w => w.type == "Product" && w.stages == "Quote for Budget").FirstOrDefault();
+            var quote_project = temp_data.Where(w => w.type == "Project" && w.stages == "Quote for Budget").FirstOrDefault();
+            var quote_service = temp_data.Where(w => w.type == "Service" && w.stages == "Quote for Budget").FirstOrDefault();
+
+
+            Stream stream = new MemoryStream();
+            if (path.Exists)
+            {
+                using (ExcelPackage p = new ExcelPackage(path))
+                {
+                    ExcelWorksheet worksheet = p.Workbook.Worksheets["raw data"];
+
+                    //Pending ALL VS Pending IN
+                    worksheet.Cells["C4"].Value = pending_all_product != null ? double.Parse(pending_all_product.mb) : 0;
+                    worksheet.Cells["D4"].Value = pending_in_product != null ? double.Parse(pending_in_product.mb) : 0;
+                    worksheet.Cells["C5"].Value = pending_all_project != null ? double.Parse(pending_all_project.mb) : 0;
+                    worksheet.Cells["D5"].Value = pending_in_project != null ? double.Parse(pending_in_project.mb) : 0;
+                    worksheet.Cells["C6"].Value = pending_all_service != null ? double.Parse(pending_all_service.mb) : 0;
+                    worksheet.Cells["D6"].Value = pending_in_service != null ? double.Parse(pending_in_service.mb) : 0;
+
+                    worksheet.Cells["C9"].Value = pending_all_product != null ? "," + pending_all_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C10"].Value = pending_in_product != null ? "," + pending_in_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C11"].Value = pending_all_project != null ? "," + pending_all_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C12"].Value = pending_in_project != null ? "," + pending_in_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C13"].Value = pending_all_service != null ? "," + pending_all_service.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C14"].Value = pending_in_service != null ? "," + pending_in_service.cnt + " Quo." : ",0 Quo.";
+
+                    //Quotation VS Target
+                    worksheet.Cells["G4"].Value = quotation_product != null ? double.Parse(quotation_product.mb) : 0;
+                    worksheet.Cells["G5"].Value = quotation_project != null ? double.Parse(quotation_project.mb) : 0;
+                    worksheet.Cells["G6"].Value = quotation_service != null ? double.Parse(quotation_service.mb) : 0;
+                    worksheet.Cells["H4"].Value = target_product != null ? double.Parse(target_product) : 0;
+                    worksheet.Cells["H5"].Value = target_project != null ? double.Parse(target_project) : 0;
+                    worksheet.Cells["H6"].Value = target_service != null ? double.Parse(target_service) : 0;
+
+                    worksheet.Cells["G9"].Value = quotation_product != null ? "," + quotation_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["G10"].Value = quotation_project != null ? "," + quotation_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["G11"].Value = quotation_service != null ? "," + quotation_service.cnt + " Quo." : ",0 Quo.";
+
+                    //Target VS Won
+                    worksheet.Cells["C19"].Value = target_product != null ? double.Parse(target_product) : 0;
+                    worksheet.Cells["C20"].Value = target_project != null ? double.Parse(target_project) : 0;
+                    worksheet.Cells["C21"].Value = target_service != null ? double.Parse(target_service) : 0;
+                    worksheet.Cells["D19"].Value = won_product != null ? double.Parse(won_product.mb) : 0;
+                    worksheet.Cells["D20"].Value = won_project != null ? double.Parse(won_project.mb) : 0;
+                    worksheet.Cells["D21"].Value = won_service != null ? double.Parse(won_service.mb) : 0;
+
+                    worksheet.Cells["C24"].Value = won_product != null ? "," + won_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C25"].Value = won_project != null ? "," + won_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C26"].Value = won_service != null ? "," + won_service.cnt + " Quo." : ",0 Quo.";
+
+                    //Remain Target VS Pending IN
+                    worksheet.Cells["G19"].Value = remain_target_product != null ? double.Parse(remain_target_product) : 0;
+                    worksheet.Cells["G20"].Value = remain_target_project != null ? double.Parse(remain_target_project) : 0;
+                    worksheet.Cells["G21"].Value = remain_target_service != null ? double.Parse(remain_target_service) : 0;
+                    worksheet.Cells["H19"].Value = pending_in_product != null ? double.Parse(pending_in_product.mb) : 0;
+                    worksheet.Cells["H20"].Value = pending_in_project != null ? double.Parse(pending_in_project.mb) : 0;
+                    worksheet.Cells["H21"].Value = pending_in_service != null ? double.Parse(pending_in_service.mb) : 0;
+
+                    worksheet.Cells["G24"].Value = pending_in_product != null ? "," + pending_in_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["G25"].Value = pending_in_project != null ? "," + pending_in_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["G26"].Value = pending_in_service != null ? "," + pending_in_service.cnt + " Quo." : ",0 Quo.";
+
+                    //Won VS Lost
+                    worksheet.Cells["C34"].Value = won_product != null ? double.Parse(won_product.mb) : 0;
+                    worksheet.Cells["C35"].Value = won_project != null ? double.Parse(won_project.mb) : 0;
+                    worksheet.Cells["C36"].Value = won_service != null ? double.Parse(won_service.mb) : 0;
+                    worksheet.Cells["D34"].Value = lost_product != null ? double.Parse(lost_product.mb) : 0;
+                    worksheet.Cells["D35"].Value = lost_project != null ? double.Parse(lost_project.mb) : 0;
+                    worksheet.Cells["D36"].Value = lost_service != null ? double.Parse(lost_service.mb) : 0;
+
+                    worksheet.Cells["C39"].Value = won_product != null ? "," + won_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C41"].Value = won_project != null ? "," + won_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C43"].Value = won_service != null ? "," + won_service.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C40"].Value = lost_product != null ? "," + lost_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C42"].Value = lost_project != null ? "," + lost_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["C44"].Value = lost_service != null ? "," + lost_service.cnt + " Quo." : ",0 Quo.";
+
+                    //Won & Lost VS No Go & Budget
+                    worksheet.Cells["K4"].Value = won_product != null ? double.Parse(won_product.mb) : 0;
+                    worksheet.Cells["K7"].Value = won_project != null ? double.Parse(won_project.mb) : 0;
+                    worksheet.Cells["K10"].Value = won_service != null ? double.Parse(won_service.mb) : 0;
+                    worksheet.Cells["L4"].Value = lost_product != null ? double.Parse(lost_product.mb) : 0;
+                    worksheet.Cells["L7"].Value = lost_project != null ? double.Parse(lost_project.mb) : 0;
+                    worksheet.Cells["L10"].Value = lost_service != null ? double.Parse(lost_service.mb) : 0;
+
+                    worksheet.Cells["M5"].Value = nogo_product != null ? double.Parse(nogo_product.mb) : 0;
+                    worksheet.Cells["M8"].Value = nogo_project != null ? double.Parse(nogo_project.mb) : 0;
+                    worksheet.Cells["M11"].Value = nogo_service != null ? double.Parse(nogo_service.mb) : 0;
+                    worksheet.Cells["N5"].Value = quote_product != null ? double.Parse(quote_product.mb) : 0;
+                    worksheet.Cells["N8"].Value = quote_project != null ? double.Parse(quote_project.mb) : 0;
+                    worksheet.Cells["N11"].Value = quote_service != null ? double.Parse(quote_service.mb) : 0;
+
+                    worksheet.Cells["K14"].Value = won_product != null ? "," + won_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K16"].Value = won_project != null ? "," + won_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K18"].Value = won_service != null ? "," + won_service.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K15"].Value = lost_product != null ? "," + lost_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K17"].Value = lost_project != null ? "," + lost_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K19"].Value = lost_service != null ? "," + lost_service.cnt + " Quo." : ",0 Quo.";
+
+                    worksheet.Cells["N14"].Value = nogo_product != null ? "," + nogo_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["N16"].Value = nogo_project != null ? "," + nogo_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["N18"].Value = nogo_service != null ? "," + nogo_service.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["N15"].Value = quote_product != null ? "," + quote_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["N17"].Value = quote_project != null ? "," + quote_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["N19"].Value = quote_service != null ? "," + quote_service.cnt + " Quo." : ",0 Quo.";
+
+                    //Won & Lost VS No Go
+                    worksheet.Cells["K23"].Value = won_product != null ? double.Parse(won_product.mb) : 0;
+                    worksheet.Cells["K26"].Value = won_project != null ? double.Parse(won_project.mb) : 0;
+                    worksheet.Cells["K29"].Value = won_service != null ? double.Parse(won_service.mb) : 0;
+                    worksheet.Cells["L23"].Value = lost_product != null ? double.Parse(lost_product.mb) : 0;
+                    worksheet.Cells["L26"].Value = lost_project != null ? double.Parse(lost_project.mb) : 0;
+                    worksheet.Cells["L29"].Value = lost_service != null ? double.Parse(lost_service.mb) : 0;
+
+                    worksheet.Cells["M24"].Value = nogo_product != null ? double.Parse(nogo_product.mb) : 0;
+                    worksheet.Cells["M27"].Value = nogo_project != null ? double.Parse(nogo_project.mb) : 0;
+                    worksheet.Cells["M30"].Value = nogo_service != null ? double.Parse(nogo_service.mb) : 0;
+
+                    worksheet.Cells["K33"].Value = won_product != null ? "," + won_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K35"].Value = won_project != null ? "," + won_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K37"].Value = won_service != null ? "," + won_service.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K34"].Value = lost_product != null ? "," + lost_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K36"].Value = lost_project != null ? "," + lost_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["K38"].Value = lost_service != null ? "," + lost_service.cnt + " Quo." : ",0 Quo.";
+
+                    worksheet.Cells["N33"].Value = nogo_product != null ? "," + nogo_product.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["N34"].Value = nogo_project != null ? "," + nogo_project.cnt + " Quo." : ",0 Quo.";
+                    worksheet.Cells["N35"].Value = nogo_service != null ? "," + nogo_service.cnt + " Quo." : ",0 Quo.";
+
+                    p.SaveAs(stream);
+
+                    stream.Position = 0;
+                }
+            }
+            return stream;
+        }
+
         public Stream ExportQuotation_Report_Department(FileInfo path, string department, string month_first, string month_last)
         {
             Stream stream = new MemoryStream();

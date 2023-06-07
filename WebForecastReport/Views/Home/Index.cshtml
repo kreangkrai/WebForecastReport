@@ -58,6 +58,9 @@
                         <div class="col-md-3 col-xl-3 pb-4">
                             <button type="button" id="btn_OK" class="btn btn-primary form-control">OK</button>
                         </div>
+                        <div class="col-md-2 col-xl-2 pb-3">
+                             <button type="button" id="export_chart_individual" class="btn btn-success form-control">Export</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -387,6 +390,9 @@
                         </div>
                         <div class="col-md-3 col-xl-3 pb-4">
                             <button type="button" id="btn_department_OK" class="btn btn-primary form-control">OK</button>
+                        </div>
+                        <div class="col-md-2 col-xl-2 pb-3">
+                             <button type="button" id="export_chart_department" class="btn btn-success form-control">Export</button>
                         </div>
                     </div>
                 </div>
@@ -5083,5 +5089,14 @@
 
                 return data_years;
         };
+
+        $('#export_chart_individual').on('click',function(){
+            var name = document.getElementById("sale_name").value;
+            location.href = '@Url.Action("DownloadXlsxChartIndividual", "Home")?name='+name;
+        });
+        $('#export_chart_department').on('click',function(){
+            var department = document.getElementById("department_name").value;
+            location.href = '@Url.Action("DownloadXlsxChartDepartment", "Home")?department='+department;
+        });
     </script>
 }
