@@ -51,15 +51,15 @@
                             <select id="years_dashboard" class="form-control">
                             </select>
                         </div>
-                        <div class="col-md-4 col-xl-4 pb-3">
+                        <div class="col-md-3 col-xl-3 pb-3">
                             <select id="sale_name" class="form-control">
                             </select>
                         </div>
                         <div class="col-md-3 col-xl-3 pb-4">
                             <button type="button" id="btn_OK" class="btn btn-primary form-control">OK</button>
                         </div>
-                        <div class="col-md-2 col-xl-2 pb-3">
-                             <button type="button" id="export_chart_individual" class="btn btn-success form-control">Export</button>
+                        <div class="col-md-3 col-xl-3 pb-3">
+                             <button type="button" id="export_chart_individual" class="btn btn-success form-control" disabled>Export</button>
                         </div>
                     </div>
                 </div>
@@ -384,15 +384,15 @@
                             <select id="years_dashboard_department" class="form-control">
                             </select>
                         </div>
-                        <div class="col-md-4 col-xl-4 pb-3">
+                        <div class="col-md-3 col-xl-3 pb-3">
                             <select id="department_name" class="form-control">
                             </select>
                         </div>
                         <div class="col-md-3 col-xl-3 pb-4">
                             <button type="button" id="btn_department_OK" class="btn btn-primary form-control">OK</button>
                         </div>
-                        <div class="col-md-2 col-xl-2 pb-3">
-                             <button type="button" id="export_chart_department" class="btn btn-success form-control">Export</button>
+                        <div class="col-md-3 col-xl-3 pb-3">
+                             <button type="button" id="export_chart_department" class="btn btn-success form-control" disabled>Export</button>
                         </div>
                     </div>
                 </div>
@@ -666,9 +666,10 @@
 
         $('#btn_OK').on('click', function () {
             $("#table_stages").empty();
-             var name = document.getElementById("sale_name").value;
-             var year = document.getElementById("years_dashboard").value;
-             pie_chart_data(year,name);
+            document.getElementById("export_chart_individual").disabled = false;
+            var name = document.getElementById("sale_name").value;
+            var year = document.getElementById("years_dashboard").value;
+            pie_chart_data(year,name);
         });
 
         $('#tab_b').on('click',function(){
@@ -725,6 +726,7 @@
 
         $('#btn_department_OK').on('click',function(){
             $("#table_stages_department").empty();
+            document.getElementById("export_chart_department").disabled = false;
             var department = document.getElementById("department_name").value;
             var year = document.getElementById("years_dashboard_department").value;
             chart_data_department(year,department);
@@ -5097,6 +5099,12 @@
         $('#export_chart_department').on('click',function(){
             var department = document.getElementById("department_name").value;
             location.href = '@Url.Action("DownloadXlsxChartDepartment", "Home")?department='+department;
+        });
+        $('#department_name').on('change',function(){
+            document.getElementById("export_chart_department").disabled = true;
+        });
+        $('#sale_name').on('change',function(){
+            document.getElementById("export_chart_individual").disabled = true;
         });
     </script>
 }
