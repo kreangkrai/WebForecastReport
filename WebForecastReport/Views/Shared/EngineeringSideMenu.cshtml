@@ -30,16 +30,6 @@
                     </a>
                 </li>
 
-                @if (Model.name == "Korakod.P")
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="OvertimeRequest" asp-action="Index">
-                            <i class="nav-icon fas fa-clock"></i>
-                            <p class="text-bold">OVERTIME REQUEST <span class="badge badge-danger">NEW</span></p>
-                        </a>
-                    </li>
-                }
-
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="EngineerScore" asp-action="Index">
                         <i class="nav-icon fas fa-star-half-alt"></i>
@@ -65,13 +55,13 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="EngineerExperience" asp-action="Index">
                                     <i class="nav-icon fas fa-user-graduate"></i>
-                                    <p>EXPERIENCE <span class="badge badge-danger">DEV</span></p>
+                                    <p>EXPERIENCE <span class="badge badge-danger right">DEMO</span></p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="EngineerExperience" asp-action="ExperienceAndSkill">
                                     <i class="nav-icon fas fa-project-diagram"></i>
-                                    <p>EXPERIENCE2 <span class="badge badge-danger">DEV</span></p>
+                                    <p>EXPERIENCE2 <span class="badge badge-danger right">DEMO</span></p>
                                 </a>
                             </li>
                         </ul>
@@ -140,13 +130,13 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="IdleTime" asp-action="EngineerIdleTimes">
                                     <i class="nav-icon fas fa-user"></i>
-                                    <p>ENGINEER IDLE TIMES</p>
+                                    <p>ENGINEER IDLE TIMES <span class="badge badge-danger right">DEMO</span></p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="IdleTime" asp-action="MonthlyIdleTimes">
                                     <i class="nav-icon fas fa-calendar-alt"></i>
-                                    <p>MONTHLY IDLE TIMES</p>
+                                    <p>MONTHLY IDLE TIMES <span class="badge badge-danger right">DEMO</span></p>
                                 </a>
                             </li>
                         </ul>
@@ -278,19 +268,19 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="EngProcess" asp-action="Index">
                                     <i class="nav-icon fas fa-project-diagram"></i>
-                                    <p>PROCESS <span class="badge badge-danger">DEV</span></p>
+                                    <p>PROCESS <span class="badge badge-danger right">DEMO</span></p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="EngSystem" asp-action="Index">
                                     <i class="nav-icon fas fa-microchip"></i>
-                                    <p>SYSTEM <span class="badge badge-danger">DEV</span></p>
+                                    <p>SYSTEM <span class="badge badge-danger right">DEMO</span></p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="EngSkill" asp-action="Index">
                                     <i class="nav-icon fas fa-user-graduate"></i>
-                                    <p>SKILL <span class="badge badge-danger">DEV</span></p>
+                                    <p>SKILL <span class="badge badge-danger right">DEMO</span></p>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -302,7 +292,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Holiday" asp-action="Index">
                                     <i class="nav-icon fas fa-calendar-day"></i>
-                                    <p class="text-bold">HOLIDAY</p>
+                                    <p>HOLIDAY</p>
                                 </a>
                             </li>
                         </ul>
