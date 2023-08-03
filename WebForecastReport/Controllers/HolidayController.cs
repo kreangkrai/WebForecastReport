@@ -10,6 +10,7 @@ using WebForecastReport.Interface;
 using WebForecastReport.Service;
 using Microsoft.AspNetCore.Http;
 using WebForecastReport.Models;
+using Newtonsoft.Json;
 
 namespace WebForecastReport.Controllers
 {
@@ -49,6 +50,14 @@ namespace WebForecastReport.Controllers
         {
             List<HolidayModel> holidays = HolidayService.GetHolidays(year);
             return Json(holidays);
+        }
+
+        [HttpPost]
+        public string CreateHoliday(string str)
+        {
+            HolidayModel h = JsonConvert.DeserializeObject<HolidayModel>(str);
+            string result = HolidayService.CreateHoliday(h);
+            return result;
         }
     }
 }

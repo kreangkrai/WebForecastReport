@@ -11,6 +11,36 @@ namespace WebForecastReport.Services.MPR
 {
     public class HolidayService : IHoliday
     {
+        public string CreateHoliday(HolidayModel model)
+        {
+            SqlConnection connection = ConnectSQL.OpenConnect();
+            try
+            {
+                string string_command = string.Format($@"
+                INSERT INTO Holidays (
+                    date,
+                    name )
+                VALUES (
+                    @date,
+                    @name
+                )");
+                SqlCommand command = new SqlCommand(string_command, connection);
+                command.CommandType = System.Data.CommandType.Text;
+                command.Parameters.AddWithValue("@date", model.date);
+                command.Parameters.AddWithValue("@name", model.name);
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+            finally
+            {
+                ConnectSQL.CloseConnect();
+            }
+            return "Success";
+        }
+
         public List<HolidayModel> GetHolidays(string year)
         {
             List<HolidayModel> holidays = new List<HolidayModel>();

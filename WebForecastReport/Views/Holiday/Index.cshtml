@@ -10,12 +10,17 @@
     <div class="col-xl-1 col-md-3 pb-3">
         <button id="btn_load" type="button" class="btn btn-primary form-control elevation-1">
             <i class="fas fa-sync"></i> Load
-        </button>
+        </button>              
+    </div>
+    <div class="col-xl-1 col-md-3 pb-3">
+        <button id="btn_add_holiday" class="btn btn-success form-control elevation-1">
+            <i class="fas fa-plus"></i> Holiday
+        </button>          
     </div>
     <div class="col-xl-12">
         <div class="card card-dark">
             <div class="card-header">
-                <span class="card-title">Holidays</span>
+                <span class="card-title">Holidays</span>                
             </div>
             <div class="card-body">
                 <form>
@@ -43,7 +48,34 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="modal_holiday" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_title">Create Holiday</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <span>Date</span>
+                        <input id="date_id" type="date" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <span>Holiday</span>
+                        <input id="date_holiday" type="text" class="form-control" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btn_accept" type="button" class="btn btn-primary">Accept</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts
 { 
     <script type="text/javascript">
@@ -131,5 +163,31 @@
             GetHolidays(year);
         });
         
+        $('#btn_add_holiday').on('click', async function () {
+            $('#modal_holiday').modal();
+        });
+        $('#btn_accept').on('click', async function () {
+            let str = JSON.stringify({
+                "date": $('#date_id').val(),
+                "name": $('#date_holiday').val(),
+            });
+            await CreateHoliday(str);
+        });
+
+        async function CreateHoliday(str) {
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("CreateHoliday", "Holiday")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { str },
+                success: function (response) {
+                    if (response === "Success") {
+                        window.location.reload();
+                    } else {
+                        alert(response);
+                    }
+                }
+            });
+        }
     </script>
 }

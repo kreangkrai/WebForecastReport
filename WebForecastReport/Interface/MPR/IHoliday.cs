@@ -9,5 +9,6 @@ namespace WebForecastReport.Interfaces.MPR
     interface IHoliday
     {
         List<HolidayModel> GetHolidays(string year);
+        string CreateHoliday(HolidayModel model);
     }
 }
