@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.DirectoryServices;
 using System.Linq;
 using System.Threading.Tasks;
+using WebForecastReport.Interface;
 using WebForecastReport.Models;
 using WebForecastReport.Service;
 
@@ -13,9 +14,14 @@ namespace WebForecastReport.Controllers
 {
     public class AccountController : Controller
     {
+        private IUser Users;
         string user = "";
         string dep = "";
         byte[] image = new byte[0];
+        public AccountController()
+        {
+            Users = new UserService();
+        }
         public IActionResult Index()
         {
             return View(new LoginModel());
@@ -36,6 +42,9 @@ namespace WebForecastReport.Controllers
                     bool check = ActiveDirectoryAuthenticate(model.user, model.password);
                     if (check)
                     {
+                        //update user in sale_user table
+                        Users.InsertUser();
+
                         bool b = true;
                         //SqlCommand cmd = new SqlCommand("SELECT * FROM Authen_TripExpenseWeb WHERE Names='" + user + "'", ConnectSQL.OpenConnect());
                         //SqlDataReader dr = cmd.ExecuteReader();

@@ -11,5 +11,6 @@ namespace WebForecastReport.Interface
         List<UserManagementModel> GetUsers();
         string update(string fullname,string name, string role,string group);
         string insert(string fullname);
+        string InsertUser();
     }
 }
