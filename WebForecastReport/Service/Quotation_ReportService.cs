@@ -156,15 +156,15 @@ namespace WebForecastReport.Service
                                                                 sale_name,
                                                                 product_type,
                                                                 sum(case when stages = 'Closed(Won)' then 1 else 0 end) as type_won_cnt,
-																format(sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_won_mb,
+																cast(sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as numeric(10,2)) as type_won_mb,
 																sum(case when stages = 'Closed(Lost)' then 1 else 0 end) as type_lost_cnt,
-																format(sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_lost_mb,
+																cast(sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as numeric(10,2)) as type_lost_mb,
 																sum(case when stages = 'No go' then 1 else 0 end) as type_nogo_cnt,
-																format(sum(case when stages = 'No go' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_nogo_mb,
+																cast(sum(case when stages = 'No go' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end)  as numeric(10,2)) as type_nogo_mb,
 																sum(case when stages not in ('Closed(Won)', 'Closed(Lost)', 'No go','Quote for Budget') then 1 else 0 end) as type_pending_cnt,
-																format(sum(case when stages not in ('Closed(Won)', 'Closed(Lost)', 'No go','Quote for Budget') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_pending_mb,
+																cast(sum(case when stages not in ('Closed(Won)', 'Closed(Lost)', 'No go','Quote for Budget') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as numeric(10,2)) as type_pending_mb,
 																sum(case when stages in ('Quote for Budget') then 1 else 0 end) as type_quote_cnt,
-																format(sum(case when stages in ('Quote for Budget') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_quote_mb
+																cast(sum(case when stages in ('Quote for Budget') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as numeric(10,2)) as type_quote_mb
 
                                                             from Quotation
 
@@ -204,11 +204,11 @@ namespace WebForecastReport.Service
                                                                 sale_name,
                                                                 stages,
                                                                 sum(case when product_type = 'Project' then 1 else 0 end) as stages_project_cnt,
-																format(sum(case when product_type = 'Project' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_project_mb,
+																cast(sum(case when product_type = 'Project' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as numeric(10,2)) as stages_project_mb,
 																sum(case when product_type = 'Product' then 1 else 0 end) as stages_product_cnt,
-																format(sum(case when product_type = 'Product' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_product_mb,
+																cast(sum(case when product_type = 'Product' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as numeric(10,2)) as stages_product_mb,
 																sum(case when product_type = 'Service' then 1 else 0 end) as stages_service_cnt,
-																format(sum(case when product_type = 'Service' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_service_mb
+																cast(sum(case when product_type = 'Service' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as numeric(10,2)) as stages_service_mb
                                                              from Quotation
                                                              where left(Convert(varchar, date,23),7) between @month_first and @month_last and stages in('Closed(Won)','Closed(Lost)','No go')  AND (exclude_quote is null or exclude_quote = 0)
                                                              group by department, sale_name, stages ) as sub_stages
@@ -234,7 +234,7 @@ namespace WebForecastReport.Service
                                                             'pending' as stages,
                                                             sub_stages.product_type,
                                                             sum(cast(sub_stages.stages_pending_cnt as float)) as stages_pending_cnt,
-                                                            format(sum(cast(sub_stages.stages_pending_mb as float)), 'N2') as stages_pending_mb
+                                                            cast(sum(cast(sub_stages.stages_pending_mb as float)) as numeric(10,2)) as stages_pending_mb
 
                                                             from(
                                                                 select department,
@@ -271,7 +271,7 @@ namespace WebForecastReport.Service
                                                             'Quote' as stages,
                                                             sub_stages.product_type,
                                                             sum(cast(sub_stages.stages_quote_cnt as float)) as stages_quote_cnt,
-                                                            format(sum(cast(sub_stages.stages_quote_mb as float)), 'N2') as stages_quote_mb
+                                                            cast(sum(cast(sub_stages.stages_quote_mb as float)) as numeric(10,2)) as stages_quote_mb
 
                                                             from(
                                                                 select department,
@@ -494,6 +494,7 @@ namespace WebForecastReport.Service
 													SET @million = 1000000		
 													SET @month_first = '{month_first}';
 													SET @month_last = '{month_last}';
+									
 													with main As(
 													
 													select Quotation.department, Quotation.sale_name as sale,
@@ -624,15 +625,15 @@ namespace WebForecastReport.Service
                                                                 sale_name,
                                                                 product_type,
                                                                 sum(case when stages = 'Closed(Won)' then 1 else 0 end) as type_won_cnt,
-																format(sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_won_mb,
+																cast(sum(case when stages = 'Closed(Won)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end) as numeric(10,2)) as type_won_mb,
 																sum(case when stages = 'Closed(Lost)' then 1 else 0 end) as type_lost_cnt,
-																format(sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_lost_mb,
+																cast(sum(case when stages = 'Closed(Lost)' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end)as numeric(10,2)) as type_lost_mb,
 																sum(case when stages = 'No go' then 1 else 0 end) as type_nogo_cnt,
-																format(sum(case when stages = 'No go' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_nogo_mb,
+																cast(sum(case when stages = 'No go' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end)as numeric(10,2)) as type_nogo_mb,
 																sum(case when stages not in ('Closed(Won)', 'Closed(Lost)', 'No go','Quote for Budget') then 1 else 0 end) as type_pending_cnt,
-																format(sum(case when stages not in ('Closed(Won)', 'Closed(Lost)', 'No go','Quote for Budget') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_pending_mb,
+																cast(sum(case when stages not in ('Closed(Won)', 'Closed(Lost)', 'No go','Quote for Budget') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end)as numeric(10,2)) as type_pending_mb,
 																sum(case when stages in ('Quote for Budget') then 1 else 0 end) as type_quote_cnt,
-																format(sum(case when stages in ('Quote for Budget') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as type_quote_mb
+																cast(sum(case when stages in ('Quote for Budget') then cast(replace(quoted_price, ',', '') as float) / @million else 0 end)as numeric(10,2)) as type_quote_mb
 
                                                             from Quotation
 
@@ -672,11 +673,11 @@ namespace WebForecastReport.Service
                                                                 sale_name,
                                                                 stages,
                                                                 sum(case when product_type = 'Project' then 1 else 0 end) as stages_project_cnt,
-																format(sum(case when product_type = 'Project' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_project_mb,
+																cast(sum(case when product_type = 'Project' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end)as numeric(10,2)) as stages_project_mb,
 																sum(case when product_type = 'Product' then 1 else 0 end) as stages_product_cnt,
-																format(sum(case when product_type = 'Product' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_product_mb,
+																cast(sum(case when product_type = 'Product' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end)as numeric(10,2)) as stages_product_mb,
 																sum(case when product_type = 'Service' then 1 else 0 end) as stages_service_cnt,
-																format(sum(case when product_type = 'Service' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end),'N2') as stages_service_mb
+																cast(sum(case when product_type = 'Service' then cast(replace(quoted_price, ',', '') as float) / @million else 0 end)as numeric(10,2)) as stages_service_mb
                                                              from Quotation
                                                              where department = @department and left(Convert(varchar, date,23),7) between @month_first and @month_last and stages in('Closed(Won)','Closed(Lost)','No go')  AND (exclude_quote is null or exclude_quote = 0)
                                                              group by department, sale_name, stages ) as sub_stages
@@ -702,7 +703,7 @@ namespace WebForecastReport.Service
                                                             'pending' as stages,
                                                             sub_stages.product_type,
                                                             sum(cast(sub_stages.stages_pending_cnt as float)) as stages_pending_cnt,
-                                                            format(sum(cast(sub_stages.stages_pending_mb as float)), 'N2') as stages_pending_mb
+                                                            cast(sum(cast(sub_stages.stages_pending_mb as float))as numeric(10,2)) as stages_pending_mb
 
                                                             from(
                                                                 select department,
@@ -739,7 +740,7 @@ namespace WebForecastReport.Service
                                                             'Quote' as stages,
                                                             sub_stages.product_type,
                                                             sum(cast(sub_stages.stages_quote_cnt as float)) as stages_quote_cnt,
-                                                            format(sum(cast(sub_stages.stages_quote_mb as float)), 'N2') as stages_quote_mb
+                                                            cast(sum(cast(sub_stages.stages_quote_mb as float))as numeric(10,2)) as stages_quote_mb
 
                                                             from(
                                                                 select department,
